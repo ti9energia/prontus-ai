@@ -1,5 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": ["gru1"]
+  "regions": [
+    "gru1"
+  ],
+  "experimentalServices": {
+    "prontus-ai": {
+      "type": "web",
+      "routePrefix": "/",
+      "framework": "nextjs"
+    }
+  }
 }
