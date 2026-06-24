@@ -621,7 +621,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
             <MessageCircle className="h-5 w-5" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-ink/90">Íris · +55 11 99000-0000</p>
+            <p className="font-medium text-ink/90">Mari · +55 11 99000-0000</p>
             <p className="mt-0.5 text-xs text-muted">{localized('whatsappDesc', locale)}</p>
           </div>
         </div>
@@ -655,7 +655,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
             <Bot className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <p className="font-medium text-ink/90">Íris</p>
+            <p className="font-medium text-ink/90">Mari</p>
             <p className="mt-0.5 text-xs text-muted">{localized('aiDesc', locale)}</p>
           </div>
         </div>
@@ -664,7 +664,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
           <Field label={localized('personaName', locale)}>
             <div className="relative">
               <Stethoscope className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-              <Input defaultValue="Íris" className="pl-9" />
+              <Input defaultValue="Mari" className="pl-9" />
             </div>
           </Field>
           <Field label={localized('model', locale)}>

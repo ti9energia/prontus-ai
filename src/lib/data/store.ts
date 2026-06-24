@@ -286,13 +286,13 @@ function seedFlags(): FeatureFlag[] {
 function seedAudit(): AuditEntry[] {
   const rows: Array<[number, string, string, string, AuditEntry['result'], AuditSource]> = [
     [4, 'Dra. Helena Vasconcelos', 'note.approve', 'Encounter enc_0001', 'ok', 'ui'],
-    [9, 'Íris (IA)', 'tiss.create', 'Guide gui_0001', 'ok', 'ai'],
+    [9, 'Mari (IA)', 'tiss.create', 'Guide gui_0001', 'ok', 'ai'],
     [16, 'Dra. Helena Vasconcelos', 'tiss.submit', 'Guide gui_0005', 'ok', 'ui'],
-    [27, 'Íris (IA)', 'agent.recommend', 'Guide gui_0003', 'pending', 'ai'],
+    [27, 'Mari (IA)', 'agent.recommend', 'Guide gui_0003', 'pending', 'ai'],
     [41, 'faturista@aurora', 'tiss.resubmit', 'Guide gui_0006', 'ok', 'whatsapp'],
     [63, 'platform_owner', 'tenant.impersonate', 'Tenant ten_0001', 'ok', 'ui'],
     [88, 'sistema', 'audio.purge', 'Encounter enc_0002', 'ok', 'system'],
-    [140, 'Íris (IA)', 'note.update', 'Encounter enc_0003', 'blocked', 'ai'],
+    [140, 'Mari (IA)', 'note.update', 'Encounter enc_0003', 'blocked', 'ai'],
   ];
   return rows.map((r, i) => ({
     id: id('aud', i + 1),
@@ -455,7 +455,7 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
   }
   d.guides.unshift(guide);
   if (enc) enc.hasGuide = true;
-  pushAudit('Íris (IA)', 'tiss.create', `Guide ${guide.id}`, 'ok', 'ai');
+  pushAudit('Mari (IA)', 'tiss.create', `Guide ${guide.id}`, 'ok', 'ai');
   return guide;
 }
 

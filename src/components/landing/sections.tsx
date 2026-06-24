@@ -267,22 +267,22 @@ const QUOTES: Record<string, { quote: string; name: string; role: string }[]> = 
   'pt-BR': [
     { quote: 'Saio do consultório com o prontuário pronto. Recuperei minhas noites.', name: 'Dra. Helena Vasconcelos', role: 'Clínica geral · Clínica Aurora' },
     { quote: 'A glosa despencou. A verificação pré-envio sozinha já paga o plano.', name: 'Rodrigo Menezes', role: 'Gestor · Hospital São Lucas' },
-    { quote: 'Pergunto pelo WhatsApp e a Íris me traz tudo. Parece mágica, mas é sério.', name: 'Dra. Camila Prado', role: 'Cardiologia · Instituto Cardio+' },
+    { quote: 'Pergunto pelo WhatsApp e a Mari me traz tudo. Parece mágica, mas é sério.', name: 'Dra. Camila Prado', role: 'Cardiologia · Instituto Cardio+' },
   ],
   en: [
     { quote: 'I leave the office with the record already done. I got my evenings back.', name: 'Dr. Helena Vasconcelos', role: 'General practice · Clínica Aurora' },
     { quote: 'Denials dropped sharply. The pre-submit check alone pays for the plan.', name: 'Rodrigo Menezes', role: 'Manager · Hospital São Lucas' },
-    { quote: 'I ask on WhatsApp and Íris brings it all. Feels like magic — but it’s real.', name: 'Dr. Camila Prado', role: 'Cardiology · Instituto Cardio+' },
+    { quote: 'I ask on WhatsApp and Mari brings it all. Feels like magic — but it’s real.', name: 'Dr. Camila Prado', role: 'Cardiology · Instituto Cardio+' },
   ],
   'zh-CN': [
     { quote: '看完诊病历就已经写好了，我把晚上的时间找回来了。', name: 'Helena Vasconcelos 医生', role: '全科 · Clínica Aurora' },
     { quote: '拒付大幅下降，仅凭提交前核查就值回了订阅费。', name: 'Rodrigo Menezes', role: '管理者 · Hospital São Lucas' },
-    { quote: '我在 WhatsApp 上问，Íris 全部帮我搞定，像魔法一样。', name: 'Camila Prado 医生', role: '心脏科 · Instituto Cardio+' },
+    { quote: '我在 WhatsApp 上问，Mari 全部帮我搞定，像魔法一样。', name: 'Camila Prado 医生', role: '心脏科 · Instituto Cardio+' },
   ],
   'fr-FR': [
     { quote: 'Je sors du cabinet avec le dossier déjà prêt. J’ai retrouvé mes soirées.', name: 'Dre Helena Vasconcelos', role: 'Médecine générale · Clínica Aurora' },
     { quote: 'Les rejets ont chuté. Le contrôle avant envoi rentabilise à lui seul l’offre.', name: 'Rodrigo Menezes', role: 'Gestionnaire · Hospital São Lucas' },
-    { quote: 'Je demande sur WhatsApp et Íris m’apporte tout. On dirait de la magie.', name: 'Dre Camila Prado', role: 'Cardiologie · Instituto Cardio+' },
+    { quote: 'Je demande sur WhatsApp et Mari m’apporte tout. On dirait de la magie.', name: 'Dre Camila Prado', role: 'Cardiologie · Instituto Cardio+' },
   ],
 };
 

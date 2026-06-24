@@ -29,10 +29,10 @@ Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entr
 - **Workspace com abas estilo navegador** (`/pt-BR/app`):
   - Abas (abrir, fechar, trocar) + **dividir a tela** (botão ⫶ "dividir") em até **3 painéis** lado a lado.
   - **⌘K / Ctrl+K** → paleta de comandos (navegar + ações rápidas).
-  - **⌘J / Ctrl+J** ou o botão **Íris** → copiloto de IA em toda tela.
+  - **⌘J / Ctrl+J** ou o botão **Mari** → copiloto de IA em toda tela.
   - Barra lateral de ícones para abrir qualquer módulo como aba.
 - **Fluxo clínico ponta a ponta:** Agenda → **Consulta ao vivo** (consentimento → gravação simulada → transcrição em streaming → nota se montando) → **Revisão da nota** (editar/aprovar) → **Guia TISS** (validação pré-glosa → enviar) → **Faturamento & glosas** (gráficos).
-- **Demais telas:** Pacientes, Modelos por especialidade, Integrações, Configurações, **Agente autônomo** (recomendações), **WhatsApp** (simulação de chat com a Íris).
+- **Demais telas:** Pacientes, Modelos por especialidade, Integrações, Configurações, **Agente autônomo** (recomendações), **WhatsApp** (simulação de chat com a Mari).
 - **Painel do Dono** (`/pt-BR/owner` ou ícone 👑): visão geral (MRR), organizações + impersonação, planos & entitlements, **editor de landing (CMS 4 idiomas)**, feature flags, IA & Agente, WhatsApp, acessos (matriz) e auditoria.
 - **PWA:** instalável (manifest + service worker), responsivo, tema claro/escuro.
 
@@ -43,7 +43,7 @@ Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entr
 
 ---
 
-## 🤖 Copiloto (Íris)
+## 🤖 Copiloto (Mari)
 - **Sem chave de API:** responde com um fallback que **lê os dados reais** do app (ex.: "sua taxa de glosa é 37,5%…").
 - **Com chave:** usa a Claude API de verdade. Copie `.env.example` → `.env.local` e defina `ANTHROPIC_API_KEY` (e opcionalmente `ANTHROPIC_MODEL`).
 - Endpoint: `POST /api/ai/chat`.

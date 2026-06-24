@@ -2,12 +2,19 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight, Play, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Play, ShieldCheck, Star } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Aurora } from './aurora';
 import { HeroDemo } from './hero-demo';
+import { Avatar } from '@/components/ui/misc';
 import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+
+const PROOF = [
+  { name: 'Helena Vasconcelos', hue: 170 },
+  { name: 'Camila Prado', hue: 28 },
+  { name: 'Rodrigo Menezes', hue: 210 },
+  { name: 'Antônio Ferreira', hue: 320 },
+];
 
 export function Hero() {
   const t = useTranslations('landing.hero');
@@ -20,35 +27,54 @@ export function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* copy */}
           <div className="max-w-xl">
-            <motion.a
-              href="#features"
+            {/* social proof */}
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/70 py-1 pl-1.5 pr-3 text-2xs font-medium text-muted shadow-xs backdrop-blur"
+              className="flex items-center gap-3"
             >
-              <span className="inline-flex items-center gap-1 rounded-full bg-brand-600/10 px-2 py-0.5 text-brand-700 dark:text-brand-300">
-                <Sparkles className="h-3 w-3" /> {t('eyebrow')}
-              </span>
-              <span className="hidden sm:inline">{tl('announce')}</span>
-              <ArrowRight className="h-3 w-3" />
-            </motion.a>
+              <div className="flex -space-x-2.5">
+                {PROOF.map((p) => (
+                  <Avatar key={p.name} name={p.name} hue={p.hue} size={30} className="ring-2 ring-bg" />
+                ))}
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-3 w-3 fill-accent-400 text-accent-400" />
+                  ))}
+                </div>
+                <span className="text-2xs text-muted">{tl('logos.title')}</span>
+              </div>
+            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              className="mt-5 font-display text-[2.6rem] font-bold leading-[1.02] tracking-[-0.03em] sm:text-display-md"
+              className="mt-6 font-display text-[2.75rem] font-bold leading-[1.0] tracking-[-0.035em] sm:text-[3.75rem]"
             >
               {t('title')}{' '}
-              <span className="text-gradient">{t('titleHighlight')}</span>.
+              <span className="relative whitespace-nowrap">
+                <span className="text-gradient">{t('titleHighlight')}</span>
+                <svg
+                  aria-hidden
+                  viewBox="0 0 300 12"
+                  className="absolute -bottom-1 left-0 h-2.5 w-full text-brand-400/50"
+                  preserveAspectRatio="none"
+                >
+                  <path d="M2 9 C 80 2, 220 2, 298 8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+                </svg>
+              </span>
+              .
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
-              className="mt-5 text-base leading-relaxed text-muted sm:text-lg"
+              className="mt-6 text-base leading-relaxed text-muted sm:text-lg"
             >
               {t('subtitle')}
             </motion.p>
@@ -89,7 +115,6 @@ export function Hero() {
           >
             <HeroDemo />
 
-            {/* floating chips */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}

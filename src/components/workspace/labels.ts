@@ -18,7 +18,7 @@ const CHROME: Record<string, Dict> = {
   navigate: { 'pt-BR': 'Navegar', en: 'Go to', 'zh-CN': '前往', 'fr-FR': 'Aller à' },
   actions: { 'pt-BR': 'Ações rápidas', en: 'Quick actions', 'zh-CN': '快捷操作', 'fr-FR': 'Actions rapides' },
   openSplit: { 'pt-BR': 'Abrir em split', en: 'Open in split', 'zh-CN': '在分屏中打开', 'fr-FR': 'Ouvrir en volet' },
-  askIris: { 'pt-BR': 'Perguntar à Íris', en: 'Ask Íris', 'zh-CN': '询问 Íris', 'fr-FR': 'Demander à Íris' },
+  askIris: { 'pt-BR': 'Perguntar à Mari', en: 'Ask Mari', 'zh-CN': '询问 Mari', 'fr-FR': 'Demander à Mari' },
   noResults: { 'pt-BR': 'Nada encontrado', en: 'Nothing found', 'zh-CN': '未找到', 'fr-FR': 'Aucun résultat' },
   owner: { 'pt-BR': 'Painel do Dono', en: 'Owner panel', 'zh-CN': '所有者面板', 'fr-FR': 'Espace propriétaire' },
   signOut: { 'pt-BR': 'Sair', en: 'Sign out', 'zh-CN': '退出登录', 'fr-FR': 'Se déconnecter' },

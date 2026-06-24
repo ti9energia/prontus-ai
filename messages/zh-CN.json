@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Prontus.ai",
-    "tagline": "AI 临床速记助手",
+    "tagline": "",
     "actions": {
       "save": "保存",
       "cancel": "取消",
@@ -88,9 +88,9 @@
       "pricing": "价格",
       "customers": "客户"
     },
-    "announce": "全新 · 带预拒付校验的 TISS 单据",
+    "announce": "",
     "hero": {
-      "eyebrow": "AI 临床速记助手",
+      "eyebrow": "",
       "title": "问诊结束，病历与单据",
       "titleHighlight": "即刻就绪",
       "subtitle": "Prontus.ai 聆听问诊过程，几秒内即返回结构化病历和已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。",
@@ -144,10 +144,22 @@
       "eyebrow": "运作方式",
       "title": "四步搞定，无需打字",
       "steps": {
-        "record": { "title": "录制", "desc": "在患者同意后开始问诊，Prontus 全程聆听。" },
-        "structure": { "title": "结构化", "desc": "AI 实时转录，并按章节生成病历。" },
-        "review": { "title": "审阅", "desc": "您来核对与调整。未经您批准，绝不生成单据。" },
-        "submit": { "title": "提交", "desc": "生成已校验的 TISS 单据并提交医保机构——或导出。" }
+        "record": {
+          "title": "录制",
+          "desc": "在患者同意后开始问诊，Prontus 全程聆听。"
+        },
+        "structure": {
+          "title": "结构化",
+          "desc": "AI 实时转录，并按章节生成病历。"
+        },
+        "review": {
+          "title": "审阅",
+          "desc": "您来核对与调整。未经您批准，绝不生成单据。"
+        },
+        "submit": {
+          "title": "提交",
+          "desc": "生成已校验的 TISS 单据并提交医保机构——或导出。"
+        }
       }
     },
     "security": {
@@ -155,10 +167,22 @@
       "title": "健康数据很敏感，我们郑重以待。",
       "subtitle": "明确授权、端到端加密、不可篡改的审计追踪，以及强制的人工参与把关。",
       "items": {
-        "lgpd": { "title": "LGPD、GDPR 与 PIPL", "desc": "按地区落实授权、数据最小化与删除权。" },
-        "crypto": { "title": "加密", "desc": "传输与存储全程加密；密钥存于保险库，绝不写入代码。" },
-        "audit": { "title": "不可篡改的审计", "desc": "谁、做了什么、何时做、结果如何——包括 AI 的操作。" },
-        "hitl": { "title": "人工参与把关", "desc": "生成任何单据前，均由医生批准病历。" }
+        "lgpd": {
+          "title": "LGPD、GDPR 与 PIPL",
+          "desc": "按地区落实授权、数据最小化与删除权。"
+        },
+        "crypto": {
+          "title": "加密",
+          "desc": "传输与存储全程加密；密钥存于保险库，绝不写入代码。"
+        },
+        "audit": {
+          "title": "不可篡改的审计",
+          "desc": "谁、做了什么、何时做、结果如何——包括 AI 的操作。"
+        },
+        "hitl": {
+          "title": "人工参与把关",
+          "desc": "生成任何单据前，均由医生批准病历。"
+        }
       }
     },
     "pricing": {
@@ -181,11 +205,26 @@
       "eyebrow": "疑问",
       "title": "常见问题",
       "items": {
-        "q1": { "q": "问诊音频会被保存吗？", "a": "仅在患者同意后保存，全程加密，保留期限可配置。您可随时彻底删除。" },
-        "q2": { "q": "AI 会自动提交单据吗？", "a": "不会。人工参与把关为强制要求：病历与单据只有在您批准后才会继续。" },
-        "q3": { "q": "适用于我的专科吗？", "a": "适用。提供各专科可编辑的病历模板，临床词汇也会自适应。" },
-        "q4": { "q": "能与我的电子病历系统集成吗？", "a": "可通过集成对接 PEP 与医保机构。TISS 为区域市场模块（巴西）。" },
-        "q5": { "q": "支持其他语言吗？", "a": "支持——pt-BR、英语、中文与法语，第一天即可用。" }
+        "q1": {
+          "q": "问诊音频会被保存吗？",
+          "a": "仅在患者同意后保存，全程加密，保留期限可配置。您可随时彻底删除。"
+        },
+        "q2": {
+          "q": "AI 会自动提交单据吗？",
+          "a": "不会。人工参与把关为强制要求：病历与单据只有在您批准后才会继续。"
+        },
+        "q3": {
+          "q": "适用于我的专科吗？",
+          "a": "适用。提供各专科可编辑的病历模板，临床词汇也会自适应。"
+        },
+        "q4": {
+          "q": "能与我的电子病历系统集成吗？",
+          "a": "可通过集成对接 PEP 与医保机构。TISS 为区域市场模块（巴西）。"
+        },
+        "q5": {
+          "q": "支持其他语言吗？",
+          "a": "支持——pt-BR、英语、中文与法语，第一天即可用。"
+        }
       }
     },
     "cta": {
@@ -542,12 +581,12 @@
     "org_admin": "组织管理员"
   },
   "copilot": {
-    "name": "Íris",
-    "title": "Íris · 临床副驾驶",
+    "name": "Mari",
+    "title": "Mari · 临床副驾驶",
     "subtitle": "读懂整个系统。提问或下达操作指令。",
     "placeholder": "提问或下达指令…例如：“我本月的拒付率是多少？”",
     "send": "发送",
-    "thinking": "Íris 正在思考…",
+    "thinking": "Mari 正在思考…",
     "you": "您",
     "poweredBy": "受治理约束的 AI · 尊重您的角色权限与 LGPD",
     "openHint": "打开副驾驶",
@@ -577,7 +616,7 @@
         "推荐的下一步是什么？"
       ]
     },
-    "greeting": "你好！我是 Íris，你的副驾驶。我可以总结病历、生成 TISS 单据、解读拒付原因等等。需要什么帮助？"
+    "greeting": "你好！我是 Mari，你的副驾驶。我可以总结病历、生成 TISS 单据、解读拒付原因等等。需要什么帮助？"
   },
   "agent": {
     "title": "自主智能体",
@@ -681,7 +720,12 @@
         "status": "状态",
         "actions": "操作"
       },
-      "status": { "active": "活跃", "trial": "试用", "suspended": "已暂停", "past_due": "逾期欠费" }
+      "status": {
+        "active": "活跃",
+        "trial": "试用",
+        "suspended": "已暂停",
+        "past_due": "逾期欠费"
+      }
     },
     "plans": {
       "title": "套餐与价格",
@@ -731,7 +775,11 @@
       "module": "模块",
       "scope": "范围",
       "rollout": "灰度发布",
-      "scopes": { "global": "全局", "plan": "按套餐", "tenant": "按租户" },
+      "scopes": {
+        "global": "全局",
+        "plan": "按套餐",
+        "tenant": "按租户"
+      },
       "on": "开启",
       "off": "关闭"
     },
@@ -742,7 +790,11 @@
       "model": "模型",
       "monthlyBudget": "每月预算",
       "autonomy": "智能体自主级别",
-      "autonomyLevels": { "suggest": "仅建议", "semi": "半自主", "scheduled": "定时执行" },
+      "autonomyLevels": {
+        "suggest": "仅建议",
+        "semi": "半自主",
+        "scheduled": "定时执行"
+      },
       "tools": "已启用工具",
       "spend": "本月消耗"
     },
@@ -774,7 +826,13 @@
         "result": "结果",
         "source": "来源"
       },
-      "sources": { "ui": "界面", "ai": "AI", "whatsapp": "WhatsApp", "api": "API", "system": "系统" }
+      "sources": {
+        "ui": "界面",
+        "ai": "AI",
+        "whatsapp": "WhatsApp",
+        "api": "API",
+        "system": "系统"
+      }
     }
   },
   "modules": {
@@ -793,11 +851,11 @@
   "meta": {
     "landing": {
       "title": "Prontus.ai——问诊结束，病历与单据即刻就绪",
-      "description": "AI 临床速记助手：聆听问诊并生成结构化病历与已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。"
+      "description": "从问诊语音到结构化病历和已填写的 TISS 单据——无需打字。减少拒付，把更多时间留给患者。"
     },
     "app": {
       "title": "Prontus.ai",
-      "description": "AI 临床速记助手——根据问诊音频生成病历与 TISS 单据。"
+      "description": "根据问诊语音生成结构化病历和 TISS 单据。"
     }
   }
 }

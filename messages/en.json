@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Prontus.ai",
-    "tagline": "AI clinical scribe",
+    "tagline": "",
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
@@ -88,9 +88,9 @@
       "pricing": "Pricing",
       "customers": "Customers"
     },
-    "announce": "New · TISS forms with pre-denial checks",
+    "announce": "",
     "hero": {
-      "eyebrow": "AI clinical scribe",
+      "eyebrow": "",
       "title": "Finish the visit with your note and claim form",
       "titleHighlight": "already done",
       "subtitle": "Prontus.ai listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
@@ -144,10 +144,22 @@
       "eyebrow": "How it works",
       "title": "Four steps, zero typing",
       "steps": {
-        "record": { "title": "Record", "desc": "Start the visit with the patient's consent. Prontus listens." },
-        "structure": { "title": "Structure", "desc": "The AI transcribes and builds the medical record section by section, in real time." },
-        "review": { "title": "Review", "desc": "You check and adjust. Nothing becomes a claim form without your approval." },
-        "submit": { "title": "Submit", "desc": "Generate the validated TISS form and submit it to the payer — or export it." }
+        "record": {
+          "title": "Record",
+          "desc": "Start the visit with the patient's consent. Prontus listens."
+        },
+        "structure": {
+          "title": "Structure",
+          "desc": "The AI transcribes and builds the medical record section by section, in real time."
+        },
+        "review": {
+          "title": "Review",
+          "desc": "You check and adjust. Nothing becomes a claim form without your approval."
+        },
+        "submit": {
+          "title": "Submit",
+          "desc": "Generate the validated TISS form and submit it to the payer — or export it."
+        }
       }
     },
     "security": {
@@ -155,10 +167,22 @@
       "title": "Health data is sensitive. We treat it that way.",
       "subtitle": "Explicit consent, end-to-end encryption, an immutable audit trail, and mandatory human-in-the-loop.",
       "items": {
-        "lgpd": { "title": "LGPD, GDPR, and PIPL", "desc": "Consent, data minimization, and the right to erasure, by region." },
-        "crypto": { "title": "Encryption", "desc": "In transit and at rest; secrets in a vault, never in code." },
-        "audit": { "title": "Immutable audit", "desc": "Who did what, when, and the outcome — including AI actions." },
-        "hitl": { "title": "Human-in-the-loop", "desc": "The doctor approves the note before any claim form is generated." }
+        "lgpd": {
+          "title": "LGPD, GDPR, and PIPL",
+          "desc": "Consent, data minimization, and the right to erasure, by region."
+        },
+        "crypto": {
+          "title": "Encryption",
+          "desc": "In transit and at rest; secrets in a vault, never in code."
+        },
+        "audit": {
+          "title": "Immutable audit",
+          "desc": "Who did what, when, and the outcome — including AI actions."
+        },
+        "hitl": {
+          "title": "Human-in-the-loop",
+          "desc": "The doctor approves the note before any claim form is generated."
+        }
       }
     },
     "pricing": {
@@ -181,11 +205,26 @@
       "eyebrow": "Questions",
       "title": "Frequently asked questions",
       "items": {
-        "q1": { "q": "Is the visit audio recorded?", "a": "Only with the patient's consent, encrypted, and with configurable retention. You can purge it at any time." },
-        "q2": { "q": "Does the AI submit the claim form on its own?", "a": "No. Human-in-the-loop is mandatory: the note and the form only move forward after your approval." },
-        "q3": { "q": "Does it work for my specialty?", "a": "Yes. There are editable note templates by specialty, and the clinical vocabulary adapts." },
-        "q4": { "q": "What about integration with my electronic medical record?", "a": "We connect to PEPs and payers via integrations. TISS is a market module (Brazil)." },
-        "q5": { "q": "Is it available in other languages?", "a": "Yes — pt-BR, English, Chinese, and French from day one." }
+        "q1": {
+          "q": "Is the visit audio recorded?",
+          "a": "Only with the patient's consent, encrypted, and with configurable retention. You can purge it at any time."
+        },
+        "q2": {
+          "q": "Does the AI submit the claim form on its own?",
+          "a": "No. Human-in-the-loop is mandatory: the note and the form only move forward after your approval."
+        },
+        "q3": {
+          "q": "Does it work for my specialty?",
+          "a": "Yes. There are editable note templates by specialty, and the clinical vocabulary adapts."
+        },
+        "q4": {
+          "q": "What about integration with my electronic medical record?",
+          "a": "We connect to PEPs and payers via integrations. TISS is a market module (Brazil)."
+        },
+        "q5": {
+          "q": "Is it available in other languages?",
+          "a": "Yes — pt-BR, English, Chinese, and French from day one."
+        }
       }
     },
     "cta": {
@@ -542,12 +581,12 @@
     "org_admin": "Organization admin"
   },
   "copilot": {
-    "name": "Íris",
-    "title": "Íris · Clinical copilot",
+    "name": "Mari",
+    "title": "Mari · Clinical copilot",
     "subtitle": "Understands the whole system. Ask a question or request an action.",
     "placeholder": "Ask or request something… e.g., “what's my denial rate this month?”",
     "send": "Send",
-    "thinking": "Íris is thinking…",
+    "thinking": "Mari is thinking…",
     "you": "You",
     "poweredBy": "Governed AI · respects your role and LGPD",
     "openHint": "Open copilot",
@@ -577,7 +616,7 @@
         "What's the recommended next step?"
       ]
     },
-    "greeting": "Hi! I'm Íris, your copilot. I can summarize medical records, generate TISS forms, explain your denials, and more. What do you need?"
+    "greeting": "Hi! I'm Mari, your copilot. I can summarize medical records, generate TISS forms, explain your denials, and more. What do you need?"
   },
   "agent": {
     "title": "Autonomous agent",
@@ -681,7 +720,12 @@
         "status": "Status",
         "actions": "Actions"
       },
-      "status": { "active": "Active", "trial": "Trial", "suspended": "Suspended", "past_due": "Past due" }
+      "status": {
+        "active": "Active",
+        "trial": "Trial",
+        "suspended": "Suspended",
+        "past_due": "Past due"
+      }
     },
     "plans": {
       "title": "Plans & pricing",
@@ -731,7 +775,11 @@
       "module": "Module",
       "scope": "Scope",
       "rollout": "Rollout",
-      "scopes": { "global": "Global", "plan": "By plan", "tenant": "By tenant" },
+      "scopes": {
+        "global": "Global",
+        "plan": "By plan",
+        "tenant": "By tenant"
+      },
       "on": "On",
       "off": "Off"
     },
@@ -742,7 +790,11 @@
       "model": "Model",
       "monthlyBudget": "Monthly budget",
       "autonomy": "Agent autonomy",
-      "autonomyLevels": { "suggest": "Suggest", "semi": "Semi-autonomous", "scheduled": "Scheduled" },
+      "autonomyLevels": {
+        "suggest": "Suggest",
+        "semi": "Semi-autonomous",
+        "scheduled": "Scheduled"
+      },
       "tools": "Enabled tools",
       "spend": "Spend this month"
     },
@@ -774,7 +826,13 @@
         "result": "Result",
         "source": "Source"
       },
-      "sources": { "ui": "Interface", "ai": "AI", "whatsapp": "WhatsApp", "api": "API", "system": "System" }
+      "sources": {
+        "ui": "Interface",
+        "ai": "AI",
+        "whatsapp": "WhatsApp",
+        "api": "API",
+        "system": "System"
+      }
     }
   },
   "modules": {
@@ -793,11 +851,11 @@
   "meta": {
     "landing": {
       "title": "Prontus.ai — Finish the visit with your note and claim form ready",
-      "description": "AI clinical scribe: listens to the visit and generates a structured medical record and a completed TISS form. Less typing, fewer denials, more time with the patient."
+      "description": "From the consultation audio to a structured medical record and a filled TISS claim — no typing. Fewer denials, more time with patients."
     },
     "app": {
       "title": "Prontus.ai",
-      "description": "AI clinical scribe — medical records and TISS forms from the visit audio."
+      "description": "Structured medical records and TISS claims from the consultation audio."
     }
   }
 }

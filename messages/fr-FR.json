@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Prontus.ai",
-    "tagline": "Assistant clinique IA",
+    "tagline": "",
     "actions": {
       "save": "Enregistrer",
       "cancel": "Annuler",
@@ -88,9 +88,9 @@
       "pricing": "Tarifs",
       "customers": "Clients"
     },
-    "announce": "Nouveau · Feuilles de soins TISS avec vérification anti-rejet",
+    "announce": "",
     "hero": {
-      "eyebrow": "Assistant clinique IA",
+      "eyebrow": "",
       "title": "Terminez la consultation avec le dossier et la feuille de soins",
       "titleHighlight": "déjà prêts",
       "subtitle": "Prontus.ai écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
@@ -144,10 +144,22 @@
       "eyebrow": "Fonctionnement",
       "title": "Quatre étapes, zéro saisie",
       "steps": {
-        "record": { "title": "Enregistrez", "desc": "Démarrez la consultation avec le consentement du patient. Prontus écoute." },
-        "structure": { "title": "Structurez", "desc": "L'IA transcrit et construit le dossier médical section par section, en temps réel." },
-        "review": { "title": "Révisez", "desc": "Vous vérifiez et ajustez. Rien ne devient une feuille de soins sans votre approbation." },
-        "submit": { "title": "Envoyez", "desc": "Générez la feuille de soins TISS validée et envoyez-la à l'assureur — ou exportez-la." }
+        "record": {
+          "title": "Enregistrez",
+          "desc": "Démarrez la consultation avec le consentement du patient. Prontus écoute."
+        },
+        "structure": {
+          "title": "Structurez",
+          "desc": "L'IA transcrit et construit le dossier médical section par section, en temps réel."
+        },
+        "review": {
+          "title": "Révisez",
+          "desc": "Vous vérifiez et ajustez. Rien ne devient une feuille de soins sans votre approbation."
+        },
+        "submit": {
+          "title": "Envoyez",
+          "desc": "Générez la feuille de soins TISS validée et envoyez-la à l'assureur — ou exportez-la."
+        }
       }
     },
     "security": {
@@ -155,10 +167,22 @@
       "title": "Les données de santé sont sensibles. Nous les traitons comme telles.",
       "subtitle": "Consentement explicite, chiffrement de bout en bout, piste d'audit immuable et human-in-the-loop obligatoire.",
       "items": {
-        "lgpd": { "title": "LGPD, GDPR et PIPL", "desc": "Consentement, minimisation et droit à l'effacement par région." },
-        "crypto": { "title": "Chiffrement", "desc": "En transit et au repos ; secrets dans un coffre-fort, jamais dans le code." },
-        "audit": { "title": "Audit immuable", "desc": "Qui a fait quoi, quand et avec quel résultat — y compris les actions de l'IA." },
-        "hitl": { "title": "Human-in-the-loop", "desc": "Le médecin approuve la note avant qu'aucune feuille de soins ne soit générée." }
+        "lgpd": {
+          "title": "LGPD, GDPR et PIPL",
+          "desc": "Consentement, minimisation et droit à l'effacement par région."
+        },
+        "crypto": {
+          "title": "Chiffrement",
+          "desc": "En transit et au repos ; secrets dans un coffre-fort, jamais dans le code."
+        },
+        "audit": {
+          "title": "Audit immuable",
+          "desc": "Qui a fait quoi, quand et avec quel résultat — y compris les actions de l'IA."
+        },
+        "hitl": {
+          "title": "Human-in-the-loop",
+          "desc": "Le médecin approuve la note avant qu'aucune feuille de soins ne soit générée."
+        }
       }
     },
     "pricing": {
@@ -181,11 +205,26 @@
       "eyebrow": "Questions",
       "title": "Questions fréquentes",
       "items": {
-        "q1": { "q": "L'audio de la consultation est-il enregistré ?", "a": "Uniquement avec le consentement du patient, chiffré et avec une durée de conservation configurable. Vous pouvez le purger à tout moment." },
-        "q2": { "q": "L'IA envoie-t-elle la feuille de soins toute seule ?", "a": "Non. Le human-in-the-loop est obligatoire : la note et la feuille de soins ne partent qu'après votre approbation." },
-        "q3": { "q": "Est-ce que cela fonctionne pour ma spécialité ?", "a": "Oui. Il existe des modèles de note par spécialité, modifiables, et le vocabulaire clinique s'adapte." },
-        "q4": { "q": "Et l'intégration avec mon dossier patient informatisé ?", "a": "Nous nous connectons aux PEP et aux assureurs via des intégrations. Le TISS est un module spécifique au marché (Brésil)." },
-        "q5": { "q": "Est-ce disponible dans d'autres langues ?", "a": "Oui — pt-BR, anglais, chinois et français dès le premier jour." }
+        "q1": {
+          "q": "L'audio de la consultation est-il enregistré ?",
+          "a": "Uniquement avec le consentement du patient, chiffré et avec une durée de conservation configurable. Vous pouvez le purger à tout moment."
+        },
+        "q2": {
+          "q": "L'IA envoie-t-elle la feuille de soins toute seule ?",
+          "a": "Non. Le human-in-the-loop est obligatoire : la note et la feuille de soins ne partent qu'après votre approbation."
+        },
+        "q3": {
+          "q": "Est-ce que cela fonctionne pour ma spécialité ?",
+          "a": "Oui. Il existe des modèles de note par spécialité, modifiables, et le vocabulaire clinique s'adapte."
+        },
+        "q4": {
+          "q": "Et l'intégration avec mon dossier patient informatisé ?",
+          "a": "Nous nous connectons aux PEP et aux assureurs via des intégrations. Le TISS est un module spécifique au marché (Brésil)."
+        },
+        "q5": {
+          "q": "Est-ce disponible dans d'autres langues ?",
+          "a": "Oui — pt-BR, anglais, chinois et français dès le premier jour."
+        }
       }
     },
     "cta": {
@@ -542,12 +581,12 @@
     "org_admin": "Admin de l'organisation"
   },
   "copilot": {
-    "name": "Íris",
-    "title": "Íris · Copilote clinique",
+    "name": "Mari",
+    "title": "Mari · Copilote clinique",
     "subtitle": "Comprend tout le système. Posez une question ou demandez une action.",
     "placeholder": "Posez une question ou demandez quelque chose… ex. : « quel est mon taux de rejet ce mois-ci ? »",
     "send": "Envoyer",
-    "thinking": "Íris réfléchit…",
+    "thinking": "Mari réfléchit…",
     "you": "Vous",
     "poweredBy": "IA gouvernée · respecte votre rôle et la LGPD",
     "openHint": "Ouvrir le copilote",
@@ -577,7 +616,7 @@
         "Quelle est la prochaine étape recommandée ?"
       ]
     },
-    "greeting": "Bonjour ! Je suis Íris, votre copilote. Je peux résumer des dossiers médicaux, générer des feuilles de soins TISS, expliquer vos rejets et bien plus. De quoi avez-vous besoin ?"
+    "greeting": "Bonjour ! Je suis Mari, votre copilote. Je peux résumer des dossiers médicaux, générer des feuilles de soins TISS, expliquer vos rejets et bien plus. De quoi avez-vous besoin ?"
   },
   "agent": {
     "title": "Agent autonome",
@@ -681,7 +720,12 @@
         "status": "Statut",
         "actions": "Actions"
       },
-      "status": { "active": "Actif", "trial": "Essai", "suspended": "Suspendu", "past_due": "Impayé" }
+      "status": {
+        "active": "Actif",
+        "trial": "Essai",
+        "suspended": "Suspendu",
+        "past_due": "Impayé"
+      }
     },
     "plans": {
       "title": "Forfaits et tarifs",
@@ -731,7 +775,11 @@
       "module": "Module",
       "scope": "Portée",
       "rollout": "Déploiement",
-      "scopes": { "global": "Global", "plan": "Par forfait", "tenant": "Par tenant" },
+      "scopes": {
+        "global": "Global",
+        "plan": "Par forfait",
+        "tenant": "Par tenant"
+      },
       "on": "Activé",
       "off": "Désactivé"
     },
@@ -742,7 +790,11 @@
       "model": "Modèle",
       "monthlyBudget": "Budget mensuel",
       "autonomy": "Autonomie de l'agent",
-      "autonomyLevels": { "suggest": "Suggestif", "semi": "Semi-autonome", "scheduled": "Planifié" },
+      "autonomyLevels": {
+        "suggest": "Suggestif",
+        "semi": "Semi-autonome",
+        "scheduled": "Planifié"
+      },
       "tools": "Tools activées",
       "spend": "Consommation du mois"
     },
@@ -774,7 +826,13 @@
         "result": "Résultat",
         "source": "Origine"
       },
-      "sources": { "ui": "Interface", "ai": "IA", "whatsapp": "WhatsApp", "api": "API", "system": "Système" }
+      "sources": {
+        "ui": "Interface",
+        "ai": "IA",
+        "whatsapp": "WhatsApp",
+        "api": "API",
+        "system": "Système"
+      }
     }
   },
   "modules": {
@@ -793,11 +851,11 @@
   "meta": {
     "landing": {
       "title": "Prontus.ai — Terminez la consultation avec le dossier et la feuille de soins prêts",
-      "description": "Assistant clinique IA : écoute la consultation et génère le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient."
+      "description": "De l’audio de la consultation au dossier médical structuré et à la feuille de soins TISS — sans saisie. Moins de rejets, plus de temps avec les patients."
     },
     "app": {
       "title": "Prontus.ai",
-      "description": "Assistant clinique IA — dossier médical et feuilles de soins TISS à partir de l'audio de la consultation."
+      "description": "Dossiers médicaux structurés et feuilles de soins TISS à partir de l’audio de la consultation."
     }
   }
 }

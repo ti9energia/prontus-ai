@@ -445,7 +445,7 @@ export function AiSection() {
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t('persona')}>
-              <Input defaultValue="Íris" />
+              <Input defaultValue="Mari" />
             </Field>
             <Field label={t('model')}>
               <Select defaultValue="claude-opus-4-8">
@@ -496,7 +496,7 @@ export function AiSection() {
           <StatCard label={t('spend')} value={formatCurrency(stats.aiSpend, locale, 'BRL')} icon={Sparkles} tone="brand" />
           <Card className="p-4">
             <p className="flex items-center gap-1.5 text-sm font-medium">
-              <Sparkles className="h-4 w-4 text-brand-500" /> Íris
+              <Sparkles className="h-4 w-4 text-brand-500" /> Mari
             </p>
             <p className="mt-1 text-2xs text-muted">
               {L(
@@ -542,7 +542,7 @@ export function WhatsappSection() {
             <Input defaultValue="+55 11 4000-2000" className="font-mono" />
           </Field>
           <Field label={t('persona')}>
-            <Input defaultValue="Íris" />
+            <Input defaultValue="Mari" />
           </Field>
           <label className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
             <span className="text-sm">{t('perTenant')}</span>

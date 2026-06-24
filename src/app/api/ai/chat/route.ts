@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data/store';
 
 export const runtime = 'nodejs';
@@ -9,7 +10,7 @@ interface ChatMessage {
   content: string;
 }
 
-const SYSTEM = `You are Íris, the clinical copilot inside Prontus.ai, an AI medical-scribe SaaS.
+const SYSTEM = `You are Mari, the clinical copilot inside Prontus.ai, an AI medical-scribe SaaS.
 You understand the whole system and help doctors and billing staff. You are concise, warm and precise.
 Rules: respect the user's role and LGPD; never invent patient data; for irreversible actions require human approval (say it needs confirmation). Always answer in the user's language.`;
 
@@ -69,23 +70,49 @@ function mockReply(text: string, locale: string): string {
     );
   }
   return L(
-    `Sou a Íris e entendo o Prontus inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
-    `I'm Íris and I understand all of Prontus. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
-    `我是 Íris，熟悉整个 Prontus。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
-    `Je suis Íris et je connais tout Prontus. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
+    `Sou a Mari e entendo o Prontus inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
+    `I'm Mari and I understand all of Prontus. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
+    `我是 Mari，熟悉整个 Prontus。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
+    `Je suis Mari et je connais tout Prontus. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
   );
 }
 
+const LOCALES = ['pt-BR', 'en', 'zh-CN', 'fr-FR'] as const;
+
+const BodySchema = z.object({
+  messages: z
+    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(6000) }))
+    .max(50)
+    .optional(),
+  locale: z.string().max(12).optional(),
+  screen: z.string().max(48).optional(),
+});
+
 export async function POST(req: NextRequest) {
-  let body: { messages?: ChatMessage[]; locale?: string; screen?: string } = {};
+  let raw: unknown = {};
   try {
-    body = await req.json();
-  } catch {}
-  const messages = body.messages ?? [];
-  const locale = body.locale ?? 'pt-BR';
+    raw = await req.json();
+  } catch {
+    raw = {};
+  }
+
+  // Validate + sanitize input (anti-abuse / prompt-injection hardening).
+  const parsed = BodySchema.safeParse(raw ?? {});
+  if (!parsed.success) {
+    return NextResponse.json(
+      { data: null, error: { code: 'INVALID_INPUT', messageKey: 'errors.invalid_input' } },
+      { status: 400 },
+    );
+  }
+
+  const messages = (parsed.data.messages ?? []).slice(-20); // cap context window
+  const locale = (LOCALES as readonly string[]).includes(parsed.data.locale ?? '')
+    ? (parsed.data.locale as string)
+    : 'pt-BR';
+  const screen = (parsed.data.screen ?? '-').replace(/[^\w:-]/g, '').slice(0, 48) || '-';
   const last = [...messages].reverse().find((m) => m.role === 'user')?.content ?? '';
 
-  pushAudit('Íris (IA)', 'copilot.chat', `screen:${body.screen ?? '-'}`, 'ok', 'ai');
+  pushAudit('Mari (IA)', 'copilot.chat', `screen:${screen}`, 'ok', 'ai');
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
@@ -98,7 +125,7 @@ export async function POST(req: NextRequest) {
       const completion = await client.messages.create({
         model,
         max_tokens: 600,
-        system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${body.screen ?? 'unknown'}.`,
+        system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
       });
       const reply = completion.content

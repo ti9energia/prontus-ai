@@ -6,7 +6,7 @@ App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente 
 | Variável | Para quê | Padrão |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | URL pública (OG, `sitemap.xml`, `robots.txt`) | `https://prontus.ai` |
-| `ANTHROPIC_API_KEY` | Ativa o copiloto Íris com a Claude API de verdade | vazio → fallback inteligente |
+| `ANTHROPIC_API_KEY` | Ativa o copiloto Mari com a Claude API de verdade | vazio → fallback inteligente |
 | `ANTHROPIC_MODEL` | Modelo do copiloto quando há chave | `claude-sonnet-4-6` |
 
 Copie `.env.example` → `.env.local` (local) ou configure no painel do provedor.

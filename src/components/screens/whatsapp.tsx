@@ -48,10 +48,10 @@ const COPY: Record<string, Record<Locale, string>> = {
     'fr-FR': 'Utilisez le format international, ex. : +55 11 99000-0000.',
   },
   greeting: {
-    'pt-BR': 'Oi! Sou a Íris no WhatsApp. Me peça suas guias, agenda ou minutos economizados — eu puxo e ajo, sempre com a sua confirmação.',
-    en: 'Hi! I’m Íris on WhatsApp. Ask me for your guides, schedule or saved minutes — I pull data and act, always with your confirmation.',
-    'zh-CN': '你好！我是 WhatsApp 上的 Íris。向我索取您的表单、日程或节省的时间——我会提取数据并执行操作，始终需要您的确认。',
-    'fr-FR': 'Bonjour ! Je suis Íris sur WhatsApp. Demandez-moi vos guides, votre agenda ou vos minutes gagnées — j’extrais les données et j’agis, toujours avec votre confirmation.',
+    'pt-BR': 'Oi! Sou a Mari no WhatsApp. Me peça suas guias, agenda ou minutos economizados — eu puxo e ajo, sempre com a sua confirmação.',
+    en: 'Hi! I’m Mari on WhatsApp. Ask me for your guides, schedule or saved minutes — I pull data and act, always with your confirmation.',
+    'zh-CN': '你好！我是 WhatsApp 上的 Mari。向我索取您的表单、日程或节省的时间——我会提取数据并执行操作，始终需要您的确认。',
+    'fr-FR': 'Bonjour ! Je suis Mari sur WhatsApp. Demandez-moi vos guides, votre agenda ou vos minutes gagnées — j’extrais les données et j’agis, toujours avec votre confirmation.',
   },
   replyGeneric: {
     'pt-BR': 'Entendi. Já estou puxando isso do sistema e te trago o resumo em segundos.',

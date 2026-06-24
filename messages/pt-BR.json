@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Prontus.ai",
-    "tagline": "Escriba clínico de IA",
+    "tagline": "",
     "actions": {
       "save": "Salvar",
       "cancel": "Cancelar",
@@ -88,9 +88,9 @@
       "pricing": "Preços",
       "customers": "Clientes"
     },
-    "announce": "Novo · Guias TISS com verificação pré-glosa",
+    "announce": "",
     "hero": {
-      "eyebrow": "Escriba clínico de IA",
+      "eyebrow": "",
       "title": "Termine a consulta com o prontuário e a guia",
       "titleHighlight": "já prontos",
       "subtitle": "O Prontus.ai escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
@@ -144,10 +144,22 @@
       "eyebrow": "Como funciona",
       "title": "Quatro passos, zero digitação",
       "steps": {
-        "record": { "title": "Grave", "desc": "Inicie a consulta com o consentimento do paciente. O Prontus escuta." },
-        "structure": { "title": "Estruture", "desc": "A IA transcreve e monta o prontuário por seção, em tempo real." },
-        "review": { "title": "Revise", "desc": "Você confere e ajusta. Nada vira guia sem a sua aprovação." },
-        "submit": { "title": "Envie", "desc": "Gere a guia TISS validada e envie à operadora — ou exporte." }
+        "record": {
+          "title": "Grave",
+          "desc": "Inicie a consulta com o consentimento do paciente. O Prontus escuta."
+        },
+        "structure": {
+          "title": "Estruture",
+          "desc": "A IA transcreve e monta o prontuário por seção, em tempo real."
+        },
+        "review": {
+          "title": "Revise",
+          "desc": "Você confere e ajusta. Nada vira guia sem a sua aprovação."
+        },
+        "submit": {
+          "title": "Envie",
+          "desc": "Gere a guia TISS validada e envie à operadora — ou exporte."
+        }
       }
     },
     "security": {
@@ -155,10 +167,22 @@
       "title": "Dado de saúde é sensível. Tratamos como tal.",
       "subtitle": "Consentimento explícito, criptografia ponta a ponta, trilha de auditoria imutável e human-in-the-loop obrigatório.",
       "items": {
-        "lgpd": { "title": "LGPD, GDPR e PIPL", "desc": "Consentimento, minimização e direito de exclusão por região." },
-        "crypto": { "title": "Criptografia", "desc": "Em trânsito e em repouso; segredos em vault, nunca no código." },
-        "audit": { "title": "Auditoria imutável", "desc": "Quem fez, o quê, quando e o resultado — inclusive ações da IA." },
-        "hitl": { "title": "Human-in-the-loop", "desc": "O médico aprova a nota antes de qualquer guia ser gerada." }
+        "lgpd": {
+          "title": "LGPD, GDPR e PIPL",
+          "desc": "Consentimento, minimização e direito de exclusão por região."
+        },
+        "crypto": {
+          "title": "Criptografia",
+          "desc": "Em trânsito e em repouso; segredos em vault, nunca no código."
+        },
+        "audit": {
+          "title": "Auditoria imutável",
+          "desc": "Quem fez, o quê, quando e o resultado — inclusive ações da IA."
+        },
+        "hitl": {
+          "title": "Human-in-the-loop",
+          "desc": "O médico aprova a nota antes de qualquer guia ser gerada."
+        }
       }
     },
     "pricing": {
@@ -181,11 +205,26 @@
       "eyebrow": "Dúvidas",
       "title": "Perguntas frequentes",
       "items": {
-        "q1": { "q": "O áudio da consulta fica gravado?", "a": "Apenas com consentimento do paciente, criptografado e com retenção configurável. Você pode expurgar a qualquer momento." },
-        "q2": { "q": "A IA envia a guia sozinha?", "a": "Não. Human-in-the-loop é obrigatório: a nota e a guia só seguem após a sua aprovação." },
-        "q3": { "q": "Funciona para minha especialidade?", "a": "Sim. Há modelos de nota por especialidade, editáveis, e o vocabulário clínico se adapta." },
-        "q4": { "q": "E a integração com meu prontuário eletrônico?", "a": "Conectamos a PEPs e operadoras via integrações. O TISS é um módulo de mercado (Brasil)." },
-        "q5": { "q": "Está disponível em outros idiomas?", "a": "Sim — pt-BR, inglês, chinês e francês desde o primeiro dia." }
+        "q1": {
+          "q": "O áudio da consulta fica gravado?",
+          "a": "Apenas com consentimento do paciente, criptografado e com retenção configurável. Você pode expurgar a qualquer momento."
+        },
+        "q2": {
+          "q": "A IA envia a guia sozinha?",
+          "a": "Não. Human-in-the-loop é obrigatório: a nota e a guia só seguem após a sua aprovação."
+        },
+        "q3": {
+          "q": "Funciona para minha especialidade?",
+          "a": "Sim. Há modelos de nota por especialidade, editáveis, e o vocabulário clínico se adapta."
+        },
+        "q4": {
+          "q": "E a integração com meu prontuário eletrônico?",
+          "a": "Conectamos a PEPs e operadoras via integrações. O TISS é um módulo de mercado (Brasil)."
+        },
+        "q5": {
+          "q": "Está disponível em outros idiomas?",
+          "a": "Sim — pt-BR, inglês, chinês e francês desde o primeiro dia."
+        }
       }
     },
     "cta": {
@@ -542,12 +581,12 @@
     "org_admin": "Admin da organização"
   },
   "copilot": {
-    "name": "Íris",
-    "title": "Íris · Copiloto clínico",
+    "name": "Mari",
+    "title": "Mari · Copiloto clínico",
     "subtitle": "Entende o sistema inteiro. Pergunte ou peça uma ação.",
     "placeholder": "Pergunte ou peça algo… ex.: “qual minha taxa de glosa no mês?”",
     "send": "Enviar",
-    "thinking": "Íris está pensando…",
+    "thinking": "Mari está pensando…",
     "you": "Você",
     "poweredBy": "IA com governança · respeita seu papel e a LGPD",
     "openHint": "Abrir copiloto",
@@ -577,7 +616,7 @@
         "Qual o próximo passo recomendado?"
       ]
     },
-    "greeting": "Oi! Sou a Íris, seu copiloto. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e mais. O que você precisa?"
+    "greeting": "Oi! Sou a Mari, seu copiloto. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e mais. O que você precisa?"
   },
   "agent": {
     "title": "Agente autônomo",
@@ -681,7 +720,12 @@
         "status": "Status",
         "actions": "Ações"
       },
-      "status": { "active": "Ativo", "trial": "Trial", "suspended": "Suspenso", "past_due": "Inadimplente" }
+      "status": {
+        "active": "Ativo",
+        "trial": "Trial",
+        "suspended": "Suspenso",
+        "past_due": "Inadimplente"
+      }
     },
     "plans": {
       "title": "Planos & preços",
@@ -731,7 +775,11 @@
       "module": "Módulo",
       "scope": "Escopo",
       "rollout": "Rollout",
-      "scopes": { "global": "Global", "plan": "Por plano", "tenant": "Por tenant" },
+      "scopes": {
+        "global": "Global",
+        "plan": "Por plano",
+        "tenant": "Por tenant"
+      },
       "on": "Ligado",
       "off": "Desligado"
     },
@@ -742,7 +790,11 @@
       "model": "Modelo",
       "monthlyBudget": "Orçamento mensal",
       "autonomy": "Autonomia do agente",
-      "autonomyLevels": { "suggest": "Sugestivo", "semi": "Semiautônomo", "scheduled": "Agendado" },
+      "autonomyLevels": {
+        "suggest": "Sugestivo",
+        "semi": "Semiautônomo",
+        "scheduled": "Agendado"
+      },
       "tools": "Tools habilitadas",
       "spend": "Consumo no mês"
     },
@@ -774,7 +826,13 @@
         "result": "Resultado",
         "source": "Origem"
       },
-      "sources": { "ui": "Interface", "ai": "IA", "whatsapp": "WhatsApp", "api": "API", "system": "Sistema" }
+      "sources": {
+        "ui": "Interface",
+        "ai": "IA",
+        "whatsapp": "WhatsApp",
+        "api": "API",
+        "system": "Sistema"
+      }
     }
   },
   "modules": {
@@ -793,11 +851,11 @@
   "meta": {
     "landing": {
       "title": "Prontus.ai — Termine a consulta com o prontuário e a guia prontos",
-      "description": "Escriba clínico de IA: escuta a consulta e gera o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente."
+      "description": "Da fala da consulta ao prontuário estruturado e à guia TISS — sem digitar. Menos glosa, mais tempo com o paciente."
     },
     "app": {
       "title": "Prontus.ai",
-      "description": "Escriba clínico de IA — prontuário e guias TISS a partir do áudio da consulta."
+      "description": "Prontuário estruturado e guias TISS a partir do áudio da consulta."
     }
   }
 }
