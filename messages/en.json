@@ -1,0 +1,803 @@
+{
+  "common": {
+    "appName": "Prontus.ai",
+    "tagline": "AI clinical scribe",
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "create": "Create",
+      "confirm": "Confirm",
+      "close": "Close",
+      "back": "Back",
+      "next": "Next",
+      "continue": "Continue",
+      "finish": "Finish",
+      "retry": "Try again",
+      "send": "Send",
+      "export": "Export",
+      "search": "Search",
+      "filter": "Filter",
+      "viewAll": "View all",
+      "openMenu": "Open menu",
+      "copy": "Copy",
+      "copied": "Copied",
+      "approve": "Approve",
+      "reject": "Reject",
+      "adjust": "Adjust",
+      "more": "More",
+      "addNew": "Add",
+      "openCopilot": "Open copilot",
+      "tryFree": "Try for free",
+      "getStarted": "Get started",
+      "signIn": "Sign in",
+      "signOut": "Sign out",
+      "learnMore": "Learn more",
+      "bookDemo": "Book a demo"
+    },
+    "states": {
+      "loading": "Loading…",
+      "empty": "Nothing here yet",
+      "error": "Something went wrong",
+      "errorDescription": "We couldn't load this. Please try again.",
+      "success": "All set",
+      "noResults": "No results",
+      "comingSoon": "Coming soon"
+    },
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": "Language",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "now": "Now",
+    "minutesShort": "min",
+    "secondsShort": "s",
+    "of": "of",
+    "by": "by"
+  },
+  "nav": {
+    "today": "Today",
+    "encounter": "Live encounter",
+    "review": "Note review",
+    "tiss": "TISS forms",
+    "patients": "Patients",
+    "billing": "Billing & denials",
+    "templates": "Templates",
+    "integrations": "Integrations",
+    "settings": "Settings",
+    "owner": "Owner console",
+    "product": "Product",
+    "clinic": "Clinic",
+    "system": "System",
+    "help": "Help",
+    "backToProduct": "Back to product"
+  },
+  "brand": {
+    "promiseShort": "From speech to medical record and claim form — no typing."
+  },
+  "landing": {
+    "nav": {
+      "product": "Product",
+      "howItWorks": "How it works",
+      "security": "Security",
+      "pricing": "Pricing",
+      "customers": "Customers"
+    },
+    "announce": "New · TISS forms with pre-denial checks",
+    "hero": {
+      "eyebrow": "AI clinical scribe",
+      "title": "Finish the visit with your note and claim form",
+      "titleHighlight": "already done",
+      "subtitle": "Prontus.ai listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
+      "ctaPrimary": "Try it with one visit",
+      "ctaSecondary": "See how it works",
+      "trust": "LGPD compliant · Encrypted health data · Human-in-the-loop",
+      "liveBadge": "Recording visit",
+      "noteBuilding": "Building the medical record…"
+    },
+    "stats": {
+      "timeSaved": "hours returned per doctor/month",
+      "glossDrop": "fewer denials in 90 days",
+      "noteTime": "to a finished note after the visit",
+      "languages": "languages, from day one"
+    },
+    "logos": {
+      "title": "Trusted by clinics and payers"
+    },
+    "features": {
+      "eyebrow": "The platform",
+      "title": "Everything that comes after “Good morning, doctor”",
+      "subtitle": "From audio capture to claim submission. The full cycle, closed — not just transcription.",
+      "items": {
+        "live": {
+          "title": "Live encounter",
+          "desc": "Audio captured with a live transcript, building the clinical note in real time, section by section."
+        },
+        "note": {
+          "title": "Structured medical record",
+          "desc": "Chief complaint, HPI, exam, assessment, and plan — organized, with everything inferred from audio clearly highlighted."
+        },
+        "tiss": {
+          "title": "Pre-filled TISS form",
+          "desc": "Procedures, CIDs, and codes ready to go, with validation of the fields that most often trigger denials."
+        },
+        "gloss": {
+          "title": "Pre-denial check",
+          "desc": "The agent reviews the form before submission and flags whatever would lead the payer to deny it."
+        },
+        "copilot": {
+          "title": "Copilot on every screen",
+          "desc": "Ask “what's my denial rate this month?” or “generate the form for this visit.” It understands the whole system."
+        },
+        "whatsapp": {
+          "title": "Control via WhatsApp",
+          "desc": "“Bring me this week's denied claims.” The AI pulls the data, replies, and acts — with confirmation."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Four steps, zero typing",
+      "steps": {
+        "record": { "title": "Record", "desc": "Start the visit with the patient's consent. Prontus listens." },
+        "structure": { "title": "Structure", "desc": "The AI transcribes and builds the medical record section by section, in real time." },
+        "review": { "title": "Review", "desc": "You check and adjust. Nothing becomes a claim form without your approval." },
+        "submit": { "title": "Submit", "desc": "Generate the validated TISS form and submit it to the payer — or export it." }
+      }
+    },
+    "security": {
+      "eyebrow": "Security & compliance",
+      "title": "Health data is sensitive. We treat it that way.",
+      "subtitle": "Explicit consent, end-to-end encryption, an immutable audit trail, and mandatory human-in-the-loop.",
+      "items": {
+        "lgpd": { "title": "LGPD, GDPR, and PIPL", "desc": "Consent, data minimization, and the right to erasure, by region." },
+        "crypto": { "title": "Encryption", "desc": "In transit and at rest; secrets in a vault, never in code." },
+        "audit": { "title": "Immutable audit", "desc": "Who did what, when, and the outcome — including AI actions." },
+        "hitl": { "title": "Human-in-the-loop", "desc": "The doctor approves the note before any claim form is generated." }
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Per doctor, per month. Cancel anytime.",
+      "subtitle": "Start free. Payer billing is a market module (Brazil).",
+      "perMonth": "/doctor/month",
+      "popular": "Most popular",
+      "ctaStart": "Get started",
+      "ctaContact": "Talk to sales",
+      "billingMonthly": "Monthly",
+      "billingYearly": "Yearly",
+      "yearlyHint": "2 months free"
+    },
+    "testimonials": {
+      "eyebrow": "Customers",
+      "title": "Doctors getting back what they miss most: time."
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Frequently asked questions",
+      "items": {
+        "q1": { "q": "Is the visit audio recorded?", "a": "Only with the patient's consent, encrypted, and with configurable retention. You can purge it at any time." },
+        "q2": { "q": "Does the AI submit the claim form on its own?", "a": "No. Human-in-the-loop is mandatory: the note and the form only move forward after your approval." },
+        "q3": { "q": "Does it work for my specialty?", "a": "Yes. There are editable note templates by specialty, and the clinical vocabulary adapts." },
+        "q4": { "q": "What about integration with my electronic medical record?", "a": "We connect to PEPs and payers via integrations. TISS is a market module (Brazil)." },
+        "q5": { "q": "Is it available in other languages?", "a": "Yes — pt-BR, English, Chinese, and French from day one." }
+      }
+    },
+    "cta": {
+      "title": "Get hours back in your day.",
+      "subtitle": "Try Prontus.ai on a single visit. No card required.",
+      "button": "Try it with one visit"
+    },
+    "footer": {
+      "rights": "All rights reserved.",
+      "madeWith": "Made with clinical care.",
+      "cols": {
+        "product": "Product",
+        "company": "Company",
+        "legal": "Legal",
+        "resources": "Resources"
+      },
+      "links": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "security": "Security",
+        "changelog": "Changelog",
+        "about": "About",
+        "careers": "Careers",
+        "contact": "Contact",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "lgpd": "LGPD",
+        "docs": "Documentation",
+        "status": "Status",
+        "api": "API"
+      }
+    }
+  },
+  "auth": {
+    "signInTitle": "Sign in to Prontus.ai",
+    "signInSubtitle": "Pick up right where you left off.",
+    "email": "Email",
+    "password": "Password",
+    "demoNote": "Demo: click sign in to access the sample clinic.",
+    "enterDemo": "Enter the demo"
+  },
+  "appShell": {
+    "search": "Search patients, visits, claim forms…",
+    "commandHint": "for commands",
+    "newEncounter": "New encounter",
+    "profile": "Profile",
+    "demoClinic": "Aurora Clinic (demo)",
+    "role": "Role",
+    "upgradePlan": "Upgrade",
+    "planBadge": "{plan} plan"
+  },
+  "encounterStatus": {
+    "scheduled": "Not started",
+    "recording": "Recording",
+    "draft": "Draft",
+    "finalized": "Finalized",
+    "review": "In review"
+  },
+  "today": {
+    "title": "Today",
+    "subtitle": "{count, plural, =0 {No visits today} one {# visit today} other {# visits today}}",
+    "dateLabel": "{date}",
+    "start": "Start",
+    "resume": "Resume",
+    "openNote": "Open note",
+    "openGuide": "Open form",
+    "empty": "No visits today",
+    "emptyDesc": "When you have visits scheduled, they'll show up here.",
+    "newEncounter": "New encounter",
+    "filters": {
+      "all": "All",
+      "scheduled": "Not started",
+      "draft": "Drafts",
+      "finalized": "Finalized"
+    },
+    "stats": {
+      "scheduled": "Scheduled",
+      "done": "Finalized",
+      "minutes": "Minutes saved",
+      "pendingGuides": "Pending forms"
+    },
+    "columns": {
+      "time": "Time",
+      "patient": "Patient",
+      "type": "Type",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "agentNudge": "The agent suggests starting with the {count} visits that have a pending claim form."
+  },
+  "encounter": {
+    "title": "Live encounter",
+    "with": "with {name}",
+    "consent": {
+      "title": "Patient consent",
+      "body": "Let the patient know the visit will be recorded and transcribed by Prontus.ai to generate the medical record. The audio is encrypted and can be purged at any time.",
+      "checkbox": "The patient has consented to recording",
+      "start": "Start recording",
+      "cancel": "Not now"
+    },
+    "record": "Record",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "End visit",
+    "recording": "Recording",
+    "paused": "Paused",
+    "capturing": "Capturing audio",
+    "elapsed": "Time",
+    "micPermission": "We need microphone access to capture the visit.",
+    "micDenied": "Microphone blocked. Allow access in your browser to record.",
+    "micSimulate": "No microphone? Use demo mode.",
+    "simulate": "Simulate visit",
+    "transcript": "Transcript",
+    "transcriptEmpty": "The transcript appears here as the conversation unfolds.",
+    "note": "Clinical note",
+    "noteBuilding": "The note builds in real time as the visit progresses.",
+    "speakerDoctor": "Doctor",
+    "speakerPatient": "Patient",
+    "finishToReview": "Finish and review",
+    "sections": {
+      "queixa": "Chief complaint",
+      "hma": "History of present illness",
+      "exame": "Physical exam",
+      "hipoteses": "Differential diagnoses",
+      "conduta": "Plan"
+    },
+    "live": "LIVE",
+    "savingDraft": "Saving draft…",
+    "draftSaved": "Draft saved"
+  },
+  "review": {
+    "title": "Note review",
+    "subtitle": "Review the generated medical record and adjust anything you need. Nothing becomes a claim form without your approval.",
+    "inferred": "Inferred from audio",
+    "edited": "Edited by you",
+    "confidence": "Confidence",
+    "approveSection": "Approve section",
+    "approved": "Approved",
+    "regenerate": "Regenerate",
+    "addSection": "Add section",
+    "generateTiss": "Generate TISS form",
+    "approveAll": "Approve medical record",
+    "approvedAll": "Medical record approved",
+    "lastEdited": "Edited {time}",
+    "wordCount": "{count} words",
+    "diagnostics": "Suggested CIDs",
+    "procedures": "Suggested procedures",
+    "patientInfo": "Patient",
+    "encounterInfo": "Visit",
+    "duration": "Duration",
+    "placeholder": "Write or adjust this section…"
+  },
+  "tiss": {
+    "title": "TISS form",
+    "subtitle": "Form pre-filled from the visit. Review the fields before submitting.",
+    "guideType": "Form type",
+    "types": {
+      "consulta": "Consultation",
+      "sadt": "SP/SADT",
+      "internacao": "Inpatient"
+    },
+    "payer": "Payer",
+    "beneficiary": "Beneficiary",
+    "cardNumber": "Member ID number",
+    "validity": "Valid through",
+    "professional": "Performing provider",
+    "council": "Council",
+    "cbo": "CBO",
+    "procedures": "Procedures",
+    "procedureCode": "Code",
+    "procedureDesc": "Description",
+    "qty": "Qty",
+    "diagnoses": "Diagnoses (CID-10)",
+    "addProcedure": "Add procedure",
+    "addDiagnosis": "Add CID",
+    "validation": "Pre-denial check",
+    "validationOk": "Ready to submit",
+    "validationDesc": "{count, plural, =0 {No issues found} one {# issue that commonly causes denials} other {# issues that commonly cause denials}}",
+    "submit": "Submit to payer",
+    "export": "Export XML",
+    "exported": "Form exported",
+    "submitted": "Form submitted to payer",
+    "submitting": "Submitting…",
+    "confirmSubmitTitle": "Submit form to payer?",
+    "confirmSubmitBody": "The form will be transmitted in the TISS standard. Confirm the procedures and CIDs before proceeding.",
+    "fields": {
+      "required": "Required field",
+      "checkCode": "Check the procedure code",
+      "missingCid": "Add at least one matching CID",
+      "authNeeded": "Procedure may require prior authorization"
+    },
+    "severity": {
+      "high": "High denial risk",
+      "medium": "Heads up",
+      "low": "Informational"
+    }
+  },
+  "patients": {
+    "title": "Patients",
+    "subtitle": "Clinical history and consents.",
+    "search": "Search patient",
+    "add": "New patient",
+    "columns": {
+      "name": "Name",
+      "age": "Age",
+      "lastVisit": "Last visit",
+      "payer": "Payer",
+      "consent": "Consent",
+      "encounters": "Visits"
+    },
+    "consent": {
+      "granted": "Granted",
+      "pending": "Pending",
+      "revoked": "Revoked"
+    },
+    "yearsOld": "{age} years old",
+    "detail": {
+      "history": "Visit history",
+      "consents": "Consents",
+      "notes": "Notes",
+      "noEncounters": "No visits on record"
+    }
+  },
+  "billing": {
+    "title": "Billing & denials",
+    "subtitle": "Track claim forms submitted, paid, and denied — and why.",
+    "stats": {
+      "submitted": "Submitted",
+      "paid": "Paid",
+      "glossed": "Denied",
+      "glossRate": "Denial rate",
+      "recovered": "Recovered",
+      "atRisk": "At risk"
+    },
+    "guideStatus": {
+      "draft": "Draft",
+      "sent": "Submitted",
+      "paid": "Paid",
+      "glossed": "Denied"
+    },
+    "columns": {
+      "guide": "Form",
+      "patient": "Patient",
+      "payer": "Payer",
+      "value": "Value",
+      "status": "Status",
+      "reason": "Denial reason",
+      "actions": "Actions"
+    },
+    "resubmit": "Resubmit",
+    "viewGuide": "View form",
+    "glossReasons": {
+      "title": "Top denial reasons",
+      "missingAuth": "Missing prior authorization",
+      "codeMismatch": "Code doesn't match CID",
+      "duplicate": "Duplicate charge",
+      "expiredCard": "Expired member ID",
+      "missingDoc": "Incomplete documentation"
+    },
+    "chart": {
+      "title": "Denials over time",
+      "before": "Before Prontus",
+      "after": "With Prontus",
+      "submitted": "Submitted",
+      "glossed": "Denied"
+    },
+    "agentRecover": "The agent prioritized {count} denied claims for resubmission."
+  },
+  "templates": {
+    "title": "Note templates",
+    "subtitle": "Templates by specialty — editable and versioned by language.",
+    "add": "New template",
+    "specialty": "Specialty",
+    "language": "Language",
+    "sections": "Sections",
+    "usedIn": "Used in {count} visits",
+    "edit": "Edit template",
+    "duplicate": "Duplicate",
+    "setDefault": "Set as default",
+    "default": "Default",
+    "specialties": {
+      "clinica": "General practice",
+      "cardio": "Cardiology",
+      "pediatria": "Pediatrics",
+      "ortopedia": "Orthopedics",
+      "dermato": "Dermatology",
+      "gineco": "Gynecology"
+    }
+  },
+  "integrations": {
+    "title": "Integrations",
+    "subtitle": "Connect your electronic medical record, payers, and the audio engine.",
+    "connect": "Connect",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "configure": "Configure",
+    "categories": {
+      "pep": "Electronic medical record (PEP)",
+      "payers": "Payers (TISS)",
+      "asr": "Speech recognition",
+      "messaging": "Messaging"
+    },
+    "status": {
+      "connected": "Connected",
+      "available": "Available",
+      "soon": "Coming soon"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "profile": "Profile",
+      "clinic": "Clinic",
+      "users": "Users & roles",
+      "security": "Security",
+      "consent": "Consent & retention",
+      "language": "Language & region",
+      "whatsapp": "WhatsApp",
+      "ai": "Copilot & agent"
+    },
+    "profile": {
+      "name": "Name",
+      "specialty": "Specialty",
+      "council": "Council registration",
+      "email": "Email"
+    },
+    "consent": {
+      "retention": "Audio retention",
+      "retentionDesc": "How long encrypted audio is kept before it's automatically purged.",
+      "days": "{days} days",
+      "purgeNow": "Purge audio now",
+      "requireConsent": "Require consent before recording"
+    },
+    "language": {
+      "interface": "Interface language",
+      "clinicalContent": "Clinical vocabulary",
+      "timezone": "Time zone",
+      "currency": "Currency"
+    },
+    "users": {
+      "invite": "Invite user",
+      "role": "Role",
+      "status": "Status",
+      "active": "Active",
+      "invited": "Invited"
+    }
+  },
+  "roles": {
+    "medico": "Doctor",
+    "faturista": "Billing specialist",
+    "gestor": "Clinic manager",
+    "compliance": "Compliance",
+    "viewer": "Viewer",
+    "org_admin": "Organization admin"
+  },
+  "copilot": {
+    "name": "Íris",
+    "title": "Íris · Clinical copilot",
+    "subtitle": "Understands the whole system. Ask a question or request an action.",
+    "placeholder": "Ask or request something… e.g., “what's my denial rate this month?”",
+    "send": "Send",
+    "thinking": "Íris is thinking…",
+    "you": "You",
+    "poweredBy": "Governed AI · respects your role and LGPD",
+    "openHint": "Open copilot",
+    "suggestionsTitle": "Suggestions for this screen",
+    "actionTaken": "Action completed",
+    "actionPending": "Needs your approval",
+    "citation": "Source",
+    "suggestions": {
+      "today": [
+        "Summarize my schedule for today",
+        "Which visits are missing a medical record?",
+        "How many minutes did I save this week?"
+      ],
+      "review": [
+        "Summarize this medical record in 3 lines",
+        "Is anything missing from the differentials?",
+        "Generate the TISS form for this visit"
+      ],
+      "billing": [
+        "Which claims were denied and why?",
+        "What's my denial rate this month?",
+        "Prioritize the highest-value resubmissions"
+      ],
+      "generic": [
+        "What does this screen do?",
+        "Show me today's open items",
+        "What's the recommended next step?"
+      ]
+    },
+    "greeting": "Hi! I'm Íris, your copilot. I can summarize medical records, generate TISS forms, explain your denials, and more. What do you need?"
+  },
+  "agent": {
+    "title": "Autonomous agent",
+    "subtitle": "Monitors, recommends, and acts within your authority limits.",
+    "recommendations": "Recommendations",
+    "noRecommendations": "No pending recommendations. Everything's under control.",
+    "impact": "Estimated impact",
+    "confidence": "Confidence",
+    "apply": "Apply",
+    "dismiss": "Dismiss",
+    "review": "Review",
+    "why": "Why",
+    "categories": {
+      "gloss": "Pre-denial",
+      "resubmit": "Resubmission",
+      "incomplete": "Open item",
+      "template": "Template"
+    },
+    "items": {
+      "preGloss": {
+        "title": "Fix form before submission",
+        "desc": "{patient}'s form has a code that doesn't match the CID — high denial risk."
+      },
+      "resubmit": {
+        "title": "Resubmit denied form",
+        "desc": "{patient}'s form was denied for missing authorization. I've attached the document — ready to resubmit."
+      },
+      "incomplete": {
+        "title": "Visit without a finalized medical record",
+        "desc": "{patient}'s visit is still a draft. Want to finalize the note now?"
+      }
+    }
+  },
+  "whatsapp": {
+    "title": "Control via WhatsApp",
+    "subtitle": "Your AI with a name and a number. “Bring me this,” “do that” — it pulls the data and acts in the system.",
+    "persona": "AI persona",
+    "number": "WhatsApp number",
+    "linkNumber": "Link my number",
+    "linked": "Linked",
+    "verify": "Verify with code",
+    "examplesTitle": "Try saying",
+    "examples": [
+      "Bring me this week's denied claims",
+      "What's on my schedule tomorrow?",
+      "Resubmit patient Marina's form? Reply YES",
+      "How many minutes did I save today?"
+    ],
+    "send": "Send",
+    "inputPlaceholder": "Type a message…",
+    "proactive": "Proactive messages from the agent",
+    "consent": "Channel consent and opt-out at any time.",
+    "confirmYes": "YES",
+    "typeHere": "Simulate a conversation with {name}"
+  },
+  "owner": {
+    "title": "Owner console",
+    "subtitle": "Full SaaS management — tenants, plans, landing page, AI, and system health.",
+    "platformBadge": "Platform level",
+    "nav": {
+      "overview": "Overview",
+      "tenants": "Organizations",
+      "users": "Users",
+      "plans": "Plans & pricing",
+      "landing": "Landing editor",
+      "flags": "Feature flags",
+      "billing": "Billing",
+      "ai": "AI & agent",
+      "whatsapp": "WhatsApp",
+      "access": "Access & roles",
+      "audit": "Audit",
+      "system": "System"
+    },
+    "overview": {
+      "title": "Business health",
+      "mrr": "MRR",
+      "activeTenants": "Active tenants",
+      "activeDoctors": "Active doctors",
+      "minutesProcessed": "Minutes processed",
+      "aiSpend": "AI spend",
+      "errorRate": "Error rate",
+      "churn": "Churn",
+      "growth": "MRR growth",
+      "usage": "Usage by tenant",
+      "recentSignups": "New signups"
+    },
+    "tenants": {
+      "title": "Organizations",
+      "add": "New organization",
+      "impersonate": "Impersonate",
+      "suspend": "Suspend",
+      "activate": "Activate",
+      "impersonating": "You're acting as {tenant}",
+      "exitImpersonation": "Exit impersonation",
+      "columns": {
+        "name": "Organization",
+        "plan": "Plan",
+        "doctors": "Doctors",
+        "usage": "Usage",
+        "mrr": "MRR",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": { "active": "Active", "trial": "Trial", "suspended": "Suspended", "past_due": "Past due" }
+    },
+    "plans": {
+      "title": "Plans & pricing",
+      "subtitle": "Set price, cycle, limits, and which modules each plan unlocks.",
+      "add": "New plan",
+      "price": "Price",
+      "cycle": "Cycle",
+      "quotas": "Limits (quotas)",
+      "entitlements": "Unlocked modules",
+      "perDoctor": "per doctor/month",
+      "editPlan": "Edit plan",
+      "preview": "Preview card",
+      "modules": "Modules",
+      "quotaDoctors": "Doctors",
+      "quotaMinutes": "Minutes/month",
+      "quotaWhatsapp": "Dedicated WhatsApp number",
+      "save": "Save plan"
+    },
+    "landing": {
+      "title": "Landing page editor",
+      "subtitle": "Edit the landing page's sections, plans, and copy across all 4 languages. Publish with preview.",
+      "section": "Section",
+      "localeTab": "Language",
+      "publish": "Publish",
+      "schedule": "Schedule",
+      "preview": "Preview",
+      "published": "Published",
+      "draft": "Draft",
+      "sections": {
+        "hero": "Hero",
+        "features": "Features",
+        "pricing": "Pricing",
+        "faq": "FAQ",
+        "testimonials": "Testimonials",
+        "cta": "Final call to action"
+      },
+      "fields": {
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "cta": "Button text"
+      },
+      "savedNote": "Changes appear on the landing page once published."
+    },
+    "flags": {
+      "title": "Feature flags & modules",
+      "subtitle": "Turn tabs and features on or off by plan, by tenant, or globally.",
+      "module": "Module",
+      "scope": "Scope",
+      "rollout": "Rollout",
+      "scopes": { "global": "Global", "plan": "By plan", "tenant": "By tenant" },
+      "on": "On",
+      "off": "Off"
+    },
+    "ai": {
+      "title": "AI & agent",
+      "subtitle": "Configure the AI Core per tenant: persona, model, limits, and agent automation.",
+      "persona": "Name / persona",
+      "model": "Model",
+      "monthlyBudget": "Monthly budget",
+      "autonomy": "Agent autonomy",
+      "autonomyLevels": { "suggest": "Suggest", "semi": "Semi-autonomous", "scheduled": "Scheduled" },
+      "tools": "Enabled tools",
+      "spend": "Spend this month"
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "subtitle": "Provision a number and persona per platform and per tenant; enable commands by plan.",
+      "number": "Provisioned number",
+      "persona": "Persona",
+      "commands": "Enabled commands",
+      "templates": "Proactive templates",
+      "perTenant": "Dedicated number per tenant"
+    },
+    "access": {
+      "title": "Access & roles",
+      "subtitle": "Define roles and the permission matrix. One source for UI, API, AI, and WhatsApp.",
+      "matrix": "Permission matrix",
+      "role": "Role",
+      "addRole": "Create role",
+      "permission": "Permission"
+    },
+    "audit": {
+      "title": "Audit",
+      "subtitle": "An immutable trail of everything — including impersonation and AI actions.",
+      "columns": {
+        "time": "When",
+        "actor": "Who",
+        "action": "Action",
+        "target": "Target",
+        "result": "Result",
+        "source": "Source"
+      },
+      "sources": { "ui": "Interface", "ai": "AI", "whatsapp": "WhatsApp", "api": "API", "system": "System" }
+    }
+  },
+  "modules": {
+    "encounters": "Encounters",
+    "transcription": "Transcription",
+    "clinical-notes": "Medical records",
+    "tiss": "TISS forms",
+    "patients": "Patients",
+    "billing": "Billing",
+    "templates": "Templates",
+    "integrations": "Integrations",
+    "copilot": "Copilot",
+    "agent": "Autonomous agent",
+    "whatsapp": "WhatsApp"
+  },
+  "meta": {
+    "landing": {
+      "title": "Prontus.ai — Finish the visit with your note and claim form ready",
+      "description": "AI clinical scribe: listens to the visit and generates a structured medical record and a completed TISS form. Less typing, fewer denials, more time with the patient."
+    },
+    "app": {
+      "title": "Prontus.ai",
+      "description": "AI clinical scribe — medical records and TISS forms from the visit audio."
+    }
+  }
+}

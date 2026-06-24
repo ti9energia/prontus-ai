@@ -1,0 +1,803 @@
+{
+  "common": {
+    "appName": "Prontus.ai",
+    "tagline": "Escriba clínico de IA",
+    "actions": {
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "create": "Criar",
+      "confirm": "Confirmar",
+      "close": "Fechar",
+      "back": "Voltar",
+      "next": "Avançar",
+      "continue": "Continuar",
+      "finish": "Finalizar",
+      "retry": "Tentar novamente",
+      "send": "Enviar",
+      "export": "Exportar",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "viewAll": "Ver tudo",
+      "openMenu": "Abrir menu",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "approve": "Aprovar",
+      "reject": "Recusar",
+      "adjust": "Ajustar",
+      "more": "Mais",
+      "addNew": "Adicionar",
+      "openCopilot": "Abrir copiloto",
+      "tryFree": "Testar grátis",
+      "getStarted": "Começar agora",
+      "signIn": "Entrar",
+      "signOut": "Sair",
+      "learnMore": "Saiba mais",
+      "bookDemo": "Agendar demo"
+    },
+    "states": {
+      "loading": "Carregando…",
+      "empty": "Nada por aqui ainda",
+      "error": "Algo deu errado",
+      "errorDescription": "Não foi possível carregar. Tente de novo.",
+      "success": "Tudo certo",
+      "noResults": "Nenhum resultado",
+      "comingSoon": "Em breve"
+    },
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Sistema"
+    },
+    "language": "Idioma",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "now": "Agora",
+    "minutesShort": "min",
+    "secondsShort": "s",
+    "of": "de",
+    "by": "por"
+  },
+  "nav": {
+    "today": "Agenda do dia",
+    "encounter": "Consulta ao vivo",
+    "review": "Revisão da nota",
+    "tiss": "Guias TISS",
+    "patients": "Pacientes",
+    "billing": "Faturamento & glosas",
+    "templates": "Modelos",
+    "integrations": "Integrações",
+    "settings": "Configurações",
+    "owner": "Painel do Dono",
+    "product": "Produto",
+    "clinic": "Clínica",
+    "system": "Sistema",
+    "help": "Ajuda",
+    "backToProduct": "Voltar ao produto"
+  },
+  "brand": {
+    "promiseShort": "Da fala ao prontuário e à guia — sem digitar."
+  },
+  "landing": {
+    "nav": {
+      "product": "Produto",
+      "howItWorks": "Como funciona",
+      "security": "Segurança",
+      "pricing": "Preços",
+      "customers": "Clientes"
+    },
+    "announce": "Novo · Guias TISS com verificação pré-glosa",
+    "hero": {
+      "eyebrow": "Escriba clínico de IA",
+      "title": "Termine a consulta com o prontuário e a guia",
+      "titleHighlight": "já prontos",
+      "subtitle": "O Prontus.ai escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
+      "ctaPrimary": "Testar com uma consulta",
+      "ctaSecondary": "Ver como funciona",
+      "trust": "Conforme LGPD · Dados de saúde criptografados · Human-in-the-loop",
+      "liveBadge": "Gravando consulta",
+      "noteBuilding": "Montando o prontuário…"
+    },
+    "stats": {
+      "timeSaved": "horas devolvidas por médico/mês",
+      "glossDrop": "menos glosa em 90 dias",
+      "noteTime": "para nota pronta após a consulta",
+      "languages": "idiomas, desde o dia 1"
+    },
+    "logos": {
+      "title": "A confiança de clínicas e operadoras"
+    },
+    "features": {
+      "eyebrow": "A plataforma",
+      "title": "Tudo o que vem depois do “Bom dia, doutor”",
+      "subtitle": "Da captura do áudio ao envio da guia. O ciclo inteiro, fechado — não só a transcrição.",
+      "items": {
+        "live": {
+          "title": "Consulta ao vivo",
+          "desc": "Áudio capturado com transcrição rolando e a nota clínica sendo montada em tempo real, por seção."
+        },
+        "note": {
+          "title": "Prontuário estruturado",
+          "desc": "Queixa, HMA, exame, hipóteses e conduta — organizados, com realce do que foi inferido do áudio."
+        },
+        "tiss": {
+          "title": "Guia TISS pré-preenchida",
+          "desc": "Procedimentos, CIDs e códigos prontos, com validação dos campos que costumam gerar glosa."
+        },
+        "gloss": {
+          "title": "Verificação pré-glosa",
+          "desc": "O agente revisa a guia antes do envio e aponta o que faria a operadora glosar."
+        },
+        "copilot": {
+          "title": "Copiloto em toda tela",
+          "desc": "Pergunte “qual minha taxa de glosa no mês?” ou “gere a guia desta consulta”. Ele entende o sistema inteiro."
+        },
+        "whatsapp": {
+          "title": "Controle por WhatsApp",
+          "desc": "“Me traga as guias glosadas da semana.” A IA puxa, responde e age — com confirmação."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "Como funciona",
+      "title": "Quatro passos, zero digitação",
+      "steps": {
+        "record": { "title": "Grave", "desc": "Inicie a consulta com o consentimento do paciente. O Prontus escuta." },
+        "structure": { "title": "Estruture", "desc": "A IA transcreve e monta o prontuário por seção, em tempo real." },
+        "review": { "title": "Revise", "desc": "Você confere e ajusta. Nada vira guia sem a sua aprovação." },
+        "submit": { "title": "Envie", "desc": "Gere a guia TISS validada e envie à operadora — ou exporte." }
+      }
+    },
+    "security": {
+      "eyebrow": "Segurança & conformidade",
+      "title": "Dado de saúde é sensível. Tratamos como tal.",
+      "subtitle": "Consentimento explícito, criptografia ponta a ponta, trilha de auditoria imutável e human-in-the-loop obrigatório.",
+      "items": {
+        "lgpd": { "title": "LGPD, GDPR e PIPL", "desc": "Consentimento, minimização e direito de exclusão por região." },
+        "crypto": { "title": "Criptografia", "desc": "Em trânsito e em repouso; segredos em vault, nunca no código." },
+        "audit": { "title": "Auditoria imutável", "desc": "Quem fez, o quê, quando e o resultado — inclusive ações da IA." },
+        "hitl": { "title": "Human-in-the-loop", "desc": "O médico aprova a nota antes de qualquer guia ser gerada." }
+      }
+    },
+    "pricing": {
+      "eyebrow": "Preços",
+      "title": "Por médico, por mês. Cancele quando quiser.",
+      "subtitle": "Comece grátis. Faturamento por convênio é um módulo de mercado (Brasil).",
+      "perMonth": "/médico/mês",
+      "popular": "Mais escolhido",
+      "ctaStart": "Começar",
+      "ctaContact": "Falar com vendas",
+      "billingMonthly": "Mensal",
+      "billingYearly": "Anual",
+      "yearlyHint": "2 meses grátis"
+    },
+    "testimonials": {
+      "eyebrow": "Clientes",
+      "title": "Médicos recuperando o que mais falta: tempo."
+    },
+    "faq": {
+      "eyebrow": "Dúvidas",
+      "title": "Perguntas frequentes",
+      "items": {
+        "q1": { "q": "O áudio da consulta fica gravado?", "a": "Apenas com consentimento do paciente, criptografado e com retenção configurável. Você pode expurgar a qualquer momento." },
+        "q2": { "q": "A IA envia a guia sozinha?", "a": "Não. Human-in-the-loop é obrigatório: a nota e a guia só seguem após a sua aprovação." },
+        "q3": { "q": "Funciona para minha especialidade?", "a": "Sim. Há modelos de nota por especialidade, editáveis, e o vocabulário clínico se adapta." },
+        "q4": { "q": "E a integração com meu prontuário eletrônico?", "a": "Conectamos a PEPs e operadoras via integrações. O TISS é um módulo de mercado (Brasil)." },
+        "q5": { "q": "Está disponível em outros idiomas?", "a": "Sim — pt-BR, inglês, chinês e francês desde o primeiro dia." }
+      }
+    },
+    "cta": {
+      "title": "Devolva horas ao seu dia.",
+      "subtitle": "Experimente o Prontus.ai em uma consulta. Sem cartão.",
+      "button": "Testar com uma consulta"
+    },
+    "footer": {
+      "rights": "Todos os direitos reservados.",
+      "madeWith": "Feito com cuidado clínico.",
+      "cols": {
+        "product": "Produto",
+        "company": "Empresa",
+        "legal": "Legal",
+        "resources": "Recursos"
+      },
+      "links": {
+        "features": "Recursos",
+        "pricing": "Preços",
+        "security": "Segurança",
+        "changelog": "Novidades",
+        "about": "Sobre",
+        "careers": "Carreiras",
+        "contact": "Contato",
+        "privacy": "Privacidade",
+        "terms": "Termos",
+        "lgpd": "LGPD",
+        "docs": "Documentação",
+        "status": "Status",
+        "api": "API"
+      }
+    }
+  },
+  "auth": {
+    "signInTitle": "Entrar no Prontus.ai",
+    "signInSubtitle": "Continue de onde parou.",
+    "email": "E-mail",
+    "password": "Senha",
+    "demoNote": "Demo: clique em entrar para acessar com a clínica de exemplo.",
+    "enterDemo": "Entrar na demonstração"
+  },
+  "appShell": {
+    "search": "Buscar pacientes, consultas, guias…",
+    "commandHint": "para comandos",
+    "newEncounter": "Nova consulta",
+    "profile": "Perfil",
+    "demoClinic": "Clínica Aurora (demo)",
+    "role": "Cargo",
+    "upgradePlan": "Fazer upgrade",
+    "planBadge": "Plano {plan}"
+  },
+  "encounterStatus": {
+    "scheduled": "A iniciar",
+    "recording": "Gravando",
+    "draft": "Rascunho",
+    "finalized": "Finalizado",
+    "review": "Em revisão"
+  },
+  "today": {
+    "title": "Agenda do dia",
+    "subtitle": "{count, plural, =0 {Nenhuma consulta hoje} one {# consulta hoje} other {# consultas hoje}}",
+    "dateLabel": "{date}",
+    "start": "Iniciar",
+    "resume": "Retomar",
+    "openNote": "Abrir nota",
+    "openGuide": "Abrir guia",
+    "empty": "Sem consultas hoje",
+    "emptyDesc": "Quando houver consultas agendadas, elas aparecem aqui.",
+    "newEncounter": "Nova consulta",
+    "filters": {
+      "all": "Todas",
+      "scheduled": "A iniciar",
+      "draft": "Rascunhos",
+      "finalized": "Finalizadas"
+    },
+    "stats": {
+      "scheduled": "Agendadas",
+      "done": "Finalizadas",
+      "minutes": "Minutos economizados",
+      "pendingGuides": "Guias pendentes"
+    },
+    "columns": {
+      "time": "Hora",
+      "patient": "Paciente",
+      "type": "Tipo",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "agentNudge": "O agente sugere começar pelas {count} consultas com guia pendente."
+  },
+  "encounter": {
+    "title": "Consulta ao vivo",
+    "with": "com {name}",
+    "consent": {
+      "title": "Consentimento do paciente",
+      "body": "Informe o paciente de que a consulta será gravada e transcrita pelo Prontus.ai para gerar o prontuário. O áudio é criptografado e pode ser expurgado a qualquer momento.",
+      "checkbox": "O paciente consentiu com a gravação",
+      "start": "Iniciar gravação",
+      "cancel": "Agora não"
+    },
+    "record": "Gravar",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "stop": "Finalizar consulta",
+    "recording": "Gravando",
+    "paused": "Pausado",
+    "capturing": "Captando áudio",
+    "elapsed": "Tempo",
+    "micPermission": "Precisamos do microfone para capturar a consulta.",
+    "micDenied": "Microfone bloqueado. Libere o acesso no navegador para gravar.",
+    "micSimulate": "Sem microfone? Use o modo demonstração.",
+    "simulate": "Simular consulta",
+    "transcript": "Transcrição",
+    "transcriptEmpty": "A transcrição aparece aqui conforme a conversa.",
+    "note": "Nota clínica",
+    "noteBuilding": "A nota é montada em tempo real conforme a consulta avança.",
+    "speakerDoctor": "Médico",
+    "speakerPatient": "Paciente",
+    "finishToReview": "Finalizar e revisar",
+    "sections": {
+      "queixa": "Queixa principal",
+      "hma": "História da moléstia atual",
+      "exame": "Exame físico",
+      "hipoteses": "Hipóteses diagnósticas",
+      "conduta": "Conduta"
+    },
+    "live": "AO VIVO",
+    "savingDraft": "Salvando rascunho…",
+    "draftSaved": "Rascunho salvo"
+  },
+  "review": {
+    "title": "Revisão da nota",
+    "subtitle": "Confira o prontuário gerado e ajuste o que for preciso. Nada vira guia sem a sua aprovação.",
+    "inferred": "Inferido do áudio",
+    "edited": "Editado por você",
+    "confidence": "Confiança",
+    "approveSection": "Aprovar seção",
+    "approved": "Aprovado",
+    "regenerate": "Regenerar",
+    "addSection": "Adicionar seção",
+    "generateTiss": "Gerar guia TISS",
+    "approveAll": "Aprovar prontuário",
+    "approvedAll": "Prontuário aprovado",
+    "lastEdited": "Editado {time}",
+    "wordCount": "{count} palavras",
+    "diagnostics": "CIDs sugeridos",
+    "procedures": "Procedimentos sugeridos",
+    "patientInfo": "Paciente",
+    "encounterInfo": "Consulta",
+    "duration": "Duração",
+    "placeholder": "Escreva ou ajuste esta seção…"
+  },
+  "tiss": {
+    "title": "Guia TISS",
+    "subtitle": "Guia pré-preenchida a partir da consulta. Revise os campos antes de enviar.",
+    "guideType": "Tipo de guia",
+    "types": {
+      "consulta": "Consulta",
+      "sadt": "SP/SADT",
+      "internacao": "Internação"
+    },
+    "payer": "Operadora",
+    "beneficiary": "Beneficiário",
+    "cardNumber": "Número da carteirinha",
+    "validity": "Validade",
+    "professional": "Profissional executante",
+    "council": "Conselho",
+    "cbo": "CBO",
+    "procedures": "Procedimentos",
+    "procedureCode": "Código",
+    "procedureDesc": "Descrição",
+    "qty": "Qtd.",
+    "diagnoses": "Diagnósticos (CID-10)",
+    "addProcedure": "Adicionar procedimento",
+    "addDiagnosis": "Adicionar CID",
+    "validation": "Validação pré-glosa",
+    "validationOk": "Tudo certo para envio",
+    "validationDesc": "{count, plural, =0 {Nenhuma pendência encontrada} one {# pendência que costuma gerar glosa} other {# pendências que costumam gerar glosa}}",
+    "submit": "Enviar à operadora",
+    "export": "Exportar XML",
+    "exported": "Guia exportada",
+    "submitted": "Guia enviada à operadora",
+    "submitting": "Enviando…",
+    "confirmSubmitTitle": "Enviar guia à operadora?",
+    "confirmSubmitBody": "A guia será transmitida no padrão TISS. Confirme os procedimentos e CIDs antes de prosseguir.",
+    "fields": {
+      "required": "Campo obrigatório",
+      "checkCode": "Verifique o código do procedimento",
+      "missingCid": "Adicione ao menos um CID compatível",
+      "authNeeded": "Procedimento pode exigir autorização prévia"
+    },
+    "severity": {
+      "high": "Alto risco de glosa",
+      "medium": "Atenção",
+      "low": "Informativo"
+    }
+  },
+  "patients": {
+    "title": "Pacientes",
+    "subtitle": "Histórico clínico e consentimentos.",
+    "search": "Buscar paciente",
+    "add": "Novo paciente",
+    "columns": {
+      "name": "Nome",
+      "age": "Idade",
+      "lastVisit": "Última consulta",
+      "payer": "Convênio",
+      "consent": "Consentimento",
+      "encounters": "Consultas"
+    },
+    "consent": {
+      "granted": "Concedido",
+      "pending": "Pendente",
+      "revoked": "Revogado"
+    },
+    "yearsOld": "{age} anos",
+    "detail": {
+      "history": "Histórico de consultas",
+      "consents": "Consentimentos",
+      "notes": "Notas",
+      "noEncounters": "Sem consultas registradas"
+    }
+  },
+  "billing": {
+    "title": "Faturamento & glosas",
+    "subtitle": "Acompanhe guias enviadas, pagas e glosadas — e por quê.",
+    "stats": {
+      "submitted": "Enviadas",
+      "paid": "Pagas",
+      "glossed": "Glosadas",
+      "glossRate": "Taxa de glosa",
+      "recovered": "Recuperado",
+      "atRisk": "Em risco"
+    },
+    "guideStatus": {
+      "draft": "Rascunho",
+      "sent": "Enviada",
+      "paid": "Paga",
+      "glossed": "Glosada"
+    },
+    "columns": {
+      "guide": "Guia",
+      "patient": "Paciente",
+      "payer": "Operadora",
+      "value": "Valor",
+      "status": "Status",
+      "reason": "Motivo da glosa",
+      "actions": "Ações"
+    },
+    "resubmit": "Reenviar",
+    "viewGuide": "Ver guia",
+    "glossReasons": {
+      "title": "Principais motivos de glosa",
+      "missingAuth": "Falta de autorização prévia",
+      "codeMismatch": "Código incompatível com CID",
+      "duplicate": "Cobrança em duplicidade",
+      "expiredCard": "Carteirinha vencida",
+      "missingDoc": "Documentação incompleta"
+    },
+    "chart": {
+      "title": "Glosa ao longo do tempo",
+      "before": "Antes do Prontus",
+      "after": "Com o Prontus",
+      "submitted": "Enviadas",
+      "glossed": "Glosadas"
+    },
+    "agentRecover": "O agente priorizou {count} guias glosadas para reenvio."
+  },
+  "templates": {
+    "title": "Modelos de nota",
+    "subtitle": "Templates por especialidade — editáveis e versionados por idioma.",
+    "add": "Novo modelo",
+    "specialty": "Especialidade",
+    "language": "Idioma",
+    "sections": "Seções",
+    "usedIn": "Usado em {count} consultas",
+    "edit": "Editar modelo",
+    "duplicate": "Duplicar",
+    "setDefault": "Definir como padrão",
+    "default": "Padrão",
+    "specialties": {
+      "clinica": "Clínica geral",
+      "cardio": "Cardiologia",
+      "pediatria": "Pediatria",
+      "ortopedia": "Ortopedia",
+      "dermato": "Dermatologia",
+      "gineco": "Ginecologia"
+    }
+  },
+  "integrations": {
+    "title": "Integrações",
+    "subtitle": "Conecte seu prontuário eletrônico, operadoras e o motor de áudio.",
+    "connect": "Conectar",
+    "connected": "Conectado",
+    "disconnect": "Desconectar",
+    "configure": "Configurar",
+    "categories": {
+      "pep": "Prontuário eletrônico (PEP)",
+      "payers": "Operadoras (TISS)",
+      "asr": "Reconhecimento de fala",
+      "messaging": "Mensageria"
+    },
+    "status": {
+      "connected": "Conectado",
+      "available": "Disponível",
+      "soon": "Em breve"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "tabs": {
+      "profile": "Perfil",
+      "clinic": "Clínica",
+      "users": "Usuários & papéis",
+      "security": "Segurança",
+      "consent": "Consentimento & retenção",
+      "language": "Idioma & região",
+      "whatsapp": "WhatsApp",
+      "ai": "Copiloto & agente"
+    },
+    "profile": {
+      "name": "Nome",
+      "specialty": "Especialidade",
+      "council": "Registro no conselho",
+      "email": "E-mail"
+    },
+    "consent": {
+      "retention": "Retenção de áudio",
+      "retentionDesc": "Por quanto tempo o áudio criptografado é mantido antes do expurgo automático.",
+      "days": "{days} dias",
+      "purgeNow": "Expurgar áudios agora",
+      "requireConsent": "Exigir consentimento antes de gravar"
+    },
+    "language": {
+      "interface": "Idioma da interface",
+      "clinicalContent": "Vocabulário clínico",
+      "timezone": "Fuso horário",
+      "currency": "Moeda"
+    },
+    "users": {
+      "invite": "Convidar usuário",
+      "role": "Papel",
+      "status": "Status",
+      "active": "Ativo",
+      "invited": "Convidado"
+    }
+  },
+  "roles": {
+    "medico": "Médico(a)",
+    "faturista": "Faturista",
+    "gestor": "Gestor da clínica",
+    "compliance": "Compliance",
+    "viewer": "Visualizador",
+    "org_admin": "Admin da organização"
+  },
+  "copilot": {
+    "name": "Íris",
+    "title": "Íris · Copiloto clínico",
+    "subtitle": "Entende o sistema inteiro. Pergunte ou peça uma ação.",
+    "placeholder": "Pergunte ou peça algo… ex.: “qual minha taxa de glosa no mês?”",
+    "send": "Enviar",
+    "thinking": "Íris está pensando…",
+    "you": "Você",
+    "poweredBy": "IA com governança · respeita seu papel e a LGPD",
+    "openHint": "Abrir copiloto",
+    "suggestionsTitle": "Sugestões para esta tela",
+    "actionTaken": "Ação executada",
+    "actionPending": "Requer sua aprovação",
+    "citation": "Fonte",
+    "suggestions": {
+      "today": [
+        "Resuma minha agenda de hoje",
+        "Quais consultas estão sem prontuário?",
+        "Quantos minutos economizei esta semana?"
+      ],
+      "review": [
+        "Resuma este prontuário em 3 linhas",
+        "Há algo faltando nas hipóteses?",
+        "Gere a guia TISS desta consulta"
+      ],
+      "billing": [
+        "Quais guias estão glosadas e por quê?",
+        "Qual minha taxa de glosa no mês?",
+        "Priorize os reenvios de maior valor"
+      ],
+      "generic": [
+        "O que esta tela faz?",
+        "Me mostre as pendências de hoje",
+        "Qual o próximo passo recomendado?"
+      ]
+    },
+    "greeting": "Oi! Sou a Íris, seu copiloto. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e mais. O que você precisa?"
+  },
+  "agent": {
+    "title": "Agente autônomo",
+    "subtitle": "Monitora, recomenda e age dentro das suas alçadas.",
+    "recommendations": "Recomendações",
+    "noRecommendations": "Nenhuma recomendação pendente. Tudo sob controle.",
+    "impact": "Impacto estimado",
+    "confidence": "Confiança",
+    "apply": "Aplicar",
+    "dismiss": "Dispensar",
+    "review": "Revisar",
+    "why": "Por quê",
+    "categories": {
+      "gloss": "Pré-glosa",
+      "resubmit": "Reenvio",
+      "incomplete": "Pendência",
+      "template": "Modelo"
+    },
+    "items": {
+      "preGloss": {
+        "title": "Corrigir guia antes do envio",
+        "desc": "A guia de {patient} tem código incompatível com o CID — alto risco de glosa."
+      },
+      "resubmit": {
+        "title": "Reenviar guia glosada",
+        "desc": "A guia de {patient} foi glosada por falta de autorização. Anexei o documento — pronta para reenvio."
+      },
+      "incomplete": {
+        "title": "Consulta sem prontuário finalizado",
+        "desc": "A consulta de {patient} ficou em rascunho. Quer finalizar a nota agora?"
+      }
+    }
+  },
+  "whatsapp": {
+    "title": "Controle por WhatsApp",
+    "subtitle": "Sua IA com nome e número. “Me traga isso”, “faça aquilo” — ela puxa e age no sistema.",
+    "persona": "Persona da IA",
+    "number": "Número do WhatsApp",
+    "linkNumber": "Vincular meu número",
+    "linked": "Vinculado",
+    "verify": "Verificar com código",
+    "examplesTitle": "Experimente dizer",
+    "examples": [
+      "Me traga as guias glosadas da semana",
+      "Qual minha agenda de amanhã?",
+      "Reenviar a guia do paciente Marina? Responda SIM",
+      "Quantos minutos economizei hoje?"
+    ],
+    "send": "Enviar",
+    "inputPlaceholder": "Escreva uma mensagem…",
+    "proactive": "Mensagens proativas do agente",
+    "consent": "Consentimento de canal e opt-out a qualquer momento.",
+    "confirmYes": "SIM",
+    "typeHere": "Simule uma conversa com a {name}"
+  },
+  "owner": {
+    "title": "Painel do Dono",
+    "subtitle": "Gestão completa do SaaS — tenants, planos, landing, IA e saúde do sistema.",
+    "platformBadge": "Nível Plataforma",
+    "nav": {
+      "overview": "Visão geral",
+      "tenants": "Organizações",
+      "users": "Usuários",
+      "plans": "Planos & preços",
+      "landing": "Editor da Landing",
+      "flags": "Feature flags",
+      "billing": "Faturamento",
+      "ai": "IA & Agente",
+      "whatsapp": "WhatsApp",
+      "access": "Acessos & papéis",
+      "audit": "Auditoria",
+      "system": "Sistema"
+    },
+    "overview": {
+      "title": "Saúde do negócio",
+      "mrr": "MRR",
+      "activeTenants": "Tenants ativos",
+      "activeDoctors": "Médicos ativos",
+      "minutesProcessed": "Minutos processados",
+      "aiSpend": "Consumo de IA",
+      "errorRate": "Taxa de erro",
+      "churn": "Churn",
+      "growth": "Crescimento de MRR",
+      "usage": "Uso por tenant",
+      "recentSignups": "Novos cadastros"
+    },
+    "tenants": {
+      "title": "Organizações",
+      "add": "Nova organização",
+      "impersonate": "Impersonar",
+      "suspend": "Suspender",
+      "activate": "Ativar",
+      "impersonating": "Você está como {tenant}",
+      "exitImpersonation": "Sair da impersonação",
+      "columns": {
+        "name": "Organização",
+        "plan": "Plano",
+        "doctors": "Médicos",
+        "usage": "Uso",
+        "mrr": "MRR",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "status": { "active": "Ativo", "trial": "Trial", "suspended": "Suspenso", "past_due": "Inadimplente" }
+    },
+    "plans": {
+      "title": "Planos & preços",
+      "subtitle": "Defina preço, ciclo, limites e quais módulos cada plano libera.",
+      "add": "Novo plano",
+      "price": "Preço",
+      "cycle": "Ciclo",
+      "quotas": "Limites (quotas)",
+      "entitlements": "Módulos liberados",
+      "perDoctor": "por médico/mês",
+      "editPlan": "Editar plano",
+      "preview": "Pré-visualizar card",
+      "modules": "Módulos",
+      "quotaDoctors": "Médicos",
+      "quotaMinutes": "Minutos/mês",
+      "quotaWhatsapp": "Número WhatsApp dedicado",
+      "save": "Salvar plano"
+    },
+    "landing": {
+      "title": "Editor da Landing Page",
+      "subtitle": "Edite seções, planos e textos da landing nos 4 idiomas. Publique com preview.",
+      "section": "Seção",
+      "localeTab": "Idioma",
+      "publish": "Publicar",
+      "schedule": "Agendar",
+      "preview": "Pré-visualizar",
+      "published": "Publicado",
+      "draft": "Rascunho",
+      "sections": {
+        "hero": "Herói",
+        "features": "Recursos",
+        "pricing": "Preços",
+        "faq": "FAQ",
+        "testimonials": "Depoimentos",
+        "cta": "Chamada final"
+      },
+      "fields": {
+        "title": "Título",
+        "subtitle": "Subtítulo",
+        "cta": "Texto do botão"
+      },
+      "savedNote": "Alterações refletem na landing após publicar."
+    },
+    "flags": {
+      "title": "Feature flags & módulos",
+      "subtitle": "Ligue/desligue abas e funções por plano, por tenant ou globalmente.",
+      "module": "Módulo",
+      "scope": "Escopo",
+      "rollout": "Rollout",
+      "scopes": { "global": "Global", "plan": "Por plano", "tenant": "Por tenant" },
+      "on": "Ligado",
+      "off": "Desligado"
+    },
+    "ai": {
+      "title": "IA & Agente",
+      "subtitle": "Configure o AI Core por tenant: persona, modelo, limites e automação do agente.",
+      "persona": "Nome / persona",
+      "model": "Modelo",
+      "monthlyBudget": "Orçamento mensal",
+      "autonomy": "Autonomia do agente",
+      "autonomyLevels": { "suggest": "Sugestivo", "semi": "Semiautônomo", "scheduled": "Agendado" },
+      "tools": "Tools habilitadas",
+      "spend": "Consumo no mês"
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "subtitle": "Provisione número e persona por plataforma e por tenant; habilite comandos por plano.",
+      "number": "Número provisionado",
+      "persona": "Persona",
+      "commands": "Comandos habilitados",
+      "templates": "Templates proativos",
+      "perTenant": "Número dedicado por tenant"
+    },
+    "access": {
+      "title": "Acessos & papéis",
+      "subtitle": "Defina papéis e a matriz de permissões. Mesma fonte para UI, API, IA e WhatsApp.",
+      "matrix": "Matriz de permissões",
+      "role": "Papel",
+      "addRole": "Criar papel",
+      "permission": "Permissão"
+    },
+    "audit": {
+      "title": "Auditoria",
+      "subtitle": "Trilha imutável de tudo — inclui impersonation e ações da IA.",
+      "columns": {
+        "time": "Quando",
+        "actor": "Quem",
+        "action": "Ação",
+        "target": "Alvo",
+        "result": "Resultado",
+        "source": "Origem"
+      },
+      "sources": { "ui": "Interface", "ai": "IA", "whatsapp": "WhatsApp", "api": "API", "system": "Sistema" }
+    }
+  },
+  "modules": {
+    "encounters": "Consultas",
+    "transcription": "Transcrição",
+    "clinical-notes": "Prontuários",
+    "tiss": "Guias TISS",
+    "patients": "Pacientes",
+    "billing": "Faturamento",
+    "templates": "Modelos",
+    "integrations": "Integrações",
+    "copilot": "Copiloto",
+    "agent": "Agente autônomo",
+    "whatsapp": "WhatsApp"
+  },
+  "meta": {
+    "landing": {
+      "title": "Prontus.ai — Termine a consulta com o prontuário e a guia prontos",
+      "description": "Escriba clínico de IA: escuta a consulta e gera o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente."
+    },
+    "app": {
+      "title": "Prontus.ai",
+      "description": "Escriba clínico de IA — prontuário e guias TISS a partir do áudio da consulta."
+    }
+  }
+}

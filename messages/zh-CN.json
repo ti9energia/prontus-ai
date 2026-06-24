@@ -1,0 +1,803 @@
+{
+  "common": {
+    "appName": "Prontus.ai",
+    "tagline": "AI 临床速记助手",
+    "actions": {
+      "save": "保存",
+      "cancel": "取消",
+      "edit": "编辑",
+      "delete": "删除",
+      "create": "新建",
+      "confirm": "确认",
+      "close": "关闭",
+      "back": "返回",
+      "next": "下一步",
+      "continue": "继续",
+      "finish": "完成",
+      "retry": "重试",
+      "send": "发送",
+      "export": "导出",
+      "search": "搜索",
+      "filter": "筛选",
+      "viewAll": "查看全部",
+      "openMenu": "打开菜单",
+      "copy": "复制",
+      "copied": "已复制",
+      "approve": "批准",
+      "reject": "拒绝",
+      "adjust": "调整",
+      "more": "更多",
+      "addNew": "添加",
+      "openCopilot": "打开副驾驶",
+      "tryFree": "免费试用",
+      "getStarted": "立即开始",
+      "signIn": "登录",
+      "signOut": "退出",
+      "learnMore": "了解更多",
+      "bookDemo": "预约演示"
+    },
+    "states": {
+      "loading": "加载中…",
+      "empty": "这里还没有内容",
+      "error": "出错了",
+      "errorDescription": "无法加载，请重试。",
+      "success": "操作成功",
+      "noResults": "无结果",
+      "comingSoon": "敬请期待"
+    },
+    "theme": {
+      "label": "主题",
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
+    },
+    "language": "语言",
+    "today": "今天",
+    "yesterday": "昨天",
+    "now": "刚刚",
+    "minutesShort": "分钟",
+    "secondsShort": "秒",
+    "of": "/",
+    "by": "由"
+  },
+  "nav": {
+    "today": "今日日程",
+    "encounter": "实时问诊",
+    "review": "病历审阅",
+    "tiss": "TISS 单据",
+    "patients": "患者",
+    "billing": "结算与拒付",
+    "templates": "模板",
+    "integrations": "集成",
+    "settings": "设置",
+    "owner": "所有者面板",
+    "product": "产品",
+    "clinic": "诊所",
+    "system": "系统",
+    "help": "帮助",
+    "backToProduct": "返回产品"
+  },
+  "brand": {
+    "promiseShort": "从对话到病历再到单据——无需打字。"
+  },
+  "landing": {
+    "nav": {
+      "product": "产品",
+      "howItWorks": "运作方式",
+      "security": "安全",
+      "pricing": "价格",
+      "customers": "客户"
+    },
+    "announce": "全新 · 带预拒付校验的 TISS 单据",
+    "hero": {
+      "eyebrow": "AI 临床速记助手",
+      "title": "问诊结束，病历与单据",
+      "titleHighlight": "即刻就绪",
+      "subtitle": "Prontus.ai 聆听问诊过程，几秒内即返回结构化病历和已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。",
+      "ctaPrimary": "用一次问诊试试",
+      "ctaSecondary": "了解运作方式",
+      "trust": "符合 LGPD · 健康数据加密 · 人工参与把关",
+      "liveBadge": "正在录制问诊",
+      "noteBuilding": "正在生成病历…"
+    },
+    "stats": {
+      "timeSaved": "每位医生每月节省的时间（小时）",
+      "glossDrop": "90 天内拒付减少",
+      "noteTime": "问诊后病历就绪用时",
+      "languages": "种语言，第一天即可用"
+    },
+    "logos": {
+      "title": "众多诊所与医保机构的信赖之选"
+    },
+    "features": {
+      "eyebrow": "平台能力",
+      "title": "“您好，医生”之后的一切，全部搞定",
+      "subtitle": "从采集音频到提交单据，覆盖完整闭环——不只是转录。",
+      "items": {
+        "live": {
+          "title": "实时问诊",
+          "desc": "采集音频，转录实时滚动，临床病历按章节逐步生成。"
+        },
+        "note": {
+          "title": "结构化病历",
+          "desc": "主诉、现病史、查体、初步诊断与处置——条理清晰，并高亮从音频中推断的内容。"
+        },
+        "tiss": {
+          "title": "预填写的 TISS 单据",
+          "desc": "诊疗项目、CID 与编码一键就绪，并对易引发拒付的字段进行校验。"
+        },
+        "gloss": {
+          "title": "预拒付校验",
+          "desc": "智能体在提交前审阅单据，指出可能被医保机构拒付的地方。"
+        },
+        "copilot": {
+          "title": "全屏随行副驾驶",
+          "desc": "问一句“我本月的拒付率是多少？”或“生成这次问诊的单据”。它读懂整个系统。"
+        },
+        "whatsapp": {
+          "title": "WhatsApp 操控",
+          "desc": "“把本周被拒付的单据发给我。”AI 自动调取、回复并执行——经确认后操作。"
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "运作方式",
+      "title": "四步搞定，无需打字",
+      "steps": {
+        "record": { "title": "录制", "desc": "在患者同意后开始问诊，Prontus 全程聆听。" },
+        "structure": { "title": "结构化", "desc": "AI 实时转录，并按章节生成病历。" },
+        "review": { "title": "审阅", "desc": "您来核对与调整。未经您批准，绝不生成单据。" },
+        "submit": { "title": "提交", "desc": "生成已校验的 TISS 单据并提交医保机构——或导出。" }
+      }
+    },
+    "security": {
+      "eyebrow": "安全与合规",
+      "title": "健康数据很敏感，我们郑重以待。",
+      "subtitle": "明确授权、端到端加密、不可篡改的审计追踪，以及强制的人工参与把关。",
+      "items": {
+        "lgpd": { "title": "LGPD、GDPR 与 PIPL", "desc": "按地区落实授权、数据最小化与删除权。" },
+        "crypto": { "title": "加密", "desc": "传输与存储全程加密；密钥存于保险库，绝不写入代码。" },
+        "audit": { "title": "不可篡改的审计", "desc": "谁、做了什么、何时做、结果如何——包括 AI 的操作。" },
+        "hitl": { "title": "人工参与把关", "desc": "生成任何单据前，均由医生批准病历。" }
+      }
+    },
+    "pricing": {
+      "eyebrow": "价格",
+      "title": "按医生人数、按月计费。随时可取消。",
+      "subtitle": "免费起步。按支付方结算为区域市场模块（巴西）。",
+      "perMonth": "/医生/月",
+      "popular": "最受欢迎",
+      "ctaStart": "开始使用",
+      "ctaContact": "联系销售",
+      "billingMonthly": "按月",
+      "billingYearly": "按年",
+      "yearlyHint": "赠 2 个月"
+    },
+    "testimonials": {
+      "eyebrow": "客户",
+      "title": "医生们找回了最稀缺的东西：时间。"
+    },
+    "faq": {
+      "eyebrow": "疑问",
+      "title": "常见问题",
+      "items": {
+        "q1": { "q": "问诊音频会被保存吗？", "a": "仅在患者同意后保存，全程加密，保留期限可配置。您可随时彻底删除。" },
+        "q2": { "q": "AI 会自动提交单据吗？", "a": "不会。人工参与把关为强制要求：病历与单据只有在您批准后才会继续。" },
+        "q3": { "q": "适用于我的专科吗？", "a": "适用。提供各专科可编辑的病历模板，临床词汇也会自适应。" },
+        "q4": { "q": "能与我的电子病历系统集成吗？", "a": "可通过集成对接 PEP 与医保机构。TISS 为区域市场模块（巴西）。" },
+        "q5": { "q": "支持其他语言吗？", "a": "支持——pt-BR、英语、中文与法语，第一天即可用。" }
+      }
+    },
+    "cta": {
+      "title": "把时间还给您的每一天。",
+      "subtitle": "用一次问诊体验 Prontus.ai。无需信用卡。",
+      "button": "用一次问诊试试"
+    },
+    "footer": {
+      "rights": "保留所有权利。",
+      "madeWith": "以临床之心精心打造。",
+      "cols": {
+        "product": "产品",
+        "company": "公司",
+        "legal": "法律",
+        "resources": "资源"
+      },
+      "links": {
+        "features": "功能",
+        "pricing": "价格",
+        "security": "安全",
+        "changelog": "更新日志",
+        "about": "关于",
+        "careers": "招贤纳士",
+        "contact": "联系我们",
+        "privacy": "隐私",
+        "terms": "条款",
+        "lgpd": "LGPD",
+        "docs": "文档",
+        "status": "服务状态",
+        "api": "API"
+      }
+    }
+  },
+  "auth": {
+    "signInTitle": "登录 Prontus.ai",
+    "signInSubtitle": "从上次中断处继续。",
+    "email": "邮箱",
+    "password": "密码",
+    "demoNote": "演示：点击登录即可使用示例诊所账户进入。",
+    "enterDemo": "进入演示"
+  },
+  "appShell": {
+    "search": "搜索患者、问诊、单据…",
+    "commandHint": "唤起命令",
+    "newEncounter": "新建问诊",
+    "profile": "个人资料",
+    "demoClinic": "Aurora 诊所（演示）",
+    "role": "角色",
+    "upgradePlan": "升级套餐",
+    "planBadge": "{plan} 套餐"
+  },
+  "encounterStatus": {
+    "scheduled": "待开始",
+    "recording": "录制中",
+    "draft": "草稿",
+    "finalized": "已完成",
+    "review": "审阅中"
+  },
+  "today": {
+    "title": "今日日程",
+    "subtitle": "{count, plural, =0 {今天暂无问诊} one {今天 # 次问诊} other {今天 # 次问诊}}",
+    "dateLabel": "{date}",
+    "start": "开始",
+    "resume": "继续",
+    "openNote": "打开病历",
+    "openGuide": "打开单据",
+    "empty": "今天暂无问诊",
+    "emptyDesc": "有已排期的问诊时，会显示在这里。",
+    "newEncounter": "新建问诊",
+    "filters": {
+      "all": "全部",
+      "scheduled": "待开始",
+      "draft": "草稿",
+      "finalized": "已完成"
+    },
+    "stats": {
+      "scheduled": "已排期",
+      "done": "已完成",
+      "minutes": "节省的分钟数",
+      "pendingGuides": "待处理单据"
+    },
+    "columns": {
+      "time": "时间",
+      "patient": "患者",
+      "type": "类型",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "agentNudge": "智能体建议先处理这 {count} 次有待处理单据的问诊。"
+  },
+  "encounter": {
+    "title": "实时问诊",
+    "with": "与 {name}",
+    "consent": {
+      "title": "患者授权",
+      "body": "请告知患者，本次问诊将由 Prontus.ai 录制并转录以生成病历。音频经过加密，可随时彻底删除。",
+      "checkbox": "患者已同意录制",
+      "start": "开始录制",
+      "cancel": "暂不"
+    },
+    "record": "录制",
+    "pause": "暂停",
+    "resume": "继续",
+    "stop": "结束问诊",
+    "recording": "录制中",
+    "paused": "已暂停",
+    "capturing": "正在采集音频",
+    "elapsed": "用时",
+    "micPermission": "需要使用麦克风以采集问诊内容。",
+    "micDenied": "麦克风已被禁用。请在浏览器中开启权限以进行录制。",
+    "micSimulate": "没有麦克风？可使用演示模式。",
+    "simulate": "模拟问诊",
+    "transcript": "转录",
+    "transcriptEmpty": "转录内容会随对话实时显示在这里。",
+    "note": "临床病历",
+    "noteBuilding": "病历会随问诊推进实时生成。",
+    "speakerDoctor": "医生",
+    "speakerPatient": "患者",
+    "finishToReview": "结束并审阅",
+    "sections": {
+      "queixa": "主诉",
+      "hma": "现病史",
+      "exame": "体格检查",
+      "hipoteses": "初步诊断",
+      "conduta": "处置"
+    },
+    "live": "直播中",
+    "savingDraft": "正在保存草稿…",
+    "draftSaved": "草稿已保存"
+  },
+  "review": {
+    "title": "病历审阅",
+    "subtitle": "核对生成的病历并按需调整。未经您批准，绝不生成单据。",
+    "inferred": "从音频推断",
+    "edited": "您已编辑",
+    "confidence": "置信度",
+    "approveSection": "批准本节",
+    "approved": "已批准",
+    "regenerate": "重新生成",
+    "addSection": "添加章节",
+    "generateTiss": "生成 TISS 单据",
+    "approveAll": "批准病历",
+    "approvedAll": "病历已批准",
+    "lastEdited": "编辑于 {time}",
+    "wordCount": "{count} 字",
+    "diagnostics": "建议 CID",
+    "procedures": "建议诊疗项目",
+    "patientInfo": "患者",
+    "encounterInfo": "问诊",
+    "duration": "时长",
+    "placeholder": "撰写或调整本节内容…"
+  },
+  "tiss": {
+    "title": "TISS 单据",
+    "subtitle": "根据问诊预填写的单据。提交前请核对各字段。",
+    "guideType": "单据类型",
+    "types": {
+      "consulta": "门诊",
+      "sadt": "SP/SADT",
+      "internacao": "住院"
+    },
+    "payer": "医保机构",
+    "beneficiary": "受益人",
+    "cardNumber": "医保卡号",
+    "validity": "有效期",
+    "professional": "执行医务人员",
+    "council": "执业委员会",
+    "cbo": "CBO",
+    "procedures": "诊疗项目",
+    "procedureCode": "编码",
+    "procedureDesc": "描述",
+    "qty": "数量",
+    "diagnoses": "诊断（CID-10）",
+    "addProcedure": "添加诊疗项目",
+    "addDiagnosis": "添加 CID",
+    "validation": "预拒付校验",
+    "validationOk": "已可提交",
+    "validationDesc": "{count, plural, =0 {未发现待处理项} one {# 项可能引发拒付的待处理项} other {# 项可能引发拒付的待处理项}}",
+    "submit": "提交医保机构",
+    "export": "导出 XML",
+    "exported": "单据已导出",
+    "submitted": "单据已提交医保机构",
+    "submitting": "提交中…",
+    "confirmSubmitTitle": "向医保机构提交单据？",
+    "confirmSubmitBody": "单据将按 TISS 标准传输。继续前请确认诊疗项目与 CID。",
+    "fields": {
+      "required": "必填字段",
+      "checkCode": "请核对诊疗项目编码",
+      "missingCid": "请至少添加一个匹配的 CID",
+      "authNeeded": "该诊疗项目可能需要事先授权"
+    },
+    "severity": {
+      "high": "拒付风险高",
+      "medium": "需注意",
+      "low": "提示"
+    }
+  },
+  "patients": {
+    "title": "患者",
+    "subtitle": "临床病史与授权记录。",
+    "search": "搜索患者",
+    "add": "新建患者",
+    "columns": {
+      "name": "姓名",
+      "age": "年龄",
+      "lastVisit": "上次就诊",
+      "payer": "支付方",
+      "consent": "授权",
+      "encounters": "问诊"
+    },
+    "consent": {
+      "granted": "已授权",
+      "pending": "待处理",
+      "revoked": "已撤销"
+    },
+    "yearsOld": "{age} 岁",
+    "detail": {
+      "history": "问诊历史",
+      "consents": "授权记录",
+      "notes": "备注",
+      "noEncounters": "暂无问诊记录"
+    }
+  },
+  "billing": {
+    "title": "结算与拒付",
+    "subtitle": "跟踪已提交、已支付与被拒付的单据——以及原因。",
+    "stats": {
+      "submitted": "已提交",
+      "paid": "已支付",
+      "glossed": "被拒付",
+      "glossRate": "拒付率",
+      "recovered": "已追回",
+      "atRisk": "存在风险"
+    },
+    "guideStatus": {
+      "draft": "草稿",
+      "sent": "已提交",
+      "paid": "已支付",
+      "glossed": "被拒付"
+    },
+    "columns": {
+      "guide": "单据",
+      "patient": "患者",
+      "payer": "医保机构",
+      "value": "金额",
+      "status": "状态",
+      "reason": "拒付原因",
+      "actions": "操作"
+    },
+    "resubmit": "重新提交",
+    "viewGuide": "查看单据",
+    "glossReasons": {
+      "title": "主要拒付原因",
+      "missingAuth": "缺少事先授权",
+      "codeMismatch": "编码与 CID 不匹配",
+      "duplicate": "重复计费",
+      "expiredCard": "医保卡已过期",
+      "missingDoc": "材料不完整"
+    },
+    "chart": {
+      "title": "拒付趋势",
+      "before": "使用 Prontus 前",
+      "after": "使用 Prontus 后",
+      "submitted": "已提交",
+      "glossed": "被拒付"
+    },
+    "agentRecover": "智能体已将 {count} 份被拒付单据优先安排重新提交。"
+  },
+  "templates": {
+    "title": "病历模板",
+    "subtitle": "各专科模板——可编辑，并按语言进行版本管理。",
+    "add": "新建模板",
+    "specialty": "专科",
+    "language": "语言",
+    "sections": "章节",
+    "usedIn": "已用于 {count} 次问诊",
+    "edit": "编辑模板",
+    "duplicate": "复制",
+    "setDefault": "设为默认",
+    "default": "默认",
+    "specialties": {
+      "clinica": "全科",
+      "cardio": "心血管科",
+      "pediatria": "儿科",
+      "ortopedia": "骨科",
+      "dermato": "皮肤科",
+      "gineco": "妇科"
+    }
+  },
+  "integrations": {
+    "title": "集成",
+    "subtitle": "对接您的电子病历系统、医保机构与音频引擎。",
+    "connect": "连接",
+    "connected": "已连接",
+    "disconnect": "断开连接",
+    "configure": "配置",
+    "categories": {
+      "pep": "电子病历（PEP）",
+      "payers": "医保机构（TISS）",
+      "asr": "语音识别",
+      "messaging": "消息服务"
+    },
+    "status": {
+      "connected": "已连接",
+      "available": "可用",
+      "soon": "敬请期待"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "tabs": {
+      "profile": "个人资料",
+      "clinic": "诊所",
+      "users": "用户与角色",
+      "security": "安全",
+      "consent": "授权与保留",
+      "language": "语言与地区",
+      "whatsapp": "WhatsApp",
+      "ai": "副驾驶与智能体"
+    },
+    "profile": {
+      "name": "姓名",
+      "specialty": "专科",
+      "council": "执业委员会注册号",
+      "email": "邮箱"
+    },
+    "consent": {
+      "retention": "音频保留",
+      "retentionDesc": "加密音频在自动清除前保留的时长。",
+      "days": "{days} 天",
+      "purgeNow": "立即清除音频",
+      "requireConsent": "录制前需先获得授权"
+    },
+    "language": {
+      "interface": "界面语言",
+      "clinicalContent": "临床词汇",
+      "timezone": "时区",
+      "currency": "货币"
+    },
+    "users": {
+      "invite": "邀请用户",
+      "role": "角色",
+      "status": "状态",
+      "active": "活跃",
+      "invited": "已邀请"
+    }
+  },
+  "roles": {
+    "medico": "医生",
+    "faturista": "结算专员",
+    "gestor": "诊所管理者",
+    "compliance": "合规",
+    "viewer": "查看者",
+    "org_admin": "组织管理员"
+  },
+  "copilot": {
+    "name": "Íris",
+    "title": "Íris · 临床副驾驶",
+    "subtitle": "读懂整个系统。提问或下达操作指令。",
+    "placeholder": "提问或下达指令…例如：“我本月的拒付率是多少？”",
+    "send": "发送",
+    "thinking": "Íris 正在思考…",
+    "you": "您",
+    "poweredBy": "受治理约束的 AI · 尊重您的角色权限与 LGPD",
+    "openHint": "打开副驾驶",
+    "suggestionsTitle": "本页面建议",
+    "actionTaken": "操作已执行",
+    "actionPending": "需要您的批准",
+    "citation": "来源",
+    "suggestions": {
+      "today": [
+        "总结我今天的日程",
+        "哪些问诊还没有病历？",
+        "我这周节省了多少分钟？"
+      ],
+      "review": [
+        "用 3 行总结这份病历",
+        "初步诊断里有没有遗漏？",
+        "生成这次问诊的 TISS 单据"
+      ],
+      "billing": [
+        "哪些单据被拒付了，原因是什么？",
+        "我本月的拒付率是多少？",
+        "优先安排金额较大的重新提交"
+      ],
+      "generic": [
+        "这个页面是做什么的？",
+        "给我看看今天的待处理项",
+        "推荐的下一步是什么？"
+      ]
+    },
+    "greeting": "你好！我是 Íris，你的副驾驶。我可以总结病历、生成 TISS 单据、解读拒付原因等等。需要什么帮助？"
+  },
+  "agent": {
+    "title": "自主智能体",
+    "subtitle": "在你的授权范围内监控、推荐并执行操作。",
+    "recommendations": "推荐",
+    "noRecommendations": "暂无待处理推荐。一切尽在掌握。",
+    "impact": "预估影响",
+    "confidence": "置信度",
+    "apply": "应用",
+    "dismiss": "忽略",
+    "review": "审阅",
+    "why": "原因",
+    "categories": {
+      "gloss": "预拒付",
+      "resubmit": "重新提交",
+      "incomplete": "待处理",
+      "template": "模板"
+    },
+    "items": {
+      "preGloss": {
+        "title": "提交前修正单据",
+        "desc": "{patient} 的单据编码与 CID 不匹配——拒付风险高。"
+      },
+      "resubmit": {
+        "title": "重新提交被拒付的单据",
+        "desc": "{patient} 的单据因缺少授权被拒付。已附上相关材料——可重新提交。"
+      },
+      "incomplete": {
+        "title": "病历未完成的问诊",
+        "desc": "{patient} 的问诊仍为草稿。要现在完成这份病历吗？"
+      }
+    }
+  },
+  "whatsapp": {
+    "title": "WhatsApp 操控",
+    "subtitle": "你的 AI 有专属名字和号码。“把这个发给我”“去做那件事”——它会调取并在系统中执行。",
+    "persona": "AI 形象",
+    "number": "WhatsApp 号码",
+    "linkNumber": "绑定我的号码",
+    "linked": "已绑定",
+    "verify": "用验证码验证",
+    "examplesTitle": "试着说",
+    "examples": [
+      "把本周被拒付的单据发给我",
+      "我明天的日程是什么？",
+      "重新提交患者 Marina 的单据？回复“是”",
+      "我今天节省了多少分钟？"
+    ],
+    "send": "发送",
+    "inputPlaceholder": "输入消息…",
+    "proactive": "智能体的主动消息",
+    "consent": "需获得渠道授权，并可随时退订。",
+    "confirmYes": "是",
+    "typeHere": "模拟与 {name} 的对话"
+  },
+  "owner": {
+    "title": "所有者面板",
+    "subtitle": "SaaS 全面管理——租户、套餐、落地页、AI 与系统健康。",
+    "platformBadge": "平台级",
+    "nav": {
+      "overview": "总览",
+      "tenants": "组织",
+      "users": "用户",
+      "plans": "套餐与价格",
+      "landing": "落地页编辑器",
+      "flags": "功能开关",
+      "billing": "结算",
+      "ai": "AI 与智能体",
+      "whatsapp": "WhatsApp",
+      "access": "访问与角色",
+      "audit": "审计",
+      "system": "系统"
+    },
+    "overview": {
+      "title": "业务健康",
+      "mrr": "MRR",
+      "activeTenants": "活跃租户",
+      "activeDoctors": "活跃医生",
+      "minutesProcessed": "已处理分钟数",
+      "aiSpend": "AI 消耗",
+      "errorRate": "错误率",
+      "churn": "流失率",
+      "growth": "MRR 增长",
+      "usage": "各租户用量",
+      "recentSignups": "新注册"
+    },
+    "tenants": {
+      "title": "组织",
+      "add": "新建组织",
+      "impersonate": "模拟登录",
+      "suspend": "暂停",
+      "activate": "启用",
+      "impersonating": "你正以 {tenant} 身份操作",
+      "exitImpersonation": "退出模拟登录",
+      "columns": {
+        "name": "组织",
+        "plan": "套餐",
+        "doctors": "医生",
+        "usage": "用量",
+        "mrr": "MRR",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": { "active": "活跃", "trial": "试用", "suspended": "已暂停", "past_due": "逾期欠费" }
+    },
+    "plans": {
+      "title": "套餐与价格",
+      "subtitle": "设定价格、计费周期、配额，以及各套餐开放哪些模块。",
+      "add": "新建套餐",
+      "price": "价格",
+      "cycle": "计费周期",
+      "quotas": "配额",
+      "entitlements": "开放模块",
+      "perDoctor": "每医生/月",
+      "editPlan": "编辑套餐",
+      "preview": "预览卡片",
+      "modules": "模块",
+      "quotaDoctors": "医生",
+      "quotaMinutes": "分钟数/月",
+      "quotaWhatsapp": "专属 WhatsApp 号码",
+      "save": "保存套餐"
+    },
+    "landing": {
+      "title": "落地页编辑器",
+      "subtitle": "以 4 种语言编辑落地页的版块、套餐与文案。可预览后发布。",
+      "section": "版块",
+      "localeTab": "语言",
+      "publish": "发布",
+      "schedule": "定时发布",
+      "preview": "预览",
+      "published": "已发布",
+      "draft": "草稿",
+      "sections": {
+        "hero": "主视觉",
+        "features": "功能",
+        "pricing": "价格",
+        "faq": "FAQ",
+        "testimonials": "客户评价",
+        "cta": "结尾行动号召"
+      },
+      "fields": {
+        "title": "标题",
+        "subtitle": "副标题",
+        "cta": "按钮文案"
+      },
+      "savedNote": "更改将在发布后反映到落地页。"
+    },
+    "flags": {
+      "title": "功能开关与模块",
+      "subtitle": "按套餐、按租户或全局开关各标签页与功能。",
+      "module": "模块",
+      "scope": "范围",
+      "rollout": "灰度发布",
+      "scopes": { "global": "全局", "plan": "按套餐", "tenant": "按租户" },
+      "on": "开启",
+      "off": "关闭"
+    },
+    "ai": {
+      "title": "AI 与智能体",
+      "subtitle": "按租户配置 AI Core：形象、模型、限额与智能体自动化。",
+      "persona": "名称 / 形象",
+      "model": "模型",
+      "monthlyBudget": "每月预算",
+      "autonomy": "智能体自主级别",
+      "autonomyLevels": { "suggest": "仅建议", "semi": "半自主", "scheduled": "定时执行" },
+      "tools": "已启用工具",
+      "spend": "本月消耗"
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "subtitle": "按平台与租户配置号码和形象；按套餐启用指令。",
+      "number": "已配置号码",
+      "persona": "形象",
+      "commands": "已启用指令",
+      "templates": "主动消息模板",
+      "perTenant": "各租户专属号码"
+    },
+    "access": {
+      "title": "访问与角色",
+      "subtitle": "定义角色与权限矩阵。UI、API、AI 与 WhatsApp 共用同一数据源。",
+      "matrix": "权限矩阵",
+      "role": "角色",
+      "addRole": "创建角色",
+      "permission": "权限"
+    },
+    "audit": {
+      "title": "审计",
+      "subtitle": "一切操作的不可篡改追踪——包括模拟登录与 AI 操作。",
+      "columns": {
+        "time": "时间",
+        "actor": "操作者",
+        "action": "操作",
+        "target": "对象",
+        "result": "结果",
+        "source": "来源"
+      },
+      "sources": { "ui": "界面", "ai": "AI", "whatsapp": "WhatsApp", "api": "API", "system": "系统" }
+    }
+  },
+  "modules": {
+    "encounters": "问诊",
+    "transcription": "转录",
+    "clinical-notes": "病历",
+    "tiss": "TISS 单据",
+    "patients": "患者",
+    "billing": "结算",
+    "templates": "模板",
+    "integrations": "集成",
+    "copilot": "副驾驶",
+    "agent": "自主智能体",
+    "whatsapp": "WhatsApp"
+  },
+  "meta": {
+    "landing": {
+      "title": "Prontus.ai——问诊结束，病历与单据即刻就绪",
+      "description": "AI 临床速记助手：聆听问诊并生成结构化病历与已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。"
+    },
+    "app": {
+      "title": "Prontus.ai",
+      "description": "AI 临床速记助手——根据问诊音频生成病历与 TISS 单据。"
+    }
+  }
+}

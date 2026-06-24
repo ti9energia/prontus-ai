@@ -1,0 +1,803 @@
+{
+  "common": {
+    "appName": "Prontus.ai",
+    "tagline": "Assistant clinique IA",
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "create": "Créer",
+      "confirm": "Confirmer",
+      "close": "Fermer",
+      "back": "Retour",
+      "next": "Suivant",
+      "continue": "Continuer",
+      "finish": "Terminer",
+      "retry": "Réessayer",
+      "send": "Envoyer",
+      "export": "Exporter",
+      "search": "Rechercher",
+      "filter": "Filtrer",
+      "viewAll": "Tout voir",
+      "openMenu": "Ouvrir le menu",
+      "copy": "Copier",
+      "copied": "Copié",
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "adjust": "Ajuster",
+      "more": "Plus",
+      "addNew": "Ajouter",
+      "openCopilot": "Ouvrir le copilote",
+      "tryFree": "Essai gratuit",
+      "getStarted": "Commencer",
+      "signIn": "Se connecter",
+      "signOut": "Se déconnecter",
+      "learnMore": "En savoir plus",
+      "bookDemo": "Réserver une démo"
+    },
+    "states": {
+      "loading": "Chargement…",
+      "empty": "Rien à afficher pour l'instant",
+      "error": "Une erreur est survenue",
+      "errorDescription": "Chargement impossible. Veuillez réessayer.",
+      "success": "Tout est bon",
+      "noResults": "Aucun résultat",
+      "comingSoon": "Bientôt disponible"
+    },
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "language": "Langue",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "now": "Maintenant",
+    "minutesShort": "min",
+    "secondsShort": "s",
+    "of": "sur",
+    "by": "par"
+  },
+  "nav": {
+    "today": "Agenda du jour",
+    "encounter": "Consultation en direct",
+    "review": "Révision de la note",
+    "tiss": "Feuilles de soins TISS",
+    "patients": "Patients",
+    "billing": "Facturation et rejets",
+    "templates": "Modèles",
+    "integrations": "Intégrations",
+    "settings": "Paramètres",
+    "owner": "Tableau de bord Propriétaire",
+    "product": "Produit",
+    "clinic": "Cabinet",
+    "system": "Système",
+    "help": "Aide",
+    "backToProduct": "Retour au produit"
+  },
+  "brand": {
+    "promiseShort": "De la parole au dossier médical et à la feuille de soins — sans rien saisir."
+  },
+  "landing": {
+    "nav": {
+      "product": "Produit",
+      "howItWorks": "Fonctionnement",
+      "security": "Sécurité",
+      "pricing": "Tarifs",
+      "customers": "Clients"
+    },
+    "announce": "Nouveau · Feuilles de soins TISS avec vérification anti-rejet",
+    "hero": {
+      "eyebrow": "Assistant clinique IA",
+      "title": "Terminez la consultation avec le dossier et la feuille de soins",
+      "titleHighlight": "déjà prêts",
+      "subtitle": "Prontus.ai écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
+      "ctaPrimary": "Tester sur une consultation",
+      "ctaSecondary": "Voir le fonctionnement",
+      "trust": "Conforme LGPD · Données de santé chiffrées · Human-in-the-loop",
+      "liveBadge": "Enregistrement en cours",
+      "noteBuilding": "Construction du dossier médical…"
+    },
+    "stats": {
+      "timeSaved": "heures rendues par médecin/mois",
+      "glossDrop": "de rejets en moins en 90 jours",
+      "noteTime": "pour une note prête après la consultation",
+      "languages": "langues, dès le premier jour"
+    },
+    "logos": {
+      "title": "La confiance des cabinets et des assureurs"
+    },
+    "features": {
+      "eyebrow": "La plateforme",
+      "title": "Tout ce qui vient après le « Bonjour, docteur »",
+      "subtitle": "De la capture audio à l'envoi de la feuille de soins. Le cycle entier, bouclé — pas seulement la transcription.",
+      "items": {
+        "live": {
+          "title": "Consultation en direct",
+          "desc": "Audio capturé, transcription en continu et note clinique construite en temps réel, section par section."
+        },
+        "note": {
+          "title": "Dossier médical structuré",
+          "desc": "Motif, HMA, examen, hypothèses et conduite — organisés, avec mise en évidence de ce qui a été déduit de l'audio."
+        },
+        "tiss": {
+          "title": "Feuille de soins TISS pré-remplie",
+          "desc": "Actes, CID et codes prêts, avec validation des champs qui génèrent habituellement des rejets."
+        },
+        "gloss": {
+          "title": "Vérification anti-rejet",
+          "desc": "L'agent révise la feuille de soins avant l'envoi et signale ce qui ferait rejeter la demande par l'assureur."
+        },
+        "copilot": {
+          "title": "Copilote sur chaque écran",
+          "desc": "Demandez « quel est mon taux de rejet ce mois-ci ? » ou « génère la feuille de soins de cette consultation ». Il comprend tout le système."
+        },
+        "whatsapp": {
+          "title": "Pilotage par WhatsApp",
+          "desc": "« Apporte-moi les feuilles de soins rejetées de la semaine. » L'IA extrait, répond et agit — avec confirmation."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "Fonctionnement",
+      "title": "Quatre étapes, zéro saisie",
+      "steps": {
+        "record": { "title": "Enregistrez", "desc": "Démarrez la consultation avec le consentement du patient. Prontus écoute." },
+        "structure": { "title": "Structurez", "desc": "L'IA transcrit et construit le dossier médical section par section, en temps réel." },
+        "review": { "title": "Révisez", "desc": "Vous vérifiez et ajustez. Rien ne devient une feuille de soins sans votre approbation." },
+        "submit": { "title": "Envoyez", "desc": "Générez la feuille de soins TISS validée et envoyez-la à l'assureur — ou exportez-la." }
+      }
+    },
+    "security": {
+      "eyebrow": "Sécurité et conformité",
+      "title": "Les données de santé sont sensibles. Nous les traitons comme telles.",
+      "subtitle": "Consentement explicite, chiffrement de bout en bout, piste d'audit immuable et human-in-the-loop obligatoire.",
+      "items": {
+        "lgpd": { "title": "LGPD, GDPR et PIPL", "desc": "Consentement, minimisation et droit à l'effacement par région." },
+        "crypto": { "title": "Chiffrement", "desc": "En transit et au repos ; secrets dans un coffre-fort, jamais dans le code." },
+        "audit": { "title": "Audit immuable", "desc": "Qui a fait quoi, quand et avec quel résultat — y compris les actions de l'IA." },
+        "hitl": { "title": "Human-in-the-loop", "desc": "Le médecin approuve la note avant qu'aucune feuille de soins ne soit générée." }
+      }
+    },
+    "pricing": {
+      "eyebrow": "Tarifs",
+      "title": "Par médecin, par mois. Résiliez quand vous voulez.",
+      "subtitle": "Commencez gratuitement. La facturation par assureur est un module spécifique au marché (Brésil).",
+      "perMonth": "/médecin/mois",
+      "popular": "Le plus choisi",
+      "ctaStart": "Commencer",
+      "ctaContact": "Contacter les ventes",
+      "billingMonthly": "Mensuel",
+      "billingYearly": "Annuel",
+      "yearlyHint": "2 mois offerts"
+    },
+    "testimonials": {
+      "eyebrow": "Clients",
+      "title": "Des médecins qui récupèrent ce qui leur manque le plus : du temps."
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Questions fréquentes",
+      "items": {
+        "q1": { "q": "L'audio de la consultation est-il enregistré ?", "a": "Uniquement avec le consentement du patient, chiffré et avec une durée de conservation configurable. Vous pouvez le purger à tout moment." },
+        "q2": { "q": "L'IA envoie-t-elle la feuille de soins toute seule ?", "a": "Non. Le human-in-the-loop est obligatoire : la note et la feuille de soins ne partent qu'après votre approbation." },
+        "q3": { "q": "Est-ce que cela fonctionne pour ma spécialité ?", "a": "Oui. Il existe des modèles de note par spécialité, modifiables, et le vocabulaire clinique s'adapte." },
+        "q4": { "q": "Et l'intégration avec mon dossier patient informatisé ?", "a": "Nous nous connectons aux PEP et aux assureurs via des intégrations. Le TISS est un module spécifique au marché (Brésil)." },
+        "q5": { "q": "Est-ce disponible dans d'autres langues ?", "a": "Oui — pt-BR, anglais, chinois et français dès le premier jour." }
+      }
+    },
+    "cta": {
+      "title": "Rendez des heures à votre journée.",
+      "subtitle": "Essayez Prontus.ai sur une consultation. Sans carte bancaire.",
+      "button": "Tester sur une consultation"
+    },
+    "footer": {
+      "rights": "Tous droits réservés.",
+      "madeWith": "Conçu avec rigueur clinique.",
+      "cols": {
+        "product": "Produit",
+        "company": "Entreprise",
+        "legal": "Mentions légales",
+        "resources": "Ressources"
+      },
+      "links": {
+        "features": "Fonctionnalités",
+        "pricing": "Tarifs",
+        "security": "Sécurité",
+        "changelog": "Nouveautés",
+        "about": "À propos",
+        "careers": "Carrières",
+        "contact": "Contact",
+        "privacy": "Confidentialité",
+        "terms": "Conditions",
+        "lgpd": "LGPD",
+        "docs": "Documentation",
+        "status": "Statut",
+        "api": "API"
+      }
+    }
+  },
+  "auth": {
+    "signInTitle": "Se connecter à Prontus.ai",
+    "signInSubtitle": "Reprenez là où vous vous étiez arrêté.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "demoNote": "Démo : cliquez sur se connecter pour accéder au cabinet d'exemple.",
+    "enterDemo": "Accéder à la démonstration"
+  },
+  "appShell": {
+    "search": "Rechercher patients, consultations, feuilles de soins…",
+    "commandHint": "pour les commandes",
+    "newEncounter": "Nouvelle consultation",
+    "profile": "Profil",
+    "demoClinic": "Cabinet Aurora (démo)",
+    "role": "Fonction",
+    "upgradePlan": "Mettre à niveau",
+    "planBadge": "Forfait {plan}"
+  },
+  "encounterStatus": {
+    "scheduled": "À démarrer",
+    "recording": "Enregistrement",
+    "draft": "Brouillon",
+    "finalized": "Finalisé",
+    "review": "En révision"
+  },
+  "today": {
+    "title": "Agenda du jour",
+    "subtitle": "{count, plural, =0 {Aucune consultation aujourd'hui} one {# consultation aujourd'hui} other {# consultations aujourd'hui}}",
+    "dateLabel": "{date}",
+    "start": "Démarrer",
+    "resume": "Reprendre",
+    "openNote": "Ouvrir la note",
+    "openGuide": "Ouvrir la feuille de soins",
+    "empty": "Aucune consultation aujourd'hui",
+    "emptyDesc": "Lorsque des consultations seront planifiées, elles apparaîtront ici.",
+    "newEncounter": "Nouvelle consultation",
+    "filters": {
+      "all": "Toutes",
+      "scheduled": "À démarrer",
+      "draft": "Brouillons",
+      "finalized": "Finalisées"
+    },
+    "stats": {
+      "scheduled": "Planifiées",
+      "done": "Finalisées",
+      "minutes": "Minutes économisées",
+      "pendingGuides": "Feuilles de soins en attente"
+    },
+    "columns": {
+      "time": "Heure",
+      "patient": "Patient",
+      "type": "Type",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "agentNudge": "L'agent suggère de commencer par les {count} consultations dont la feuille de soins est en attente."
+  },
+  "encounter": {
+    "title": "Consultation en direct",
+    "with": "avec {name}",
+    "consent": {
+      "title": "Consentement du patient",
+      "body": "Informez le patient que la consultation sera enregistrée et transcrite par Prontus.ai afin de générer le dossier médical. L'audio est chiffré et peut être purgé à tout moment.",
+      "checkbox": "Le patient a consenti à l'enregistrement",
+      "start": "Démarrer l'enregistrement",
+      "cancel": "Pas maintenant"
+    },
+    "record": "Enregistrer",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "stop": "Terminer la consultation",
+    "recording": "Enregistrement",
+    "paused": "En pause",
+    "capturing": "Capture audio",
+    "elapsed": "Durée",
+    "micPermission": "Nous avons besoin du microphone pour capter la consultation.",
+    "micDenied": "Microphone bloqué. Autorisez l'accès dans le navigateur pour enregistrer.",
+    "micSimulate": "Pas de microphone ? Utilisez le mode démonstration.",
+    "simulate": "Simuler une consultation",
+    "transcript": "Transcription",
+    "transcriptEmpty": "La transcription apparaît ici au fil de la conversation.",
+    "note": "Note clinique",
+    "noteBuilding": "La note se construit en temps réel à mesure que la consultation avance.",
+    "speakerDoctor": "Médecin",
+    "speakerPatient": "Patient",
+    "finishToReview": "Terminer et réviser",
+    "sections": {
+      "queixa": "Motif principal",
+      "hma": "Histoire de la maladie actuelle",
+      "exame": "Examen physique",
+      "hipoteses": "Hypothèses diagnostiques",
+      "conduta": "Conduite à tenir"
+    },
+    "live": "EN DIRECT",
+    "savingDraft": "Enregistrement du brouillon…",
+    "draftSaved": "Brouillon enregistré"
+  },
+  "review": {
+    "title": "Révision de la note",
+    "subtitle": "Vérifiez le dossier médical généré et ajustez ce qui est nécessaire. Rien ne devient une feuille de soins sans votre approbation.",
+    "inferred": "Déduit de l'audio",
+    "edited": "Modifié par vous",
+    "confidence": "Confiance",
+    "approveSection": "Approuver la section",
+    "approved": "Approuvé",
+    "regenerate": "Régénérer",
+    "addSection": "Ajouter une section",
+    "generateTiss": "Générer la feuille de soins TISS",
+    "approveAll": "Approuver le dossier médical",
+    "approvedAll": "Dossier médical approuvé",
+    "lastEdited": "Modifié {time}",
+    "wordCount": "{count} mots",
+    "diagnostics": "CID suggérés",
+    "procedures": "Actes suggérés",
+    "patientInfo": "Patient",
+    "encounterInfo": "Consultation",
+    "duration": "Durée",
+    "placeholder": "Rédigez ou ajustez cette section…"
+  },
+  "tiss": {
+    "title": "Feuille de soins TISS",
+    "subtitle": "Feuille de soins pré-remplie à partir de la consultation. Vérifiez les champs avant l'envoi.",
+    "guideType": "Type de feuille de soins",
+    "types": {
+      "consulta": "Consultation",
+      "sadt": "SP/SADT",
+      "internacao": "Hospitalisation"
+    },
+    "payer": "Assureur",
+    "beneficiary": "Bénéficiaire",
+    "cardNumber": "Numéro de carte d'adhérent",
+    "validity": "Validité",
+    "professional": "Professionnel exécutant",
+    "council": "Ordre professionnel",
+    "cbo": "CBO",
+    "procedures": "Actes",
+    "procedureCode": "Code",
+    "procedureDesc": "Description",
+    "qty": "Qté",
+    "diagnoses": "Diagnostics (CID-10)",
+    "addProcedure": "Ajouter un acte",
+    "addDiagnosis": "Ajouter un CID",
+    "validation": "Validation anti-rejet",
+    "validationOk": "Prêt pour l'envoi",
+    "validationDesc": "{count, plural, =0 {Aucune anomalie détectée} one {# anomalie qui génère habituellement un rejet} other {# anomalies qui génèrent habituellement un rejet}}",
+    "submit": "Envoyer à l'assureur",
+    "export": "Exporter le XML",
+    "exported": "Feuille de soins exportée",
+    "submitted": "Feuille de soins envoyée à l'assureur",
+    "submitting": "Envoi en cours…",
+    "confirmSubmitTitle": "Envoyer la feuille de soins à l'assureur ?",
+    "confirmSubmitBody": "La feuille de soins sera transmise au format TISS. Vérifiez les actes et les CID avant de poursuivre.",
+    "fields": {
+      "required": "Champ obligatoire",
+      "checkCode": "Vérifiez le code de l'acte",
+      "missingCid": "Ajoutez au moins un CID compatible",
+      "authNeeded": "L'acte peut nécessiter une autorisation préalable"
+    },
+    "severity": {
+      "high": "Risque élevé de rejet",
+      "medium": "Attention",
+      "low": "Informatif"
+    }
+  },
+  "patients": {
+    "title": "Patients",
+    "subtitle": "Historique clinique et consentements.",
+    "search": "Rechercher un patient",
+    "add": "Nouveau patient",
+    "columns": {
+      "name": "Nom",
+      "age": "Âge",
+      "lastVisit": "Dernière consultation",
+      "payer": "Assureur",
+      "consent": "Consentement",
+      "encounters": "Consultations"
+    },
+    "consent": {
+      "granted": "Accordé",
+      "pending": "En attente",
+      "revoked": "Révoqué"
+    },
+    "yearsOld": "{age} ans",
+    "detail": {
+      "history": "Historique des consultations",
+      "consents": "Consentements",
+      "notes": "Notes",
+      "noEncounters": "Aucune consultation enregistrée"
+    }
+  },
+  "billing": {
+    "title": "Facturation et rejets",
+    "subtitle": "Suivez les feuilles de soins envoyées, payées et rejetées — et pourquoi.",
+    "stats": {
+      "submitted": "Envoyées",
+      "paid": "Payées",
+      "glossed": "Rejetées",
+      "glossRate": "Taux de rejet",
+      "recovered": "Récupéré",
+      "atRisk": "À risque"
+    },
+    "guideStatus": {
+      "draft": "Brouillon",
+      "sent": "Envoyée",
+      "paid": "Payée",
+      "glossed": "Rejetée"
+    },
+    "columns": {
+      "guide": "Feuille de soins",
+      "patient": "Patient",
+      "payer": "Assureur",
+      "value": "Montant",
+      "status": "Statut",
+      "reason": "Motif du rejet",
+      "actions": "Actions"
+    },
+    "resubmit": "Renvoyer",
+    "viewGuide": "Voir la feuille de soins",
+    "glossReasons": {
+      "title": "Principaux motifs de rejet",
+      "missingAuth": "Absence d'autorisation préalable",
+      "codeMismatch": "Code incompatible avec le CID",
+      "duplicate": "Facturation en doublon",
+      "expiredCard": "Carte d'adhérent expirée",
+      "missingDoc": "Documentation incomplète"
+    },
+    "chart": {
+      "title": "Évolution des rejets dans le temps",
+      "before": "Avant Prontus",
+      "after": "Avec Prontus",
+      "submitted": "Envoyées",
+      "glossed": "Rejetées"
+    },
+    "agentRecover": "L'agent a priorisé {count} feuilles de soins rejetées pour renvoi."
+  },
+  "templates": {
+    "title": "Modèles de note",
+    "subtitle": "Modèles par spécialité — modifiables et versionnés par langue.",
+    "add": "Nouveau modèle",
+    "specialty": "Spécialité",
+    "language": "Langue",
+    "sections": "Sections",
+    "usedIn": "Utilisé dans {count} consultations",
+    "edit": "Modifier le modèle",
+    "duplicate": "Dupliquer",
+    "setDefault": "Définir par défaut",
+    "default": "Par défaut",
+    "specialties": {
+      "clinica": "Médecine générale",
+      "cardio": "Cardiologie",
+      "pediatria": "Pédiatrie",
+      "ortopedia": "Orthopédie",
+      "dermato": "Dermatologie",
+      "gineco": "Gynécologie"
+    }
+  },
+  "integrations": {
+    "title": "Intégrations",
+    "subtitle": "Connectez votre dossier patient informatisé, vos assureurs et le moteur audio.",
+    "connect": "Connecter",
+    "connected": "Connecté",
+    "disconnect": "Déconnecter",
+    "configure": "Configurer",
+    "categories": {
+      "pep": "Dossier patient informatisé (PEP)",
+      "payers": "Assureurs (TISS)",
+      "asr": "Reconnaissance vocale",
+      "messaging": "Messagerie"
+    },
+    "status": {
+      "connected": "Connecté",
+      "available": "Disponible",
+      "soon": "Bientôt disponible"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "tabs": {
+      "profile": "Profil",
+      "clinic": "Cabinet",
+      "users": "Utilisateurs et rôles",
+      "security": "Sécurité",
+      "consent": "Consentement et conservation",
+      "language": "Langue et région",
+      "whatsapp": "WhatsApp",
+      "ai": "Copilote et agent"
+    },
+    "profile": {
+      "name": "Nom",
+      "specialty": "Spécialité",
+      "council": "Inscription à l'ordre",
+      "email": "E-mail"
+    },
+    "consent": {
+      "retention": "Conservation de l'audio",
+      "retentionDesc": "Durée pendant laquelle l'audio chiffré est conservé avant la purge automatique.",
+      "days": "{days} jours",
+      "purgeNow": "Purger les audios maintenant",
+      "requireConsent": "Exiger le consentement avant d'enregistrer"
+    },
+    "language": {
+      "interface": "Langue de l'interface",
+      "clinicalContent": "Vocabulaire clinique",
+      "timezone": "Fuseau horaire",
+      "currency": "Devise"
+    },
+    "users": {
+      "invite": "Inviter un utilisateur",
+      "role": "Rôle",
+      "status": "Statut",
+      "active": "Actif",
+      "invited": "Invité"
+    }
+  },
+  "roles": {
+    "medico": "Médecin",
+    "faturista": "Agent de facturation",
+    "gestor": "Responsable du cabinet",
+    "compliance": "Conformité",
+    "viewer": "Lecteur",
+    "org_admin": "Admin de l'organisation"
+  },
+  "copilot": {
+    "name": "Íris",
+    "title": "Íris · Copilote clinique",
+    "subtitle": "Comprend tout le système. Posez une question ou demandez une action.",
+    "placeholder": "Posez une question ou demandez quelque chose… ex. : « quel est mon taux de rejet ce mois-ci ? »",
+    "send": "Envoyer",
+    "thinking": "Íris réfléchit…",
+    "you": "Vous",
+    "poweredBy": "IA gouvernée · respecte votre rôle et la LGPD",
+    "openHint": "Ouvrir le copilote",
+    "suggestionsTitle": "Suggestions pour cet écran",
+    "actionTaken": "Action exécutée",
+    "actionPending": "Nécessite votre approbation",
+    "citation": "Source",
+    "suggestions": {
+      "today": [
+        "Résume mon agenda du jour",
+        "Quelles consultations sont sans dossier médical ?",
+        "Combien de minutes ai-je économisées cette semaine ?"
+      ],
+      "review": [
+        "Résume ce dossier médical en 3 lignes",
+        "Manque-t-il quelque chose dans les hypothèses ?",
+        "Génère la feuille de soins TISS de cette consultation"
+      ],
+      "billing": [
+        "Quelles feuilles de soins sont rejetées et pourquoi ?",
+        "Quel est mon taux de rejet ce mois-ci ?",
+        "Priorise les renvois de plus forte valeur"
+      ],
+      "generic": [
+        "À quoi sert cet écran ?",
+        "Montre-moi les tâches en attente d'aujourd'hui",
+        "Quelle est la prochaine étape recommandée ?"
+      ]
+    },
+    "greeting": "Bonjour ! Je suis Íris, votre copilote. Je peux résumer des dossiers médicaux, générer des feuilles de soins TISS, expliquer vos rejets et bien plus. De quoi avez-vous besoin ?"
+  },
+  "agent": {
+    "title": "Agent autonome",
+    "subtitle": "Surveille, recommande et agit dans les limites de vos autorisations.",
+    "recommendations": "Recommandations",
+    "noRecommendations": "Aucune recommandation en attente. Tout est sous contrôle.",
+    "impact": "Impact estimé",
+    "confidence": "Confiance",
+    "apply": "Appliquer",
+    "dismiss": "Ignorer",
+    "review": "Réviser",
+    "why": "Pourquoi",
+    "categories": {
+      "gloss": "Anti-rejet",
+      "resubmit": "Renvoi",
+      "incomplete": "En attente",
+      "template": "Modèle"
+    },
+    "items": {
+      "preGloss": {
+        "title": "Corriger la feuille de soins avant l'envoi",
+        "desc": "La feuille de soins de {patient} comporte un code incompatible avec le CID — risque élevé de rejet."
+      },
+      "resubmit": {
+        "title": "Renvoyer une feuille de soins rejetée",
+        "desc": "La feuille de soins de {patient} a été rejetée pour absence d'autorisation. J'ai joint le document — prête au renvoi."
+      },
+      "incomplete": {
+        "title": "Consultation sans dossier médical finalisé",
+        "desc": "La consultation de {patient} est restée en brouillon. Voulez-vous finaliser la note maintenant ?"
+      }
+    }
+  },
+  "whatsapp": {
+    "title": "Pilotage par WhatsApp",
+    "subtitle": "Votre IA avec un nom et un numéro. « Apporte-moi ceci », « fais cela » — elle extrait et agit dans le système.",
+    "persona": "Persona de l'IA",
+    "number": "Numéro WhatsApp",
+    "linkNumber": "Associer mon numéro",
+    "linked": "Associé",
+    "verify": "Vérifier avec un code",
+    "examplesTitle": "Essayez de dire",
+    "examples": [
+      "Apporte-moi les feuilles de soins rejetées de la semaine",
+      "Quel est mon agenda de demain ?",
+      "Renvoyer la feuille de soins de la patiente Marina ? Répondez OUI",
+      "Combien de minutes ai-je économisées aujourd'hui ?"
+    ],
+    "send": "Envoyer",
+    "inputPlaceholder": "Écrivez un message…",
+    "proactive": "Messages proactifs de l'agent",
+    "consent": "Consentement du canal et désinscription à tout moment.",
+    "confirmYes": "OUI",
+    "typeHere": "Simulez une conversation avec {name}"
+  },
+  "owner": {
+    "title": "Tableau de bord Propriétaire",
+    "subtitle": "Gestion complète du SaaS — tenants, forfaits, landing, IA et santé du système.",
+    "platformBadge": "Niveau Plateforme",
+    "nav": {
+      "overview": "Vue d'ensemble",
+      "tenants": "Organisations",
+      "users": "Utilisateurs",
+      "plans": "Forfaits et tarifs",
+      "landing": "Éditeur de la landing",
+      "flags": "Feature flags",
+      "billing": "Facturation",
+      "ai": "IA et Agent",
+      "whatsapp": "WhatsApp",
+      "access": "Accès et rôles",
+      "audit": "Audit",
+      "system": "Système"
+    },
+    "overview": {
+      "title": "Santé de l'activité",
+      "mrr": "MRR",
+      "activeTenants": "Tenants actifs",
+      "activeDoctors": "Médecins actifs",
+      "minutesProcessed": "Minutes traitées",
+      "aiSpend": "Consommation IA",
+      "errorRate": "Taux d'erreur",
+      "churn": "Churn",
+      "growth": "Croissance du MRR",
+      "usage": "Utilisation par tenant",
+      "recentSignups": "Nouvelles inscriptions"
+    },
+    "tenants": {
+      "title": "Organisations",
+      "add": "Nouvelle organisation",
+      "impersonate": "Incarner",
+      "suspend": "Suspendre",
+      "activate": "Activer",
+      "impersonating": "Vous agissez en tant que {tenant}",
+      "exitImpersonation": "Quitter l'incarnation",
+      "columns": {
+        "name": "Organisation",
+        "plan": "Forfait",
+        "doctors": "Médecins",
+        "usage": "Utilisation",
+        "mrr": "MRR",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "status": { "active": "Actif", "trial": "Essai", "suspended": "Suspendu", "past_due": "Impayé" }
+    },
+    "plans": {
+      "title": "Forfaits et tarifs",
+      "subtitle": "Définissez le prix, le cycle, les limites et les modules débloqués par chaque forfait.",
+      "add": "Nouveau forfait",
+      "price": "Prix",
+      "cycle": "Cycle",
+      "quotas": "Limites (quotas)",
+      "entitlements": "Modules débloqués",
+      "perDoctor": "par médecin/mois",
+      "editPlan": "Modifier le forfait",
+      "preview": "Prévisualiser la carte",
+      "modules": "Modules",
+      "quotaDoctors": "Médecins",
+      "quotaMinutes": "Minutes/mois",
+      "quotaWhatsapp": "Numéro WhatsApp dédié",
+      "save": "Enregistrer le forfait"
+    },
+    "landing": {
+      "title": "Éditeur de la landing page",
+      "subtitle": "Modifiez les sections, forfaits et textes de la landing dans les 4 langues. Publiez avec un aperçu.",
+      "section": "Section",
+      "localeTab": "Langue",
+      "publish": "Publier",
+      "schedule": "Planifier",
+      "preview": "Prévisualiser",
+      "published": "Publié",
+      "draft": "Brouillon",
+      "sections": {
+        "hero": "Héros",
+        "features": "Fonctionnalités",
+        "pricing": "Tarifs",
+        "faq": "FAQ",
+        "testimonials": "Témoignages",
+        "cta": "Appel à l'action final"
+      },
+      "fields": {
+        "title": "Titre",
+        "subtitle": "Sous-titre",
+        "cta": "Texte du bouton"
+      },
+      "savedNote": "Les modifications s'appliquent à la landing après publication."
+    },
+    "flags": {
+      "title": "Feature flags et modules",
+      "subtitle": "Activez/désactivez les onglets et fonctions par forfait, par tenant ou globalement.",
+      "module": "Module",
+      "scope": "Portée",
+      "rollout": "Déploiement",
+      "scopes": { "global": "Global", "plan": "Par forfait", "tenant": "Par tenant" },
+      "on": "Activé",
+      "off": "Désactivé"
+    },
+    "ai": {
+      "title": "IA et Agent",
+      "subtitle": "Configurez l'AI Core par tenant : persona, modèle, limites et automatisation de l'agent.",
+      "persona": "Nom / persona",
+      "model": "Modèle",
+      "monthlyBudget": "Budget mensuel",
+      "autonomy": "Autonomie de l'agent",
+      "autonomyLevels": { "suggest": "Suggestif", "semi": "Semi-autonome", "scheduled": "Planifié" },
+      "tools": "Tools activées",
+      "spend": "Consommation du mois"
+    },
+    "whatsapp": {
+      "title": "WhatsApp",
+      "subtitle": "Provisionnez un numéro et une persona par plateforme et par tenant ; activez les commandes par forfait.",
+      "number": "Numéro provisionné",
+      "persona": "Persona",
+      "commands": "Commandes activées",
+      "templates": "Templates proactifs",
+      "perTenant": "Numéro dédié par tenant"
+    },
+    "access": {
+      "title": "Accès et rôles",
+      "subtitle": "Définissez les rôles et la matrice de permissions. Même source pour l'UI, l'API, l'IA et WhatsApp.",
+      "matrix": "Matrice de permissions",
+      "role": "Rôle",
+      "addRole": "Créer un rôle",
+      "permission": "Permission"
+    },
+    "audit": {
+      "title": "Audit",
+      "subtitle": "Piste immuable de tout — inclut l'incarnation et les actions de l'IA.",
+      "columns": {
+        "time": "Quand",
+        "actor": "Qui",
+        "action": "Action",
+        "target": "Cible",
+        "result": "Résultat",
+        "source": "Origine"
+      },
+      "sources": { "ui": "Interface", "ai": "IA", "whatsapp": "WhatsApp", "api": "API", "system": "Système" }
+    }
+  },
+  "modules": {
+    "encounters": "Consultations",
+    "transcription": "Transcription",
+    "clinical-notes": "Dossiers médicaux",
+    "tiss": "Feuilles de soins TISS",
+    "patients": "Patients",
+    "billing": "Facturation",
+    "templates": "Modèles",
+    "integrations": "Intégrations",
+    "copilot": "Copilote",
+    "agent": "Agent autonome",
+    "whatsapp": "WhatsApp"
+  },
+  "meta": {
+    "landing": {
+      "title": "Prontus.ai — Terminez la consultation avec le dossier et la feuille de soins prêts",
+      "description": "Assistant clinique IA : écoute la consultation et génère le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient."
+    },
+    "app": {
+      "title": "Prontus.ai",
+      "description": "Assistant clinique IA — dossier médical et feuilles de soins TISS à partir de l'audio de la consultation."
+    }
+  }
+}
