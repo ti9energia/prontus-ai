@@ -40,6 +40,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress, EmptyState } from '@/components/ui/feedback';
+import { toast } from '@/lib/toast';
 import { formatCurrency, formatPercent } from '@/lib/utils';
 
 const STATUS_TONE: Record<GuideStatus, React.ComponentProps<typeof Badge>['tone']> = {
@@ -81,6 +82,7 @@ export function BillingScreen({ paneId }: { paneId: string }) {
   const onResubmit = (gid: string) => {
     resubmitGuide(gid);
     force();
+    toast.success(t('guideStatus.sent'));
   };
 
   return (

@@ -6,6 +6,7 @@ import { routing, type Locale } from '@/i18n/routing';
 import { fontVariables } from '../fonts';
 import { ThemeProvider, ThemeScript } from '@/components/theme-provider';
 import { PWARegister } from '@/components/pwa-register';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '../globals.css';
 
@@ -75,6 +76,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>
+        <Toaster />
         <PWARegister />
       </body>
     </html>

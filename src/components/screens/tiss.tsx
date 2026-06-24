@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
 import { Modal } from '@/components/ui/overlay';
 import { Avatar } from '@/components/ui/misc';
+import { toast } from '@/lib/toast';
 import { cn, formatCurrency } from '@/lib/utils';
 
 function resolveGuide(id?: string): TissGuide | undefined {
@@ -88,7 +89,13 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
       submitGuideStore(guide.id);
       setStatus('sent');
       setSubmitting(false);
+      toast.success(t('submitted'));
     }, 900);
+  };
+
+  const doExport = () => {
+    setExported(true);
+    toast.success(t('exported'));
   };
 
   return (
@@ -105,7 +112,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
             <Button
               variant="outline"
               leftIcon={<Download className="h-4 w-4" />}
-              onClick={() => setExported(true)}
+              onClick={doExport}
             >
               {exported ? t('exported') : t('export')}
             </Button>

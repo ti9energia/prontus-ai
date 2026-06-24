@@ -27,6 +27,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/input';
+import { toast } from '@/lib/toast';
 import { cn, formatPercent, clock } from '@/lib/utils';
 
 function resolveEncounterId(id?: string) {
@@ -77,6 +78,7 @@ export function ReviewScreen({ paneId, params }: { paneId: string; params?: Reco
     setApprovedAll(true);
     persist();
     approveNoteStore(enc.id);
+    toast.success(t('approvedAll'));
   };
 
   const generateTiss = () => {

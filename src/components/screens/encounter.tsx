@@ -18,6 +18,7 @@ import { Avatar, Switch } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/overlay';
+import { toast } from '@/lib/toast';
 import { clock, cn } from '@/lib/utils';
 
 type Line = { who: 'doctor' | 'patient'; text: string };
@@ -178,6 +179,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
     enc.status = 'review';
     enc.durationSec = seconds;
     setPhase('done');
+    toast.success(t('draftSaved'));
     openTab('review', { id: enc.id }, { paneId });
   };
 
