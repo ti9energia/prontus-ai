@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useTranslations } from 'next-intl';
 import {
   ArrowLeft,
+  BrainCircuit,
   Building2,
   Crown,
   Flag,
@@ -32,6 +33,7 @@ import {
   AccessSection,
   AuditSection,
 } from './sections';
+import { MariConsoleSection } from './mari-console';
 import { Logo } from '@/components/brand/logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +43,7 @@ import { cn } from '@/lib/utils';
 
 type SectionKey =
   | 'overview'
+  | 'mari'
   | 'tenants'
   | 'plans'
   | 'landing'
@@ -52,6 +55,7 @@ type SectionKey =
 
 const NAV: { key: SectionKey; icon: LucideIcon; Component: React.ComponentType }[] = [
   { key: 'overview', icon: LayoutDashboard, Component: OverviewSection },
+  { key: 'mari', icon: BrainCircuit, Component: MariConsoleSection },
   { key: 'tenants', icon: Building2, Component: TenantsSection },
   { key: 'plans', icon: Tags, Component: PlansSection },
   { key: 'landing', icon: PencilRuler, Component: LandingSection },

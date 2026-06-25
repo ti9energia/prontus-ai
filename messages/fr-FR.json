@@ -678,6 +678,7 @@
     "platformBadge": "Niveau Plateforme",
     "nav": {
       "overview": "Vue d'ensemble",
+      "mari": "Mari",
       "tenants": "Organisations",
       "users": "Utilisateurs",
       "plans": "Forfaits et tarifs",

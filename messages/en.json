@@ -678,6 +678,7 @@
     "platformBadge": "Platform level",
     "nav": {
       "overview": "Overview",
+      "mari": "Mari",
       "tenants": "Organizations",
       "users": "Users",
       "plans": "Plans & pricing",

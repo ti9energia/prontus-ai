@@ -615,6 +615,17 @@ export function mrrSeries(): SeriesPoint[] {
   return months.map((m, i) => ({ label: m, mrr: mrr[i] }));
 }
 
+/** Strategic, owner-facing rollup powering Mari's owner console. */
+export function ownerInsights() {
+  const stats = ownerStats();
+  const tenants = listTenants();
+  const atRisk = tenants.filter((t) => t.status === 'past_due' || t.status === 'suspended');
+  const trials = tenants.filter((t) => t.status === 'trial');
+  const upsell = tenants.filter((t) => t.planId !== 'plan_scale' && t.usagePct >= 80);
+  const highUsage = [...tenants].sort((a, b) => b.usagePct - a.usagePct).slice(0, 3);
+  return { stats, atRisk, trials, upsell, highUsage, tenantCount: tenants.length };
+}
+
 export function listTenants() {
   return db().tenants;
 }
