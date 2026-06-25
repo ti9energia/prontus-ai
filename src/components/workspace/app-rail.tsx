@@ -7,7 +7,6 @@ import { Link } from '@/i18n/routing';
 import { openTab, useWorkspace, type ScreenKey } from '@/lib/workspace/store';
 import { SCREENS, SCREEN_ORDER, type ScreenGroup } from './registry';
 import { useChrome } from './labels';
-import { Logo, LogoMark } from '@/components/brand/logo';
 import { Tooltip } from '@/components/ui/misc';
 import { cn } from '@/lib/utils';
 
@@ -27,15 +26,14 @@ export function AppRail() {
   };
 
   return (
-    <nav className="hidden w-[64px] shrink-0 flex-col items-center border-r border-hairline bg-surface/40 py-3 md:flex">
-      <Link href="/app" className="mb-2 grid h-10 w-10 place-items-center">
-        <LogoMark size={30} />
-      </Link>
-
-      <div className="flex flex-1 flex-col items-center gap-1 overflow-y-auto">
+    // Single logo lives in the top bar now. Rail is top→bottom anchored and
+    // never scrolls (no vertical/horizontal scrollbar); the workspace root is
+    // overflow-hidden so right-side tooltips can't trigger page scroll.
+    <nav className="relative z-30 hidden w-[60px] shrink-0 flex-col items-center justify-between gap-2 border-r border-hairline bg-surface/40 py-3 md:flex">
+      <div className="flex flex-col items-center gap-0.5">
         {groups.map((g, gi) => (
           <React.Fragment key={g}>
-            {gi > 0 && <div className="my-1.5 h-px w-7 bg-hairline" />}
+            {gi > 0 && <div className="my-1 h-px w-7 bg-hairline" />}
             {SCREEN_ORDER.filter((k) => SCREENS[k].group === g).map((k) => {
               const Icon = SCREENS[k].icon;
               const active = activeScreen === k;
@@ -61,7 +59,7 @@ export function AppRail() {
         ))}
       </div>
 
-      <div className="mt-2 flex flex-col items-center gap-1 border-t border-hairline pt-2">
+      <div className="flex flex-col items-center border-t border-hairline pt-2">
         <Tooltip label={c('owner')} side="right">
           <Link
             href="/owner"

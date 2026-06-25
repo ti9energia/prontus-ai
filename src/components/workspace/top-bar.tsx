@@ -50,7 +50,7 @@ export function TopBar({
   };
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-hairline bg-surface/70 px-3 backdrop-blur">
+    <header className="relative z-40 flex h-14 shrink-0 items-center gap-2 border-b border-hairline bg-surface/70 px-3 backdrop-blur">
       {/* mobile menu / brand */}
       <div className="relative md:hidden" ref={menuRef}>
         <button
@@ -71,7 +71,7 @@ export function TopBar({
           </div>
         )}
       </div>
-      <Link href="/app" className="mr-1 hidden items-center sm:flex md:hidden lg:flex">
+      <Link href="/app" className="mr-1 hidden items-center sm:flex">
         <Logo size={26} />
       </Link>
 

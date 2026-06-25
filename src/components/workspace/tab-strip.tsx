@@ -129,10 +129,11 @@ export function TabStrip({
                 focusPane(pane.id);
                 splitActivePane();
               }}
-              className="grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
-              aria-label="split pane"
+              className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-hairline bg-bg/40 px-2 text-2xs font-medium text-muted transition-colors hover:border-brand-500/40 hover:bg-ink/[0.04] hover:text-ink"
+              aria-label={c('split')}
             >
               <Columns2 className="h-4 w-4" />
+              <span className="hidden lg:inline">{c('split')}</span>
             </button>
           </Tooltip>
         )}
