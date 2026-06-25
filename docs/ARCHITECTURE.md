@@ -71,6 +71,7 @@ Erros já seguem um envelope consistente; o alvo é padronizar sucesso também:
 | GET | `/api/auth/session` | sessão | reflete a sessão para a UI |
 | POST | `/api/ai/chat` | gate de custo | Mari clínica |
 | POST | `/api/owner/chat` | **owner** | Mari de negócio |
+| POST | `/api/ai/action` | sessão | executa uma *tool* da Mari (pré-glosa, gerar guia…) |
 | GET | `/api/health` | pública | liveness |
 
 ---
@@ -102,6 +103,16 @@ mariChat({
   fallback: () => string,    // resposta determinística ciente dos dados
 }) => Promise<{ reply: string; source: 'remote'|'claude'|'mock'|'mock-fallback' }>
 ```
+
+### Mari que age (tools)
+Além de conversar, a Mari **executa ações** via um registro de *tools* tipadas e
+determinísticas (`src/lib/mari/tools.ts`): `schedule.today`, `note.summarize`,
+`tiss.generate`, **`glosa.check`** (a verificação pré-glosa — score de prontidão +
+issues) e `tiss.submit`. O endpoint `POST /api/ai/action` roda uma tool com sessão,
+validação Zod e auditoria; ações que mudam estado exigem **confirmação humana** e o
+envio é bloqueado enquanto houver bloqueios de pré-glosa. Cada tool já carrega
+`{ id, description, input }` — a mesma forma que alimenta o **tool-use do modelo**
+quando o cérebro (local ou remoto) for ligado às ferramentas.
 
 ### Amanhã: Mari como serviço próprio
 O futuro é **tirar a Mari do app**, rodá-la num servidor dedicado (com memória,

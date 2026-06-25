@@ -90,6 +90,12 @@ anti-injeção), é **auditado**, e então a Mari resolve a resposta nesta ordem
 3. Mock determinístico       (sempre disponível, ciente dos dados) → "mock"
 ```
 
+Além de conversar, a Mari **age**: um registro de *tools* (`src/lib/mari/tools.ts`)
+deixa ela executar ações reais — puxar a agenda, resumir o prontuário, gerar a guia
+e rodar a **verificação pré-glosa** — via `POST /api/ai/action`, com confirmação
+humana para o que muda estado. Na tela TISS, o botão **"Pré-glosa (Mari)"** já roda
+essa checagem e mostra o score de prontidão.
+
 O passo 3 garante que **a Mari nunca quebra**: mesmo sem nenhum modelo, ela dá
 uma resposta útil e ciente dos dados (offline-safe). O passo 1 é o futuro —
 **desacoplar a Mari para um servidor próprio**, treiná-la lá, e conectá-la ao
