@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Prontus.ai",
-    "tagline": "",
+    "appName": "Aureon Health",
+    "tagline": "Clinical intelligence in every visit.",
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
@@ -93,7 +93,7 @@
       "eyebrow": "",
       "title": "Finish the visit with your note and claim form",
       "titleHighlight": "already done",
-      "subtitle": "Prontus.ai listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
+      "subtitle": "Aureon Health listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
       "ctaPrimary": "Try it with one visit",
       "ctaSecondary": "See how it works",
       "trust": "LGPD compliant · Encrypted health data · Human-in-the-loop",
@@ -146,7 +146,7 @@
       "steps": {
         "record": {
           "title": "Record",
-          "desc": "Start the visit with the patient's consent. Prontus listens."
+          "desc": "Start the visit with the patient's consent. Aureon listens."
         },
         "structure": {
           "title": "Structure",
@@ -229,7 +229,7 @@
     },
     "cta": {
       "title": "Get hours back in your day.",
-      "subtitle": "Try Prontus.ai on a single visit. No card required.",
+      "subtitle": "Try Aureon Health on a single visit. No card required.",
       "button": "Try it with one visit"
     },
     "footer": {
@@ -259,7 +259,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Sign in to Prontus.ai",
+    "signInTitle": "Sign in to Aureon Health",
     "signInSubtitle": "Pick up right where you left off.",
     "email": "Email",
     "password": "Password",
@@ -320,7 +320,7 @@
     "with": "with {name}",
     "consent": {
       "title": "Patient consent",
-      "body": "Let the patient know the visit will be recorded and transcribed by Prontus.ai to generate the medical record. The audio is encrypted and can be purged at any time.",
+      "body": "Let the patient know the visit will be recorded and transcribed by Aureon Health to generate the medical record. The audio is encrypted and can be purged at any time.",
       "checkbox": "The patient has consented to recording",
       "start": "Start recording",
       "cancel": "Not now"
@@ -486,8 +486,8 @@
     },
     "chart": {
       "title": "Denials over time",
-      "before": "Before Prontus",
-      "after": "With Prontus",
+      "before": "Before Aureon",
+      "after": "With Aureon",
       "submitted": "Submitted",
       "glossed": "Denied"
     },
@@ -851,11 +851,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Prontus.ai — Finish the visit with your note and claim form ready",
+      "title": "Aureon Health — Finish the visit with your note and claim form ready",
       "description": "From the consultation audio to a structured medical record and a filled TISS claim — no typing. Fewer denials, more time with patients."
     },
     "app": {
-      "title": "Prontus.ai",
+      "title": "Aureon Health",
       "description": "Structured medical records and TISS claims from the consultation audio."
     }
   }

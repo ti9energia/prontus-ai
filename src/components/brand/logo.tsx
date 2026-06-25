@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-/** Prontus.ai mark — a clinical pulse captured inside a soft squircle. */
+/** Aureon Health mark — a clinical pulse captured inside a soft squircle. */
 export function LogoMark({ className, size = 32 }: { className?: string; size?: number }) {
   return (
     <svg
@@ -48,7 +48,7 @@ export function Logo({
       <LogoMark size={size} />
       {!hideText && (
         <span className={cn('font-display text-[1.05rem] font-bold tracking-tight', textClassName)}>
-          Prontus<span className="text-brand-500">.ai</span>
+          Aureon<span className="text-brand-500"> Health</span>
         </span>
       )}
     </span>

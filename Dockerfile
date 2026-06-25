@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Prontus.ai — production image (Next.js standalone). ~120MB final.
+# Aureon Health — production image (Next.js standalone). ~120MB final.
 
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat

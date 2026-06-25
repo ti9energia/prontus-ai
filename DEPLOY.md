@@ -1,11 +1,11 @@
-# Deploy — Prontus.ai
+# Deploy — Aureon Health
 
 App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente é obrigatória** — roda 100% com dados mock e copiloto em modo simulado. Defina as variáveis abaixo só se quiser ativar recursos reais.
 
 ## Variáveis de ambiente (todas opcionais)
 | Variável | Para quê | Padrão |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | URL pública (OG, `sitemap.xml`, `robots.txt`) | `https://prontus.ai` |
+| `NEXT_PUBLIC_SITE_URL` | URL pública (OG, `sitemap.xml`, `robots.txt`) | `https://aureonhealth.com` |
 | `ANTHROPIC_API_KEY` | Ativa o copiloto Mari com a Claude API de verdade | vazio → fallback inteligente |
 | `ANTHROPIC_MODEL` | Modelo do copiloto quando há chave | `claude-sonnet-4-6` |
 
@@ -33,11 +33,11 @@ vercel --prod     # produção
 O `next.config.mjs` usa `output: 'standalone'`, então a imagem fica pequena (~120 MB).
 
 ```bash
-docker build -t prontus-ai .
+docker build -t aureon-health .
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_SITE_URL=https://seu-dominio.com \
   -e ANTHROPIC_API_KEY=sk-ant-... \
-  prontus-ai
+  aureon-health
 ```
 Acesse http://localhost:3000. Health check em `GET /api/health`.
 

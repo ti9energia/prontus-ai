@@ -32,7 +32,7 @@ export interface WorkspaceState {
   activePaneId: string;
 }
 
-const STORAGE_KEY = 'prontus-workspace-v1';
+const STORAGE_KEY = 'aureon-workspace-v1';
 const MAX_PANES = 3;
 
 let seq = 1;

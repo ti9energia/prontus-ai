@@ -25,6 +25,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/data/store';
+import { useSession } from '@/lib/auth';
 import { locales, localeMeta, type Locale } from '@/i18n/routing';
 import { openTab } from '@/lib/workspace/store';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
@@ -63,10 +64,10 @@ const AI_MODELS = ['claude-opus-4-8', 'claude-sonnet-4-6'];
 /* Per-locale strings for copy that has no existing i18n key. */
 const COPY: Record<string, Record<Locale, string>> = {
   subtitle: {
-    'pt-BR': 'Gerencie seu perfil, sua clínica e como o Prontus.ai trabalha para você.',
-    en: 'Manage your profile, your clinic, and how Prontus.ai works for you.',
-    'zh-CN': '管理您的个人资料、诊所以及 Prontus.ai 的工作方式。',
-    'fr-FR': 'Gérez votre profil, votre clinique et la façon dont Prontus.ai travaille pour vous.',
+    'pt-BR': 'Gerencie seu perfil, sua clínica e como o Aureon Health trabalha para você.',
+    en: 'Manage your profile, your clinic, and how Aureon Health works for you.',
+    'zh-CN': '管理您的个人资料、诊所以及 Aureon Health 的工作方式。',
+    'fr-FR': 'Gérez votre profil, votre clinique et la façon dont Aureon Health travaille pour vous.',
   },
   profileDesc: {
     'pt-BR': 'Estas informações aparecem nas notas clínicas e nas guias TISS.',
@@ -218,6 +219,9 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
   const tc = useTranslations('common');
   const locale = useLocale();
   const user = getCurrentUser();
+  const { role, name: sessionName, email: sessionEmail } = useSession();
+  const displayName = sessionName ?? user.name;
+  const displayEmail = sessionEmail ?? user.email;
 
   const [active, setActive] = React.useState<TabKey>('profile');
 
@@ -290,13 +294,13 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
         }
       >
         <div className="flex items-center gap-4 rounded-xl border border-hairline bg-surface/60 p-4">
-          <Avatar name={user.name} hue={172} size={56} />
+          <Avatar name={displayName} hue={172} size={56} />
           <div className="min-w-0">
             <p className="truncate font-display text-base font-semibold tracking-tight">
-              {user.name}
+              {displayName}
             </p>
             <div className="mt-1 flex flex-wrap items-center gap-2">
-              <Badge tone="brand">{tr(user.roleKey as 'medico')}</Badge>
+              <Badge tone="brand">{role === 'owner' ? tr('org_admin') : tr(user.roleKey as 'medico')}</Badge>
               <span className="text-xs text-muted">{user.orgName}</span>
             </div>
           </div>
@@ -304,7 +308,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={t('profile.name')}>
-            <Input defaultValue={user.name} />
+            <Input key={displayName} defaultValue={displayName} />
           </Field>
           <Field label={t('profile.specialty')}>
             <Input defaultValue="Clínica geral" />
@@ -313,7 +317,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
             <Input defaultValue={user.council} />
           </Field>
           <Field label={t('profile.email')}>
-            <Input type="email" defaultValue={user.email} />
+            <Input key={displayEmail} type="email" defaultValue={displayEmail} />
           </Field>
         </div>
       </Panel>
@@ -354,7 +358,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
   function UsersPanel() {
     const members = React.useMemo(
       () => [
-        { name: user.name, email: user.email, roleKey: 'medico', status: 'active' as const },
+        { name: displayName, email: displayEmail, roleKey: 'medico', status: 'active' as const },
         {
           name: 'Patrícia Lemos',
           email: 'patricia@clinicaaurora.com.br',
@@ -374,7 +378,9 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
           status: 'invited' as const,
         },
       ],
-      [],
+      // Panels remount on each parent render, so the current session values flow in.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [displayName, displayEmail],
     );
 
     return (

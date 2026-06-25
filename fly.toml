@@ -1,5 +1,5 @@
-# Fly.io — Prontus.ai. Run `fly launch --no-deploy` once (it may tweak this), then `fly deploy`.
-app = "prontus-ai"
+# Fly.io — Aureon Health. Run `fly launch --no-deploy` once (it may tweak this), then `fly deploy`.
+app = "aureon-health"
 primary_region = "gru"
 
 [build]

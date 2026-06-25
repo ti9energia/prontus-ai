@@ -11,7 +11,7 @@ interface ChatMessage {
   content: string;
 }
 
-const SYSTEM = `You are Mari, the clinical copilot inside Prontus.ai, an AI medical-scribe SaaS.
+const SYSTEM = `You are Mari, the clinical copilot inside Aureon Health, an AI medical-scribe SaaS.
 You understand the whole system and help doctors and billing staff. You are concise, warm and precise.
 Rules: respect the user's role and LGPD; never invent patient data; for irreversible actions require human approval (say it needs confirmation). Always answer in the user's language.`;
 
@@ -47,10 +47,10 @@ function mockReply(text: string, locale: string): string {
   }
   if (isTime) {
     return L(
-      `Hoje o Prontus já devolveu ${minutes} minutos do seu tempo — cerca de ${(minutes / 60).toFixed(1)}h que você não passou digitando.`,
-      `Today Prontus already gave you back ${minutes} minutes — about ${(minutes / 60).toFixed(1)}h you didn't spend typing.`,
-      `今天 Prontus 已为你节省 ${minutes} 分钟，约 ${(minutes / 60).toFixed(1)} 小时无需手动记录。`,
-      `Aujourd'hui, Prontus vous a déjà fait gagner ${minutes} minutes — environ ${(minutes / 60).toFixed(1)} h sans saisie.`,
+      `Hoje o Aureon já devolveu ${minutes} minutos do seu tempo — cerca de ${(minutes / 60).toFixed(1)}h que você não passou digitando.`,
+      `Today Aureon already gave you back ${minutes} minutes — about ${(minutes / 60).toFixed(1)}h you didn't spend typing.`,
+      `今天 Aureon 已为你节省 ${minutes} 分钟，约 ${(minutes / 60).toFixed(1)} 小时无需手动记录。`,
+      `Aujourd'hui, Aureon vous a déjà fait gagner ${minutes} minutes — environ ${(minutes / 60).toFixed(1)} h sans saisie.`,
     );
   }
   if (isAgenda) {
@@ -71,10 +71,10 @@ function mockReply(text: string, locale: string): string {
     );
   }
   return L(
-    `Sou a Mari e entendo o Prontus inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
-    `I'm Mari and I understand all of Prontus. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
-    `我是 Mari，熟悉整个 Prontus。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
-    `Je suis Mari et je connais tout Prontus. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
+    `Sou a Mari e entendo o Aureon inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
+    `I'm Mari and I understand all of Aureon. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
+    `我是 Mari，熟悉整个 Aureon。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
+    `Je suis Mari et je connais tout Aureon. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
   );
 }
 

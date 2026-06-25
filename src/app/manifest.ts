@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Prontus.ai — Escriba clínico de IA',
-    short_name: 'Prontus.ai',
+    name: 'Aureon Health — Escriba clínico de IA',
+    short_name: 'Aureon Health',
     description:
       'Da fala ao prontuário e à guia TISS — sem digitar. Escriba clínico de IA para médicos e clínicas.',
     start_url: '/pt-BR/app',

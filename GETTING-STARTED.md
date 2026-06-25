@@ -1,7 +1,7 @@
-# Prontus.ai — Aplicação (guia de execução)
+# Aureon Health — Aplicação (guia de execução)
 
 Escriba clínico de IA: da fala da consulta ao **prontuário estruturado** e à **guia TISS** — sem digitar.
-Esta é a implementação **full-stack, premium e executável** das specs deste repositório (`00`, `0A`–`0D`, `02-Prontus-ai`).
+Esta é a implementação **full-stack, premium e executável** das specs deste repositório (`00`, `0A`–`0D`, `02-Aureon-Health`).
 
 > **Stack:** Next.js 14 (App Router) · React 18 · TypeScript · Tailwind · next-intl (4 idiomas) · Recharts · Framer Motion · Claude API (opcional).
 

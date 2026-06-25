@@ -1,5 +1,6 @@
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { LandingNav } from '@/components/landing/landing-nav';
+import { DnaHelix } from '@/components/landing/dna-helix';
 import { Hero } from '@/components/landing/hero';
 import {
   Features,
@@ -18,6 +19,7 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
   unstable_setRequestLocale(locale);
   return (
     <div className="relative">
+      <DnaHelix />
       <LandingNav />
       <main>
         <Hero />

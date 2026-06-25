@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 type Theme = 'light' | 'dark' | 'system';
-const KEY = 'prontus-theme';
+const KEY = 'aureon-theme';
 
 const ThemeCtx = React.createContext<{
   theme: Theme;

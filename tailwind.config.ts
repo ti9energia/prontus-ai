@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * Prontus.ai — Design System
+ * Aureon Health — Design System
  * "Clinical Calm meets Premium Precision."
  * Brand: clinical teal #0D9488 · Accent: coral #FB7185
  * Theme tokens are CSS variables (light/dark); brand/accent ramps are static.

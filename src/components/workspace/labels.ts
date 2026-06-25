@@ -8,6 +8,7 @@ const CHROME: Record<string, Dict> = {
   split: { 'pt-BR': 'Dividir', en: 'Split', 'zh-CN': '分屏', 'fr-FR': 'Diviser' },
   closePane: { 'pt-BR': 'Fechar painel', en: 'Close pane', 'zh-CN': '关闭分栏', 'fr-FR': 'Fermer le volet' },
   newTab: { 'pt-BR': 'Nova aba', en: 'New tab', 'zh-CN': '新标签页', 'fr-FR': 'Nouvel onglet' },
+  closeTab: { 'pt-BR': 'Fechar aba', en: 'Close tab', 'zh-CN': '关闭标签页', 'fr-FR': "Fermer l'onglet" },
   command: { 'pt-BR': 'Comandos', en: 'Commands', 'zh-CN': '命令', 'fr-FR': 'Commandes' },
   searchPlaceholder: {
     'pt-BR': 'Buscar ou abrir uma tela…',

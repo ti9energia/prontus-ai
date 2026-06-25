@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { AlertCircle, ArrowLeft, ArrowRight, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
 import { useSession } from '@/lib/auth';
 import { Aurora } from '@/components/landing/aurora';
@@ -24,6 +24,7 @@ export function LoginForm() {
   const { loading: sessionLoading, authed, role } = useSession();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [showPw, setShowPw] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -86,12 +87,22 @@ export function LoginForm() {
         <Aurora />
         <div className="noise absolute inset-0" />
         <div className="relative flex h-full flex-col justify-between p-12">
-          <Link href="/" className="inline-flex items-center gap-2.5 text-white">
-            <LogoMark size={34} />
-            <span className="font-display text-lg font-bold">
-              Prontus<span className="text-brand-200">.ai</span>
-            </span>
-          </Link>
+          <div>
+            <Link href="/" className="inline-flex items-center gap-2.5 text-white">
+              <LogoMark size={34} />
+              <span className="font-display text-lg font-bold">
+                Aureon<span className="text-brand-200"> Health</span>
+              </span>
+            </Link>
+            <p className="mt-3 text-sm text-white/70">
+              {L(
+                'Inteligência clínica em cada consulta.',
+                'Clinical intelligence in every visit.',
+                '每一次问诊，都有临床智能。',
+                'L’intelligence clinique à chaque consultation.',
+              )}
+            </p>
+          </div>
 
           <div className="max-w-md">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
@@ -126,7 +137,7 @@ export function LoginForm() {
       <div className="relative flex flex-col">
         <div className="flex items-center justify-between p-5">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink">
-            <ArrowLeft className="h-4 w-4" /> Prontus.ai
+            <ArrowLeft className="h-4 w-4" /> Aureon Health
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle compact />
@@ -171,14 +182,23 @@ export function LoginForm() {
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
                   <Input
-                    type="password"
+                    type={showPw ? 'text' : 'password'}
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 pr-10"
                     placeholder="••••••••"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((s) => !s)}
+                    className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-subtle transition-colors hover:bg-ink/[0.06] hover:text-ink"
+                    aria-label={showPw ? L('Ocultar senha', 'Hide password', '隐藏密码', 'Masquer le mot de passe') : L('Mostrar senha', 'Show password', '显示密码', 'Afficher le mot de passe')}
+                    aria-pressed={showPw}
+                  >
+                    {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
               </Field>
 

@@ -5,7 +5,7 @@
     "gru1"
   ],
   "experimentalServices": {
-    "prontus-ai": {
+    "aureon-health": {
       "type": "web",
       "routePrefix": "/",
       "framework": "nextjs"

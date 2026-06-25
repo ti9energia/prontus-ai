@@ -9,8 +9,8 @@ import { hasStrongSecret, type Role } from './session';
  */
 
 const DEFAULT_OWNER_EMAIL = 'luiz.henriquelhm26@gmail.com';
-const DEFAULT_TEST_EMAIL = 'marianabarreto@prontusai.com';
-const DEFAULT_TEST_PASSWORD = 'prontus-demo';
+const DEFAULT_TEST_EMAIL = 'marianabarreto@aureonhealth.com';
+const DEFAULT_TEST_PASSWORD = 'aureon-demo';
 
 export interface Identity {
   role: Role;
@@ -66,5 +66,5 @@ export function authenticate(emailRaw: string, password: string): Identity | nul
 
 /** One-click public demo → a doctor session over the sample clinic. */
 export function demoIdentity(): Identity {
-  return { role: 'doctor', email: 'demo@prontus.ai', name: 'Dra. Helena Vasconcelos' };
+  return { role: 'doctor', email: 'demo@aureonhealth.com', name: 'Dra. Helena Vasconcelos' };
 }

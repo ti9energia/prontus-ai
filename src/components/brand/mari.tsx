@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 export type MariState = 'idle' | 'listening' | 'thinking' | 'speaking';
 
 /**
- * Mari — the Prontus.ai medical AI persona.
+ * Mari — the Aureon Health medical AI persona.
  *
  * A blonde physician in a white coat with a teal stethoscope, drawn as clean
  * vector art: themeable, crisp at any size, no raster, no "generic AI image"

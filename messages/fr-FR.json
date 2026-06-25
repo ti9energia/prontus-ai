@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Prontus.ai",
-    "tagline": "",
+    "appName": "Aureon Health",
+    "tagline": "L’intelligence clinique à chaque consultation.",
     "actions": {
       "save": "Enregistrer",
       "cancel": "Annuler",
@@ -93,7 +93,7 @@
       "eyebrow": "",
       "title": "Terminez la consultation avec le dossier et la feuille de soins",
       "titleHighlight": "déjà prêts",
-      "subtitle": "Prontus.ai écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
+      "subtitle": "Aureon Health écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
       "ctaPrimary": "Tester sur une consultation",
       "ctaSecondary": "Voir le fonctionnement",
       "trust": "Conforme LGPD · Données de santé chiffrées · Human-in-the-loop",
@@ -146,7 +146,7 @@
       "steps": {
         "record": {
           "title": "Enregistrez",
-          "desc": "Démarrez la consultation avec le consentement du patient. Prontus écoute."
+          "desc": "Démarrez la consultation avec le consentement du patient. Aureon écoute."
         },
         "structure": {
           "title": "Structurez",
@@ -229,7 +229,7 @@
     },
     "cta": {
       "title": "Rendez des heures à votre journée.",
-      "subtitle": "Essayez Prontus.ai sur une consultation. Sans carte bancaire.",
+      "subtitle": "Essayez Aureon Health sur une consultation. Sans carte bancaire.",
       "button": "Tester sur une consultation"
     },
     "footer": {
@@ -259,7 +259,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Se connecter à Prontus.ai",
+    "signInTitle": "Se connecter à Aureon Health",
     "signInSubtitle": "Reprenez là où vous vous étiez arrêté.",
     "email": "E-mail",
     "password": "Mot de passe",
@@ -320,7 +320,7 @@
     "with": "avec {name}",
     "consent": {
       "title": "Consentement du patient",
-      "body": "Informez le patient que la consultation sera enregistrée et transcrite par Prontus.ai afin de générer le dossier médical. L'audio est chiffré et peut être purgé à tout moment.",
+      "body": "Informez le patient que la consultation sera enregistrée et transcrite par Aureon Health afin de générer le dossier médical. L'audio est chiffré et peut être purgé à tout moment.",
       "checkbox": "Le patient a consenti à l'enregistrement",
       "start": "Démarrer l'enregistrement",
       "cancel": "Pas maintenant"
@@ -486,8 +486,8 @@
     },
     "chart": {
       "title": "Évolution des rejets dans le temps",
-      "before": "Avant Prontus",
-      "after": "Avec Prontus",
+      "before": "Avant Aureon",
+      "after": "Avec Aureon",
       "submitted": "Envoyées",
       "glossed": "Rejetées"
     },
@@ -851,11 +851,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Prontus.ai — Terminez la consultation avec le dossier et la feuille de soins prêts",
+      "title": "Aureon Health — Terminez la consultation avec le dossier et la feuille de soins prêts",
       "description": "De l’audio de la consultation au dossier médical structuré et à la feuille de soins TISS — sans saisie. Moins de rejets, plus de temps avec les patients."
     },
     "app": {
-      "title": "Prontus.ai",
+      "title": "Aureon Health",
       "description": "Dossiers médicaux structurés et feuilles de soins TISS à partir de l’audio de la consultation."
     }
   }

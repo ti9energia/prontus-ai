@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 export function GET() {
   return NextResponse.json({
     status: 'ok',
-    service: 'prontus-ai',
+    service: 'aureon-health',
     time: new Date().toISOString(),
   });
 }

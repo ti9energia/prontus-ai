@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import { ArrowRight, Play, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Aurora } from './aurora';
@@ -11,6 +11,23 @@ import { buttonVariants } from '@/components/ui/button';
 export function Hero() {
   const t = useTranslations('landing.hero');
   const tb = useTranslations('brand');
+
+  // Pointer-driven 3D tilt on the product preview (disabled for reduced motion).
+  const reduce = useReducedMotion();
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [7, -7]), { stiffness: 150, damping: 20 });
+  const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-9, 9]), { stiffness: 150, damping: 20 });
+  const onTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduce) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width - 0.5);
+    py.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const resetTilt = () => {
+    px.set(0);
+    py.set(0);
+  };
 
   return (
     <section className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
@@ -87,33 +104,38 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* demo */}
+          {/* demo — pointer-driven 3D tilt for depth */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            onMouseMove={onTilt}
+            onMouseLeave={resetTilt}
+            style={{ perspective: 1200 }}
             className="relative"
           >
-            <HeroDemo />
+            <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }} className="relative">
+              <HeroDemo />
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              className="absolute -left-4 top-16 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
-            >
-              <p className="font-display text-lg font-bold text-brand-600">−68%</p>
-              <p className="text-2xs text-muted">glosa</p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.85, duration: 0.6 }}
-              className="absolute -right-3 bottom-20 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
-              style={{ animationDelay: '-3s' }}
-            >
-              <p className="font-display text-lg font-bold text-accent-500">+2h</p>
-              <p className="text-2xs text-muted">/ dia</p>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="absolute -left-4 top-16 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
+              >
+                <p className="font-display text-lg font-bold text-brand-600">−68%</p>
+                <p className="text-2xs text-muted">glosa</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.85, duration: 0.6 }}
+                className="absolute -right-3 bottom-20 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
+                style={{ animationDelay: '-3s' }}
+              >
+                <p className="font-display text-lg font-bold text-accent-500">+2h</p>
+                <p className="text-2xs text-muted">/ dia</p>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>

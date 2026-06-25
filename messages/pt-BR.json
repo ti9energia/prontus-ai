@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Prontus.ai",
-    "tagline": "",
+    "appName": "Aureon Health",
+    "tagline": "Inteligência clínica em cada consulta.",
     "actions": {
       "save": "Salvar",
       "cancel": "Cancelar",
@@ -93,7 +93,7 @@
       "eyebrow": "",
       "title": "Termine a consulta com o prontuário e a guia",
       "titleHighlight": "já prontos",
-      "subtitle": "O Prontus.ai escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
+      "subtitle": "O Aureon Health escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
       "ctaPrimary": "Testar com uma consulta",
       "ctaSecondary": "Ver como funciona",
       "trust": "Conforme LGPD · Dados de saúde criptografados · Human-in-the-loop",
@@ -146,7 +146,7 @@
       "steps": {
         "record": {
           "title": "Grave",
-          "desc": "Inicie a consulta com o consentimento do paciente. O Prontus escuta."
+          "desc": "Inicie a consulta com o consentimento do paciente. O Aureon escuta."
         },
         "structure": {
           "title": "Estruture",
@@ -229,7 +229,7 @@
     },
     "cta": {
       "title": "Devolva horas ao seu dia.",
-      "subtitle": "Experimente o Prontus.ai em uma consulta. Sem cartão.",
+      "subtitle": "Experimente o Aureon Health em uma consulta. Sem cartão.",
       "button": "Testar com uma consulta"
     },
     "footer": {
@@ -259,7 +259,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Entrar no Prontus.ai",
+    "signInTitle": "Entrar no Aureon Health",
     "signInSubtitle": "Continue de onde parou.",
     "email": "E-mail",
     "password": "Senha",
@@ -320,7 +320,7 @@
     "with": "com {name}",
     "consent": {
       "title": "Consentimento do paciente",
-      "body": "Informe o paciente de que a consulta será gravada e transcrita pelo Prontus.ai para gerar o prontuário. O áudio é criptografado e pode ser expurgado a qualquer momento.",
+      "body": "Informe o paciente de que a consulta será gravada e transcrita pelo Aureon Health para gerar o prontuário. O áudio é criptografado e pode ser expurgado a qualquer momento.",
       "checkbox": "O paciente consentiu com a gravação",
       "start": "Iniciar gravação",
       "cancel": "Agora não"
@@ -486,8 +486,8 @@
     },
     "chart": {
       "title": "Glosa ao longo do tempo",
-      "before": "Antes do Prontus",
-      "after": "Com o Prontus",
+      "before": "Antes do Aureon",
+      "after": "Com o Aureon",
       "submitted": "Enviadas",
       "glossed": "Glosadas"
     },
@@ -851,11 +851,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Prontus.ai — Termine a consulta com o prontuário e a guia prontos",
+      "title": "Aureon Health — Termine a consulta com o prontuário e a guia prontos",
       "description": "Da fala da consulta ao prontuário estruturado e à guia TISS — sem digitar. Menos glosa, mais tempo com o paciente."
     },
     "app": {
-      "title": "Prontus.ai",
+      "title": "Aureon Health",
       "description": "Prontuário estruturado e guias TISS a partir do áudio da consulta."
     }
   }

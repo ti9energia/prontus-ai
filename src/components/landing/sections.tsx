@@ -359,6 +359,7 @@ export function FinalCTA() {
 /* ---------------- Footer ---------------- */
 export function Footer() {
   const t = useTranslations('landing.footer');
+  const tc = useTranslations('common');
   const cols: { title: string; links: string[] }[] = [
     { title: t('cols.product'), links: ['features', 'pricing', 'security', 'changelog'] },
     { title: t('cols.company'), links: ['about', 'careers', 'contact'] },
@@ -371,7 +372,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
           <div className="col-span-2">
             <Logo />
-            <p className="mt-3 max-w-xs text-sm text-muted">{t('madeWith')}</p>
+            <p className="mt-3 max-w-xs text-sm text-muted">{tc('tagline')}</p>
           </div>
           {cols.map((c) => (
             <div key={c.title}>
@@ -389,7 +390,7 @@ export function Footer() {
           ))}
         </div>
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-hairline pt-6 text-2xs text-subtle sm:flex-row">
-          <p>© {new Date().getFullYear()} Prontus.ai — {t('rights')}</p>
+          <p>© {new Date().getFullYear()} Aureon Health — {t('rights')}</p>
           <p className="font-mono">pt-BR · en · zh-CN · fr-FR</p>
         </div>
       </div>

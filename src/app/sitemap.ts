@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prontus.ai';
+const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aureonhealth.com';
 const locales = ['pt-BR', 'en', 'zh-CN', 'fr-FR'];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   Prontus.ai — Theme tokens
+   Aureon Health — Theme tokens
    RGB channel triplets so Tailwind can apply <alpha-value>.
    ============================================================ */
 @layer base {
@@ -175,6 +175,60 @@
       transparent
     );
     animation: shimmer 1.8s infinite;
+  }
+
+  /* Hide scrollbars while keeping scroll (used by tab strip / horizontal rows) */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---- DNA double-helix field (landing ambient motif) ----
+     Pure-transform 3D so it stays GPU-friendly: each base pair is a bar with a
+     node at each end; rotating it around Y traces the two strands, and a
+     staggered per-rung delay twists the whole column into a helix. */
+  .dna {
+    position: relative;
+    height: 100%;
+    width: var(--dna-w, 150px);
+    perspective: 900px;
+    transform-style: preserve-3d;
+  }
+  .dna-rung {
+    position: absolute;
+    left: 50%;
+    width: var(--dna-w, 150px);
+    height: 10px;
+    margin-left: calc(var(--dna-w, 150px) / -2);
+    transform-style: preserve-3d;
+    animation: dna-twist 7s linear infinite;
+  }
+  .dna-bar {
+    position: absolute;
+    top: 50%;
+    left: 9px;
+    right: 9px;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, rgb(20 184 166 / 0.55), rgb(94 234 212 / 0.2), rgb(45 212 191 / 0.55));
+    border-radius: 9999px;
+  }
+  .dna-node {
+    position: absolute;
+    top: 50%;
+    height: 10px;
+    width: 10px;
+    margin-top: -5px;
+    border-radius: 9999px;
+  }
+  .dna-node-a { left: 0; background: rgb(13 148 136); box-shadow: 0 0 10px rgb(20 184 166 / 0.7); }
+  .dna-node-b { right: 0; background: rgb(94 234 212); box-shadow: 0 0 10px rgb(94 234 212 / 0.6); }
+  @keyframes dna-twist {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
   }
 
   /* Fade-out masks for scroll edges / marquees */

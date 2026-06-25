@@ -1,8 +1,8 @@
 {
-  "name": "prontus-ai",
+  "name": "aureon-health",
   "version": "1.0.0",
   "private": true,
-  "description": "Prontus.ai — escriba clínico de IA: prontuário estruturado + guias TISS a partir do áudio da consulta.",
+  "description": "Aureon Health — escriba clínico de IA: prontuário estruturado + guias TISS a partir do áudio da consulta.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

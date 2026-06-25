@@ -21,11 +21,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'meta.landing' });
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prontus.ai'),
-    title: { default: t('title'), template: '%s · Prontus.ai' },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aureonhealth.com'),
+    title: { default: t('title'), template: '%s · Aureon Health' },
     description: t('description'),
-    applicationName: 'Prontus.ai',
-    appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Prontus.ai' },
+    applicationName: 'Aureon Health',
+    appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Aureon Health' },
     formatDetection: { telephone: false },
     icons: {
       icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
@@ -35,7 +35,7 @@ export async function generateMetadata({
       title: t('title'),
       description: t('description'),
       type: 'website',
-      siteName: 'Prontus.ai',
+      siteName: 'Aureon Health',
     },
   };
 }
@@ -75,8 +75,8 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>{children}</ThemeProvider>
+          <Toaster />
         </NextIntlClientProvider>
-        <Toaster />
         <PWARegister />
       </body>
     </html>

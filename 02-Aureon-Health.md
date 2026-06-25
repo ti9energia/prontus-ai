@@ -1,4 +1,4 @@
-# 02 — Prontus.ai · Documentação Completa da Plataforma
+# 02 — Aureon Health · Documentação Completa da Plataforma
 
 > **Tipo:** AI Agent (escriba clínico) · **Cor primária:** Verde-clínico `#0D9488` · **Acento:** Coral `#FB7185`
 > **Referência:** Ambience Healthcare (EUA). **i18n:** pt-BR · en · zh-CN · fr-FR (ver `00-PADRAO`).
@@ -6,7 +6,7 @@
 ---
 
 ## 1. Visão geral
-Prontus.ai escuta a consulta médica e gera automaticamente o **prontuário estruturado** e as **guias TISS** dos convênios, devolvendo horas/dia ao médico e reduzindo **glosas** das operadoras. Diferencial: fecha o ciclo até a guia preenchível, não apenas a transcrição.
+Aureon Health escuta a consulta médica e gera automaticamente o **prontuário estruturado** e as **guias TISS** dos convênios, devolvendo horas/dia ao médico e reduzindo **glosas** das operadoras. Diferencial: fecha o ciclo até a guia preenchível, não apenas a transcrição.
 
 ## 2. Personas & casos de uso
 - **Médico(a):** quer terminar a consulta com prontuário e guia prontos, sem digitar.

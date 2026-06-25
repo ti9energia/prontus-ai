@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +43,7 @@ export function Modal({
   className?: string;
 }) {
   const mounted = useMounted();
+  const t = useTranslations('common');
   useEscape(open, onClose);
   if (!mounted || !open) return null;
 
@@ -70,6 +72,7 @@ export function Modal({
             </div>
             <button
               onClick={onClose}
+              aria-label={t('actions.close')}
               className="-mr-1 -mt-1 grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink"
             >
               <X className="h-4 w-4" />

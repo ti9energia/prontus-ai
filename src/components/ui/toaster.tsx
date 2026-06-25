@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslations } from 'next-intl';
 import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
 import { useToasts, dismissToast, type ToastTone } from '@/lib/toast';
 import { cn } from '@/lib/utils';
@@ -14,6 +15,7 @@ const TONE: Record<ToastTone, { icon: typeof Info; cls: string }> = {
 
 export function Toaster() {
   const toasts = useToasts();
+  const tt = useTranslations('common');
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -36,7 +38,7 @@ export function Toaster() {
             <button
               onClick={() => dismissToast(t.id)}
               className="-mr-1 -mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md text-subtle transition-colors hover:bg-ink/[0.06] hover:text-ink"
-              aria-label="dismiss"
+              aria-label={tt('actions.close')}
             >
               <X className="h-3.5 w-3.5" />
             </button>

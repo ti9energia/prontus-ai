@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Prontus.ai",
-    "tagline": "",
+    "appName": "Aureon Health",
+    "tagline": "每一次问诊，都有临床智能。",
     "actions": {
       "save": "保存",
       "cancel": "取消",
@@ -93,7 +93,7 @@
       "eyebrow": "",
       "title": "问诊结束，病历与单据",
       "titleHighlight": "即刻就绪",
-      "subtitle": "Prontus.ai 聆听问诊过程，几秒内即返回结构化病历和已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。",
+      "subtitle": "Aureon Health 聆听问诊过程，几秒内即返回结构化病历和已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。",
       "ctaPrimary": "用一次问诊试试",
       "ctaSecondary": "了解运作方式",
       "trust": "符合 LGPD · 健康数据加密 · 人工参与把关",
@@ -146,7 +146,7 @@
       "steps": {
         "record": {
           "title": "录制",
-          "desc": "在患者同意后开始问诊，Prontus 全程聆听。"
+          "desc": "在患者同意后开始问诊，Aureon 全程聆听。"
         },
         "structure": {
           "title": "结构化",
@@ -229,7 +229,7 @@
     },
     "cta": {
       "title": "把时间还给您的每一天。",
-      "subtitle": "用一次问诊体验 Prontus.ai。无需信用卡。",
+      "subtitle": "用一次问诊体验 Aureon Health。无需信用卡。",
       "button": "用一次问诊试试"
     },
     "footer": {
@@ -259,7 +259,7 @@
     }
   },
   "auth": {
-    "signInTitle": "登录 Prontus.ai",
+    "signInTitle": "登录 Aureon Health",
     "signInSubtitle": "从上次中断处继续。",
     "email": "邮箱",
     "password": "密码",
@@ -320,7 +320,7 @@
     "with": "与 {name}",
     "consent": {
       "title": "患者授权",
-      "body": "请告知患者，本次问诊将由 Prontus.ai 录制并转录以生成病历。音频经过加密，可随时彻底删除。",
+      "body": "请告知患者，本次问诊将由 Aureon Health 录制并转录以生成病历。音频经过加密，可随时彻底删除。",
       "checkbox": "患者已同意录制",
       "start": "开始录制",
       "cancel": "暂不"
@@ -486,8 +486,8 @@
     },
     "chart": {
       "title": "拒付趋势",
-      "before": "使用 Prontus 前",
-      "after": "使用 Prontus 后",
+      "before": "使用 Aureon 前",
+      "after": "使用 Aureon 后",
       "submitted": "已提交",
       "glossed": "被拒付"
     },
@@ -851,11 +851,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Prontus.ai——问诊结束，病历与单据即刻就绪",
+      "title": "Aureon Health——问诊结束，病历与单据即刻就绪",
       "description": "从问诊语音到结构化病历和已填写的 TISS 单据——无需打字。减少拒付，把更多时间留给患者。"
     },
     "app": {
-      "title": "Prontus.ai",
+      "title": "Aureon Health",
       "description": "根据问诊语音生成结构化病历和 TISS 单据。"
     }
   }

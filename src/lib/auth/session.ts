@@ -12,7 +12,7 @@
  *   access on the live site.
  */
 
-export const SESSION_COOKIE = 'prontus_session';
+export const SESSION_COOKIE = 'aureon_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
 export type Role = 'owner' | 'doctor';
@@ -24,7 +24,7 @@ export interface SessionPayload {
   exp: number; // epoch seconds
 }
 
-const DEV_FALLBACK = 'prontus-dev-secret-change-me';
+const DEV_FALLBACK = 'aureon-dev-secret-change-me';
 
 function secret(): string {
   return process.env.AUTH_SECRET || DEV_FALLBACK;
@@ -89,7 +89,9 @@ export async function createSession(input: {
 
 export async function verifySession(token: string | undefined | null): Promise<SessionPayload | null> {
   if (!token || !token.includes('.')) return null;
-  const [body, sig] = token.split('.');
+  const parts = token.split('.');
+  if (parts.length !== 2) return null; // base64url has no '.', so a valid token has exactly one
+  const [body, sig] = parts;
   if (!body || !sig) return null;
 
   const expected = await sign(body);
@@ -105,6 +107,9 @@ export async function verifySession(token: string | undefined | null): Promise<S
   if (payload.role !== 'owner' && payload.role !== 'doctor') return null;
   // Owner access requires a real secret, regardless of a valid-looking token.
   if (payload.role === 'owner' && !hasStrongSecret()) return null;
+  // Fail-closed on live deploys: the dev fallback secret must never authorize any
+  // session in production, or a leaked/known fallback could forge doctor access too.
+  if (!hasStrongSecret() && process.env.NODE_ENV === 'production') return null;
   return payload;
 }
 

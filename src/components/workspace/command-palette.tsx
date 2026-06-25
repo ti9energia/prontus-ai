@@ -3,8 +3,8 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { useLocale, useTranslations } from 'next-intl';
-import { ArrowRight, Columns2, CornerDownLeft, Mic, Search, Sparkles } from 'lucide-react';
-import { openTab, splitActivePane, type ScreenKey } from '@/lib/workspace/store';
+import { ArrowRight, CornerDownLeft, Mic, Search, Sparkles } from 'lucide-react';
+import { openTab, type ScreenKey } from '@/lib/workspace/store';
 import { SCREENS, SCREEN_ORDER } from './registry';
 import { useChrome } from './labels';
 import { Kbd } from '@/components/ui/misc';
@@ -52,7 +52,6 @@ export function CommandPalette({
       run: () => openTab('encounter', { id: 'new' }),
     },
     { kind: 'action', id: 'ask-iris', label: c('askIris'), icon: Sparkles, run: onAskIris },
-    { kind: 'action', id: 'split', label: c('split'), icon: Columns2, run: () => splitActivePane() },
   ];
 
   const q = query.trim().toLowerCase();

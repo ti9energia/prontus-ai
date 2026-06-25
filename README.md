@@ -23,7 +23,7 @@ Specs de produto e engenharia para o Claude Code construir cada plataforma. **Tu
 | # | Plataforma | Tipo | Em uma linha |
 |---|------------|------|--------------|
 | 01 | **BoletoVerify** | SaaS antifraude | Audita boletos em tempo real e bloqueia o golpe do boleto alterado. |
-| 02 | **Prontus.ai** | AI Agent (saúde) | Escriba clínico: prontuário + guia TISS a partir do áudio da consulta. |
+| 02 | **Aureon Health** | AI Agent (saúde) | Escriba clínico: prontuário + guia TISS a partir do áudio da consulta. |
 | 03 | **CartórioFast** | TaaS | Agente que emite certidões/averbações em portais de cartório. |
 | 04 | **MiCA-Compliance** | RegTech DeFi | Compliance AML em tempo real (MiCA/SEC) com detecção por GNN. |
 | 05 | **ConstellaPath** | SaaS space-tech | Otimiza manobras de satélites LEO (Deep RL) para evitar colisão. |

@@ -87,7 +87,7 @@ function Shell() {
   const t = useTranslations('owner');
   const tn = useTranslations('nav');
   const router = useRouter();
-  const { loading, authed, role } = useSession();
+  const { loading, authed, role, name } = useSession();
   const [section, setSection] = React.useState<SectionKey>('overview');
 
   // Middleware enforces owner-only access; this mirrors it client-side.
@@ -107,6 +107,7 @@ function Shell() {
           <Badge tone="accent" className="gap-1">
             <Crown className="h-3 w-3" /> {t('platformBadge')}
           </Badge>
+          {name && <span className="hidden text-2xs text-muted sm:inline">· {name}</span>}
         </div>
         <div className="flex items-center gap-2">
           <Link href="/app">

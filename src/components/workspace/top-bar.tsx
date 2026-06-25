@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { Crown, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, Sparkles } from 'lucide-react';
+import { LogOut, Menu, Search, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
 import { getCurrentUser } from '@/lib/data/store';
 import { openTab } from '@/lib/workspace/store';
@@ -21,20 +21,18 @@ import { cn } from '@/lib/utils';
 export function TopBar({
   onOpenCommand,
   onOpenCopilot,
-  railCollapsed,
-  onToggleRail,
 }: {
   onOpenCommand: () => void;
   onOpenCopilot: () => void;
-  railCollapsed: boolean;
-  onToggleRail: () => void;
 }) {
   const t = useTranslations();
   const tr = useTranslations('roles');
   const c = useChrome();
   const router = useRouter();
   const user = getCurrentUser();
-  const { role } = useSession();
+  const { role, name: sessionName, email: sessionEmail } = useSession();
+  const displayName = sessionName ?? user.name;
+  const displayEmail = sessionEmail ?? user.email;
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [userOpen, setUserOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -45,8 +43,18 @@ export function TopBar({
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
       if (userRef.current && !userRef.current.contains(e.target as Node)) setUserOpen(false);
     };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        setUserOpen(false);
+      }
+    };
     document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
   }, []);
 
   const doSignOut = async () => {
@@ -55,18 +63,18 @@ export function TopBar({
   };
 
   return (
-    <header className="relative z-40 flex h-14 shrink-0 items-center gap-2 border-b border-hairline bg-surface/70 px-3 backdrop-blur">
-      {/* mobile menu / brand */}
+    <header className="relative z-50 flex h-14 shrink-0 items-center gap-2 border-b border-hairline bg-surface/70 px-3 backdrop-blur">
+      {/* mobile menu */}
       <div className="relative md:hidden" ref={menuRef}>
         <button
           onClick={() => setMenuOpen((o) => !o)}
           className="grid h-9 w-9 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink"
-          aria-label="menu"
+          aria-label={t('common.actions.openMenu')}
         >
           <Menu className="h-5 w-5" />
         </button>
         {menuOpen && (
-          <div className="absolute left-0 top-11 z-50 animate-scale-in">
+          <div className="absolute left-0 top-11 z-[60] animate-scale-in">
             <ScreenMenu
               onPick={(s) => {
                 setMenuOpen(false);
@@ -76,15 +84,8 @@ export function TopBar({
           </div>
         )}
       </div>
-      <button
-        onClick={onToggleRail}
-        className="hidden h-9 w-9 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink md:grid"
-        aria-label={railCollapsed ? c('expandSidebar') : c('collapseSidebar')}
-        title={railCollapsed ? c('expandSidebar') : c('collapseSidebar')}
-      >
-        {railCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-      </button>
-      <Link href="/app" className="mr-1 hidden items-center sm:flex">
+      {/* brand — desktop shows it in the sidebar header, so here it's mobile-only */}
+      <Link href="/app" className="mr-1 flex items-center md:hidden" aria-label="Aureon Health">
         <Logo size={26} />
       </Link>
 
@@ -121,19 +122,19 @@ export function TopBar({
         {/* user */}
         <div className="relative" ref={userRef}>
           <button onClick={() => setUserOpen((o) => !o)} className="ml-0.5 rounded-full ring-2 ring-transparent transition hover:ring-brand-500/30">
-            <Avatar name={user.name} hue={170} size={34} />
+            <Avatar name={displayName} hue={170} size={34} />
           </button>
           {userOpen && (
-            <div className="absolute right-0 top-11 z-50 w-60 overflow-hidden rounded-xl border border-hairline bg-card p-1.5 shadow-lg animate-scale-in">
+            <div className="absolute right-0 top-11 z-[60] w-60 overflow-hidden rounded-xl border border-hairline bg-card p-1.5 shadow-xl animate-scale-in">
               <div className="flex items-center gap-2.5 px-2 py-2">
-                <Avatar name={user.name} hue={170} size={38} />
+                <Avatar name={displayName} hue={170} size={38} />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{user.name}</p>
-                  <p className="truncate text-2xs text-muted">{user.email}</p>
+                  <p className="truncate text-sm font-medium">{displayName}</p>
+                  <p className="truncate text-2xs text-muted">{displayEmail}</p>
                 </div>
               </div>
               <div className="px-2 pb-2">
-                <Badge tone="brand">{tr(user.roleKey as 'medico')}</Badge>
+                <Badge tone="brand">{role === 'owner' ? tr('org_admin') : tr(user.roleKey as 'medico')}</Badge>
                 <span className="ml-1.5 text-2xs text-muted">· {user.orgName}</span>
               </div>
               <div className="my-1 h-px bg-hairline" />
@@ -146,15 +147,6 @@ export function TopBar({
               >
                 <Sparkles className="h-4 w-4 text-muted" /> {t('nav.settings')}
               </button>
-              {role === 'owner' && (
-                <Link
-                  href="/owner"
-                  onClick={() => setUserOpen(false)}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm hover:bg-ink/[0.05]"
-                >
-                  <Crown className="h-4 w-4 text-accent-500" /> {c('owner')}
-                </Link>
-              )}
               <div className="my-1 h-px bg-hairline sm:hidden" />
               <div className="flex items-center justify-between px-2 py-1 sm:hidden">
                 <ThemeToggle compact />

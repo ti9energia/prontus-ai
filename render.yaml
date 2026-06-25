@@ -1,7 +1,7 @@
-# Render Blueprint — Prontus.ai. New → Blueprint → point at this repo.
+# Render Blueprint — Aureon Health. New → Blueprint → point at this repo.
 services:
   - type: web
-    name: prontus-ai
+    name: aureon-health
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: starter

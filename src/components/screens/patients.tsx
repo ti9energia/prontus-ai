@@ -206,6 +206,7 @@ function PatientSheet({
   locale: string;
 }) {
   const t = useTranslations('patients');
+  const tc = useTranslations('common');
   return (
     <Sheet open={open} onClose={onClose}>
       {patient && (
@@ -222,7 +223,7 @@ function PatientSheet({
                 </p>
               </div>
             </div>
-            <IconButton onClick={onClose} aria-label="close" className="-mr-1 -mt-1 shrink-0">
+            <IconButton onClick={onClose} aria-label={tc('actions.close')} className="-mr-1 -mt-1 shrink-0">
               <X className="h-4 w-4" />
             </IconButton>
           </header>

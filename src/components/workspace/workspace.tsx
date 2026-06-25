@@ -35,7 +35,7 @@ export function Workspace() {
 
   React.useEffect(() => {
     try {
-      setRailCollapsed(localStorage.getItem('prontus-rail-collapsed') === '1');
+      setRailCollapsed(localStorage.getItem('aureon-rail-collapsed') === '1');
     } catch {
       /* noop */
     }
@@ -45,7 +45,7 @@ export function Workspace() {
     setRailCollapsed((v) => {
       const next = !v;
       try {
-        localStorage.setItem('prontus-rail-collapsed', next ? '1' : '0');
+        localStorage.setItem('aureon-rail-collapsed', next ? '1' : '0');
       } catch {
         /* noop */
       }
@@ -84,8 +84,6 @@ export function Workspace() {
       <TopBar
         onOpenCommand={() => setCmdOpen(true)}
         onOpenCopilot={() => setCopilotOpen(true)}
-        railCollapsed={railCollapsed}
-        onToggleRail={toggleRail}
       />
 
       <div className="flex min-h-0 flex-1">
@@ -102,7 +100,7 @@ export function Workspace() {
                   i > 0 && 'border-hairline border-t md:border-l md:border-t-0',
                 )}
               >
-                <TabStrip pane={pane} active={pane.id === ws.activePaneId} paneCount={ws.panes.length} />
+                <TabStrip pane={pane} active={pane.id === ws.activePaneId} />
                 <div
                   className={cn(
                     'relative min-h-0 flex-1 bg-bg transition-shadow',

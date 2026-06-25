@@ -1,5 +1,5 @@
-/* Prontus.ai — lightweight service worker (PWA offline shell). */
-const CACHE = 'prontus-v1';
+/* Aureon Health — lightweight service worker (PWA offline shell). */
+const CACHE = 'aureon-v1';
 const PRECACHE = ['/icon.svg', '/icon-maskable.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
