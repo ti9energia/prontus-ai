@@ -2,8 +2,10 @@
 
 import * as React from 'react';
 import { useLocale, useMessages, useTranslations } from 'next-intl';
-import { ArrowUp, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ArrowUp, Mic, ShieldCheck, Volume2, VolumeX, X } from 'lucide-react';
 import { Sheet } from '@/components/ui/overlay';
+import { MariFace } from '@/components/brand/mari';
+import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import type { ScreenKey } from '@/lib/workspace/store';
 import { cn } from '@/lib/utils';
 
@@ -31,11 +33,16 @@ export function CopilotDock({
   const t = useTranslations('copilot');
   const locale = useLocale();
   const messages = useMessages() as any;
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
 
   const [chat, setChat] = React.useState<Msg[]>([{ role: 'assistant', content: t('greeting') }]);
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [voiceOn, setVoiceOn] = React.useState(false);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  const { speak, cancel, speaking, supported: ttsSupported } = useSpeech();
 
   const suggestions: string[] = messages?.copilot?.suggestions?.[suggestionSet(activeScreen)] ?? [];
 
@@ -57,7 +64,9 @@ export function CopilotDock({
         body: JSON.stringify({ messages: next, locale, screen: activeScreen }),
       });
       const data = await res.json();
-      setChat((c) => [...c, { role: 'assistant', content: data.reply ?? '…' }]);
+      const reply = data.reply ?? '…';
+      setChat((c) => [...c, { role: 'assistant', content: reply }]);
+      if (voiceOn) speak(reply, locale);
     } catch {
       setChat((c) => [...c, { role: 'assistant', content: '…' }]);
     } finally {
@@ -65,35 +74,86 @@ export function CopilotDock({
     }
   };
 
+  const { supported: micSupported, listening, start: startMic, stop: stopMic } = useSpeechRecognition({
+    locale,
+    interimResults: true,
+    onResult: (text, isFinal) => {
+      setInput(text);
+      if (isFinal) {
+        stopMic();
+        void send(text);
+      }
+    },
+  });
+
+  const toggleMic = () => (listening ? stopMic() : startMic());
+  const toggleVoice = () =>
+    setVoiceOn((v) => {
+      if (v) cancel();
+      return !v;
+    });
+
+  const statusText = listening
+    ? L('Ouvindo…', 'Listening…', '正在聆听…', 'À l’écoute…')
+    : speaking
+      ? L('Falando…', 'Speaking…', '正在朗读…', 'Réponse vocale…')
+      : t('subtitle');
+
   return (
     <Sheet open={open} onClose={onClose} side="right" className="max-w-[420px]">
       <div className="flex h-full flex-col">
         {/* header */}
         <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 text-white shadow-glow">
-              <Sparkles className="h-4.5 w-4.5" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold leading-tight">{t('title')}</p>
-              <p className="text-2xs text-muted">{t('subtitle')}</p>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className={cn('relative shrink-0 rounded-full transition-shadow', speaking && 'shadow-glow')}>
+              <MariFace size={40} />
+              {(speaking || listening) && (
+                <span className="absolute -bottom-0.5 -right-0.5 flex items-end gap-px rounded-full bg-card px-1 py-0.5 shadow-sm">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="h-2 w-[2px] origin-bottom rounded-full bg-brand-500 animate-eq"
+                      style={{ animationDelay: `${i * 0.12}s` }}
+                    />
+                  ))}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold leading-tight">{t('title')}</p>
+              <p className="truncate text-2xs text-muted">{statusText}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex shrink-0 items-center gap-1">
+            {ttsSupported && (
+              <button
+                onClick={toggleVoice}
+                className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink"
+                aria-pressed={voiceOn}
+                aria-label={L('Voz da Mari', 'Mari’s voice', 'Mari 语音', 'Voix de Mari')}
+                title={L('Voz da Mari', 'Mari’s voice', 'Mari 语音', 'Voix de Mari')}
+              >
+                {voiceOn ? <Volume2 className="h-4 w-4 text-brand-600" /> : <VolumeX className="h-4 w-4" />}
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink"
+              aria-label={L('Fechar', 'Close', '关闭', 'Fermer')}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {/* messages */}
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
           {chat.map((m, i) => (
-            <div key={i} className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
+            <div key={i} className={cn('flex items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
+              {m.role === 'assistant' && <MariFace size={26} className="mb-0.5 shrink-0" rim={false} />}
               <div
                 className={cn(
-                  'max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
+                  'max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
                   m.role === 'user'
                     ? 'rounded-br-md bg-brand-600 text-white'
                     : 'rounded-bl-md bg-ink/[0.05] text-ink',
@@ -104,7 +164,8 @@ export function CopilotDock({
             </div>
           ))}
           {loading && (
-            <div className="flex justify-start">
+            <div className="flex items-end gap-2">
+              <MariFace size={26} className="mb-0.5 shrink-0" rim={false} />
               <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-ink/[0.05] px-3.5 py-3">
                 {[0, 1, 2].map((d) => (
                   <span
@@ -155,13 +216,30 @@ export function CopilotDock({
                 }
               }}
               rows={1}
-              placeholder={t('placeholder')}
+              placeholder={listening ? L('Ouvindo…', 'Listening…', '正在聆听…', 'À l’écoute…') : t('placeholder')}
               className="max-h-28 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-subtle"
             />
+            {micSupported && (
+              <button
+                type="button"
+                onClick={toggleMic}
+                className={cn(
+                  'grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors',
+                  listening
+                    ? 'animate-pulse bg-accent-500 text-white'
+                    : 'text-muted hover:bg-ink/[0.06] hover:text-ink',
+                )}
+                aria-pressed={listening}
+                aria-label={L('Ditar por voz', 'Dictate by voice', '语音输入', 'Dicter à la voix')}
+              >
+                <Mic className="h-4 w-4" />
+              </button>
+            )}
             <button
               type="submit"
               disabled={!input.trim() || loading}
               className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-600 text-white transition-all hover:bg-brand-700 disabled:opacity-40"
+              aria-label={t('send')}
             >
               <ArrowUp className="h-4 w-4" />
             </button>
