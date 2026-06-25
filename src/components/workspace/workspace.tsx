@@ -31,6 +31,26 @@ export function Workspace() {
   const { loading, authed } = useSession();
   const [cmdOpen, setCmdOpen] = React.useState(false);
   const [copilotOpen, setCopilotOpen] = React.useState(false);
+  const [railCollapsed, setRailCollapsed] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      setRailCollapsed(localStorage.getItem('prontus-rail-collapsed') === '1');
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const toggleRail = () =>
+    setRailCollapsed((v) => {
+      const next = !v;
+      try {
+        localStorage.setItem('prontus-rail-collapsed', next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
 
   React.useEffect(() => {
     hydrate();
@@ -61,10 +81,15 @@ export function Workspace() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-bg">
-      <TopBar onOpenCommand={() => setCmdOpen(true)} onOpenCopilot={() => setCopilotOpen(true)} />
+      <TopBar
+        onOpenCommand={() => setCmdOpen(true)}
+        onOpenCopilot={() => setCopilotOpen(true)}
+        railCollapsed={railCollapsed}
+        onToggleRail={toggleRail}
+      />
 
       <div className="flex min-h-0 flex-1">
-        <AppRail />
+        <AppRail collapsed={railCollapsed} onToggle={toggleRail} />
         <div className="flex min-h-0 flex-1 flex-col md:flex-row">
           {ws.panes.map((pane, i) => {
             const isActive = pane.id === ws.activePaneId && ws.panes.length > 1;

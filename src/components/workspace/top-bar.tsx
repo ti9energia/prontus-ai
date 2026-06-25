@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
-import { Crown, LogOut, Menu, Search, Sparkles } from 'lucide-react';
+import { Crown, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Search, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
 import { getCurrentUser } from '@/lib/data/store';
 import { openTab } from '@/lib/workspace/store';
@@ -21,9 +21,13 @@ import { cn } from '@/lib/utils';
 export function TopBar({
   onOpenCommand,
   onOpenCopilot,
+  railCollapsed,
+  onToggleRail,
 }: {
   onOpenCommand: () => void;
   onOpenCopilot: () => void;
+  railCollapsed: boolean;
+  onToggleRail: () => void;
 }) {
   const t = useTranslations();
   const tr = useTranslations('roles');
@@ -72,6 +76,14 @@ export function TopBar({
           </div>
         )}
       </div>
+      <button
+        onClick={onToggleRail}
+        className="hidden h-9 w-9 place-items-center rounded-md text-muted hover:bg-ink/[0.06] hover:text-ink md:grid"
+        aria-label={railCollapsed ? c('expandSidebar') : c('collapseSidebar')}
+        title={railCollapsed ? c('expandSidebar') : c('collapseSidebar')}
+      >
+        {railCollapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+      </button>
       <Link href="/app" className="mr-1 hidden items-center sm:flex">
         <Logo size={26} />
       </Link>

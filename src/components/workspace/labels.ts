@@ -23,6 +23,8 @@ const CHROME: Record<string, Dict> = {
   owner: { 'pt-BR': 'Painel do Dono', en: 'Owner panel', 'zh-CN': '所有者面板', 'fr-FR': 'Espace propriétaire' },
   signOut: { 'pt-BR': 'Sair', en: 'Sign out', 'zh-CN': '退出登录', 'fr-FR': 'Se déconnecter' },
   newConsultation: { 'pt-BR': 'Nova consulta', en: 'New consultation', 'zh-CN': '新问诊', 'fr-FR': 'Nouvelle consultation' },
+  collapseSidebar: { 'pt-BR': 'Recolher menu', en: 'Collapse sidebar', 'zh-CN': '收起侧栏', 'fr-FR': 'Réduire le menu' },
+  expandSidebar: { 'pt-BR': 'Expandir menu', en: 'Expand sidebar', 'zh-CN': '展开侧栏', 'fr-FR': 'Afficher le menu' },
 };
 
 export function useChrome() {

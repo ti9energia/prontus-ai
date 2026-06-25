@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Crown } from 'lucide-react';
+import { Crown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { openTab, useWorkspace, type ScreenKey } from '@/lib/workspace/store';
 import { SCREENS, SCREEN_ORDER, type ScreenGroup } from './registry';
@@ -11,7 +11,7 @@ import { useSession } from '@/lib/auth';
 import { Tooltip } from '@/components/ui/misc';
 import { cn } from '@/lib/utils';
 
-export function AppRail() {
+export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const t = useTranslations();
   const locale = useLocale();
   const c = useChrome();
@@ -26,6 +26,23 @@ export function AppRail() {
     const def = SCREENS[key];
     return def.titleMap?.[locale] ?? (def.titleKey ? t(def.titleKey) : key);
   };
+
+  // Collapsed: a slim strip with just an expand control (toggle also in top bar).
+  if (collapsed) {
+    return (
+      <nav className="relative z-30 hidden w-[44px] shrink-0 flex-col items-center border-r border-hairline bg-surface/40 py-3 md:flex">
+        <Tooltip label={c('expandSidebar')} side="right">
+          <button
+            onClick={onToggle}
+            className="grid h-9 w-9 place-items-center rounded-xl text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
+            aria-label={c('expandSidebar')}
+          >
+            <PanelLeftOpen className="h-[18px] w-[18px]" />
+          </button>
+        </Tooltip>
+      </nav>
+    );
+  }
 
   return (
     // Single logo lives in the top bar now. Rail is top→bottom anchored and
@@ -61,8 +78,8 @@ export function AppRail() {
         ))}
       </div>
 
-      {role === 'owner' && (
-        <div className="flex flex-col items-center border-t border-hairline pt-2">
+      <div className="flex flex-col items-center gap-1 border-t border-hairline pt-2">
+        {role === 'owner' && (
           <Tooltip label={c('owner')} side="right">
             <Link
               href="/owner"
@@ -72,8 +89,17 @@ export function AppRail() {
               <Crown className="h-[18px] w-[18px]" />
             </Link>
           </Tooltip>
-        </div>
-      )}
+        )}
+        <Tooltip label={c('collapseSidebar')} side="right">
+          <button
+            onClick={onToggle}
+            className="grid h-9 w-9 place-items-center rounded-xl text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
+            aria-label={c('collapseSidebar')}
+          >
+            <PanelLeftClose className="h-[18px] w-[18px]" />
+          </button>
+        </Tooltip>
+      </div>
     </nav>
   );
 }

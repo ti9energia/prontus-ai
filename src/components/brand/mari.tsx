@@ -64,50 +64,56 @@ export function MariFace({
       <g clipPath={`url(#${u('clip')})`}>
         <rect width="96" height="96" fill={`url(#${u('bg')})`} />
 
-        {/* hair — back */}
-        <path d="M22 45c0-18 12-30 26-30s26 12 26 30c0 9-2 17-5 24H27c-3-7-5-15-5-24Z" fill={`url(#${u('hair')})`} />
+        {/* hair — back layer */}
+        <path d="M21 47c0-18 12-31 27-31s27 13 27 31c0 11-2 20-6 28H27c-4-8-6-17-6-28Z" fill={`url(#${u('hair')})`} />
 
-        {/* neck + shoulder shadow */}
-        <path d="M40 60h16v11c0 4-3.6 7-8 7s-8-3-8-7V60Z" fill={`url(#${u('skin')})`} />
-        <path d="M40 64c2.6 3 5.2 4.3 8 4.3s5.4-1.3 8-4.3v-3H40v3Z" fill="#e6b193" opacity="0.55" />
+        {/* neck + chin shadow */}
+        <path d="M41 58h14v12c0 4-3 7-7 7s-7-3-7-7V58Z" fill={`url(#${u('skin')})`} />
+        <path d="M41 63c2.4 3 4.6 4.3 7 4.3s4.6-1.3 7-4.3v-5H41v5Z" fill="#e7b394" opacity="0.5" />
 
-        {/* white coat */}
-        <path d="M16 96c0-13 9-20 24-23l8 9 8-9c15 3 24 10 24 23H16Z" fill={`url(#${u('coat')})`} />
-        <path d="M40 73 48 96 37 96 32 80Z" fill="#dde4ea" />
-        <path d="M56 73 48 96 59 96 64 80Z" fill="#dde4ea" />
+        {/* white coat + lapels */}
+        <path d="M15 96c0-13 9-21 25-24l8 10 8-10c16 3 25 11 25 24H15Z" fill={`url(#${u('coat')})`} />
+        <path d="M40 72 34 96h6.5l6-18-6.5-6Z" fill="#dde4ea" />
+        <path d="M56 72 62 96h-6.5l-6-18 6.5-6Z" fill="#dde4ea" />
         {/* teal scrubs V */}
-        <path d="M40 73 48 90 56 73 48 69Z" fill="#0d9488" />
+        <path d="M41 72 48 88 55 72 48 68Z" fill="#0d9488" />
 
-        {/* stethoscope */}
-        <path d="M41 70c-8 3-12 9-12 18" stroke="#0d9488" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <path d="M55 70c8 3 12 9 12 18" stroke="#0d9488" strokeWidth="3" fill="none" strokeLinecap="round" />
-        <circle cx="67" cy="89" r="4.6" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="1.4" />
-        <circle cx="67" cy="89" r="1.7" fill="#94a3b8" />
+        {/* stethoscope draped around the neck */}
+        <path d="M43 66c-9 2-15 9-15 19" stroke="#0f766e" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+        <path d="M53 66c9 2 15 9 15 19" stroke="#0f766e" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+        <circle cx="68" cy="86" r="4.8" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="1.4" />
+        <circle cx="68" cy="86" r="2" fill="#b6c0cc" />
 
         {/* ears + face */}
-        <circle cx="31.5" cy="47" r="3.4" fill={`url(#${u('skin')})`} />
-        <circle cx="64.5" cy="47" r="3.4" fill={`url(#${u('skin')})`} />
-        <ellipse cx="48" cy="46" rx="17" ry="19.5" fill={`url(#${u('skin')})`} />
+        <circle cx="32" cy="46" r="3.3" fill={`url(#${u('skin')})`} />
+        <circle cx="64" cy="46" r="3.3" fill={`url(#${u('skin')})`} />
+        <path d="M31.5 43c0-11 7-18 16.5-18s16.5 7 16.5 18c0 8-3 14.5-7.5 18-2.5 2-5.6 3-9 3s-6.5-1-9-3C34.5 57.5 31.5 51 31.5 43Z" fill={`url(#${u('skin')})`} />
 
-        {/* hair — front fringe + side sweeps */}
-        <path
-          d="M29 48C28 27 37 15 48 15s20 12 19 33c-2-7-5-13-10-13-3 0-5-5-9-5s-6 5-9 5c-5 0-8 6-10 13Z"
-          fill={`url(#${u('hair')})`}
-        />
-        <path d="M29 45c-2 9-1 18 2 26l5-1c-3-8-4-16-3-25Z" fill={`url(#${u('hair')})`} />
-        <path d="M67 45c2 9 1 18-2 26l-5-1c3-8 4-16 3-25Z" fill={`url(#${u('hair')})`} />
+        {/* hair — front side-swept fringe + framing strands + sheen */}
+        <path d="M30 46C29 28 37 16 48 16C60 16 67 27 66 46C64 39 60 34 55 34C51 34 50 30 46 31C42.5 32 41 36 38 36C34 36 31 40 30 46Z" fill={`url(#${u('hair')})`} />
+        <path d="M30 44c-1.5 8-1 17 1.6 25l4.2-1.2c-2.6-8-3.4-16-2.4-24Z" fill={`url(#${u('hair')})`} />
+        <path d="M66 44c1.5 8 1 17-1.6 25l-4.2-1.2c2.6-8 3.4-16 2.4-24Z" fill={`url(#${u('hair')})`} />
+        <path d="M36 27q12-8 24 0" stroke="#fbe7ad" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
 
-        {/* brows, eyes, nose, smile, cheeks */}
-        <path d="M39 41q4-2.4 8 0" stroke="#c0852e" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-        <path d="M49 41q4-2.4 8 0" stroke="#c0852e" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-        <ellipse cx="42" cy="46.5" rx="2.4" ry="2.9" fill="#473a33" />
-        <ellipse cx="54" cy="46.5" rx="2.4" ry="2.9" fill="#473a33" />
-        <circle cx="42.9" cy="45.4" r="0.85" fill="#fff" />
-        <circle cx="54.9" cy="45.4" r="0.85" fill="#fff" />
-        <path d="M48 49v3.4" stroke="#e0a282" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-        <path d="M43 55.5q5 4 10 0" stroke="#c96f5e" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-        <circle cx="38" cy="53" r="2.5" fill="#f7a8a0" opacity="0.4" />
-        <circle cx="58" cy="53" r="2.5" fill="#f7a8a0" opacity="0.4" />
+        {/* brows */}
+        <path d="M38.5 40.8q4-2.6 7.5-.4" stroke="#bb8430" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <path d="M50 40.4q3.5-2.2 7.5.4" stroke="#bb8430" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+
+        {/* eyes — lash line + iris + highlight */}
+        <path d="M38.5 45.6q3.5-3 7 0" stroke="#4a3b33" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+        <path d="M50.5 45.6q3.5-3 7 0" stroke="#4a3b33" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+        <circle cx="42" cy="47.2" r="2.2" fill="#5b3b2a" />
+        <circle cx="54" cy="47.2" r="2.2" fill="#5b3b2a" />
+        <circle cx="42.8" cy="46.4" r="0.8" fill="#fff" />
+        <circle cx="54.8" cy="46.4" r="0.8" fill="#fff" />
+
+        {/* nose + warm smile */}
+        <path d="M47.6 48.8q1 2 .3 3.3" stroke="#e3a684" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+        <path d="M43 55.6q5 4.4 10 0" stroke="#c4685a" strokeWidth="1.9" fill="none" strokeLinecap="round" />
+
+        {/* blush */}
+        <ellipse cx="37.5" cy="52.6" rx="2.5" ry="1.7" fill="#f59a93" opacity="0.38" />
+        <ellipse cx="58.5" cy="52.6" rx="2.5" ry="1.7" fill="#f59a93" opacity="0.38" />
       </g>
 
       {rim && <circle cx="48" cy="48" r="47" fill="none" stroke="#ffffff" strokeOpacity="0.65" strokeWidth="2" />}
