@@ -428,7 +428,9 @@
       "missingCouncil": "Renseignez le conseil du professionnel (CRM)",
       "missingCbo": "Renseignez le code CBO du professionnel",
       "noProcedures": "Ajoutez au moins un acte",
-      "zeroValue": "Vérifiez le montant (actuellement nul)"
+      "zeroValue": "Vérifiez le montant (actuellement nul)",
+      "payerPriorAuth": "L’acte nécessite l’autorisation préalable de cet assureur",
+      "payerCardFormat": "Numéro de carte non conforme au format de cet assureur"
     },
     "severity": {
       "high": "Risque élevé de rejet",

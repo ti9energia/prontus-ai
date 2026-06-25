@@ -72,7 +72,9 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const [submitting, setSubmitting] = React.useState(false);
   const [exported, setExported] = React.useState(false);
   const [checking, setChecking] = React.useState(false);
-  const [check, setCheck] = React.useState<{ score: number; ready: boolean; issues: TissGuide['issues'] } | null>(null);
+  const [check, setCheck] = React.useState<
+    { score: number; ready: boolean; issues: TissGuide['issues']; payer?: string } | null
+  >(null);
 
   if (!guide) {
     return (
@@ -115,7 +117,12 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
       const body = await res.json().catch(() => null);
       const result = body?.data;
       if (result?.ok && result.data) {
-        setCheck({ score: result.data.score, ready: result.data.ready, issues: result.data.issues ?? [] });
+        setCheck({
+          score: result.data.score,
+          ready: result.data.ready,
+          issues: result.data.issues ?? [],
+          payer: result.data.payer,
+        });
         (result.data.ready ? toast.success : toast.error)(result.summary);
       } else {
         toast.error(result?.summary ?? t('validation'));
@@ -295,6 +302,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
                 <AlertTriangle className="h-5 w-5 text-warning" />
               )}
               <h3 className="font-display text-sm font-semibold">{t('validation')}</h3>
+              {check?.payer && <span className="text-2xs font-medium text-muted">· {check.payer}</span>}
               {check && (
                 <Badge tone={isReady ? 'success' : 'warning'} className="ml-auto">
                   {t('readiness')} {check.score}/100

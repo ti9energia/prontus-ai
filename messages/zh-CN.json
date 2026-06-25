@@ -428,7 +428,9 @@
       "missingCouncil": "请填写专业人员注册号（CRM）",
       "missingCbo": "请填写专业人员 CBO 代码",
       "noProcedures": "请至少添加一个项目",
-      "zeroValue": "请检查单据金额（当前为零）"
+      "zeroValue": "请检查单据金额（当前为零）",
+      "payerPriorAuth": "该项目需此支付方的事先授权",
+      "payerCardFormat": "卡号不符合此支付方的格式"
     },
     "severity": {
       "high": "拒付风险高",

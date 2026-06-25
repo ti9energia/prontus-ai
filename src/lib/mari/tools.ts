@@ -22,6 +22,7 @@ import {
 } from '@/lib/data/store';
 import type { TissGuide, TissIssue } from '@/lib/types';
 import { impactFromStore } from './impact';
+import { evaluatePayer, getPayerRule } from './payer-rules';
 
 type Loc = string;
 const L = (l: Loc, pt: string, en: string, zh: string, fr: string) =>
@@ -48,9 +49,28 @@ export interface MariTool {
   run: (input: unknown, ctx: ToolContext) => ToolResult | Promise<ToolResult>;
 }
 
+/** Penalise issues (high 25, medium 10, low 5) into a 0..100 readiness score. */
+export function scoreIssues(issues: TissIssue[]): { score: number; ready: boolean } {
+  const penalty = issues.reduce(
+    (s, i) => s + (i.severity === 'high' ? 25 : i.severity === 'medium' ? 10 : 5),
+    0,
+  );
+  return { score: Math.max(0, 100 - penalty), ready: !issues.some((i) => i.severity === 'high') };
+}
+
+function dedupeIssues(issues: TissIssue[]): TissIssue[] {
+  const seen = new Set<string>();
+  return issues.filter((i) => {
+    const k = `${i.fieldKey}:${i.messageKey}`;
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
 /**
- * Deterministic pre-denial ("pré-glosa") rules over a TISS guide. Pure and
- * side-effect free, so it is trivially testable and reusable by the UI and Mari.
+ * Generic, deterministic pre-denial ("pré-glosa") rules over a TISS guide. Pure
+ * and side-effect free. Payer-specific rules layer on top in the glosa.check tool.
  */
 export function checkGuide(g: TissGuide): { issues: TissIssue[]; score: number; ready: boolean } {
   const issues: TissIssue[] = [...(g.issues ?? [])];
@@ -65,13 +85,7 @@ export function checkGuide(g: TissGuide): { issues: TissIssue[]; score: number; 
   if (!g.cbo?.trim()) add('cbo', 'missingCbo', 'medium');
   if (g.procedures.length === 0) add('procedures', 'noProcedures', 'high');
   if (g.value <= 0) add('value', 'zeroValue', 'medium');
-  const penalty = issues.reduce(
-    (s, i) => s + (i.severity === 'high' ? 25 : i.severity === 'medium' ? 10 : 5),
-    0,
-  );
-  const score = Math.max(0, 100 - penalty);
-  const ready = !issues.some((i) => i.severity === 'high');
-  return { issues, score, ready };
+  return { issues, ...scoreIssues(issues) };
 }
 
 const EID = z.object({ encounterId: z.string().min(1).max(64) });
@@ -211,7 +225,9 @@ export const MARI_TOOLS: Record<string, MariTool> = {
           error: { code: 'NOT_FOUND', message: 'guide not found' },
         };
       }
-      const { issues, score, ready } = checkGuide(guide);
+      const base = checkGuide(guide);
+      const issues = dedupeIssues([...base.issues, ...evaluatePayer(guide)]);
+      const { score, ready } = scoreIssues(issues);
       const highs = issues.filter((i) => i.severity === 'high').length;
       return {
         ok: true,
@@ -230,7 +246,61 @@ export const MARI_TOOLS: Record<string, MariTool> = {
               `提交前有 ${highs} 个阻断项 · 就绪度 ${score}/100。`,
               `${highs} bloqueur(s) avant envoi · ${score}/100.`,
             ),
-        data: { guideId, score, ready, issues },
+        data: { guideId, payer: guide.payer, score, ready, issues },
+      };
+    },
+  },
+
+  'glosa.payerProfile': {
+    id: 'glosa.payerProfile',
+    title: 'Perfil da operadora',
+    description: "Explain a payer's denial profile and the pre-denial rules active for this guide.",
+    surfaces: ['clinical', 'owner'],
+    input: GID,
+    run: (input, ctx) => {
+      const { guideId } = input as z.infer<typeof GID>;
+      const guide = getGuide(guideId);
+      if (!guide) {
+        return {
+          ok: false,
+          summary: L(ctx.locale, 'Guia não encontrada.', 'Guide not found.', '未找到单据。', 'Feuille introuvable.'),
+          error: { code: 'NOT_FOUND', message: 'guide not found' },
+        };
+      }
+      const rule = getPayerRule(guide.payer);
+      if (!rule) {
+        return {
+          ok: true,
+          summary: L(
+            ctx.locale,
+            `Sem perfil específico para ${guide.payer} — aplicamos as regras gerais de pré-glosa.`,
+            `No specific profile for ${guide.payer} — generic pre-denial rules apply.`,
+            `${guide.payer} 暂无专属画像——采用通用拒付预检规则。`,
+            `Pas de profil spécifique pour ${guide.payer} — règles génériques appliquées.`,
+          ),
+          data: { payer: guide.payer, hasRules: false },
+        };
+      }
+      const note = rule.note[ctx.locale as keyof typeof rule.note] ?? rule.note['pt-BR'];
+      const tripped = evaluatePayer(guide).length;
+      return {
+        ok: true,
+        summary: tripped
+          ? L(
+              ctx.locale,
+              `${rule.label}: ${tripped} ponto(s) de atenção nesta guia. ${note}`,
+              `${rule.label}: ${tripped} attention point(s) on this guide. ${note}`,
+              `${rule.label}：本单据有 ${tripped} 处注意点。${note}`,
+              `${rule.label} : ${tripped} point(s) d'attention sur cette feuille. ${note}`,
+            )
+          : L(
+              ctx.locale,
+              `${rule.label}: guia alinhada às regras desta operadora. ${note}`,
+              `${rule.label}: guide aligned with this payer's rules. ${note}`,
+              `${rule.label}：本单据符合该支付方规则。${note}`,
+              `${rule.label} : feuille conforme aux règles de cet assureur. ${note}`,
+            ),
+        data: { payer: rule.label, hasRules: true, note, priorAuthCodes: rule.priorAuthCodes, cardDigits: rule.cardDigits, tripped },
       };
     },
   },

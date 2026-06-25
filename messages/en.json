@@ -428,7 +428,9 @@
       "missingCouncil": "Add the professional council (CRM)",
       "missingCbo": "Add the professional CBO code",
       "noProcedures": "Add at least one procedure",
-      "zeroValue": "Review the guide value (it is zero)"
+      "zeroValue": "Review the guide value (it is zero)",
+      "payerPriorAuth": "Procedure needs this payer’s prior authorization",
+      "payerCardFormat": "Card number doesn’t match this payer’s format"
     },
     "severity": {
       "high": "High denial risk",

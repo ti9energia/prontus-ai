@@ -428,7 +428,9 @@
       "missingCouncil": "Informe o conselho do profissional (CRM)",
       "missingCbo": "Informe o CBO do profissional",
       "noProcedures": "Adicione ao menos um procedimento",
-      "zeroValue": "Revise o valor da guia (está zerado)"
+      "zeroValue": "Revise o valor da guia (está zerado)",
+      "payerPriorAuth": "Procedimento exige autorização prévia desta operadora",
+      "payerCardFormat": "Carteirinha fora do padrão desta operadora"
     },
     "severity": {
       "high": "Alto risco de glosa",

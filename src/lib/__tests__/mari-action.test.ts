@@ -56,6 +56,7 @@ describe('POST /api/ai/action — Mari tools', () => {
     const body = await res.json();
     expect(typeof body.data.data.score).toBe('number');
     expect(Array.isArray(body.data.data.issues)).toBe(true);
+    expect(typeof body.data.data.payer).toBe('string'); // payer-aware result
   });
 
   it('requires confirmation before a state-changing tool runs', async () => {
