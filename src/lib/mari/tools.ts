@@ -21,6 +21,7 @@ import {
   agentRecommendations,
 } from '@/lib/data/store';
 import type { TissGuide, TissIssue } from '@/lib/types';
+import { impactFromStore } from './impact';
 
 type Loc = string;
 const L = (l: Loc, pt: string, en: string, zh: string, fr: string) =>
@@ -98,6 +99,31 @@ export const MARI_TOOLS: Record<string, MariTool> = {
           `${enc.length} consultations aujourd'hui · ${pending} comptes rendus en attente · ${recs} recommandations.`,
         ),
         data: { total: enc.length, pendingNotes: pending, recommendations: recs },
+      };
+    },
+  },
+
+  'impact.summary': {
+    id: 'impact.summary',
+    title: 'Impacto Aureon',
+    description:
+      'Quantify the value Aureon generated this month: revenue recovered, denials prevented vs baseline, and hours returned — as one number.',
+    surfaces: ['clinical', 'owner'],
+    input: z.object({}).strip(),
+    run: (_input, ctx) => {
+      const im = impactFromStore();
+      const money = (v: number) =>
+        new Intl.NumberFormat(ctx.locale, { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
+      return {
+        ok: true,
+        summary: L(
+          ctx.locale,
+          `Impacto este mês: ${money(im.monthlyImpact)} — ${money(im.recovered)} recuperados, ${money(im.preventedValue)} em glosa evitada e ${im.hoursReturned}h devolvidas.`,
+          `Impact this month: ${money(im.monthlyImpact)} — ${money(im.recovered)} recovered, ${money(im.preventedValue)} in denials prevented, and ${im.hoursReturned}h returned.`,
+          `本月影响：${money(im.monthlyImpact)} — 已回收 ${money(im.recovered)}，避免拒付 ${money(im.preventedValue)}，节省 ${im.hoursReturned} 小时。`,
+          `Impact ce mois : ${money(im.monthlyImpact)} — ${money(im.recovered)} récupérés, ${money(im.preventedValue)} de rejets évités et ${im.hoursReturned} h rendues.`,
+        ),
+        data: im,
       };
     },
   },

@@ -313,7 +313,16 @@
       "status": "Status",
       "actions": "Ações"
     },
-    "agentNudge": "O agente sugere começar pelas {count} consultas com guia pendente."
+    "agentNudge": "O agente sugere começar pelas {count} consultas com guia pendente.",
+    "impact": {
+      "title": "Impacto Aureon",
+      "thisMonth": "este mês",
+      "caption": "valor gerado para sua clínica",
+      "recovered": "recuperado",
+      "prevented": "glosa evitada",
+      "hours": "horas devolvidas",
+      "denialDrop": "menos glosa"
+    }
   },
   "encounter": {
     "title": "Consulta ao vivo",

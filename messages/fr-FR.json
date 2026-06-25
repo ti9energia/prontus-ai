@@ -313,7 +313,16 @@
       "status": "Statut",
       "actions": "Actions"
     },
-    "agentNudge": "L'agent suggère de commencer par les {count} consultations dont la feuille de soins est en attente."
+    "agentNudge": "L'agent suggère de commencer par les {count} consultations dont la feuille de soins est en attente.",
+    "impact": {
+      "title": "Impact Aureon",
+      "thisMonth": "ce mois-ci",
+      "caption": "valeur générée pour votre cabinet",
+      "recovered": "récupéré",
+      "prevented": "rejets évités",
+      "hours": "heures rendues",
+      "denialDrop": "moins de rejets"
+    }
   },
   "encounter": {
     "title": "Consultation en direct",

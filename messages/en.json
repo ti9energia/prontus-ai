@@ -313,7 +313,16 @@
       "status": "Status",
       "actions": "Actions"
     },
-    "agentNudge": "The agent suggests starting with the {count} visits that have a pending claim form."
+    "agentNudge": "The agent suggests starting with the {count} visits that have a pending claim form.",
+    "impact": {
+      "title": "Aureon Impact",
+      "thisMonth": "this month",
+      "caption": "value generated for your clinic",
+      "recovered": "recovered",
+      "prevented": "denials prevented",
+      "hours": "hours returned",
+      "denialDrop": "fewer denials"
+    }
   },
   "encounter": {
     "title": "Live encounter",

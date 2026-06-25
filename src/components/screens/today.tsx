@@ -19,6 +19,7 @@ import {
   getCurrentUser,
   agentRecommendations,
 } from '@/lib/data/store';
+import { impactFromStore } from '@/lib/mari/impact';
 import type { Encounter, EncounterStatus } from '@/lib/types';
 import { openTab, type ScreenKey } from '@/lib/workspace/store';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
@@ -26,7 +27,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SegmentedControl } from '@/components/ui/misc';
-import { formatLongDate, formatTime, cn } from '@/lib/utils';
+import { formatLongDate, formatTime, formatCurrency, cn } from '@/lib/utils';
 
 const STATUS_TONE: Record<EncounterStatus, React.ComponentProps<typeof Badge>['tone']> = {
   scheduled: 'neutral',
@@ -43,6 +44,15 @@ const TYPE_TONE: Record<string, React.ComponentProps<typeof Badge>['tone']> = {
   telemedicine: 'info',
 };
 
+function ImpactChip({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-xl border border-hairline bg-card/70 px-3 py-2">
+      <p className="font-display text-base font-bold tnum">{value}</p>
+      <p className="text-2xs text-muted">{label}</p>
+    </div>
+  );
+}
+
 export function TodayScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('today');
   const ts = useTranslations('encounterStatus');
@@ -53,6 +63,7 @@ export function TodayScreen({ paneId }: { paneId: string }) {
   const user = getCurrentUser();
   const encounters = listEncounters();
   const recs = agentRecommendations();
+  const impact = impactFromStore();
 
   const stats = React.useMemo(() => {
     return {
@@ -120,6 +131,26 @@ export function TodayScreen({ paneId }: { paneId: string }) {
           </Button>
         }
       />
+
+      {/* Aureon Impact — the money/outcome proof, front and centre */}
+      <div className="relative mb-4 overflow-hidden rounded-2xl border border-brand-500/20 bg-brand-600/[0.06] p-5">
+        <div className="bg-aurora pointer-events-none absolute inset-0 opacity-[0.07]" />
+        <div className="relative">
+          <div className="flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
+            <Sparkles className="h-3.5 w-3.5" /> {t('impact.title')} · {t('impact.thisMonth')}
+          </div>
+          <p className="mt-2 font-display text-4xl font-bold tracking-tight">
+            {formatCurrency(impact.monthlyImpact, locale, 'BRL')}
+          </p>
+          <p className="mt-0.5 text-sm text-muted">{t('impact.caption')}</p>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <ImpactChip value={formatCurrency(impact.recovered, locale, 'BRL')} label={t('impact.recovered')} />
+            <ImpactChip value={formatCurrency(impact.preventedValue, locale, 'BRL')} label={t('impact.prevented')} />
+            <ImpactChip value={`${impact.hoursReturned}h`} label={t('impact.hours')} />
+            <ImpactChip value={`−${Math.round(impact.denialRateDelta * 100)} pts`} label={t('impact.denialDrop')} />
+          </div>
+        </div>
+      </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -313,7 +313,16 @@
       "status": "状态",
       "actions": "操作"
     },
-    "agentNudge": "智能体建议先处理这 {count} 次有待处理单据的问诊。"
+    "agentNudge": "智能体建议先处理这 {count} 次有待处理单据的问诊。",
+    "impact": {
+      "title": "Aureon 影响力",
+      "thisMonth": "本月",
+      "caption": "为您的诊所创造的价值",
+      "recovered": "已回收",
+      "prevented": "避免的拒付",
+      "hours": "节省工时",
+      "denialDrop": "拒付下降"
+    }
   },
   "encounter": {
     "title": "实时问诊",
