@@ -7,6 +7,7 @@ import {
   AudioLines,
   ClipboardCheck,
   FileText,
+  Globe,
   KeyRound,
   Lock,
   MessageCircle,
@@ -56,35 +57,33 @@ function SectionHead({
   );
 }
 
-/* ---------------- Logo cloud ---------------- */
+/* ---------------- Standards & compliance strip ----------------
+   Honest credibility (real standards) instead of fabricated client logos. */
 export function LogoCloud() {
   const t = useTranslations('landing.logos');
-  const names = [
-    'Clínica Aurora',
-    'Hospital São Lucas',
-    'Instituto Cardio+',
-    'Rede Vida Saúde',
-    'Materno Infantil',
-    'Núcleo Ortopédico',
-    'Derma Premium',
-    'Clínica Bem Estar',
+  const standards = [
+    { label: 'LGPD', icon: ShieldCheck },
+    { label: 'GDPR', icon: ShieldCheck },
+    { label: 'PIPL', icon: ShieldCheck },
+    { label: 'TISS · ANS', icon: FileText },
+    { label: 'AES-256', icon: Lock },
+    { label: 'Human-in-the-loop', icon: UserCheck },
+    { label: 'pt · en · zh · fr', icon: Globe },
   ];
   return (
     <section className="border-y border-hairline bg-surface/40 py-10">
       <div className="container-page">
         <p className="text-center text-2xs font-medium uppercase tracking-widest text-subtle">{t('title')}</p>
-        <div className="mask-x relative mt-6 overflow-hidden">
-          <div className="flex w-max animate-marquee gap-12">
-            {[...names, ...names].map((n, i) => (
-              <span
-                key={i}
-                className="flex shrink-0 items-center gap-2 font-display text-lg font-semibold text-subtle/70"
-              >
-                <span className="h-2 w-2 rounded-full bg-brand-500/40" />
-                {n}
-              </span>
-            ))}
-          </div>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5">
+          {standards.map(({ label, icon: Icon }) => (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-card/60 px-3 py-1.5 text-xs font-medium text-muted"
+            >
+              <Icon className="h-3.5 w-3.5 text-brand-500" />
+              {label}
+            </span>
+          ))}
         </div>
       </div>
     </section>

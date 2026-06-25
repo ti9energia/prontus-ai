@@ -2,23 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { ArrowRight, Play, ShieldCheck, Star } from 'lucide-react';
+import { ArrowRight, Play, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Aurora } from './aurora';
 import { HeroDemo } from './hero-demo';
-import { Avatar } from '@/components/ui/misc';
 import { buttonVariants } from '@/components/ui/button';
-
-const PROOF = [
-  { name: 'Helena Vasconcelos', hue: 170 },
-  { name: 'Camila Prado', hue: 28 },
-  { name: 'Rodrigo Menezes', hue: 210 },
-  { name: 'Antônio Ferreira', hue: 320 },
-];
 
 export function Hero() {
   const t = useTranslations('landing.hero');
-  const tl = useTranslations('landing');
+  const tb = useTranslations('brand');
 
   return (
     <section className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
@@ -27,26 +19,15 @@ export function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* copy */}
           <div className="max-w-xl">
-            {/* social proof */}
+            {/* category eyebrow — clear context in 3s, no fake proof */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center gap-3"
+              className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/60 px-3 py-1 text-2xs font-medium text-muted backdrop-blur"
             >
-              <div className="flex -space-x-2.5">
-                {PROOF.map((p) => (
-                  <Avatar key={p.name} name={p.name} hue={p.hue} size={30} className="ring-2 ring-bg" />
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3 w-3 fill-accent-400 text-accent-400" />
-                  ))}
-                </div>
-                <span className="text-2xs text-muted">{tl('logos.title')}</span>
-              </div>
+              <Sparkles className="h-3.5 w-3.5 text-brand-500" />
+              {tb('promiseShort')}
             </motion.div>
 
             <motion.h1
