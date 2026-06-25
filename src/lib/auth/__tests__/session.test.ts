@@ -45,4 +45,33 @@ describe('session tokens (HMAC) — security', () => {
     const payload = await verifySession(token);
     expect(payload?.role).toBe('owner');
   });
+
+  it('rejects ANY session in production without a strong secret (fail-closed)', async () => {
+    delete process.env.AUTH_SECRET;
+    const prev = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    try {
+      const token = await createSession({ email: 'd@x.com', role: 'doctor', name: 'Doc' });
+      expect(await verifySession(token)).toBeNull();
+    } finally {
+      process.env.NODE_ENV = prev;
+    }
+  });
+
+  it('honors a doctor session in production once a strong secret is set', async () => {
+    process.env.AUTH_SECRET = 'a-real-strong-secret-value-123456';
+    const prev = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    try {
+      const token = await createSession({ email: 'd@x.com', role: 'doctor', name: 'Doc' });
+      expect((await verifySession(token))?.role).toBe('doctor');
+    } finally {
+      process.env.NODE_ENV = prev;
+    }
+  });
+
+  it('rejects a malformed token that is not exactly body.sig', async () => {
+    const token = await createSession({ email: 'd@x.com', role: 'doctor', name: 'Doc' });
+    expect(await verifySession(`${token}.extra`)).toBeNull();
+  });
 });
