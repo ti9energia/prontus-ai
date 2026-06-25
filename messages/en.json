@@ -509,7 +509,8 @@
       "submitted": "Submitted",
       "glossed": "Denied"
     },
-    "agentRecover": "The agent prioritized {count} denied claims for resubmission."
+    "agentRecover": "The agent prioritized {count} denied claims for resubmission.",
+    "resubmitBlocked": "Resolve the pre-denial blockers before resubmitting."
   },
   "templates": {
     "title": "Note templates",

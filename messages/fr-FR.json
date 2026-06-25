@@ -509,7 +509,8 @@
       "submitted": "Envoyées",
       "glossed": "Rejetées"
     },
-    "agentRecover": "L'agent a priorisé {count} feuilles de soins rejetées pour renvoi."
+    "agentRecover": "L'agent a priorisé {count} feuilles de soins rejetées pour renvoi.",
+    "resubmitBlocked": "Corrigez les bloqueurs anti-rejet avant de renvoyer."
   },
   "templates": {
     "title": "Modèles de note",

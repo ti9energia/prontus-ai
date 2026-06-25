@@ -16,8 +16,10 @@ import {
   getEncounter,
   getNote,
   getGuide,
+  listGuides,
   createGuideFromEncounter,
   submitGuide,
+  resubmitGuide,
   agentRecommendations,
 } from '@/lib/data/store';
 import type { TissGuide, TissIssue } from '@/lib/types';
@@ -86,6 +88,16 @@ export function checkGuide(g: TissGuide): { issues: TissIssue[]; score: number; 
   if (g.procedures.length === 0) add('procedures', 'noProcedures', 'high');
   if (g.value <= 0) add('value', 'zeroValue', 'medium');
   return { issues, ...scoreIssues(issues) };
+}
+
+/**
+ * Diagnose a (usually denied) guide for recovery: the denial reason, the live
+ * issues (generic + payer), and whether it can be resubmitted cleanly today.
+ */
+export function diagnoseGuide(guide: TissGuide): { reasonKey: string; issues: TissIssue[]; recoverable: boolean } {
+  const issues = dedupeIssues([...checkGuide(guide).issues, ...evaluatePayer(guide)]);
+  const reasonKey = guide.glossReasonKey ?? issues[0]?.messageKey ?? 'missingDoc';
+  return { reasonKey, issues, recoverable: !issues.some((i) => i.severity === 'high') };
 }
 
 const EID = z.object({ encounterId: z.string().min(1).max(64) });
@@ -301,6 +313,89 @@ export const MARI_TOOLS: Record<string, MariTool> = {
               `${rule.label} : feuille conforme aux règles de cet assureur. ${note}`,
             ),
         data: { payer: rule.label, hasRules: true, note, priorAuthCodes: rule.priorAuthCodes, cardDigits: rule.cardDigits, tripped },
+      };
+    },
+  },
+
+  'glosa.recoveryQueue': {
+    id: 'glosa.recoveryQueue',
+    title: 'Fila de recuperação',
+    description: 'List denied (glossed) guides with their recoverable value and diagnosed reason — the recovery opportunity.',
+    surfaces: ['clinical', 'owner'],
+    input: z.object({}).strip(),
+    run: (_input, ctx) => {
+      const glossed = listGuides().filter((g) => g.status === 'glossed');
+      const items = glossed.map((g) => ({
+        guideId: g.id,
+        payer: g.payer,
+        value: g.value,
+        reasonKey: diagnoseGuide(g).reasonKey,
+        recoverable: diagnoseGuide(g).recoverable,
+      }));
+      const atRisk = items.reduce((s, it) => s + it.value, 0);
+      const money = (v: number) =>
+        new Intl.NumberFormat(ctx.locale, { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
+      return {
+        ok: true,
+        summary: items.length
+          ? L(
+              ctx.locale,
+              `${items.length} guia(s) glosada(s) · ${money(atRisk)} recuperáveis.`,
+              `${items.length} denied guide(s) · ${money(atRisk)} recoverable.`,
+              `${items.length} 张被拒单据 · 可回收 ${money(atRisk)}。`,
+              `${items.length} feuille(s) rejetée(s) · ${money(atRisk)} récupérables.`,
+            )
+          : L(ctx.locale, 'Nenhuma glosa pendente de recuperação.', 'No denials pending recovery.', '暂无待恢复的拒付。', 'Aucun rejet à récupérer.'),
+        data: { count: items.length, atRisk, items },
+      };
+    },
+  },
+
+  'glosa.resubmit': {
+    id: 'glosa.resubmit',
+    title: 'Reenviar guia',
+    description: 'Re-check a denied guide and resubmit it to the payer. Irreversible — requires confirmation, and is blocked while high-severity issues remain.',
+    surfaces: ['clinical'],
+    requiresConfirmation: true,
+    input: GID,
+    run: (input, ctx) => {
+      const { guideId } = input as z.infer<typeof GID>;
+      const guide = getGuide(guideId);
+      if (!guide) {
+        return {
+          ok: false,
+          summary: L(ctx.locale, 'Guia não encontrada.', 'Guide not found.', '未找到单据。', 'Feuille introuvable.'),
+          error: { code: 'NOT_FOUND', message: 'guide not found' },
+        };
+      }
+      const dx = diagnoseGuide(guide);
+      if (!dx.recoverable) {
+        return {
+          ok: false,
+          summary: L(
+            ctx.locale,
+            'Reenvio bloqueado: resolva os bloqueios da pré-glosa antes de reenviar.',
+            'Resubmit blocked: resolve the pre-denial blockers first.',
+            '重新提交被阻止：请先解决拒付预检的阻断项。',
+            'Renvoi bloqué : corrigez d’abord les bloqueurs.',
+          ),
+          error: { code: 'BLOCKED', message: 'unresolved high-severity issues' },
+          data: { guideId, issues: dx.issues },
+        };
+      }
+      const money = (v: number) =>
+        new Intl.NumberFormat(ctx.locale, { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
+      resubmitGuide(guideId);
+      return {
+        ok: true,
+        summary: L(
+          ctx.locale,
+          `Guia ${guideId} reenviada — ${money(guide.value)} de volta ao fluxo.`,
+          `Guide ${guideId} resubmitted — ${money(guide.value)} back in flight.`,
+          `单据 ${guideId} 已重新提交——${money(guide.value)} 重回流程。`,
+          `Feuille ${guideId} renvoyée — ${money(guide.value)} de retour.`,
+        ),
+        data: { guideId, recovered: guide.value, status: 'sent' },
       };
     },
   },

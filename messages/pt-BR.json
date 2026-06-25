@@ -509,7 +509,8 @@
       "submitted": "Enviadas",
       "glossed": "Glosadas"
     },
-    "agentRecover": "O agente priorizou {count} guias glosadas para reenvio."
+    "agentRecover": "O agente priorizou {count} guias glosadas para reenvio.",
+    "resubmitBlocked": "Resolva os bloqueios da pré-glosa antes de reenviar."
   },
   "templates": {
     "title": "Modelos de nota",

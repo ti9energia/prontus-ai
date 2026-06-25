@@ -29,9 +29,11 @@ import {
   glossReasons,
   glossTimeSeries,
   listGuides,
+  getGuide,
   getPatient,
   resubmitGuide,
 } from '@/lib/data/store';
+import { diagnoseGuide } from '@/lib/mari/tools';
 import type { GuideStatus } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';
 import { ScreenContainer, ScreenHeader, StatCard, Table, Th, Td } from './_kit';
@@ -79,7 +81,13 @@ export function BillingScreen({ paneId }: { paneId: string }) {
 
   const glossedCount = stats.glossed;
 
+  // Mari's safety gate: never resubmit a guide that would just be denied again.
   const onResubmit = (gid: string) => {
+    const guide = getGuide(gid);
+    if (guide && !diagnoseGuide(guide).recoverable) {
+      toast.error(t('resubmitBlocked'));
+      return;
+    }
     resubmitGuide(gid);
     force();
     toast.success(t('guideStatus.sent'));

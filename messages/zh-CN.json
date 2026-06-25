@@ -509,7 +509,8 @@
       "submitted": "已提交",
       "glossed": "被拒付"
     },
-    "agentRecover": "智能体已将 {count} 份被拒付单据优先安排重新提交。"
+    "agentRecover": "智能体已将 {count} 份被拒付单据优先安排重新提交。",
+    "resubmitBlocked": "请先解决拒付预检的阻断项，再重新提交。"
   },
   "templates": {
     "title": "病历模板",
