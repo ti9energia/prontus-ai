@@ -325,13 +325,10 @@ export const MARI_TOOLS: Record<string, MariTool> = {
     input: z.object({}).strip(),
     run: (_input, ctx) => {
       const glossed = listGuides().filter((g) => g.status === 'glossed');
-      const items = glossed.map((g) => ({
-        guideId: g.id,
-        payer: g.payer,
-        value: g.value,
-        reasonKey: diagnoseGuide(g).reasonKey,
-        recoverable: diagnoseGuide(g).recoverable,
-      }));
+      const items = glossed.map((g) => {
+        const dx = diagnoseGuide(g); // compute once (was called twice per guide)
+        return { guideId: g.id, payer: g.payer, value: g.value, reasonKey: dx.reasonKey, recoverable: dx.recoverable };
+      });
       const atRisk = items.reduce((s, it) => s + it.value, 0);
       const money = (v: number) =>
         new Intl.NumberFormat(ctx.locale, { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);

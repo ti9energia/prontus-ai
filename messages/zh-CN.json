@@ -1,4 +1,22 @@
 {
+  "chrome": {
+    "split": "分屏",
+    "closePane": "关闭分栏",
+    "newTab": "新标签页",
+    "closeTab": "关闭标签页",
+    "command": "命令",
+    "searchPlaceholder": "搜索或打开页面…",
+    "navigate": "前往",
+    "actions": "快捷操作",
+    "openSplit": "在分屏中打开",
+    "askIris": "询问 Mari",
+    "noResults": "未找到",
+    "owner": "所有者面板",
+    "signOut": "退出登录",
+    "newConsultation": "新问诊",
+    "collapseSidebar": "收起侧栏",
+    "expandSidebar": "展开侧栏"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "每一次问诊，都有临床智能。",

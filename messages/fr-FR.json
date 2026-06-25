@@ -1,4 +1,22 @@
 {
+  "chrome": {
+    "split": "Diviser",
+    "closePane": "Fermer le volet",
+    "newTab": "Nouvel onglet",
+    "closeTab": "Fermer l'onglet",
+    "command": "Commandes",
+    "searchPlaceholder": "Rechercher ou ouvrir un écran…",
+    "navigate": "Aller à",
+    "actions": "Actions rapides",
+    "openSplit": "Ouvrir en volet",
+    "askIris": "Demander à Mari",
+    "noResults": "Aucun résultat",
+    "owner": "Espace propriétaire",
+    "signOut": "Se déconnecter",
+    "newConsultation": "Nouvelle consultation",
+    "collapseSidebar": "Réduire le menu",
+    "expandSidebar": "Afficher le menu"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "L’intelligence clinique à chaque consultation.",

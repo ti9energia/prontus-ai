@@ -147,7 +147,13 @@ export function CopilotDock({
         </div>
 
         {/* messages */}
-        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+        <div
+          ref={scrollRef}
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          className="flex-1 space-y-4 overflow-y-auto px-4 py-4"
+        >
           {chat.map((m, i) => (
             <div key={i} className={cn('flex items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
               {m.role === 'assistant' && <MariFace size={26} className="mb-0.5 shrink-0" rim={false} />}

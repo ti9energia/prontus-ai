@@ -19,7 +19,7 @@ npm run build && npm run start   # produção
 Abra **http://localhost:3000** — você cai na landing (`/pt-BR`). Troque o idioma no topo a qualquer momento.
 
 ### Login (demo)
-Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entrar** (campos já preenchidos) ou **Entrar na demonstração**. Não há backend de senha: é um gate de demonstração (flag local). Para sair, use o menu do avatar → Sair.
+Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entrar na demonstração** (sessão de médico sobre a clínica de exemplo). O atalho de demo é controlado por `DEMO_MODE` (defina `false` em produção para desativá-lo). Há também contas reais via env: o **dono** (`OWNER_EMAIL` + `AUTH_SECRET` + senha) e uma **conta de teste** de médico (`TEST_DOCTOR_*`). Para sair, use o menu do avatar → Sair.
 
 ---
 

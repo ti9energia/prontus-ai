@@ -59,7 +59,7 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
                           : 'text-muted hover:bg-ink/[0.06] hover:text-ink',
                       )}
                       aria-label={title(k)}
-                      aria-current={active}
+                      aria-current={active ? 'page' : undefined}
                     >
                       <Icon className="h-[18px] w-[18px]" />
                     </button>
@@ -120,7 +120,7 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
                         ? 'bg-brand-600/12 text-brand-700 dark:text-brand-300'
                         : 'text-muted hover:bg-ink/[0.05] hover:text-ink',
                     )}
-                    aria-current={active}
+                    aria-current={active ? 'page' : undefined}
                   >
                     <Icon
                       className={cn(

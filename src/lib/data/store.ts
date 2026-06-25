@@ -278,7 +278,7 @@ function seedFlags(): FeatureFlag[] {
   return ALL_MODULES.map((m, i) => ({
     module: m,
     scope: i % 3 === 0 ? 'global' : i % 3 === 1 ? 'plan' : 'tenant',
-    enabled: m !== 'whatsapp' ? true : true,
+    enabled: true,
     rollout: m === 'agent' ? 60 : m === 'whatsapp' ? 80 : 100,
   }));
 }
@@ -439,7 +439,7 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
       code: p.code,
       description: p.label,
       qty: 1,
-      value: p.code === '10101012' ? 180 : 180,
+      value: 180, // mock flat price; real TUSS pricing table is a future connector
     })),
     diagnoses: (note?.cids ?? []).map((c) => ({ code: c.code, label: c.label })),
     status: 'draft',

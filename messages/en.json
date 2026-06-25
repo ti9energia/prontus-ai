@@ -1,4 +1,22 @@
 {
+  "chrome": {
+    "split": "Split",
+    "closePane": "Close pane",
+    "newTab": "New tab",
+    "closeTab": "Close tab",
+    "command": "Commands",
+    "searchPlaceholder": "Search or open a screen…",
+    "navigate": "Go to",
+    "actions": "Quick actions",
+    "openSplit": "Open in split",
+    "askIris": "Ask Mari",
+    "noResults": "Nothing found",
+    "owner": "Owner panel",
+    "signOut": "Sign out",
+    "newConsultation": "New consultation",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "Clinical intelligence in every visit.",

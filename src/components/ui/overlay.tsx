@@ -145,12 +145,19 @@ export function Sheet({
 }) {
   const mounted = useMounted();
   const dialogRef = React.useRef<HTMLDivElement>(null);
+  const wrapRef = React.useRef<HTMLDivElement>(null);
   useEscape(open, onClose);
   useFocusTrap(open, dialogRef);
+  // A closed sheet stays mounted (to animate out) but must leave the tab order and
+  // the a11y tree — otherwise its form controls stay keyboard-focusable off-screen.
+  React.useEffect(() => {
+    const el = wrapRef.current;
+    if (el) el.inert = !open;
+  }, [open]);
   if (!mounted) return null;
 
   return createPortal(
-    <div className={cn('fixed inset-0 z-[100]', !open && 'pointer-events-none')}>
+    <div ref={wrapRef} aria-hidden={!open} className={cn('fixed inset-0 z-[100]', !open && 'pointer-events-none')}>
       <div
         className={cn(
           'absolute inset-0 bg-ink/40 backdrop-blur-sm transition-opacity duration-300',

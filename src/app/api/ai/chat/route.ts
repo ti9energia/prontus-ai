@@ -6,6 +6,7 @@ import { mariChat } from '@/lib/mari/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // headroom for slow model calls (avoid 504 on the LLM path)
 
 interface ChatMessage {
   role: 'user' | 'assistant';
