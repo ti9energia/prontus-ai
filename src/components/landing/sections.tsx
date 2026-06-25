@@ -373,6 +373,7 @@ export function Footer() {
           <div className="col-span-2">
             <Logo />
             <p className="mt-3 max-w-xs text-sm text-muted">{tc('tagline')}</p>
+            <p className="mt-1.5 max-w-xs text-2xs text-subtle">{t('madeWith')}</p>
           </div>
           {cols.map((c) => (
             <div key={c.title}>

@@ -18,8 +18,10 @@ function PaneHost({ pane }: { pane: Pane }) {
   if (!tab) return null;
   const def = SCREENS[tab.screen];
   const Comp = def.Component;
+  // key by tab id so each tab is an independent mount — switching between two
+  // tabs of the same screen never leaks the other tab's (uncontrolled) form state.
   return (
-    <ScreenErrorBoundary resetKey={tab.id}>
+    <ScreenErrorBoundary key={tab.id} resetKey={tab.id}>
       <Comp paneId={pane.id} params={tab.params} />
     </ScreenErrorBoundary>
   );

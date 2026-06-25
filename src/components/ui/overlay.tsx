@@ -25,6 +25,46 @@ function useEscape(open: boolean, onClose: () => void) {
   }, [open, onClose]);
 }
 
+const FOCUSABLE =
+  'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+/** Keep keyboard focus inside the dialog while open; restore it to the trigger on close. */
+function useFocusTrap(open: boolean, ref: React.RefObject<HTMLElement>) {
+  React.useEffect(() => {
+    if (!open) return;
+    const root = ref.current;
+    if (!root) return;
+    const restore = document.activeElement as HTMLElement | null;
+    const list = () =>
+      Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+    (list()[0] ?? root).focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const f = list();
+      if (!f.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = f[0];
+      const last = f[f.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    root.addEventListener('keydown', onKey);
+    return () => {
+      root.removeEventListener('keydown', onKey);
+      restore?.focus?.();
+    };
+  }, [open, ref]);
+}
+
 export function Modal({
   open,
   onClose,
@@ -44,7 +84,9 @@ export function Modal({
 }) {
   const mounted = useMounted();
   const t = useTranslations('common');
+  const dialogRef = React.useRef<HTMLDivElement>(null);
   useEscape(open, onClose);
+  useFocusTrap(open, dialogRef);
   if (!mounted || !open) return null;
 
   const widths = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }[size];
@@ -56,10 +98,12 @@ export function Modal({
         onClick={onClose}
       />
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative z-10 w-full overflow-hidden rounded-2xl border border-hairline bg-card shadow-xl animate-scale-in',
+          'relative z-10 w-full overflow-hidden rounded-2xl border border-hairline bg-card shadow-xl animate-scale-in focus:outline-none',
           widths,
           className,
         )}
@@ -100,7 +144,9 @@ export function Sheet({
   className?: string;
 }) {
   const mounted = useMounted();
+  const dialogRef = React.useRef<HTMLDivElement>(null);
   useEscape(open, onClose);
+  useFocusTrap(open, dialogRef);
   if (!mounted) return null;
 
   return createPortal(
@@ -113,10 +159,12 @@ export function Sheet({
         onClick={onClose}
       />
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         className={cn(
-          'absolute top-0 h-full w-full max-w-md border-hairline bg-card shadow-xl transition-transform duration-300 ease-spring',
+          'absolute top-0 h-full w-full max-w-md border-hairline bg-card shadow-xl transition-transform duration-300 ease-spring focus:outline-none',
           side === 'right' ? 'right-0 border-l' : 'left-0 border-r',
           open ? 'translate-x-0' : side === 'right' ? 'translate-x-full' : '-translate-x-full',
           className,
