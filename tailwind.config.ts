@@ -172,6 +172,10 @@ const config: Config = {
         'spin-slow': {
           to: { transform: 'rotate(360deg)' },
         },
+        eq: {
+          '0%, 100%': { transform: 'scaleY(0.3)' },
+          '50%': { transform: 'scaleY(1)' },
+        },
       },
       animation: {
         aurora: 'aurora 16s ease-in-out infinite',
@@ -184,6 +188,7 @@ const config: Config = {
         'caret-blink': 'caret-blink 1.1s steps(1) infinite',
         marquee: 'marquee 34s linear infinite',
         'spin-slow': 'spin-slow 9s linear infinite',
+        eq: 'eq 0.9s ease-in-out infinite',
       },
       transitionTimingFunction: {
         spring: 'cubic-bezier(0.16, 1, 0.3, 1)',
