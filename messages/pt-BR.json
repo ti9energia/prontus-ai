@@ -414,13 +414,20 @@
       "required": "Campo obrigatório",
       "checkCode": "Verifique o código do procedimento",
       "missingCid": "Adicione ao menos um CID compatível",
-      "authNeeded": "Procedimento pode exigir autorização prévia"
+      "authNeeded": "Procedimento pode exigir autorização prévia",
+      "missingCard": "Informe o número da carteirinha",
+      "missingCouncil": "Informe o conselho do profissional (CRM)",
+      "missingCbo": "Informe o CBO do profissional",
+      "noProcedures": "Adicione ao menos um procedimento",
+      "zeroValue": "Revise o valor da guia (está zerado)"
     },
     "severity": {
       "high": "Alto risco de glosa",
       "medium": "Atenção",
       "low": "Informativo"
-    }
+    },
+    "preGloss": "Pré-glosa (Mari)",
+    "readiness": "Prontidão"
   },
   "patients": {
     "title": "Pacientes",

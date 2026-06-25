@@ -414,13 +414,20 @@
       "required": "Required field",
       "checkCode": "Check the procedure code",
       "missingCid": "Add at least one matching CID",
-      "authNeeded": "Procedure may require prior authorization"
+      "authNeeded": "Procedure may require prior authorization",
+      "missingCard": "Add the beneficiary card number",
+      "missingCouncil": "Add the professional council (CRM)",
+      "missingCbo": "Add the professional CBO code",
+      "noProcedures": "Add at least one procedure",
+      "zeroValue": "Review the guide value (it is zero)"
     },
     "severity": {
       "high": "High denial risk",
       "medium": "Heads up",
       "low": "Informational"
-    }
+    },
+    "preGloss": "Pre-denial (Mari)",
+    "readiness": "Readiness"
   },
   "patients": {
     "title": "Patients",

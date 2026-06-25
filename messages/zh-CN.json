@@ -414,13 +414,20 @@
       "required": "必填字段",
       "checkCode": "请核对诊疗项目编码",
       "missingCid": "请至少添加一个匹配的 CID",
-      "authNeeded": "该诊疗项目可能需要事先授权"
+      "authNeeded": "该诊疗项目可能需要事先授权",
+      "missingCard": "请填写受益人卡号",
+      "missingCouncil": "请填写专业人员注册号（CRM）",
+      "missingCbo": "请填写专业人员 CBO 代码",
+      "noProcedures": "请至少添加一个项目",
+      "zeroValue": "请检查单据金额（当前为零）"
     },
     "severity": {
       "high": "拒付风险高",
       "medium": "需注意",
       "low": "提示"
-    }
+    },
+    "preGloss": "拒付预检 (Mari)",
+    "readiness": "就绪度"
   },
   "patients": {
     "title": "患者",

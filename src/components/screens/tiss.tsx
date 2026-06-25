@@ -10,6 +10,7 @@ import {
   Info,
   Plus,
   Send,
+  ShieldCheck,
   Trash2,
 } from 'lucide-react';
 import {
@@ -70,6 +71,8 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [exported, setExported] = React.useState(false);
+  const [checking, setChecking] = React.useState(false);
+  const [check, setCheck] = React.useState<{ score: number; ready: boolean; issues: TissGuide['issues'] } | null>(null);
 
   if (!guide) {
     return (
@@ -81,6 +84,8 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
 
   const issues = guide.issues ?? [];
   const total = guide.procedures.reduce((s, p) => s + p.value * p.qty, 0);
+  const shownIssues = check?.issues ?? issues;
+  const isReady = check ? check.ready : issues.length === 0;
 
   const doSubmit = () => {
     setConfirmOpen(false);
@@ -98,6 +103,30 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
     toast.success(t('exported'));
   };
 
+  // Ask Mari to run the pre-denial (pré-glosa) check on this guide.
+  const runPreGlosa = async () => {
+    setChecking(true);
+    try {
+      const res = await fetch('/api/ai/action', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tool: 'glosa.check', input: { guideId: guide.id }, locale }),
+      });
+      const body = await res.json().catch(() => null);
+      const result = body?.data;
+      if (result?.ok && result.data) {
+        setCheck({ score: result.data.score, ready: result.data.ready, issues: result.data.issues ?? [] });
+        (result.data.ready ? toast.success : toast.error)(result.summary);
+      } else {
+        toast.error(result?.summary ?? t('validation'));
+      }
+    } catch {
+      toast.error(t('validation'));
+    } finally {
+      setChecking(false);
+    }
+  };
+
   return (
     <ScreenContainer>
       <ScreenHeader
@@ -109,6 +138,14 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
             <Badge tone={STATUS_TONE[status]} dot>
               {tg(status)}
             </Badge>
+            <Button
+              variant="outline"
+              leftIcon={<ShieldCheck className="h-4 w-4" />}
+              onClick={runPreGlosa}
+              loading={checking}
+            >
+              {t('preGloss')}
+            </Button>
             <Button
               variant="outline"
               leftIcon={<Download className="h-4 w-4" />}
@@ -248,23 +285,28 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <div
             className={cn(
               'rounded-xl border p-4 shadow-xs',
-              issues.length === 0 ? 'border-success/30 bg-success/[0.06]' : 'border-warning/30 bg-warning/[0.06]',
+              isReady ? 'border-success/30 bg-success/[0.06]' : 'border-warning/30 bg-warning/[0.06]',
             )}
           >
             <div className="flex items-center gap-2">
-              {issues.length === 0 ? (
+              {isReady ? (
                 <CheckCircle2 className="h-5 w-5 text-success" />
               ) : (
                 <AlertTriangle className="h-5 w-5 text-warning" />
               )}
               <h3 className="font-display text-sm font-semibold">{t('validation')}</h3>
+              {check && (
+                <Badge tone={isReady ? 'success' : 'warning'} className="ml-auto">
+                  {t('readiness')} {check.score}/100
+                </Badge>
+              )}
             </div>
             <p className="mt-1 text-sm text-muted">
-              {issues.length === 0 ? t('validationOk') : t('validationDesc', { count: issues.length })}
+              {shownIssues.length === 0 ? t('validationOk') : t('validationDesc', { count: shownIssues.length })}
             </p>
 
             <div className="mt-3 space-y-2">
-              {issues.map((iss) => {
+              {shownIssues.map((iss) => {
                 const sev = SEVERITY[iss.severity];
                 const Icon = sev.icon;
                 return (

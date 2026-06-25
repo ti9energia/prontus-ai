@@ -414,13 +414,20 @@
       "required": "Champ obligatoire",
       "checkCode": "Vérifiez le code de l'acte",
       "missingCid": "Ajoutez au moins un CID compatible",
-      "authNeeded": "L'acte peut nécessiter une autorisation préalable"
+      "authNeeded": "L'acte peut nécessiter une autorisation préalable",
+      "missingCard": "Renseignez le numéro de carte",
+      "missingCouncil": "Renseignez le conseil du professionnel (CRM)",
+      "missingCbo": "Renseignez le code CBO du professionnel",
+      "noProcedures": "Ajoutez au moins un acte",
+      "zeroValue": "Vérifiez le montant (actuellement nul)"
     },
     "severity": {
       "high": "Risque élevé de rejet",
       "medium": "Attention",
       "low": "Informatif"
-    }
+    },
+    "preGloss": "Anti-rejet (Mari)",
+    "readiness": "Préparation"
   },
   "patients": {
     "title": "Patients",
