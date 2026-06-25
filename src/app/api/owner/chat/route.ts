@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ownerInsights, pushAudit } from '@/lib/data/store';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
+import { mariChat } from '@/lib/mari/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -123,31 +124,21 @@ export async function POST(req: NextRequest) {
 
   pushAudit('Mari (IA)', 'owner.console.chat', 'owner', 'ok', 'ai');
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (apiKey) {
-    try {
-      const { default: Anthropic } = await import('@anthropic-ai/sdk');
-      const client = new Anthropic({ apiKey });
-      const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
-      const ins = ownerInsights();
-      const ctx = `Platform data — MRR: ${ins.stats.mrr} ${ins.stats.currency}; growth: ${ins.stats.mrrGrowth}; churn: ${ins.stats.churn}; activeTenants: ${ins.stats.activeTenants}; activeDoctors: ${ins.stats.activeDoctors}; trials: ${ins.trials.length}; atRisk: ${ins.atRisk.map((t) => t.name).join(' / ') || 'none'}; upsellCandidates: ${ins.upsell.map((t) => t.name).join(' / ') || 'none'}.`;
-      const completion = await client.messages.create({
-        model,
-        max_tokens: 700,
-        system: `${SYSTEM}\nUser locale: ${locale}.\n${ctx}`,
-        messages: messages.map((m) => ({ role: m.role, content: m.content })),
-      });
-      const reply = completion.content
-        .filter((b): b is { type: 'text'; text: string } => b.type === 'text')
-        .map((b) => b.text)
-        .join('\n')
-        .trim();
-      return NextResponse.json({ reply: reply || ownerMock(last, locale), source: 'claude' });
-    } catch {
-      return NextResponse.json({ reply: ownerMock(last, locale), source: 'mock-fallback' });
-    }
-  }
+  const ins = ownerInsights();
+  const ctx = `Platform data — MRR: ${ins.stats.mrr} ${ins.stats.currency}; growth: ${ins.stats.mrrGrowth}; churn: ${ins.stats.churn}; activeTenants: ${ins.stats.activeTenants}; activeDoctors: ${ins.stats.activeDoctors}; trials: ${ins.trials.length}; atRisk: ${ins.atRisk.map((t) => t.name).join(' / ') || 'none'}; upsellCandidates: ${ins.upsell.map((t) => t.name).join(' / ') || 'none'}.`;
 
-  await new Promise((r) => setTimeout(r, 350));
-  return NextResponse.json({ reply: ownerMock(last, locale), source: 'mock' });
+  // Owner is already authenticated above, so the model / remote brain is always allowed.
+  const result = await mariChat({
+    surface: 'owner',
+    system: `${SYSTEM}\nUser locale: ${locale}.\n${ctx}`,
+    messages,
+    locale,
+    context: { platform: ins.stats, trials: ins.trials.length, atRisk: ins.atRisk.length },
+    allowModel: true,
+    maxTokens: 700,
+    fallback: () => ownerMock(last, locale),
+  });
+
+  if (result.source === 'mock') await new Promise((r) => setTimeout(r, 350));
+  return NextResponse.json(result);
 }

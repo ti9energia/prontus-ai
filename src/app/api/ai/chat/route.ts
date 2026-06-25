@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data/store';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
+import { mariChat } from '@/lib/mari/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -115,37 +116,24 @@ export async function POST(req: NextRequest) {
 
   pushAudit('Mari (IA)', 'copilot.chat', `screen:${screen}`, 'ok', 'ai');
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // Cost & auth gate: only authenticated callers may reach a paid model or the
+  // remote brain on a public deploy. Checked lazily so the mock path stays cheap.
+  const allowModel =
+    !!(process.env.ANTHROPIC_API_KEY || process.env.MARI_API_URL) &&
+    !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
 
-  // Real Claude API only for authenticated users (cost protection on a public
-  // deploy); everyone else gets the data-aware mock. Auth is checked lazily so
-  // the mock path never touches crypto.
-  if (apiKey) {
-    const authed = !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
-    if (authed) {
-      try {
-        const { default: Anthropic } = await import('@anthropic-ai/sdk');
-        const client = new Anthropic({ apiKey });
-        const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
-        const completion = await client.messages.create({
-          model,
-          max_tokens: 600,
-          system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
-        });
-        const reply = completion.content
-          .filter((b): b is { type: 'text'; text: string } => b.type === 'text')
-          .map((b) => b.text)
-          .join('\n')
-          .trim();
-        return NextResponse.json({ reply: reply || mockReply(last, locale), source: 'claude' });
-      } catch (err) {
-        return NextResponse.json({ reply: mockReply(last, locale), source: 'mock-fallback' });
-      }
-    }
-  }
+  const result = await mariChat({
+    surface: 'clinical',
+    system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
+    messages,
+    locale,
+    context: { screen },
+    allowModel,
+    maxTokens: 600,
+    fallback: () => mockReply(last, locale),
+  });
 
-  // Simulate a little latency so the typing indicator reads naturally.
-  await new Promise((r) => setTimeout(r, 450));
-  return NextResponse.json({ reply: mockReply(last, locale), source: 'mock' });
+  // A little latency on the mock path so the typing indicator reads naturally.
+  if (result.source === 'mock') await new Promise((r) => setTimeout(r, 450));
+  return NextResponse.json(result);
 }
