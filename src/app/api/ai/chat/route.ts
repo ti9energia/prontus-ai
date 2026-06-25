@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data/store';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -116,26 +117,31 @@ export async function POST(req: NextRequest) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
-  // Real Claude API when a key is configured; graceful mock otherwise.
+  // Real Claude API only for authenticated users (cost protection on a public
+  // deploy); everyone else gets the data-aware mock. Auth is checked lazily so
+  // the mock path never touches crypto.
   if (apiKey) {
-    try {
-      const { default: Anthropic } = await import('@anthropic-ai/sdk');
-      const client = new Anthropic({ apiKey });
-      const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
-      const completion = await client.messages.create({
-        model,
-        max_tokens: 600,
-        system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
-        messages: messages.map((m) => ({ role: m.role, content: m.content })),
-      });
-      const reply = completion.content
-        .filter((b): b is { type: 'text'; text: string } => b.type === 'text')
-        .map((b) => b.text)
-        .join('\n')
-        .trim();
-      return NextResponse.json({ reply: reply || mockReply(last, locale), source: 'claude' });
-    } catch (err) {
-      return NextResponse.json({ reply: mockReply(last, locale), source: 'mock-fallback' });
+    const authed = !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
+    if (authed) {
+      try {
+        const { default: Anthropic } = await import('@anthropic-ai/sdk');
+        const client = new Anthropic({ apiKey });
+        const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
+        const completion = await client.messages.create({
+          model,
+          max_tokens: 600,
+          system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
+          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+        });
+        const reply = completion.content
+          .filter((b): b is { type: 'text'; text: string } => b.type === 'text')
+          .map((b) => b.text)
+          .join('\n')
+          .trim();
+        return NextResponse.json({ reply: reply || mockReply(last, locale), source: 'claude' });
+      } catch (err) {
+        return NextResponse.json({ reply: mockReply(last, locale), source: 'mock-fallback' });
+      }
     }
   }
 

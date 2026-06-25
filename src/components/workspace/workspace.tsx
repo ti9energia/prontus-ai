@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useRouter } from '@/i18n/routing';
 import { focusPane, hydrate, useWorkspace, type Pane } from '@/lib/workspace/store';
-import { isAuthed } from '@/lib/auth';
+import { useSession } from '@/lib/auth';
 import { SCREENS } from './registry';
 import { TopBar } from './top-bar';
 import { AppRail } from './app-rail';
@@ -28,14 +28,18 @@ function PaneHost({ pane }: { pane: Pane }) {
 export function Workspace() {
   const ws = useWorkspace();
   const router = useRouter();
+  const { loading, authed } = useSession();
   const [cmdOpen, setCmdOpen] = React.useState(false);
   const [copilotOpen, setCopilotOpen] = React.useState(false);
 
   React.useEffect(() => {
     hydrate();
-    if (!isAuthed()) router.replace('/login');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Middleware already gates /app; this is a defensive client redirect.
+  React.useEffect(() => {
+    if (!loading && !authed) router.replace('/login');
+  }, [loading, authed, router]);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

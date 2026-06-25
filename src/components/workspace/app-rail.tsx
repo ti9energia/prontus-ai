@@ -7,6 +7,7 @@ import { Link } from '@/i18n/routing';
 import { openTab, useWorkspace, type ScreenKey } from '@/lib/workspace/store';
 import { SCREENS, SCREEN_ORDER, type ScreenGroup } from './registry';
 import { useChrome } from './labels';
+import { useSession } from '@/lib/auth';
 import { Tooltip } from '@/components/ui/misc';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +16,7 @@ export function AppRail() {
   const locale = useLocale();
   const c = useChrome();
   const ws = useWorkspace();
+  const { role } = useSession();
 
   const activePane = ws.panes.find((p) => p.id === ws.activePaneId) ?? ws.panes[0];
   const activeScreen = activePane?.tabs.find((tb) => tb.id === activePane.activeTabId)?.screen;
@@ -59,17 +61,19 @@ export function AppRail() {
         ))}
       </div>
 
-      <div className="flex flex-col items-center border-t border-hairline pt-2">
-        <Tooltip label={c('owner')} side="right">
-          <Link
-            href="/owner"
-            className="grid h-10 w-10 place-items-center rounded-xl text-muted transition-all hover:bg-accent-400/10 hover:text-accent-500"
-            aria-label={c('owner')}
-          >
-            <Crown className="h-[18px] w-[18px]" />
-          </Link>
-        </Tooltip>
-      </div>
+      {role === 'owner' && (
+        <div className="flex flex-col items-center border-t border-hairline pt-2">
+          <Tooltip label={c('owner')} side="right">
+            <Link
+              href="/owner"
+              className="grid h-10 w-10 place-items-center rounded-xl text-muted transition-all hover:bg-accent-400/10 hover:text-accent-500"
+              aria-label={c('owner')}
+            >
+              <Crown className="h-[18px] w-[18px]" />
+            </Link>
+          </Tooltip>
+        </div>
+      )}
     </nav>
   );
 }

@@ -6,7 +6,7 @@ import { Crown, LogOut, Menu, Search, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
 import { getCurrentUser } from '@/lib/data/store';
 import { openTab } from '@/lib/workspace/store';
-import { signOut } from '@/lib/auth';
+import { signOut, useSession } from '@/lib/auth';
 import { SCREEN_ORDER } from './registry';
 import { ScreenMenu } from './launcher';
 import { useChrome } from './labels';
@@ -30,6 +30,7 @@ export function TopBar({
   const c = useChrome();
   const router = useRouter();
   const user = getCurrentUser();
+  const { role } = useSession();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [userOpen, setUserOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -44,8 +45,8 @@ export function TopBar({
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  const doSignOut = () => {
-    signOut();
+  const doSignOut = async () => {
+    await signOut();
     router.push('/login');
   };
 
@@ -133,13 +134,15 @@ export function TopBar({
               >
                 <Sparkles className="h-4 w-4 text-muted" /> {t('nav.settings')}
               </button>
-              <Link
-                href="/owner"
-                onClick={() => setUserOpen(false)}
-                className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm hover:bg-ink/[0.05]"
-              >
-                <Crown className="h-4 w-4 text-accent-500" /> {c('owner')}
-              </Link>
+              {role === 'owner' && (
+                <Link
+                  href="/owner"
+                  onClick={() => setUserOpen(false)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm hover:bg-ink/[0.05]"
+                >
+                  <Crown className="h-4 w-4 text-accent-500" /> {c('owner')}
+                </Link>
+              )}
               <div className="my-1 h-px bg-hairline sm:hidden" />
               <div className="flex items-center justify-between px-2 py-1 sm:hidden">
                 <ThemeToggle compact />

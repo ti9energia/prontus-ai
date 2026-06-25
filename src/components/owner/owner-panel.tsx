@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { isAuthed } from '@/lib/auth';
+import { useSession } from '@/lib/auth';
 import { useRouter } from '@/i18n/routing';
 import { OwnerProvider, useOwner } from './context';
 import {
@@ -83,12 +83,13 @@ function Shell() {
   const t = useTranslations('owner');
   const tn = useTranslations('nav');
   const router = useRouter();
+  const { loading, authed, role } = useSession();
   const [section, setSection] = React.useState<SectionKey>('overview');
 
+  // Middleware enforces owner-only access; this mirrors it client-side.
   React.useEffect(() => {
-    if (!isAuthed()) router.replace('/login');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!loading && (!authed || role !== 'owner')) router.replace('/login');
+  }, [loading, authed, role, router]);
 
   const Active = NAV.find((n) => n.key === section)?.Component ?? OverviewSection;
 

@@ -1,12 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { useTranslations } from 'next-intl';
-import { ArrowLeft, ArrowRight, Mail, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { AlertCircle, ArrowLeft, ArrowRight, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
-import { signIn, isAuthed } from '@/lib/auth';
+import { useSession } from '@/lib/auth';
 import { Aurora } from '@/components/landing/aurora';
 import { Logo, LogoMark } from '@/components/brand/logo';
+import { MariFace } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
 import { Input, Field } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -15,24 +16,72 @@ import { ThemeToggle } from '@/components/theme-provider';
 export function LoginForm() {
   const t = useTranslations('auth');
   const tc = useTranslations('common.actions');
+  const locale = useLocale();
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+
   const router = useRouter();
+  const { loading: sessionLoading, authed, role } = useSession();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (isAuthed()) router.replace('/app');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!sessionLoading && authed) router.replace(role === 'owner' ? '/owner' : '/app');
+  }, [sessionLoading, authed, role, router]);
 
-  const enter = (e?: React.FormEvent) => {
-    e?.preventDefault();
+  const post = async (body: Record<string, unknown>) => {
+    setError(null);
     setLoading(true);
-    signIn();
-    setTimeout(() => router.push('/app'), 350);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(
+          res.status === 429
+            ? L(
+                'Muitas tentativas. Aguarde alguns minutos.',
+                'Too many attempts. Wait a few minutes.',
+                '尝试过于频繁，请稍后再试。',
+                'Trop de tentatives. Réessayez dans quelques minutes.',
+              )
+            : L(
+                'E-mail ou senha inválidos.',
+                'Invalid email or password.',
+                '邮箱或密码无效。',
+                'E-mail ou mot de passe invalide.',
+              ),
+        );
+        setLoading(false);
+        return;
+      }
+      router.push(data.role === 'owner' ? '/owner' : '/app');
+    } catch {
+      setError(
+        L(
+          'Não foi possível entrar. Tente novamente.',
+          'Could not sign in. Try again.',
+          '无法登录，请重试。',
+          'Connexion impossible. Réessayez.',
+        ),
+      );
+      setLoading(false);
+    }
+  };
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    post({ email, password });
   };
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      {/* brand panel */}
+      {/* brand panel — Mari */}
       <div className="relative hidden overflow-hidden bg-brand-900 lg:block">
         <Aurora />
         <div className="noise absolute inset-0" />
@@ -45,17 +94,24 @@ export function LoginForm() {
           </Link>
 
           <div className="max-w-md">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" /> {t('signInSubtitle')}
             </div>
             <blockquote className="font-display text-3xl font-semibold leading-tight tracking-tight text-white">
-              “Saio do consultório com o prontuário e a guia prontos. Recuperei minhas noites.”
+              “{L(
+                'Saio do consultório com o prontuário e a guia prontos. Recuperei minhas noites.',
+                'I leave the office with the record and claim already done. I got my evenings back.',
+                '看完诊病历和单据就已就绪，我把晚上的时间找回来了。',
+                'Je sors du cabinet avec le dossier et la feuille déjà prêts. J’ai retrouvé mes soirées.',
+              )}”
             </blockquote>
-            <div className="mt-5 flex items-center gap-3 text-white/80">
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-white/15 font-semibold text-white">HV</div>
+            <div className="mt-6 flex items-center gap-3">
+              <MariFace size={48} />
               <div>
-                <p className="text-sm font-medium text-white">Dra. Helena Vasconcelos</p>
-                <p className="text-xs text-white/60">Clínica Aurora</p>
+                <p className="text-sm font-semibold text-white">Mari</p>
+                <p className="text-xs text-white/60">
+                  {L('Sua copilota clínica de IA', 'Your clinical AI copilot', '您的临床 AI 副驾', 'Votre copilote clinique IA')}
+                </p>
               </div>
             </div>
           </div>
@@ -86,21 +142,53 @@ export function LoginForm() {
             <h1 className="mt-6 font-display text-3xl font-bold tracking-tight">{t('signInTitle')}</h1>
             <p className="mt-2 text-sm text-muted">{t('signInSubtitle')}</p>
 
-            <form onSubmit={enter} className="mt-8 space-y-4">
+            {error && (
+              <div
+                role="alert"
+                className="mt-6 flex items-start gap-2 rounded-lg border border-danger/30 bg-danger/[0.06] px-3 py-2.5 text-sm text-danger"
+              >
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={submit} className="mt-6 space-y-4">
               <Field label={t('email')}>
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                  <Input type="email" defaultValue="helena@clinicaaurora.com.br" className="pl-9" placeholder="you@clinic.com" />
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-9"
+                    placeholder="you@clinic.com"
+                    required
+                  />
                 </div>
               </Field>
               <Field label={t('password')}>
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-                  <Input type="password" defaultValue="prontus-demo" className="pl-9" placeholder="••••••••" />
+                  <Input
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-9"
+                    placeholder="••••••••"
+                    required
+                  />
                 </div>
               </Field>
 
-              <Button type="submit" size="lg" loading={loading} className="w-full" rightIcon={<ArrowRight className="h-4 w-4" />}>
+              <Button
+                type="submit"
+                size="lg"
+                loading={loading}
+                className="w-full"
+                rightIcon={<ArrowRight className="h-4 w-4" />}
+              >
                 {tc('signIn')}
               </Button>
             </form>
@@ -111,7 +199,14 @@ export function LoginForm() {
               <div className="h-px flex-1 bg-hairline" />
             </div>
 
-            <Button variant="outline" size="lg" className="w-full" leftIcon={<Sparkles className="h-4 w-4" />} onClick={() => enter()}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full"
+              loading={loading}
+              leftIcon={<Sparkles className="h-4 w-4" />}
+              onClick={() => post({ demo: true })}
+            >
               {t('enterDemo')}
             </Button>
           </div>
