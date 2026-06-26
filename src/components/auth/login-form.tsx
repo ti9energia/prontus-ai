@@ -11,7 +11,7 @@ import { MariFace } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
 import { Input, Field } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { ThemeToggle } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-provider';
 
 export function LoginForm() {
   const t = useTranslations('auth');
@@ -140,7 +140,7 @@ export function LoginForm() {
             <ArrowLeft className="h-4 w-4" /> Auronis Health
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle compact />
+            <ThemeSwitcher compact />
             <LanguageSwitcher />
           </div>
         </div>

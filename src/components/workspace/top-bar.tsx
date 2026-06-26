@@ -12,7 +12,7 @@ import { ScreenMenu } from './launcher';
 import { useChrome } from './labels';
 import { Logo } from '@/components/brand/logo';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { ThemeToggle } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-provider';
 import { Avatar } from '@/components/ui/misc';
 import { Kbd } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
@@ -115,7 +115,7 @@ export function TopBar({
         </button>
 
         <div className="hidden items-center gap-1.5 sm:flex">
-          <ThemeToggle compact />
+          <ThemeSwitcher compact />
           <LanguageSwitcher />
         </div>
 
@@ -155,7 +155,7 @@ export function TopBar({
               </button>
               <div className="my-1 h-px bg-hairline sm:hidden" />
               <div className="flex items-center justify-between px-2 py-1 sm:hidden">
-                <ThemeToggle compact />
+                <ThemeSwitcher compact />
                 <LanguageSwitcher />
               </div>
               <div className="my-1 h-px bg-hairline" />

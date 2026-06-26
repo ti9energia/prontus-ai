@@ -38,7 +38,7 @@ import { Logo } from '@/components/brand/logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { ThemeToggle } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 
 type SectionKey =
@@ -116,7 +116,7 @@ function Shell() {
               <span className="hidden sm:inline">{tn('backToProduct')}</span>
             </Button>
           </Link>
-          <ThemeToggle compact />
+          <ThemeSwitcher compact />
           <LanguageSwitcher />
         </div>
       </header>

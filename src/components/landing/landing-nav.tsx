@@ -6,7 +6,7 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Logo } from '@/components/brand/logo';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { ThemeToggle } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -98,7 +98,7 @@ export function LandingNav() {
 
           <div className="flex items-center gap-2">
             <div className="hidden items-center gap-1.5 sm:flex">
-              <ThemeToggle compact />
+              <ThemeSwitcher compact />
               <LanguageSwitcher />
             </div>
             <Link
@@ -140,7 +140,7 @@ export function LandingNav() {
               ))}
               <div className="my-1 h-px bg-hairline" />
               <div className="flex items-center justify-between px-2 py-1">
-                <ThemeToggle compact />
+                <ThemeSwitcher compact />
                 <LanguageSwitcher />
               </div>
               <Link href="/login" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'mt-1' })}>

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Check, Monitor, Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
@@ -49,6 +49,86 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useTheme = () => React.useContext(ThemeCtx);
+
+/** Theme picker as a dropdown — same pattern as the LanguageSwitcher (button → list). */
+export function ThemeSwitcher({ align = 'end', compact }: { align?: 'start' | 'end'; compact?: boolean }) {
+  const { theme, resolved, setTheme } = useTheme();
+  const t = useTranslations('common.theme');
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
+  const opts: { value: Theme; icon: React.ReactNode; label: string }[] = [
+    { value: 'light', icon: <Sun className="h-4 w-4" />, label: t('light') },
+    { value: 'dark', icon: <Moon className="h-4 w-4" />, label: t('dark') },
+    { value: 'system', icon: <Monitor className="h-4 w-4" />, label: t('system') },
+  ];
+  const TriggerIcon = theme === 'system' ? Monitor : resolved === 'dark' ? Moon : Sun;
+
+  const choose = (val: Theme) => {
+    setOpen(false);
+    setTheme(val);
+  };
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className={cn(
+          'inline-flex items-center justify-center gap-2 rounded-md border border-line bg-surface px-2.5 text-sm text-muted transition-colors hover:text-ink',
+          compact ? 'h-8 w-8' : 'h-9',
+        )}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={t('label')}
+      >
+        <TriggerIcon className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          className={cn(
+            'absolute z-50 mt-2 w-40 overflow-hidden rounded-xl border border-hairline bg-card p-1 shadow-lg animate-scale-in',
+            align === 'end' ? 'right-0' : 'left-0',
+          )}
+          role="listbox"
+        >
+          {opts.map((o) => (
+            <button
+              key={o.value}
+              onClick={() => choose(o.value)}
+              className={cn(
+                'flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-ink/[0.05]',
+                o.value === theme && 'bg-brand-600/[0.08]',
+              )}
+              role="option"
+              aria-selected={o.value === theme}
+            >
+              <span className="flex items-center gap-2.5">
+                <span className={cn(o.value === theme ? 'text-brand-600' : 'text-muted')}>{o.icon}</span>
+                <span className={cn(o.value === theme && 'font-medium text-brand-700 dark:text-brand-300')}>
+                  {o.label}
+                </span>
+              </span>
+              {o.value === theme && <Check className="h-4 w-4 text-brand-600" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** Inline script that sets the theme class before paint to avoid FOUC. */
 export function ThemeScript() {
