@@ -1,4 +1,15 @@
 {
+  "feedback": {
+    "saved": "Changes saved",
+    "added": "Added successfully",
+    "removed": "Removed",
+    "duplicated": "Template duplicated",
+    "applied": "Recommendation applied",
+    "published": "Published",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "comingSoon": "Coming soon"
+  },
   "encounterType": {
     "firstVisit": "First visit",
     "followUp": "Follow-up",

@@ -1,4 +1,15 @@
 {
+  "feedback": {
+    "saved": "Modifications enregistrées",
+    "added": "Ajouté avec succès",
+    "removed": "Supprimé",
+    "duplicated": "Modèle dupliqué",
+    "applied": "Recommandation appliquée",
+    "published": "Publié",
+    "connected": "Connecté",
+    "disconnected": "Déconnecté",
+    "comingSoon": "Bientôt disponible"
+  },
   "encounterType": {
     "firstVisit": "1re visite",
     "followUp": "Suivi",

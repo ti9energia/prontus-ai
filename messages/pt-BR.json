@@ -1,4 +1,15 @@
 {
+  "feedback": {
+    "saved": "Alterações salvas",
+    "added": "Adicionado com sucesso",
+    "removed": "Removido",
+    "duplicated": "Modelo duplicado",
+    "applied": "Recomendação aplicada",
+    "published": "Publicado",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "comingSoon": "Em breve"
+  },
   "encounterType": {
     "firstVisit": "1ª consulta",
     "followUp": "Retorno",

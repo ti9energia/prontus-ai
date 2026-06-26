@@ -652,4 +652,40 @@ export function setTenantStatus(tid: string, status: Tenant['status']) {
   return t;
 }
 
+/* ----------------------------- Templates (mutations) ----------------------------- */
+export function setDefaultTemplate(tid: string) {
+  const d = db();
+  d.templates.forEach((tpl) => (tpl.isDefault = tpl.id === tid));
+  pushAudit('Dra. Helena Vasconcelos', 'template.setDefault', `Template ${tid}`, 'ok', 'ui');
+  return d.templates.find((tpl) => tpl.id === tid);
+}
+export function duplicateTemplate(tid: string): Template | undefined {
+  const d = db();
+  const src = d.templates.find((tpl) => tpl.id === tid);
+  if (!src) return undefined;
+  const copy: Template = { ...src, id: id('tpl', d.templates.length + 1), isDefault: false, usedCount: 0 };
+  d.templates.push(copy);
+  pushAudit('Dra. Helena Vasconcelos', 'template.duplicate', `Template ${copy.id}`, 'ok', 'ui');
+  return copy;
+}
+
+/* ----------------------------- Patients (mutations) ----------------------------- */
+export function addPatient(input: { name: string; payer: string }): Patient {
+  const d = db();
+  const n = d.patients.length + 1;
+  const patient: Patient = {
+    id: id('pat', n),
+    name: input.name.trim() || `Paciente ${n}`,
+    birthDate: '1990-01-01',
+    sex: 'F',
+    payer: input.payer.trim() || 'Unimed',
+    cardNumber: '0000 0000 0000 0000',
+    consent: 'pending',
+    hue: (n * 47) % 360,
+  };
+  d.patients.unshift(patient);
+  pushAudit('Dra. Helena Vasconcelos', 'patient.create', `Patient ${patient.id}`, 'ok', 'ui');
+  return patient;
+}
+
 export const ALL_MODULE_KEYS = ALL_MODULES;

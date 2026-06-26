@@ -1,4 +1,15 @@
 {
+  "feedback": {
+    "saved": "更改已保存",
+    "added": "添加成功",
+    "removed": "已移除",
+    "duplicated": "模板已复制",
+    "applied": "建议已应用",
+    "published": "已发布",
+    "connected": "已连接",
+    "disconnected": "已断开",
+    "comingSoon": "即将推出"
+  },
   "encounterType": {
     "firstVisit": "初诊",
     "followUp": "复诊",

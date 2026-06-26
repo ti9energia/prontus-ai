@@ -13,15 +13,16 @@ import {
   Clock,
   ChevronRight,
 } from 'lucide-react';
-import { listPatients, listEncounters, getPatient } from '@/lib/data/store';
+import { listPatients, listEncounters, getPatient, addPatient } from '@/lib/data/store';
 import type { ConsentStatus, EncounterStatus, Patient } from '@/lib/types';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar, IconButton, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Sheet } from '@/components/ui/overlay';
+import { Field, Input } from '@/components/ui/input';
+import { Modal, Sheet } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
+import { toast } from '@/lib/toast';
 import { formatDate, formatTime, cn } from '@/lib/utils';
 
 const CONSENT_TONE: Record<ConsentStatus, React.ComponentProps<typeof Badge>['tone']> = {
@@ -47,13 +48,28 @@ export function PatientsScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('patients');
   const ts = useTranslations('encounterStatus');
   const tc = useTranslations('common');
+  const tf = useTranslations('feedback');
   const locale = useLocale();
 
   const [query, setQuery] = React.useState('');
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [addOpen, setAddOpen] = React.useState(false);
+  const [newName, setNewName] = React.useState('');
+  const [newPayer, setNewPayer] = React.useState('');
+  const [, force] = React.useReducer((x) => x + 1, 0);
 
   const patients = listPatients();
   const encounters = listEncounters();
+
+  const doAdd = () => {
+    if (!newName.trim()) return;
+    addPatient({ name: newName, payer: newPayer });
+    setAddOpen(false);
+    setNewName('');
+    setNewPayer('');
+    force();
+    toast.success(tf('added'));
+  };
 
   const countByPatient = React.useMemo(() => {
     const map: Record<string, number> = {};
@@ -94,7 +110,7 @@ export function PatientsScreen({ paneId }: { paneId: string }) {
                 className="pl-9"
               />
             </div>
-            <Button leftIcon={<Plus className="h-4 w-4" />}>{t('add')}</Button>
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setAddOpen(true)}>{t('add')}</Button>
           </>
         }
       />
@@ -182,6 +198,25 @@ export function PatientsScreen({ paneId }: { paneId: string }) {
         statusLabel={(s) => ts(s)}
         locale={locale}
       />
+
+      <Modal open={addOpen} onClose={() => setAddOpen(false)} title={t('add')} size="sm">
+        <div className="flex flex-col gap-4 p-5">
+          <Field label={t('columns.name')}>
+            <Input value={newName} onChange={(e) => setNewName(e.target.value)} autoFocus />
+          </Field>
+          <Field label={t('columns.payer')}>
+            <Input value={newPayer} onChange={(e) => setNewPayer(e.target.value)} placeholder="Unimed" />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setAddOpen(false)}>
+              {tc('actions.cancel')}
+            </Button>
+            <Button onClick={doAdd} disabled={!newName.trim()}>
+              {tc('actions.create')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </ScreenContainer>
   );
 }
