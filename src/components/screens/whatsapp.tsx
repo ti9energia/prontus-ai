@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/input';
 import { cn, formatTime } from '@/lib/utils';
+import { toast } from '@/lib/toast';
 
 interface Message {
   id: number;
@@ -34,6 +35,12 @@ const COPY: Record<string, Record<Locale, string>> = {
     en: 'online',
     'zh-CN': '在线',
     'fr-FR': 'en ligne',
+  },
+  numberCopied: {
+    'pt-BR': 'Número copiado',
+    en: 'Number copied',
+    'zh-CN': '号码已复制',
+    'fr-FR': 'Numéro copié',
   },
   config: {
     'pt-BR': 'Configuração do canal',
@@ -270,7 +277,13 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
                 {localized('online', locale)}
               </p>
             </div>
-            <IconButton aria-label={t('number')}>
+            <IconButton
+              aria-label={t('number')}
+              onClick={() => {
+                navigator.clipboard?.writeText('+55 11 99000-0000');
+                toast.success(localized('numberCopied', locale));
+              }}
+            >
               <Phone className="h-4 w-4" />
             </IconButton>
           </header>

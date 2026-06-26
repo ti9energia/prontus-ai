@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Cable,
   Plug,
@@ -17,6 +17,8 @@ import { ScreenContainer, ScreenHeader, SectionTitle } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Field, Input } from '@/components/ui/input';
+import { Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
 
 type Status = 'connected' | 'available' | 'soon';
@@ -53,7 +55,11 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
   void paneId;
   const t = useTranslations('integrations');
   const tf = useTranslations('feedback');
+  const locale = useLocale();
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
   const [connected, setConnected] = React.useState<Set<string>>(() => new Set(INITIAL_CONNECTED));
+  const [configuring, setConfiguring] = React.useState<string | null>(null);
 
   const statusOf = (name: string): Status =>
     SOON.has(name) ? 'soon' : connected.has(name) ? 'connected' : 'available';
@@ -68,7 +74,6 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
     });
     toast.success(willConnect ? tf('connected') : tf('disconnected'));
   };
-  const configure = () => toast.success(tf('comingSoon'));
 
   return (
     <ScreenContainer>
@@ -90,7 +95,7 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
                   name={name}
                   status={statusOf(name)}
                   onToggle={() => toggle(name)}
-                  onConfigure={configure}
+                  onConfigure={() => setConfiguring(name)}
                   t={t}
                 />
               ))}
@@ -98,6 +103,34 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
           </section>
         ))}
       </div>
+
+      <Modal
+        open={!!configuring}
+        onClose={() => setConfiguring(null)}
+        title={`${L('Configurar', 'Configure', '配置', 'Configurer')}${configuring ? ` · ${configuring}` : ''}`}
+      >
+        <div className="flex flex-col gap-4 p-5">
+          <Field label={L('Chave de API', 'API key', 'API 密钥', 'Clé API')}>
+            <Input placeholder="sk-•••••••••••••" className="font-mono" autoFocus />
+          </Field>
+          <Field label="Webhook URL">
+            <Input placeholder="https://hooks.auronishealth.com/…" className="font-mono" />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setConfiguring(null)}>
+              {L('Cancelar', 'Cancel', '取消', 'Annuler')}
+            </Button>
+            <Button
+              onClick={() => {
+                setConfiguring(null);
+                toast.success(L('Configuração salva', 'Configuration saved', '配置已保存', 'Configuration enregistrée'));
+              }}
+            >
+              {L('Salvar', 'Save', '保存', 'Enregistrer')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </ScreenContainer>
   );
 }

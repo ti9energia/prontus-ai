@@ -32,6 +32,7 @@ import { Avatar, Switch, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
+import { Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
@@ -60,6 +61,15 @@ const TIMEZONES = ['America/Sao_Paulo', 'America/New_York', 'Europe/Paris', 'Asi
 const CURRENCIES = ['BRL', 'USD', 'EUR', 'CNY'];
 const RETENTION_DAYS = [30, 90, 180, 365];
 const AI_MODELS = ['claude-opus-4-8', 'claude-sonnet-4-6'];
+const INVITE_ROLE_KEYS = ['medico', 'faturista', 'gestor', 'compliance', 'viewer'];
+
+/* localStorage keys for the per-panel preference blobs (local-first persistence). */
+const STORE = {
+  profile: 'auronis:settings:profile',
+  clinic: 'auronis:settings:clinic',
+  language: 'auronis:settings:language',
+  ai: 'auronis:settings:ai',
+} as const;
 
 /* Per-locale strings for copy that has no existing i18n key. */
 const COPY: Record<string, Record<Locale, string>> = {
@@ -213,6 +223,27 @@ function localized(key: keyof typeof COPY, locale: string) {
   return COPY[key][(locale as Locale)] ?? COPY[key]['pt-BR'];
 }
 
+/* Client-only persistence helpers. Guarded so they're safe if ever called outside
+   the browser; in practice they only run inside effects/handlers. */
+function readStore<T>(key: string): Partial<T> | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as Partial<T>) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStore(key: string, value: unknown) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* storage unavailable / quota exceeded — ignore */
+  }
+}
+
 export function SettingsScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('settings');
   const locale = useLocale();
@@ -289,17 +320,50 @@ function ProfilePanel() {
   const tc = useTranslations('common');
   const locale = useLocale();
   const { user, role, displayName, displayEmail } = useSettingsIdentity();
+
+  const [form, setForm] = React.useState({
+    displayName,
+    specialty: 'Clínica geral',
+    council: user.council,
+    email: displayEmail,
+  });
+
+  // Load any saved profile and re-sync identity fields once the async session
+  // resolves; a persisted value always wins. localStorage is only touched here.
+  React.useEffect(() => {
+    const stored = readStore<typeof form>(STORE.profile);
+    setForm((f) => ({
+      displayName: stored?.displayName ?? displayName,
+      specialty: stored?.specialty ?? f.specialty,
+      council: stored?.council ?? user.council,
+      email: stored?.email ?? displayEmail,
+    }));
+  }, [displayName, displayEmail, user.council]);
+
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const save = () => {
+    writeStore(STORE.profile, form);
+    toast.success(tc('states.success'));
+  };
+
   return (
     <Panel
       icon={User}
       title={t('tabs.profile')}
       description={localized('profileDesc', locale)}
-      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
+      footer={
+        <Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={save}>
+          {tc('actions.save')}
+        </Button>
+      }
     >
       <div className="flex items-center gap-4 rounded-xl border border-hairline bg-surface/60 p-4">
-        <Avatar name={displayName} hue={172} size={56} />
+        <Avatar name={form.displayName} hue={172} size={56} />
         <div className="min-w-0">
-          <p className="truncate font-display text-base font-semibold tracking-tight">{displayName}</p>
+          <p className="truncate font-display text-base font-semibold tracking-tight">{form.displayName}</p>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <Badge tone="brand">{role === 'owner' ? tr('org_admin') : tr(user.roleKey as 'medico')}</Badge>
             <span className="text-xs text-muted">{user.orgName}</span>
@@ -309,16 +373,16 @@ function ProfilePanel() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('profile.name')}>
-          <Input key={displayName} defaultValue={displayName} />
+          <Input value={form.displayName} onChange={set('displayName')} />
         </Field>
         <Field label={t('profile.specialty')}>
-          <Input defaultValue="Clínica geral" />
+          <Input value={form.specialty} onChange={set('specialty')} />
         </Field>
         <Field label={t('profile.council')}>
-          <Input defaultValue={user.council} />
+          <Input value={form.council} onChange={set('council')} />
         </Field>
         <Field label={t('profile.email')}>
-          <Input key={displayEmail} type="email" defaultValue={displayEmail} />
+          <Input type="email" value={form.email} onChange={set('email')} />
         </Field>
       </div>
     </Panel>
@@ -329,64 +393,112 @@ function ClinicPanel() {
   const tc = useTranslations('common');
   const locale = useLocale();
   const user = getCurrentUser();
+
+  const [form, setForm] = React.useState({
+    orgName: user.orgName,
+    cnpj: '12.345.678/0001-90',
+    phone: '+55 11 3555-1020',
+    address: 'Av. Paulista, 1000 — São Paulo, SP',
+  });
+
+  React.useEffect(() => {
+    const stored = readStore<typeof form>(STORE.clinic);
+    if (stored) setForm((f) => ({ ...f, ...stored }));
+  }, []);
+
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const save = () => {
+    writeStore(STORE.clinic, form);
+    toast.success(tc('states.success'));
+  };
+
   return (
     <Panel
       icon={Building2}
       title={localized('clinicTitle', locale)}
       description={user.orgName}
-      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
+      footer={
+        <Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={save}>
+          {tc('actions.save')}
+        </Button>
+      }
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={localized('clinicName', locale)}>
-          <Input defaultValue={user.orgName} />
+          <Input value={form.orgName} onChange={set('orgName')} />
         </Field>
         <Field label={localized('cnpj', locale)}>
-          <Input defaultValue="12.345.678/0001-90" />
+          <Input value={form.cnpj} onChange={set('cnpj')} />
         </Field>
         <Field label={localized('phone', locale)}>
-          <Input defaultValue="+55 11 3555-1020" />
+          <Input value={form.phone} onChange={set('phone')} />
         </Field>
         <Field label={localized('plan', locale)}>
           <Input defaultValue={user.planName} disabled />
         </Field>
         <Field label={localized('address', locale)} className="sm:col-span-2">
-          <Input defaultValue="Av. Paulista, 1000 — São Paulo, SP" />
+          <Input value={form.address} onChange={set('address')} />
         </Field>
       </div>
     </Panel>
   );
 }
 
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  roleKey: string;
+  status: 'active' | 'invited';
+};
+
 function UsersPanel() {
   const t = useTranslations('settings');
   const tr = useTranslations('roles');
   const tc = useTranslations('common');
   const locale = useLocale();
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
   const { displayName, displayEmail } = useSettingsIdentity();
-  const members = React.useMemo(
-    () => [
-      { name: displayName, email: displayEmail, roleKey: 'medico', status: 'active' as const },
-      {
-        name: 'Patrícia Lemos',
-        email: 'patricia@clinicaaurora.com.br',
-        roleKey: 'faturista',
-        status: 'active' as const,
-      },
-      {
-        name: 'Ricardo Antunes',
-        email: 'ricardo@clinicaaurora.com.br',
-        roleKey: 'gestor',
-        status: 'active' as const,
-      },
-      {
-        name: 'Camila Forte',
-        email: 'camila@clinicaaurora.com.br',
-        roleKey: 'compliance',
-        status: 'invited' as const,
-      },
-    ],
-    [displayName, displayEmail],
-  );
+
+  const [members, setMembers] = React.useState<Member[]>(() => [
+    { id: 'self', name: displayName, email: displayEmail, roleKey: 'medico', status: 'active' },
+    { id: 'patricia', name: 'Patrícia Lemos', email: 'patricia@clinicaaurora.com.br', roleKey: 'faturista', status: 'active' },
+    { id: 'ricardo', name: 'Ricardo Antunes', email: 'ricardo@clinicaaurora.com.br', roleKey: 'gestor', status: 'active' },
+    { id: 'camila', name: 'Camila Forte', email: 'camila@clinicaaurora.com.br', roleKey: 'compliance', status: 'invited' },
+  ]);
+
+  // Keep the current-user row in sync once the async session identity resolves.
+  React.useEffect(() => {
+    setMembers((list) =>
+      list.map((m) => (m.id === 'self' ? { ...m, name: displayName, email: displayEmail } : m)),
+    );
+  }, [displayName, displayEmail]);
+
+  const [inviteOpen, setInviteOpen] = React.useState(false);
+  const [inviteEmail, setInviteEmail] = React.useState('');
+  const [inviteRole, setInviteRole] = React.useState('faturista');
+
+  const submitInvite = () => {
+    const email = inviteEmail.trim();
+    if (!email) return;
+    setMembers((list) => [
+      ...list,
+      { id: `m_${Date.now()}`, name: email.split('@')[0], email, roleKey: inviteRole, status: 'invited' },
+    ]);
+    setInviteOpen(false);
+    setInviteEmail('');
+    setInviteRole('faturista');
+    toast.success(tc('states.success'));
+  };
+
+  const removeMember = (id: string) => {
+    setMembers((list) => list.filter((m) => m.id !== id));
+    toast.success(tc('states.success'));
+  };
 
   return (
     <Panel
@@ -394,7 +506,7 @@ function UsersPanel() {
       title={t('tabs.users')}
       description={localized('subtitle', locale)}
       action={
-        <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>
+        <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={() => setInviteOpen(true)}>
           {t('users.invite')}
         </Button>
       }
@@ -411,7 +523,7 @@ function UsersPanel() {
         </thead>
         <tbody>
           {members.map((m) => (
-            <tr key={m.email} className="transition-colors hover:bg-ink/[0.02]">
+            <tr key={m.id} className="transition-colors hover:bg-ink/[0.02]">
               <Td>
                 <div className="flex min-w-0 items-center gap-3">
                   <Avatar name={m.name} hue={(m.name.length * 47) % 360} size={36} />
@@ -432,6 +544,7 @@ function UsersPanel() {
               <Td>
                 <button
                   type="button"
+                  onClick={() => removeMember(m.id)}
                   aria-label={tc('actions.delete')}
                   className="inline-grid h-8 w-8 place-items-center rounded-md text-subtle transition-colors hover:bg-danger/10 hover:text-danger-fg dark:hover:text-danger"
                 >
@@ -442,6 +555,36 @@ function UsersPanel() {
           ))}
         </tbody>
       </Table>
+
+      <Modal open={inviteOpen} onClose={() => setInviteOpen(false)} title={t('users.invite')} size="sm">
+        <div className="flex flex-col gap-4 p-5">
+          <Field label={t('profile.email')}>
+            <Input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder={L('nome@clinica.com.br', 'name@clinic.com', '姓名@clinic.com', 'nom@clinique.com')}
+            />
+          </Field>
+          <Field label={t('users.role')}>
+            <Select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}>
+              {INVITE_ROLE_KEYS.map((rk) => (
+                <option key={rk} value={rk}>
+                  {tr(rk as 'medico')}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </div>
+        <div className="flex items-center justify-end gap-3 border-t border-hairline bg-surface/40 px-5 py-3.5">
+          <Button variant="outline" onClick={() => setInviteOpen(false)}>
+            {tc('actions.cancel')}
+          </Button>
+          <Button leftIcon={<Plus className="h-4 w-4" />} onClick={submitInvite}>
+            {t('users.invite')}
+          </Button>
+        </div>
+      </Modal>
     </Panel>
   );
 }
@@ -452,6 +595,19 @@ function SecurityPanel() {
   const locale = useLocale();
   const [twoFactor, setTwoFactor] = React.useState(true);
   const [sso, setSso] = React.useState(false);
+  const [pwOpen, setPwOpen] = React.useState(false);
+  const [pw, setPw] = React.useState({ cur: '', next: '', confirm: '' });
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+  const submitPassword = () => {
+    if (pw.next.length < 8)
+      return toast.error(L('Mínimo de 8 caracteres', 'Minimum 8 characters', '至少 8 个字符', 'Minimum 8 caractères'));
+    if (pw.next !== pw.confirm)
+      return toast.error(L('As senhas não coincidem', 'Passwords do not match', '密码不一致', 'Les mots de passe ne correspondent pas'));
+    setPwOpen(false);
+    setPw({ cur: '', next: '', confirm: '' });
+    toast.success(tc('states.success'));
+  };
   return (
     <Panel icon={ShieldCheck} title={localized('securityTitle', locale)} description={t('tabs.security')}>
       <ToggleRow
@@ -483,7 +639,7 @@ function SecurityPanel() {
             <p className="text-xs text-muted">{localized('activeSessions', locale)}: 1</p>
           </div>
         </div>
-        <Button variant="outline" size="sm" onClick={() => toast.success(tc('states.success'))}>
+        <Button variant="outline" size="sm" onClick={() => setPwOpen(true)}>
           {localized('changePassword', locale)}
         </Button>
       </div>
@@ -491,6 +647,32 @@ function SecurityPanel() {
       <div className="rounded-xl border border-hairline bg-surface/60 px-4 py-3 text-sm text-muted">
         {localized('thisDevice', locale)}
       </div>
+
+      <Modal open={pwOpen} onClose={() => setPwOpen(false)} title={localized('changePassword', locale)}>
+        <div className="flex flex-col gap-4 p-5">
+          <Field label={L('Senha atual', 'Current password', '当前密码', 'Mot de passe actuel')}>
+            <Input type="password" value={pw.cur} onChange={(e) => setPw((p) => ({ ...p, cur: e.target.value }))} autoFocus />
+          </Field>
+          <Field label={L('Nova senha', 'New password', '新密码', 'Nouveau mot de passe')}>
+            <Input type="password" value={pw.next} onChange={(e) => setPw((p) => ({ ...p, next: e.target.value }))} />
+          </Field>
+          <Field label={L('Confirmar nova senha', 'Confirm new password', '确认新密码', 'Confirmer le mot de passe')}>
+            <Input
+              type="password"
+              value={pw.confirm}
+              onChange={(e) => setPw((p) => ({ ...p, confirm: e.target.value }))}
+            />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setPwOpen(false)}>
+              {tc('actions.cancel')}
+            </Button>
+            <Button onClick={submitPassword} disabled={!pw.cur || !pw.next || !pw.confirm}>
+              {localized('changePassword', locale)}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </Panel>
   );
 }
@@ -501,6 +683,13 @@ function ConsentPanel() {
   const locale = useLocale();
   const [requireConsent, setRequireConsent] = React.useState(true);
   const [retention, setRetention] = React.useState(90);
+  const [purgeOpen, setPurgeOpen] = React.useState(false);
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+  const doPurge = () => {
+    setPurgeOpen(false);
+    toast.success(L('Dados expirados purgados', 'Expired data purged', '已清除过期数据', 'Données expirées purgées'));
+  };
   return (
     <Panel icon={FileLock2} title={t('tabs.consent')} description={localized('subtitle', locale)}>
       <ToggleRow
@@ -558,10 +747,31 @@ function ConsentPanel() {
           </span>
           <p className="text-sm text-muted">{t('consent.retentionDesc')}</p>
         </div>
-        <Button variant="danger" size="sm" leftIcon={<Trash2 className="h-4 w-4" />} className="shrink-0" onClick={() => toast.success(tc('states.success'))}>
+        <Button variant="danger" size="sm" leftIcon={<Trash2 className="h-4 w-4" />} className="shrink-0" onClick={() => setPurgeOpen(true)}>
           {t('consent.purgeNow')}
         </Button>
       </div>
+
+      <Modal open={purgeOpen} onClose={() => setPurgeOpen(false)} title={t('consent.purgeNow')}>
+        <div className="flex flex-col gap-4 p-5">
+          <p className="text-sm text-muted">
+            {L(
+              'Esta ação remove permanentemente os dados além do período de retenção. Não pode ser desfeita.',
+              'This permanently removes data beyond the retention period. It cannot be undone.',
+              '此操作将永久删除超过保留期的数据，且无法撤销。',
+              'Cette action supprime définitivement les données au-delà de la période de rétention. Irréversible.',
+            )}
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setPurgeOpen(false)}>
+              {tc('actions.cancel')}
+            </Button>
+            <Button variant="danger" leftIcon={<Trash2 className="h-4 w-4" />} onClick={doPurge}>
+              {t('consent.purgeNow')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </Panel>
   );
 }
@@ -570,16 +780,47 @@ function LanguagePanel() {
   const t = useTranslations('settings');
   const tc = useTranslations('common');
   const locale = useLocale();
+
+  const [form, setForm] = React.useState<{
+    interfaceLocale: string;
+    clinicalLocale: string;
+    timezone: string;
+    currency: string;
+  }>({
+    interfaceLocale: locale,
+    clinicalLocale: locale,
+    timezone: 'America/Sao_Paulo',
+    currency: 'BRL',
+  });
+
+  React.useEffect(() => {
+    const stored = readStore<typeof form>(STORE.language);
+    if (stored) setForm((f) => ({ ...f, ...stored }));
+  }, []);
+
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLSelectElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const save = () => {
+    writeStore(STORE.language, form);
+    toast.success(tc('states.success'));
+  };
+
   return (
     <Panel
       icon={Languages}
       title={t('tabs.language')}
       description={localized('subtitle', locale)}
-      footer={<Button leftIcon={<Globe2 className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
+      footer={
+        <Button leftIcon={<Globe2 className="h-4 w-4" />} onClick={save}>
+          {tc('actions.save')}
+        </Button>
+      }
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('language.interface')}>
-          <Select defaultValue={locale}>
+          <Select value={form.interfaceLocale} onChange={set('interfaceLocale')}>
             {locales.map((l) => (
               <option key={l} value={l}>
                 {localeMeta[l].flag} {localeMeta[l].label}
@@ -588,7 +829,7 @@ function LanguagePanel() {
           </Select>
         </Field>
         <Field label={t('language.clinicalContent')}>
-          <Select defaultValue={locale}>
+          <Select value={form.clinicalLocale} onChange={set('clinicalLocale')}>
             {locales.map((l) => (
               <option key={l} value={l}>
                 {localeMeta[l].flag} {localeMeta[l].label}
@@ -597,7 +838,7 @@ function LanguagePanel() {
           </Select>
         </Field>
         <Field label={t('language.timezone')}>
-          <Select defaultValue="America/Sao_Paulo">
+          <Select value={form.timezone} onChange={set('timezone')}>
             {TIMEZONES.map((tz) => (
               <option key={tz} value={tz}>
                 {tz.replace(/_/g, ' ')}
@@ -606,7 +847,7 @@ function LanguagePanel() {
           </Select>
         </Field>
         <Field label={t('language.currency')}>
-          <Select defaultValue="BRL">
+          <Select value={form.currency} onChange={set('currency')}>
             {CURRENCIES.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -650,20 +891,40 @@ function WhatsappPanel({ paneId }: { paneId: string }) {
 function AiPanel() {
   const tc = useTranslations('common');
   const locale = useLocale();
+  const [persona, setPersona] = React.useState('Mari');
+  const [model, setModel] = React.useState(AI_MODELS[0]);
   const [proactive, setProactive] = React.useState(true);
+
+  React.useEffect(() => {
+    const stored = readStore<{ persona: string; model: string; proactive: boolean }>(STORE.ai);
+    if (!stored) return;
+    if (typeof stored.persona === 'string') setPersona(stored.persona);
+    if (typeof stored.model === 'string') setModel(stored.model);
+    if (typeof stored.proactive === 'boolean') setProactive(stored.proactive);
+  }, []);
+
+  const save = () => {
+    writeStore(STORE.ai, { persona, model, proactive });
+    toast.success(tc('states.success'));
+  };
+
   return (
     <Panel
       icon={Sparkles}
       title={localized('aiTitle', locale)}
       description={localized('aiDesc', locale)}
-      footer={<Button leftIcon={<Sparkles className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
+      footer={
+        <Button leftIcon={<Sparkles className="h-4 w-4" />} onClick={save}>
+          {tc('actions.save')}
+        </Button>
+      }
     >
       <div className="flex items-center gap-4 rounded-xl border border-hairline bg-surface/60 p-4">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-600/12 text-brand-600">
           <Bot className="h-5 w-5" />
         </span>
         <div className="min-w-0">
-          <p className="font-medium text-ink/90">Mari</p>
+          <p className="font-medium text-ink/90">{persona}</p>
           <p className="mt-0.5 text-xs text-muted">{localized('aiDesc', locale)}</p>
         </div>
       </div>
@@ -672,11 +933,11 @@ function AiPanel() {
         <Field label={localized('personaName', locale)}>
           <div className="relative">
             <Stethoscope className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-            <Input defaultValue="Mari" className="pl-9" />
+            <Input value={persona} onChange={(e) => setPersona(e.target.value)} className="pl-9" />
           </div>
         </Field>
         <Field label={localized('model', locale)}>
-          <Select defaultValue={AI_MODELS[0]}>
+          <Select value={model} onChange={(e) => setModel(e.target.value)}>
             {AI_MODELS.map((m) => (
               <option key={m} value={m}>
                 {m}
