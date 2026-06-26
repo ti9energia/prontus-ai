@@ -1,0 +1,17 @@
+# Auronis Health
+
+> Plataforma de inteligência clínica que transforma a conversa da consulta em prontuário estruturado e documentação médica (incl. guia TISS), devolvendo tempo ao médico. Slogan: "Menos documentação. Mais medicina."
+
+Auronis Health (https://auronishealth.com) é um escriba clínico de IA para o Brasil e a América Latina. A assistente **Mari** escuta a consulta, gera o prontuário estruturado e preenche a documentação em segundos, com verificação **pré-glosa específica por operadora** — reduzindo glosas e carga administrativa, sob governança LGPD e com human-in-the-loop obrigatório.
+
+## Recursos
+- [Como funciona](https://auronishealth.com/pt-BR#how): a Mari escuta, entende a consulta, cria a documentação e exporta.
+- [Recursos](https://auronishealth.com/pt-BR#features): consulta ao vivo, prontuário estruturado, guia TISS pré-preenchida, verificação pré-glosa, copiloto em toda tela, controle por WhatsApp.
+- [Segurança](https://auronishealth.com/pt-BR#security): LGPD/GDPR/PIPL, criptografia em trânsito e repouso, IA com governança, human-in-the-loop.
+- [Preços](https://auronishealth.com/pt-BR#pricing): assinatura por médico/mês.
+
+## Optional
+- [Documentação completa para IAs](https://auronishealth.com/llms-full.txt)
+
+## Idiomas
+pt-BR (principal), en, zh-CN, fr-FR.

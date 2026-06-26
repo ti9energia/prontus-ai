@@ -14,11 +14,13 @@ import {
 } from '@/components/landing/sections';
 import { Pricing } from '@/components/landing/pricing';
 import { FAQ } from '@/components/landing/faq';
+import { JsonLd } from '@/components/seo/json-ld';
 
 export default function LandingPage({ params: { locale } }: { params: { locale: string } }) {
   unstable_setRequestLocale(locale);
   return (
     <div className="relative">
+      <JsonLd locale={locale} />
       <DnaHelix />
       <LandingNav />
       <main>
