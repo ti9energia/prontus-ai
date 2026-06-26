@@ -1,4 +1,44 @@
 {
+  "feedback": {
+    "saved": "更改已保存",
+    "added": "添加成功",
+    "removed": "已移除",
+    "duplicated": "模板已复制",
+    "applied": "建议已应用",
+    "published": "已发布",
+    "connected": "已连接",
+    "disconnected": "已断开",
+    "comingSoon": "即将推出"
+  },
+  "encounterType": {
+    "firstVisit": "初诊",
+    "followUp": "复诊",
+    "urgent": "急诊",
+    "telemedicine": "远程"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "description": "您访问的页面不存在或已被移动。",
+    "back": "返回首页"
+  },
+  "chrome": {
+    "split": "分屏",
+    "closePane": "关闭分栏",
+    "newTab": "新标签页",
+    "closeTab": "关闭标签页",
+    "command": "命令",
+    "searchPlaceholder": "搜索或打开页面…",
+    "navigate": "前往",
+    "actions": "快捷操作",
+    "openSplit": "在分屏中打开",
+    "askIris": "询问 Mari",
+    "noResults": "未找到",
+    "owner": "所有者面板",
+    "signOut": "退出登录",
+    "newConsultation": "新问诊",
+    "collapseSidebar": "收起侧栏",
+    "expandSidebar": "展开侧栏"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "每一次问诊，都有临床智能。",

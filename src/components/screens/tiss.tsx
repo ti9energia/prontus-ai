@@ -61,7 +61,9 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const tg = useTranslations('billing.guideStatus');
   const tb = useTranslations('billing.columns');
   const tc = useTranslations('common.actions');
+  const tf = useTranslations('feedback');
   const locale = useLocale();
+  const [, force] = React.useReducer((x) => x + 1, 0);
 
   const guide = resolveGuide(params?.id);
   const patient = guide ? getPatient(guide.patientId) : undefined;
@@ -89,21 +91,55 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const shownIssues = check?.issues ?? issues;
   const isReady = check ? check.ready : issues.length === 0;
 
-  const doSubmit = () => {
+  const doSubmit = async () => {
     setConfirmOpen(false);
     setSubmitting(true);
-    setTimeout(() => {
-      submitGuideStore(guide.id);
-      setStatus('sent');
+    try {
+      // Parity with the tiss.submit tool: run the pre-denial check and never submit
+      // while high-severity issues remain (fail-closed if the check can't confirm).
+      const res = await fetch('/api/ai/action', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tool: 'glosa.check', input: { guideId: guide.id }, locale }),
+      });
+      const body = await res.json().catch(() => null);
+      const result = body?.data;
+      if (result?.ok && result.data) {
+        setCheck({
+          score: result.data.score,
+          ready: result.data.ready,
+          issues: result.data.issues ?? [],
+          payer: result.data.payer,
+        });
+        if (result.data.ready) {
+          submitGuideStore(guide.id);
+          setStatus('sent');
+          toast.success(t('submitted'));
+        } else {
+          toast.error(result.summary);
+        }
+      } else {
+        toast.error(result?.summary ?? t('validation'));
+      }
+    } catch {
+      toast.error(t('validation'));
+    } finally {
       setSubmitting(false);
-      toast.success(t('submitted'));
-    }, 900);
+    }
   };
 
   const doExport = () => {
     setExported(true);
     toast.success(t('exported'));
   };
+
+  const removeProcedure = (idx: number) => {
+    guide.procedures.splice(idx, 1);
+    guide.value = guide.procedures.reduce((s, p) => s + p.value * p.qty, 0);
+    force();
+    toast.success(tf('removed'));
+  };
+  const comingSoon = () => toast.success(tf('comingSoon'));
 
   // Ask Mari to run the pre-denial (pré-glosa) check on this guide.
   const runPreGlosa = async () => {
@@ -217,7 +253,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <div>
             <SectionTitle
               action={
-                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />}>
+                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={comingSoon}>
                   {t('addProcedure')}
                 </Button>
               }
@@ -242,7 +278,12 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
                     <Td className="text-center tnum">{p.qty}</Td>
                     <Td className="text-right tnum font-medium">{formatCurrency(p.value, locale, guide.currency)}</Td>
                     <Td className="text-right">
-                      <button className="text-subtle transition-colors hover:text-danger">
+                      <button
+                        type="button"
+                        onClick={() => removeProcedure(i)}
+                        aria-label={tc('delete')}
+                        className="text-subtle transition-colors hover:text-danger"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </Td>
@@ -263,7 +304,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <div>
             <SectionTitle
               action={
-                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />}>
+                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={comingSoon}>
                   {t('addDiagnosis')}
                 </Button>
               }

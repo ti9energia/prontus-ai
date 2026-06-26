@@ -6,9 +6,12 @@ import { hasStrongSecret, type Role } from './session';
  * Fail-closed: owner login is disabled unless a real AUTH_SECRET AND an owner
  * password (hash preferred) are configured. The test/demo doctor is low-stakes
  * (sample data only) and has a sensible default password.
+ *
+ * No real PII lives here: the owner identity is configured entirely via env
+ * (OWNER_EMAIL / OWNER_NAME / OWNER_PASSWORD[_HASH]); the defaults are neutral.
  */
 
-const DEFAULT_OWNER_EMAIL = 'luiz.henriquelhm26@gmail.com';
+const DEFAULT_OWNER_EMAIL = 'owner@aureonhealth.com';
 const DEFAULT_TEST_EMAIL = 'marianabarreto@aureonhealth.com';
 const DEFAULT_TEST_PASSWORD = 'aureon-demo';
 
@@ -53,7 +56,7 @@ export function authenticate(emailRaw: string, password: string): Identity | nul
     if (hash) ok = verifyScrypt(password, hash);
     else if (plain) ok = timingEqual(password, plain);
     else return null; // no owner password configured → disabled
-    return ok ? { role: 'owner', email: ownerEmail, name: 'Luiz Henrique' } : null;
+    return ok ? { role: 'owner', email: ownerEmail, name: process.env.OWNER_NAME || 'Owner' } : null;
   }
 
   if (email === testEmail) {

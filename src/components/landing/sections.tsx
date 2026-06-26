@@ -360,6 +360,8 @@ export function FinalCTA() {
 export function Footer() {
   const t = useTranslations('landing.footer');
   const tc = useTranslations('common');
+  // Links that map to real landing sections jump to them; the rest scroll to top.
+  const HREF: Record<string, string> = { features: '#features', pricing: '#pricing', security: '#security' };
   const cols: { title: string; links: string[] }[] = [
     { title: t('cols.product'), links: ['features', 'pricing', 'security', 'changelog'] },
     { title: t('cols.company'), links: ['about', 'careers', 'contact'] },
@@ -381,7 +383,7 @@ export function Footer() {
               <ul className="mt-3 space-y-2">
                 {c.links.map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-sm text-muted transition-colors hover:text-ink">
+                    <a href={HREF[l] ?? '#'} className="text-sm text-muted transition-colors hover:text-ink">
                       {t(`links.${l}` as 'links.features')}
                     </a>
                   </li>

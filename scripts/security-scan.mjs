@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 /**
  * Aureon Health — lightweight security / pen-test scan.
- * Usage: node scripts/security-scan.mjs [url]   (default: https://aureon-health.vercel.app)
+ * Usage: node scripts/security-scan.mjs [url]   (default: https://aureonhealth.com)
+ * Pass the live deploy URL as an argument when the canonical domain isn't wired yet,
+ * e.g. `node scripts/security-scan.mjs https://prontus-ai.vercel.app`.
  * Checks security headers, blocked sensitive paths, API input validation,
  * method handling, info leakage and path traversal. Exits 1 on any failure.
  */
-const base = (process.argv[2] || process.env.TARGET || 'https://aureon-health.vercel.app').replace(/\/$/, '');
+const base = (process.argv[2] || process.env.TARGET || 'https://aureonhealth.com').replace(/\/$/, '');
 
 let pass = 0;
 let fail = 0;
@@ -33,6 +35,7 @@ async function probe(path, opts) {
   check('X-Frame-Options present', !!h('x-frame-options'), h('x-frame-options') || 'missing');
   check('Referrer-Policy present', !!h('referrer-policy'), h('referrer-policy') || 'missing');
   check('Permissions-Policy present', !!h('permissions-policy'), h('permissions-policy') || 'missing');
+  check('Content-Security-Policy present', !!h('content-security-policy'), h('content-security-policy') ? 'set' : 'missing');
   check('No X-Powered-By leak', !h('x-powered-by'), h('x-powered-by') || 'absent');
   if (base.startsWith('https')) {
     check('HSTS present', !!h('strict-transport-security'), h('strict-transport-security') ? 'set' : 'missing');

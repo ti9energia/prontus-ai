@@ -6,6 +6,7 @@ import { mariChat } from '@/lib/mari/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // headroom for slow model calls (avoid 504 on the LLM path)
 
 const SYSTEM = `You are Mari, the operating-brain copilot for the OWNER of Aureon Health, an AI medical-scribe SaaS.
 You see platform-wide metrics (MRR, growth, churn, usage, tenants, AI spend). Your job is to help the owner grow the

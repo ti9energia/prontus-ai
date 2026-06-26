@@ -1,4 +1,44 @@
 {
+  "feedback": {
+    "saved": "Modifications enregistrées",
+    "added": "Ajouté avec succès",
+    "removed": "Supprimé",
+    "duplicated": "Modèle dupliqué",
+    "applied": "Recommandation appliquée",
+    "published": "Publié",
+    "connected": "Connecté",
+    "disconnected": "Déconnecté",
+    "comingSoon": "Bientôt disponible"
+  },
+  "encounterType": {
+    "firstVisit": "1re visite",
+    "followUp": "Suivi",
+    "urgent": "Urgence",
+    "telemedicine": "Téléconsult."
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "back": "Retour à l'accueil"
+  },
+  "chrome": {
+    "split": "Diviser",
+    "closePane": "Fermer le volet",
+    "newTab": "Nouvel onglet",
+    "closeTab": "Fermer l'onglet",
+    "command": "Commandes",
+    "searchPlaceholder": "Rechercher ou ouvrir un écran…",
+    "navigate": "Aller à",
+    "actions": "Actions rapides",
+    "openSplit": "Ouvrir en volet",
+    "askIris": "Demander à Mari",
+    "noResults": "Aucun résultat",
+    "owner": "Espace propriétaire",
+    "signOut": "Se déconnecter",
+    "newConsultation": "Nouvelle consultation",
+    "collapseSidebar": "Réduire le menu",
+    "expandSidebar": "Afficher le menu"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "L’intelligence clinique à chaque consultation.",

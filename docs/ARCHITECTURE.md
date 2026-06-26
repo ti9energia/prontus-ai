@@ -72,7 +72,7 @@ Erros já seguem um envelope consistente; o alvo é padronizar sucesso também:
 | POST | `/api/ai/chat` | gate de custo | Mari clínica |
 | POST | `/api/owner/chat` | **owner** | Mari de negócio |
 | POST | `/api/ai/action` | sessão | executa uma *tool* da Mari (pré-glosa, gerar guia…) |
-| GET | `/api/health` | pública | liveness |
+| GET | `/api/health` | pública | liveness + checks de readiness |
 
 ---
 
@@ -188,6 +188,14 @@ mensageiro vira **implementar a interface + registrar** — o app e a Mari não 
 ## 5. Segurança, multi-tenant e configuração
 
 - **Sessões:** HMAC-SHA256, httpOnly, `SameSite=Lax`, fail-closed em produção.
+- **Headers + CSP:** headers de segurança e uma **Content-Security-Policy** em
+  `next.config.mjs` (defesa-em-profundidade contra XSS, relevante por renderizar
+  saída de LLM); `frame-ancestors 'none'`.
+- **Observabilidade:** `src/instrumentation.ts` loga o boot e captura
+  `unhandledRejection`/`uncaughtException` em JSON estruturado (seam para
+  Sentry/OTel); `/api/health` expõe liveness + checks de readiness.
+- **Demonstração:** o login público de demo fica atrás de `DEMO_MODE`
+  (`false` desativa). Nenhuma PII real no código — o dono é configurado por env.
 - **Multi-tenant:** todo connector recebe `orgId`; nada cruza tenants.
 - **Segredos:** sempre via env / config injetada — nunca hard-coded.
 
@@ -195,8 +203,9 @@ mensageiro vira **implementar a interface + registrar** — o app e a Mari não 
 | Var | Para quê |
 |---|---|
 | `AUTH_SECRET` | assina sessões — **obrigatória em produção** (senão todo login falha-fechado) |
-| `OWNER_EMAIL` / `OWNER_PASSWORD(_HASH)` | login do dono |
-| `TEST_DOCTOR_EMAIL` / `TEST_DOCTOR_PASSWORD` | login de demonstração |
+| `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD(_HASH)` | login do dono |
+| `TEST_DOCTOR_EMAIL` / `TEST_DOCTOR_PASSWORD` | conta de teste (lado médico) |
+| `DEMO_MODE` | habilita o login público de demo (`false` desativa) |
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | modelo local da Mari |
 | `MARI_API_URL` / `MARI_API_KEY` | **cérebro remoto da Mari** (decoupling) |
 | `NEXT_PUBLIC_SITE_URL` | OG / sitemap / robots |

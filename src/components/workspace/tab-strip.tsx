@@ -61,7 +61,7 @@ export function TabStrip({
       onMouseDown={() => !active && focusPane(pane.id)}
     >
       {/* tabs */}
-      <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+      <div role="tablist" className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
         {pane.tabs.map((tab) => {
           const def = SCREENS[tab.screen];
           const Icon = def.icon;
@@ -69,6 +69,9 @@ export function TabStrip({
           return (
             <div
               key={tab.id}
+              role="tab"
+              aria-selected={isActive}
+              tabIndex={isActive ? 0 : -1}
               onMouseDown={(e) => {
                 if (e.button === 1) {
                   e.preventDefault();
@@ -76,6 +79,12 @@ export function TabStrip({
                 }
               }}
               onClick={() => setActiveTab(pane.id, tab.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveTab(pane.id, tab.id);
+                }
+              }}
               className={cn(
                 'group/tab flex h-8 max-w-[180px] shrink-0 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm transition-all duration-150',
                 isActive

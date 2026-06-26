@@ -16,8 +16,9 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
-import { listTemplates } from '@/lib/data/store';
+import { listTemplates, setDefaultTemplate, duplicateTemplate } from '@/lib/data/store';
 import type { NoteSectionKey } from '@/lib/types';
+import { toast } from '@/lib/toast';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -50,9 +51,22 @@ export function TemplatesScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('templates');
   const tSec = useTranslations('encounter.sections');
   const tc = useTranslations('common');
-  void useLocale();
+  const tf = useTranslations('feedback');
+  const [, force] = React.useReducer((x) => x + 1, 0);
 
   const templates = listTemplates();
+
+  const onSetDefault = (id: string) => {
+    setDefaultTemplate(id);
+    force();
+    toast.success(tf('saved'));
+  };
+  const onDuplicate = (id: string) => {
+    duplicateTemplate(id);
+    force();
+    toast.success(tf('duplicated'));
+  };
+  const comingSoon = () => toast.success(tf('comingSoon'));
 
   return (
     <ScreenContainer>
@@ -60,7 +74,7 @@ export function TemplatesScreen({ paneId }: { paneId: string }) {
         icon={LayoutTemplate}
         title={t('title')}
         subtitle={t('subtitle')}
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />}>{t('add')}</Button>}
+        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={comingSoon}>{t('add')}</Button>}
       />
 
       {templates.length === 0 ? (
@@ -68,7 +82,7 @@ export function TemplatesScreen({ paneId }: { paneId: string }) {
           icon={<LayoutTemplate className="h-6 w-6" />}
           title={tc('states.empty')}
           description={t('subtitle')}
-          action={<Button leftIcon={<Plus className="h-4 w-4" />}>{t('add')}</Button>}
+          action={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={comingSoon}>{t('add')}</Button>}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -113,10 +127,10 @@ export function TemplatesScreen({ paneId }: { paneId: string }) {
                 </CardContent>
 
                 <CardFooter className="flex-wrap gap-2 border-t border-hairline/60 pt-4">
-                  <Button size="sm" variant="outline" leftIcon={<Pencil className="h-3.5 w-3.5" />}>
+                  <Button size="sm" variant="outline" leftIcon={<Pencil className="h-3.5 w-3.5" />} onClick={comingSoon}>
                     {t('edit')}
                   </Button>
-                  <Button size="sm" variant="ghost" leftIcon={<Copy className="h-3.5 w-3.5" />}>
+                  <Button size="sm" variant="ghost" leftIcon={<Copy className="h-3.5 w-3.5" />} onClick={() => onDuplicate(tpl.id)}>
                     {t('duplicate')}
                   </Button>
                   {!tpl.isDefault && (
@@ -125,6 +139,7 @@ export function TemplatesScreen({ paneId }: { paneId: string }) {
                       variant="ghost"
                       className="ml-auto text-brand-600 hover:text-brand-700"
                       leftIcon={<CheckCircle2 className="h-3.5 w-3.5" />}
+                      onClick={() => onSetDefault(tpl.id)}
                     >
                       {t('setDefault')}
                     </Button>

@@ -1,4 +1,44 @@
 {
+  "feedback": {
+    "saved": "Changes saved",
+    "added": "Added successfully",
+    "removed": "Removed",
+    "duplicated": "Template duplicated",
+    "applied": "Recommendation applied",
+    "published": "Published",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "comingSoon": "Coming soon"
+  },
+  "encounterType": {
+    "firstVisit": "First visit",
+    "followUp": "Follow-up",
+    "urgent": "Urgent",
+    "telemedicine": "Telehealth"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or was moved.",
+    "back": "Back home"
+  },
+  "chrome": {
+    "split": "Split",
+    "closePane": "Close pane",
+    "newTab": "New tab",
+    "closeTab": "Close tab",
+    "command": "Commands",
+    "searchPlaceholder": "Search or open a screen…",
+    "navigate": "Go to",
+    "actions": "Quick actions",
+    "openSplit": "Open in split",
+    "askIris": "Ask Mari",
+    "noResults": "Nothing found",
+    "owner": "Owner panel",
+    "signOut": "Sign out",
+    "newConsultation": "New consultation",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
+  },
   "common": {
     "appName": "Aureon Health",
     "tagline": "Clinical intelligence in every visit.",

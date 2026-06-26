@@ -1,14 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": [
-    "gru1"
-  ],
-  "experimentalServices": {
-    "aureon-health": {
-      "type": "web",
-      "routePrefix": "/",
-      "framework": "nextjs"
-    }
-  }
+  "regions": ["gru1"]
 }

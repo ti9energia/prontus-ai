@@ -20,6 +20,7 @@ import {
 import { agentRecommendations } from '@/lib/data/store';
 import type { AgentCategory, AgentRecommendation } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';
+import { toast } from '@/lib/toast';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -97,6 +98,8 @@ function rationaleFor(id: string, locale: string) {
 
 export function AgentScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('agent');
+  const tf = useTranslations('feedback');
+  const tc = useTranslations('common');
   const locale = useLocale();
 
   const [items, setItems] = React.useState<AgentRecommendation[]>(() => agentRecommendations());
@@ -106,6 +109,34 @@ export function AgentScreen({ paneId }: { paneId: string }) {
   const review = (rec: AgentRecommendation) => {
     if (rec.encounterId) openTab('review', { id: rec.encounterId }, { paneId });
     else if (rec.guideId) openTab('billing', undefined, { paneId });
+  };
+
+  // Apply = actually do the fix. Resubmit recs re-send the denied guide through the
+  // gated tool (blocked if pre-denial issues remain → the card stays); others route
+  // the user to where the fix happens. Either way the handled card is cleared.
+  const apply = async (rec: AgentRecommendation) => {
+    if (rec.category === 'resubmit' && rec.guideId) {
+      try {
+        const res = await fetch('/api/ai/action', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ tool: 'glosa.resubmit', input: { guideId: rec.guideId }, confirm: true, locale }),
+        });
+        const result = (await res.json().catch(() => null))?.data;
+        if (!result?.ok) {
+          toast.error(result?.summary ?? tc('states.error'));
+          return;
+        }
+        toast.success(result.summary ?? tf('applied'));
+      } catch {
+        toast.error(tc('states.error'));
+        return;
+      }
+    } else {
+      review(rec);
+      toast.success(tf('applied'));
+    }
+    dismiss(rec.id);
   };
 
   return (
@@ -137,7 +168,7 @@ export function AgentScreen({ paneId }: { paneId: string }) {
               rec={rec}
               locale={locale}
               t={t}
-              onApply={() => dismiss(rec.id)}
+              onApply={() => apply(rec)}
               onDismiss={() => dismiss(rec.id)}
               onReview={() => review(rec)}
             />

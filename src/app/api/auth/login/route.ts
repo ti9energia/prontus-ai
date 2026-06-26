@@ -60,7 +60,15 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, password, demo } = parsed.data;
-  const identity = demo ? demoIdentity() : email && password ? authenticate(email, password) : null;
+  // Public demo is on by default; set DEMO_MODE=false (or 0) to disable the shortcut in prod.
+  const demoDisabled = process.env.DEMO_MODE === 'false' || process.env.DEMO_MODE === '0';
+  const identity = demo
+    ? demoDisabled
+      ? null
+      : demoIdentity()
+    : email && password
+      ? authenticate(email, password)
+      : null;
 
   if (!identity) {
     await sleep(300 + Math.floor(Math.random() * 250)); // slow brute force; mask timing

@@ -62,15 +62,23 @@ export function Field({
   className?: string;
   children: React.ReactNode;
 }) {
+  const help = error ?? hint;
+  const helpEl = help ? (
+    <p className={cn('text-xs', error ? 'text-danger-fg dark:text-danger' : 'text-muted')}>{help}</p>
+  ) : null;
+  // Wrap the control in the <label> so it's implicitly associated (accessible name +
+  // clicking the label focuses the control) without threading ids through children.
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      {label && <Label>{label}</Label>}
-      {children}
-      {error ? (
-        <p className="text-xs text-danger-fg dark:text-danger">{error}</p>
-      ) : hint ? (
-        <p className="text-xs text-muted">{hint}</p>
-      ) : null}
+      {label ? (
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[0.8125rem] font-medium text-ink/90">{label}</span>
+          {children}
+        </label>
+      ) : (
+        children
+      )}
+      {helpEl}
     </div>
   );
 }

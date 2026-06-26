@@ -121,7 +121,13 @@ export function TopBar({
 
         {/* user */}
         <div className="relative" ref={userRef}>
-          <button onClick={() => setUserOpen((o) => !o)} className="ml-0.5 rounded-full ring-2 ring-transparent transition hover:ring-brand-500/30">
+          <button
+            onClick={() => setUserOpen((o) => !o)}
+            aria-label={displayName}
+            aria-haspopup="menu"
+            aria-expanded={userOpen}
+            className="ml-0.5 rounded-full ring-2 ring-transparent transition hover:ring-brand-500/30"
+          >
             <Avatar name={displayName} hue={170} size={34} />
           </button>
           {userOpen && (
