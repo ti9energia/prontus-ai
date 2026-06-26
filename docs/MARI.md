@@ -1,8 +1,8 @@
-# Mari — a inteligência clínica da Aureon Health
+# Mari — a inteligência clínica da Auronis Health
 
 > *"Inteligência clínica em cada consulta."*
 
-Mari é a IA da Aureon Health. Ela não é um chatbot solto: ela **entende o sistema
+Mari é a IA da Auronis Health. Ela não é um chatbot solto: ela **entende o sistema
 inteiro** e aparece em dois lugares, com duas personalidades, para dois públicos —
 o **dono da plataforma** e **quem usa o aplicativo**. Este documento explica a
 lógica dela para os dois.

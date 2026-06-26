@@ -1,6 +1,6 @@
 # Alvos de deploy inativos (parqueados)
 
-O deploy de produção do Aureon Health é a **Vercel** (manual: `vercel --prod`, região `gru1`).
+O deploy de produção do Auronis Health é a **Vercel** (manual: `vercel --prod`, região `gru1`).
 O `Dockerfile` na raiz é mantido para portabilidade / auto-hospedagem em qualquer host Node.
 
 Estes manifestos foram **parqueados** aqui para não serem detectados/ativados acidentalmente

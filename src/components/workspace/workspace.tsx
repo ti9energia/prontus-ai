@@ -37,7 +37,7 @@ export function Workspace() {
 
   React.useEffect(() => {
     try {
-      setRailCollapsed(localStorage.getItem('aureon-rail-collapsed') === '1');
+      setRailCollapsed(localStorage.getItem('auronis-rail-collapsed') === '1');
     } catch {
       /* noop */
     }
@@ -47,7 +47,7 @@ export function Workspace() {
     setRailCollapsed((v) => {
       const next = !v;
       try {
-        localStorage.setItem('aureon-rail-collapsed', next ? '1' : '0');
+        localStorage.setItem('auronis-rail-collapsed', next ? '1' : '0');
       } catch {
         /* noop */
       }

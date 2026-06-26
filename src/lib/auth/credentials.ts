@@ -11,9 +11,9 @@ import { hasStrongSecret, type Role } from './session';
  * (OWNER_EMAIL / OWNER_NAME / OWNER_PASSWORD[_HASH]); the defaults are neutral.
  */
 
-const DEFAULT_OWNER_EMAIL = 'owner@aureonhealth.com';
-const DEFAULT_TEST_EMAIL = 'marianabarreto@aureonhealth.com';
-const DEFAULT_TEST_PASSWORD = 'aureon-demo';
+const DEFAULT_OWNER_EMAIL = 'owner@auronishealth.com';
+const DEFAULT_TEST_EMAIL = 'marianabarreto@auronishealth.com';
+const DEFAULT_TEST_PASSWORD = 'auronis-demo';
 
 export interface Identity {
   role: Role;
@@ -69,5 +69,5 @@ export function authenticate(emailRaw: string, password: string): Identity | nul
 
 /** One-click public demo → a doctor session over the sample clinic. */
 export function demoIdentity(): Identity {
-  return { role: 'doctor', email: 'demo@aureonhealth.com', name: 'Dra. Helena Vasconcelos' };
+  return { role: 'doctor', email: 'demo@auronishealth.com', name: 'Dra. Helena Vasconcelos' };
 }

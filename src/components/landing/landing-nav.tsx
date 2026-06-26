@@ -72,7 +72,7 @@ export function LandingNav() {
               : 'border border-transparent py-2.5',
           )}
         >
-          <Link href="/" className="flex shrink-0 items-center pl-1" aria-label="Aureon Health">
+          <Link href="/" className="flex shrink-0 items-center pl-1" aria-label="Auronis Health">
             <Logo />
           </Link>
 

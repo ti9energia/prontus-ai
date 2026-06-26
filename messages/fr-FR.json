@@ -40,7 +40,7 @@
     "expandSidebar": "Afficher le menu"
   },
   "common": {
-    "appName": "Aureon Health",
+    "appName": "Auronis Health",
     "tagline": "L’intelligence clinique à chaque consultation.",
     "actions": {
       "save": "Enregistrer",
@@ -133,7 +133,7 @@
       "eyebrow": "",
       "title": "Terminez la consultation avec le dossier et la feuille de soins",
       "titleHighlight": "déjà prêts",
-      "subtitle": "Aureon Health écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
+      "subtitle": "Auronis Health écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
       "ctaPrimary": "Tester sur une consultation",
       "ctaSecondary": "Voir le fonctionnement",
       "trust": "Conforme LGPD · Données de santé chiffrées · Human-in-the-loop",
@@ -186,7 +186,7 @@
       "steps": {
         "record": {
           "title": "Enregistrez",
-          "desc": "Démarrez la consultation avec le consentement du patient. Aureon écoute."
+          "desc": "Démarrez la consultation avec le consentement du patient. Auronis écoute."
         },
         "structure": {
           "title": "Structurez",
@@ -269,7 +269,7 @@
     },
     "cta": {
       "title": "Rendez des heures à votre journée.",
-      "subtitle": "Essayez Aureon Health sur une consultation. Sans carte bancaire.",
+      "subtitle": "Essayez Auronis Health sur une consultation. Sans carte bancaire.",
       "button": "Tester sur une consultation"
     },
     "footer": {
@@ -299,7 +299,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Se connecter à Aureon Health",
+    "signInTitle": "Se connecter à Auronis Health",
     "signInSubtitle": "Reprenez là où vous vous étiez arrêté.",
     "email": "E-mail",
     "password": "Mot de passe",
@@ -355,7 +355,7 @@
     },
     "agentNudge": "L'agent suggère de commencer par les {count} consultations dont la feuille de soins est en attente.",
     "impact": {
-      "title": "Impact Aureon",
+      "title": "Impact Auronis",
       "thisMonth": "ce mois-ci",
       "caption": "valeur générée pour votre cabinet",
       "recovered": "récupéré",
@@ -369,7 +369,7 @@
     "with": "avec {name}",
     "consent": {
       "title": "Consentement du patient",
-      "body": "Informez le patient que la consultation sera enregistrée et transcrite par Aureon Health afin de générer le dossier médical. L'audio est chiffré et peut être purgé à tout moment.",
+      "body": "Informez le patient que la consultation sera enregistrée et transcrite par Auronis Health afin de générer le dossier médical. L'audio est chiffré et peut être purgé à tout moment.",
       "checkbox": "Le patient a consenti à l'enregistrement",
       "start": "Démarrer l'enregistrement",
       "cancel": "Pas maintenant"
@@ -544,8 +544,8 @@
     },
     "chart": {
       "title": "Évolution des rejets dans le temps",
-      "before": "Avant Aureon",
-      "after": "Avec Aureon",
+      "before": "Avant Auronis",
+      "after": "Avec Auronis",
       "submitted": "Envoyées",
       "glossed": "Rejetées"
     },
@@ -910,11 +910,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Aureon Health — Terminez la consultation avec le dossier et la feuille de soins prêts",
+      "title": "Auronis Health — Terminez la consultation avec le dossier et la feuille de soins prêts",
       "description": "De l’audio de la consultation au dossier médical structuré et à la feuille de soins TISS — sans saisie. Moins de rejets, plus de temps avec les patients."
     },
     "app": {
-      "title": "Aureon Health",
+      "title": "Auronis Health",
       "description": "Dossiers médicaux structurés et feuilles de soins TISS à partir de l’audio de la consultation."
     }
   }

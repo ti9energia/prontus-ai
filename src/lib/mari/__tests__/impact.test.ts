@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { computeImpact, BASELINE_DENIAL_RATE, DOCTOR_HOUR_BRL } from '@/lib/mari/impact';
 import { getTool } from '@/lib/mari/tools';
 
-describe('computeImpact — Aureon value ledger', () => {
+describe('computeImpact — Auronis value ledger', () => {
   it('rolls revenue, prevented denials and returned time into one monthly number', () => {
     const r = computeImpact({
       glossRate: 0.08,

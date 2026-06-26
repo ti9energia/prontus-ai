@@ -330,10 +330,10 @@ function seed(): DB {
   };
 }
 
-const g = globalThis as unknown as { __aureon__?: DB };
+const g = globalThis as unknown as { __auronis__?: DB };
 export function db(): DB {
-  if (!g.__aureon__) g.__aureon__ = seed();
-  return g.__aureon__;
+  if (!g.__auronis__) g.__auronis__ = seed();
+  return g.__auronis__;
 }
 
 /* ----------------------------- Repository ----------------------------- */
@@ -518,7 +518,7 @@ export function glossReasons() {
 }
 
 export function glossTimeSeries(): SeriesPoint[] {
-  // gloss rate per month, before vs after Aureon adoption
+  // gloss rate per month, before vs after Auronis adoption
   const months = ['M-5', 'M-4', 'M-3', 'M-2', 'M-1', 'M'];
   const submitted = [120, 132, 128, 140, 151, 162];
   const glossedBefore = [22, 24, 23, 0, 0, 0];

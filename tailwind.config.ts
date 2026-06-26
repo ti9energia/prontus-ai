@@ -1,16 +1,15 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * Aureon Health — Design System
- * "Clinical Calm meets Premium Precision."
- * Brand: clinical teal #0D9488 · Accent: coral #FB7185
- * Theme tokens are CSS variables (light/dark); brand/accent ramps are static.
+ * Auronis Health — Design System
+ * "Somos extremamente inteligentes, mas também humanos."
+ * Premium dark (Tesla / Apple Vision Pro): chromed silver + medical turquoise.
+ * Brand turquoise #14C8C4 (hover #00A8A2) · Silver #C5CCD6 · Ink-black #090B0F.
+ * Theme tokens are CSS variables (dark default / light); brand ramps are static.
  */
 const config: Config = {
   darkMode: ['class'],
-  content: [
-    './src/**/*.{ts,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{ts,tsx,mdx}'],
   theme: {
     container: {
       center: true,
@@ -31,55 +30,45 @@ const config: Config = {
         hairline: 'rgb(var(--hairline) / <alpha-value>)',
         ring: 'rgb(var(--ring) / <alpha-value>)',
 
-        // Static brand ramp — clinical teal
+        // Static brand ramp — medical turquoise (#14C8C4 primary, #00A8A2 hover)
         brand: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e',
-          DEFAULT: '#0d9488',
+          50: '#e7fcfb',
+          100: '#c2f6f4',
+          200: '#8eedea',
+          300: '#52e0dc',
+          400: '#23ccc8',
+          500: '#14c8c4',
+          600: '#00a8a2',
+          700: '#0a8480',
+          800: '#0f6663',
+          900: '#114f4d',
+          950: '#03302f',
+          DEFAULT: '#14c8c4',
         },
-        // Static accent ramp — coral / rose
+        // Accent — electric cyan, for life/energy highlights
         accent: {
-          50: '#fff1f2',
-          100: '#ffe4e6',
-          200: '#fecdd3',
-          300: '#fda4af',
-          400: '#fb7185',
-          500: '#f43f5e',
-          600: '#e11d48',
-          700: '#be123c',
-          800: '#9f1239',
-          900: '#881337',
-          DEFAULT: '#fb7185',
+          50: '#ecfdff',
+          100: '#cff7fe',
+          200: '#a5effc',
+          300: '#67e3f9',
+          400: '#22d3ee',
+          500: '#06b6d4',
+          600: '#0891b2',
+          700: '#0e7490',
+          800: '#155e75',
+          900: '#164e63',
+          DEFAULT: '#22d3ee',
         },
-        success: {
-          DEFAULT: '#10b981',
-          fg: '#047857',
-          bg: '#ecfdf5',
+        // Chromed silver — premium icons & details
+        silver: {
+          light: '#e2e6ec',
+          DEFAULT: '#c5ccd6',
+          dark: '#8a929c',
         },
-        warning: {
-          DEFAULT: '#f59e0b',
-          fg: '#b45309',
-          bg: '#fffbeb',
-        },
-        danger: {
-          DEFAULT: '#ef4444',
-          fg: '#b91c1c',
-          bg: '#fef2f2',
-        },
-        info: {
-          DEFAULT: '#3b82f6',
-          fg: '#1d4ed8',
-          bg: '#eff6ff',
-        },
+        success: { DEFAULT: '#2ed47a', fg: '#13a85a', bg: '#e9fbf1' },
+        warning: { DEFAULT: '#f5a623', fg: '#b4740c', bg: '#fff7e9' },
+        danger: { DEFAULT: '#e5484d', fg: '#c2363b', bg: '#fdeced' },
+        info: { DEFAULT: '#22d3ee', fg: '#0e7490', bg: '#ecfdff' },
       },
       fontFamily: {
         display: ['var(--font-display)', 'Sora', 'system-ui', 'sans-serif'],
@@ -107,26 +96,28 @@ const config: Config = {
         '22': '5.5rem',
       },
       boxShadow: {
-        // Refined, layered, low-contrast shadows — premium, not heavy.
-        xs: '0 1px 2px 0 rgb(8 15 30 / 0.04)',
-        sm: '0 1px 3px 0 rgb(8 15 30 / 0.06), 0 1px 2px -1px rgb(8 15 30 / 0.04)',
-        md: '0 4px 14px -4px rgb(8 15 30 / 0.10), 0 2px 6px -2px rgb(8 15 30 / 0.06)',
-        lg: '0 18px 40px -16px rgb(8 15 30 / 0.18), 0 8px 16px -8px rgb(8 15 30 / 0.08)',
-        xl: '0 32px 64px -24px rgb(8 15 30 / 0.28), 0 12px 24px -12px rgb(8 15 30 / 0.10)',
-        glow: '0 0 0 1px rgb(13 148 136 / 0.18), 0 8px 30px -8px rgb(13 148 136 / 0.35)',
-        'glow-accent': '0 0 0 1px rgb(251 113 133 / 0.20), 0 8px 30px -8px rgb(251 113 133 / 0.38)',
-        focus: '0 0 0 3px rgb(13 148 136 / 0.22)',
-        inset: 'inset 0 1px 0 0 rgb(255 255 255 / 0.06)',
+        // Refined, layered shadows — premium depth on near-black.
+        xs: '0 1px 2px 0 rgb(0 0 0 / 0.30)',
+        sm: '0 1px 3px 0 rgb(0 0 0 / 0.36), 0 1px 2px -1px rgb(0 0 0 / 0.24)',
+        md: '0 6px 18px -6px rgb(0 0 0 / 0.50), 0 2px 8px -2px rgb(0 0 0 / 0.30)',
+        lg: '0 22px 48px -18px rgb(0 0 0 / 0.62), 0 10px 20px -10px rgb(0 0 0 / 0.40)',
+        xl: '0 40px 80px -28px rgb(0 0 0 / 0.70), 0 16px 32px -16px rgb(0 0 0 / 0.45)',
+        glow: '0 0 0 1px rgb(20 200 196 / 0.22), 0 10px 36px -8px rgb(20 200 196 / 0.45)',
+        'glow-accent': '0 0 0 1px rgb(34 211 238 / 0.24), 0 10px 36px -8px rgb(34 211 238 / 0.46)',
+        focus: '0 0 0 3px rgb(20 200 196 / 0.30)',
+        inset: 'inset 0 1px 0 0 rgb(255 255 255 / 0.05)',
       },
       backgroundImage: {
         'aurora':
-          'radial-gradient(60% 80% at 15% 10%, rgb(13 148 136 / 0.28), transparent 60%), radial-gradient(50% 70% at 85% 20%, rgb(45 212 191 / 0.22), transparent 60%), radial-gradient(70% 60% at 75% 90%, rgb(251 113 133 / 0.18), transparent 60%)',
+          'radial-gradient(60% 80% at 12% 8%, rgb(20 200 196 / 0.30), transparent 60%), radial-gradient(50% 70% at 88% 18%, rgb(34 211 238 / 0.22), transparent 60%), radial-gradient(70% 60% at 76% 92%, rgb(0 168 162 / 0.18), transparent 60%)',
         'mesh':
-          'radial-gradient(40% 60% at 20% 20%, rgb(13 148 136 / 0.10), transparent), radial-gradient(40% 60% at 80% 30%, rgb(251 113 133 / 0.08), transparent), radial-gradient(50% 50% at 50% 100%, rgb(20 184 166 / 0.08), transparent)',
+          'radial-gradient(40% 60% at 18% 18%, rgb(20 200 196 / 0.14), transparent), radial-gradient(40% 60% at 82% 28%, rgb(34 211 238 / 0.10), transparent), radial-gradient(50% 50% at 50% 100%, rgb(0 168 162 / 0.10), transparent)',
+        'brand-gradient': 'linear-gradient(135deg, #090B0F 0%, #171A21 52%, #0a8480 100%)',
+        'chrome': 'linear-gradient(160deg, #f4f6f9 0%, #c5ccd6 28%, #8a929c 52%, #e2e6ec 74%, #aab2bd 100%)',
         'grid':
-          'linear-gradient(to right, rgb(var(--hairline) / 0.6) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--hairline) / 0.6) 1px, transparent 1px)',
+          'linear-gradient(to right, rgb(var(--hairline) / 0.7) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--hairline) / 0.7) 1px, transparent 1px)',
         'shine':
-          'linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%)',
+          'linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%)',
       },
       backgroundSize: {
         grid: '44px 44px',
@@ -145,21 +136,16 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(14px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        'fade-in': {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
+        'fade-in': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
         'scale-in': {
           '0%': { opacity: '0', transform: 'scale(0.96)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
-        shimmer: {
-          '100%': { transform: 'translateX(100%)' },
-        },
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
         'record-pulse': {
-          '0%': { boxShadow: '0 0 0 0 rgb(244 63 94 / 0.45)' },
-          '70%': { boxShadow: '0 0 0 14px rgb(244 63 94 / 0)' },
-          '100%': { boxShadow: '0 0 0 0 rgb(244 63 94 / 0)' },
+          '0%': { boxShadow: '0 0 0 0 rgb(229 72 77 / 0.45)' },
+          '70%': { boxShadow: '0 0 0 14px rgb(229 72 77 / 0)' },
+          '100%': { boxShadow: '0 0 0 0 rgb(229 72 77 / 0)' },
         },
         'caret-blink': {
           '0%, 70%, 100%': { opacity: '1' },
@@ -169,12 +155,14 @@ const config: Config = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
-        'spin-slow': {
-          to: { transform: 'rotate(360deg)' },
-        },
+        'spin-slow': { to: { transform: 'rotate(360deg)' } },
         eq: {
           '0%, 100%': { transform: 'scaleY(0.3)' },
           '50%': { transform: 'scaleY(1)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.55' },
+          '50%': { opacity: '1' },
         },
       },
       animation: {
@@ -189,6 +177,7 @@ const config: Config = {
         marquee: 'marquee 34s linear infinite',
         'spin-slow': 'spin-slow 9s linear infinite',
         eq: 'eq 0.9s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 2.6s ease-in-out infinite',
       },
       transitionTimingFunction: {
         spring: 'cubic-bezier(0.16, 1, 0.3, 1)',

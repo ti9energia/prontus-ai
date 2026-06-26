@@ -29,11 +29,11 @@ const CATEGORIES: { key: CategoryKey; icon: LucideIcon; providers: string[] }[] 
     icon: ShieldCheck,
     providers: ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'],
   },
-  { key: 'asr', icon: AudioLines, providers: ['Aureon ASR', 'Whisper', 'Azure Speech', 'Google Speech'] },
+  { key: 'asr', icon: AudioLines, providers: ['Auronis ASR', 'Whisper', 'Azure Speech', 'Google Speech'] },
   { key: 'messaging', icon: MessageCircle, providers: ['WhatsApp Business', 'Telegram'] },
 ];
 
-const INITIAL_CONNECTED = new Set(['Aureon ASR', 'Unimed', 'WhatsApp Business']);
+const INITIAL_CONNECTED = new Set(['Auronis ASR', 'Unimed', 'WhatsApp Business']);
 const SOON = new Set(['Telegram', 'Google Speech']);
 
 const STATUS_TONE: Record<Status, React.ComponentProps<typeof Badge>['tone']> = {

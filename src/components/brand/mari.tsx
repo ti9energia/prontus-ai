@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 export type MariState = 'idle' | 'listening' | 'thinking' | 'speaking';
 
 /**
- * Mari — the Aureon Health medical AI persona.
+ * Mari — the Auronis Health medical AI persona.
  *
  * A blonde physician in a white coat with a teal stethoscope, drawn as clean
  * vector art: themeable, crisp at any size, no raster, no "generic AI image"
@@ -45,8 +45,8 @@ export function MariFace({
           <stop offset="100%" stopColor="#8fe0d3" />
         </radialGradient>
         <linearGradient id={u('hair')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f7d575" />
-          <stop offset="100%" stopColor="#dfa636" />
+          <stop offset="0%" stopColor="#caa472" />
+          <stop offset="100%" stopColor="#8c6a42" />
         </linearGradient>
         <linearGradient id={u('skin')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#fcddc8" />
@@ -76,11 +76,11 @@ export function MariFace({
         <path d="M40 72 34 96h6.5l6-18-6.5-6Z" fill="#dde4ea" />
         <path d="M56 72 62 96h-6.5l-6-18 6.5-6Z" fill="#dde4ea" />
         {/* teal scrubs V */}
-        <path d="M41 72 48 88 55 72 48 68Z" fill="#0d9488" />
+        <path d="M41 72 48 88 55 72 48 68Z" fill="#14c8c4" />
 
         {/* stethoscope draped around the neck */}
-        <path d="M43 66c-9 2-15 9-15 19" stroke="#0f766e" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-        <path d="M53 66c9 2 15 9 15 19" stroke="#0f766e" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+        <path d="M43 66c-9 2-15 9-15 19" stroke="#00a8a2" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+        <path d="M53 66c9 2 15 9 15 19" stroke="#00a8a2" strokeWidth="2.6" fill="none" strokeLinecap="round" />
         <circle cx="68" cy="86" r="4.8" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="1.4" />
         <circle cx="68" cy="86" r="2" fill="#b6c0cc" />
 
@@ -176,7 +176,7 @@ export function MariPresence({
       )}
 
       {/* face */}
-      <MariFace size={size * 0.6} rim className="relative z-10 drop-shadow-[0_10px_28px_rgba(13,148,136,0.28)]" />
+      <MariFace size={size * 0.6} rim className="relative z-10 drop-shadow-[0_10px_28px_rgba(20,200,196,0.3)]" />
 
       {/* listening / speaking equalizer */}
       {active && (

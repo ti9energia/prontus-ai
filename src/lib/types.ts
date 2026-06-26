@@ -1,5 +1,5 @@
 /**
- * Aureon Health — domain model.
+ * Auronis Health — domain model.
  * Mirrors the entities described in the spec (Encounter, ClinicalNote, TissGuide,
  * Patient, Billing, Template, Tenant, Plan, FeatureFlag, AuditLog…).
  * Strings that are user-facing labels are stored as i18n KEYS, not text,

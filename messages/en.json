@@ -40,7 +40,7 @@
     "expandSidebar": "Expand sidebar"
   },
   "common": {
-    "appName": "Aureon Health",
+    "appName": "Auronis Health",
     "tagline": "Clinical intelligence in every visit.",
     "actions": {
       "save": "Save",
@@ -133,7 +133,7 @@
       "eyebrow": "",
       "title": "Finish the visit with your note and claim form",
       "titleHighlight": "already done",
-      "subtitle": "Aureon Health listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
+      "subtitle": "Auronis Health listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
       "ctaPrimary": "Try it with one visit",
       "ctaSecondary": "See how it works",
       "trust": "LGPD compliant · Encrypted health data · Human-in-the-loop",
@@ -186,7 +186,7 @@
       "steps": {
         "record": {
           "title": "Record",
-          "desc": "Start the visit with the patient's consent. Aureon listens."
+          "desc": "Start the visit with the patient's consent. Auronis listens."
         },
         "structure": {
           "title": "Structure",
@@ -269,7 +269,7 @@
     },
     "cta": {
       "title": "Get hours back in your day.",
-      "subtitle": "Try Aureon Health on a single visit. No card required.",
+      "subtitle": "Try Auronis Health on a single visit. No card required.",
       "button": "Try it with one visit"
     },
     "footer": {
@@ -299,7 +299,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Sign in to Aureon Health",
+    "signInTitle": "Sign in to Auronis Health",
     "signInSubtitle": "Pick up right where you left off.",
     "email": "Email",
     "password": "Password",
@@ -355,7 +355,7 @@
     },
     "agentNudge": "The agent suggests starting with the {count} visits that have a pending claim form.",
     "impact": {
-      "title": "Aureon Impact",
+      "title": "Auronis Impact",
       "thisMonth": "this month",
       "caption": "value generated for your clinic",
       "recovered": "recovered",
@@ -369,7 +369,7 @@
     "with": "with {name}",
     "consent": {
       "title": "Patient consent",
-      "body": "Let the patient know the visit will be recorded and transcribed by Aureon Health to generate the medical record. The audio is encrypted and can be purged at any time.",
+      "body": "Let the patient know the visit will be recorded and transcribed by Auronis Health to generate the medical record. The audio is encrypted and can be purged at any time.",
       "checkbox": "The patient has consented to recording",
       "start": "Start recording",
       "cancel": "Not now"
@@ -544,8 +544,8 @@
     },
     "chart": {
       "title": "Denials over time",
-      "before": "Before Aureon",
-      "after": "With Aureon",
+      "before": "Before Auronis",
+      "after": "With Auronis",
       "submitted": "Submitted",
       "glossed": "Denied"
     },
@@ -910,11 +910,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Aureon Health — Finish the visit with your note and claim form ready",
+      "title": "Auronis Health — Finish the visit with your note and claim form ready",
       "description": "From the consultation audio to a structured medical record and a filled TISS claim — no typing. Fewer denials, more time with patients."
     },
     "app": {
-      "title": "Aureon Health",
+      "title": "Auronis Health",
       "description": "Structured medical records and TISS claims from the consultation audio."
     }
   }

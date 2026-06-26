@@ -1,5 +1,5 @@
-# Fly.io — Aureon Health. Run `fly launch --no-deploy` once (it may tweak this), then `fly deploy`.
-app = "aureon-health"
+# Fly.io — Auronis Health. Run `fly launch --no-deploy` once (it may tweak this), then `fly deploy`.
+app = "auronis-health"
 primary_region = "gru"
 
 [build]

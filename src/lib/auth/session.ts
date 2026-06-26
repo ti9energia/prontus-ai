@@ -12,7 +12,7 @@
  *   access on the live site.
  */
 
-export const SESSION_COOKIE = 'aureon_session';
+export const SESSION_COOKIE = 'auronis_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
 export type Role = 'owner' | 'doctor';
@@ -24,7 +24,7 @@ export interface SessionPayload {
   exp: number; // epoch seconds
 }
 
-const DEV_FALLBACK = 'aureon-dev-secret-change-me';
+const DEV_FALLBACK = 'auronis-dev-secret-change-me';
 
 function secret(): string {
   return process.env.AUTH_SECRET || DEV_FALLBACK;

@@ -131,9 +131,9 @@ export const MARI_TOOLS: Record<string, MariTool> = {
 
   'impact.summary': {
     id: 'impact.summary',
-    title: 'Impacto Aureon',
+    title: 'Impacto Auronis',
     description:
-      'Quantify the value Aureon generated this month: revenue recovered, denials prevented vs baseline, and hours returned — as one number.',
+      'Quantify the value Auronis generated this month: revenue recovered, denials prevented vs baseline, and hours returned — as one number.',
     surfaces: ['clinical', 'owner'],
     input: z.object({}).strip(),
     run: (_input, ctx) => {

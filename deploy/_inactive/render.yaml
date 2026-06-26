@@ -1,7 +1,7 @@
-# Render Blueprint — Aureon Health. New → Blueprint → point at this repo.
+# Render Blueprint — Auronis Health. New → Blueprint → point at this repo.
 services:
   - type: web
-    name: aureon-health
+    name: auronis-health
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: starter

@@ -40,7 +40,7 @@
     "expandSidebar": "Expandir menu"
   },
   "common": {
-    "appName": "Aureon Health",
+    "appName": "Auronis Health",
     "tagline": "Inteligência clínica em cada consulta.",
     "actions": {
       "save": "Salvar",
@@ -133,7 +133,7 @@
       "eyebrow": "",
       "title": "Termine a consulta com o prontuário e a guia",
       "titleHighlight": "já prontos",
-      "subtitle": "O Aureon Health escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
+      "subtitle": "O Auronis Health escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
       "ctaPrimary": "Testar com uma consulta",
       "ctaSecondary": "Ver como funciona",
       "trust": "Conforme LGPD · Dados de saúde criptografados · Human-in-the-loop",
@@ -186,7 +186,7 @@
       "steps": {
         "record": {
           "title": "Grave",
-          "desc": "Inicie a consulta com o consentimento do paciente. O Aureon escuta."
+          "desc": "Inicie a consulta com o consentimento do paciente. O Auronis escuta."
         },
         "structure": {
           "title": "Estruture",
@@ -269,7 +269,7 @@
     },
     "cta": {
       "title": "Devolva horas ao seu dia.",
-      "subtitle": "Experimente o Aureon Health em uma consulta. Sem cartão.",
+      "subtitle": "Experimente o Auronis Health em uma consulta. Sem cartão.",
       "button": "Testar com uma consulta"
     },
     "footer": {
@@ -299,7 +299,7 @@
     }
   },
   "auth": {
-    "signInTitle": "Entrar no Aureon Health",
+    "signInTitle": "Entrar no Auronis Health",
     "signInSubtitle": "Continue de onde parou.",
     "email": "E-mail",
     "password": "Senha",
@@ -355,7 +355,7 @@
     },
     "agentNudge": "O agente sugere começar pelas {count} consultas com guia pendente.",
     "impact": {
-      "title": "Impacto Aureon",
+      "title": "Impacto Auronis",
       "thisMonth": "este mês",
       "caption": "valor gerado para sua clínica",
       "recovered": "recuperado",
@@ -369,7 +369,7 @@
     "with": "com {name}",
     "consent": {
       "title": "Consentimento do paciente",
-      "body": "Informe o paciente de que a consulta será gravada e transcrita pelo Aureon Health para gerar o prontuário. O áudio é criptografado e pode ser expurgado a qualquer momento.",
+      "body": "Informe o paciente de que a consulta será gravada e transcrita pelo Auronis Health para gerar o prontuário. O áudio é criptografado e pode ser expurgado a qualquer momento.",
       "checkbox": "O paciente consentiu com a gravação",
       "start": "Iniciar gravação",
       "cancel": "Agora não"
@@ -544,8 +544,8 @@
     },
     "chart": {
       "title": "Glosa ao longo do tempo",
-      "before": "Antes do Aureon",
-      "after": "Com o Aureon",
+      "before": "Antes do Auronis",
+      "after": "Com o Auronis",
       "submitted": "Enviadas",
       "glossed": "Glosadas"
     },
@@ -910,11 +910,11 @@
   },
   "meta": {
     "landing": {
-      "title": "Aureon Health — Termine a consulta com o prontuário e a guia prontos",
+      "title": "Auronis Health — Termine a consulta com o prontuário e a guia prontos",
       "description": "Da fala da consulta ao prontuário estruturado e à guia TISS — sem digitar. Menos glosa, mais tempo com o paciente."
     },
     "app": {
-      "title": "Aureon Health",
+      "title": "Auronis Health",
       "description": "Prontuário estruturado e guias TISS a partir do áudio da consulta."
     }
   }

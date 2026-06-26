@@ -1,4 +1,4 @@
-# Arquitetura — Aureon Health
+# Arquitetura — Auronis Health
 
 Como o sistema é montado hoje, como a **Mari** será desacoplada para um servidor
 próprio, e como o sistema **conecta com sistemas externos**. Para a lógica de
@@ -121,7 +121,7 @@ API. Como a *seam* já existe, isso é **só configuração**:
 
 ```
                          ┌──────────────────────────────┐
-   Aureon Health  ──HTTP──►  Servidor da Mari (cérebro)  │
+   Auronis Health  ──HTTP──►  Servidor da Mari (cérebro)  │
    (e outros sistemas)      │  • memória & treino próprios │
         set MARI_API_URL    │  • ferramentas / RAG        │
                             │  • multi-tenant, multi-app  │

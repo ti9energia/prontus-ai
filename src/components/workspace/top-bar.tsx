@@ -85,7 +85,7 @@ export function TopBar({
         )}
       </div>
       {/* brand — desktop shows it in the sidebar header, so here it's mobile-only */}
-      <Link href="/app" className="mr-1 flex items-center md:hidden" aria-label="Aureon Health">
+      <Link href="/app" className="mr-1 flex items-center md:hidden" aria-label="Auronis Health">
         <Logo size={26} />
       </Link>
 
