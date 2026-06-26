@@ -1,5 +1,7 @@
 import type { ScreenKey } from './store';
+import type { RoleKey } from '@/lib/types';
 import { getCurrentUser, listFlags, listPlans } from '@/lib/data/store';
+import { can, type Permission } from '@/lib/auth/permissions';
 
 /**
  * Runtime access resolution for workspace screens — the live wiring behind the
@@ -24,6 +26,17 @@ const SCREEN_MODULE: Partial<Record<ScreenKey, string>> = {
   whatsapp: 'whatsapp',
 };
 
+/** Permission a role must hold to even see a screen (0C §4.3). Screens not listed
+ *  here are permission-free (any signed-in user). */
+const SCREEN_PERMISSION: Partial<Record<ScreenKey, Permission>> = {
+  encounter: 'clinical.act',
+  review: 'clinical.act',
+  tiss: 'tiss.create',
+  billing: 'billing.view',
+  patients: 'patients.view',
+  templates: 'templates.edit',
+};
+
 export type ScreenStatus = 'open' | 'locked' | 'hidden';
 
 export function moduleForScreen(key: ScreenKey): string | undefined {
@@ -40,7 +53,11 @@ function currentPlanModules(): string[] | null {
 
 /** Resolve a screen's availability from the feature flags (global kill-switch)
  *  and the current plan's entitlements. */
-export function screenStatus(key: ScreenKey): ScreenStatus {
+export function screenStatus(key: ScreenKey, role?: RoleKey): ScreenStatus {
+  // Role gate first: a role that can't perform the screen's action never sees it.
+  const perm = SCREEN_PERMISSION[key];
+  if (role && perm && !can(role, perm)) return 'hidden';
+
   const module = SCREEN_MODULE[key];
   if (!module) return 'open'; // core screen — always on
 
@@ -55,8 +72,8 @@ export function screenStatus(key: ScreenKey): ScreenStatus {
   return 'open';
 }
 
-export function isScreenVisible(key: ScreenKey): boolean {
-  return screenStatus(key) !== 'hidden';
+export function isScreenVisible(key: ScreenKey, role?: RoleKey): boolean {
+  return screenStatus(key, role) !== 'hidden';
 }
 
 /** Lowest plan name that first unlocks a module — used to phrase the upsell. */

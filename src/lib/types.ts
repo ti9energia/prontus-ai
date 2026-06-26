@@ -206,6 +206,7 @@ export interface SeriesPoint {
 
 export interface CurrentUser {
   id: string;
+  orgId?: string;
   name: string;
   roleKey: string;
   specialtyKey: string;
@@ -214,4 +215,23 @@ export interface CurrentUser {
   locale: Locale;
   orgName: string;
   planName: string;
+}
+
+/* ----------------------------- RBAC / Org ----------------------------- */
+
+export type PlatformRole = 'owner' | 'staff' | 'support';
+export type OrgRole = 'org_admin' | 'manager' | 'medico' | 'faturista' | 'gestor' | 'viewer';
+export type RoleKey = PlatformRole | OrgRole;
+
+export interface User {
+  id: string;
+  orgId: string; // Tenant.id, or 'platform' for platform staff
+  name: string;
+  email: string;
+  roleKey: RoleKey;
+  status: 'active' | 'invited' | 'suspended';
+  specialtyKey?: string;
+  council?: string;
+  locale: Locale;
+  createdAt: string;
 }
