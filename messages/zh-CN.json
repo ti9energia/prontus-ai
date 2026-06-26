@@ -1,4 +1,15 @@
 {
+  "encounterType": {
+    "firstVisit": "初诊",
+    "followUp": "复诊",
+    "urgent": "急诊",
+    "telemedicine": "远程"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "description": "您访问的页面不存在或已被移动。",
+    "back": "返回首页"
+  },
   "chrome": {
     "split": "分屏",
     "closePane": "关闭分栏",

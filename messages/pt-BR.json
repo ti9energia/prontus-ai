@@ -1,4 +1,15 @@
 {
+  "encounterType": {
+    "firstVisit": "1ª consulta",
+    "followUp": "Retorno",
+    "urgent": "Urgência",
+    "telemedicine": "Telemedicina"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "O endereço que você procurou não existe ou foi movido.",
+    "back": "Voltar ao início"
+  },
   "chrome": {
     "split": "Dividir",
     "closePane": "Fechar painel",

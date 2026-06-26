@@ -1,4 +1,15 @@
 {
+  "encounterType": {
+    "firstVisit": "First visit",
+    "followUp": "Follow-up",
+    "urgent": "Urgent",
+    "telemedicine": "Telehealth"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or was moved.",
+    "back": "Back home"
+  },
   "chrome": {
     "split": "Split",
     "closePane": "Close pane",

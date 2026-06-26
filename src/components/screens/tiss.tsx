@@ -89,15 +89,41 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const shownIssues = check?.issues ?? issues;
   const isReady = check ? check.ready : issues.length === 0;
 
-  const doSubmit = () => {
+  const doSubmit = async () => {
     setConfirmOpen(false);
     setSubmitting(true);
-    setTimeout(() => {
-      submitGuideStore(guide.id);
-      setStatus('sent');
+    try {
+      // Parity with the tiss.submit tool: run the pre-denial check and never submit
+      // while high-severity issues remain (fail-closed if the check can't confirm).
+      const res = await fetch('/api/ai/action', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tool: 'glosa.check', input: { guideId: guide.id }, locale }),
+      });
+      const body = await res.json().catch(() => null);
+      const result = body?.data;
+      if (result?.ok && result.data) {
+        setCheck({
+          score: result.data.score,
+          ready: result.data.ready,
+          issues: result.data.issues ?? [],
+          payer: result.data.payer,
+        });
+        if (result.data.ready) {
+          submitGuideStore(guide.id);
+          setStatus('sent');
+          toast.success(t('submitted'));
+        } else {
+          toast.error(result.summary);
+        }
+      } else {
+        toast.error(result?.summary ?? t('validation'));
+      }
+    } catch {
+      toast.error(t('validation'));
+    } finally {
       setSubmitting(false);
-      toast.success(t('submitted'));
-    }, 900);
+    }
   };
 
   const doExport = () => {

@@ -56,6 +56,7 @@ function ImpactChip({ value, label }: { value: string; label: string }) {
 export function TodayScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('today');
   const ts = useTranslations('encounterStatus');
+  const tt = useTranslations('encounterType');
   const locale = useLocale();
   const [filter, setFilter] = React.useState<'all' | 'scheduled' | 'draft' | 'finalized'>('all');
   const [, force] = React.useReducer((x) => x + 1, 0);
@@ -213,7 +214,7 @@ export function TodayScreen({ paneId }: { paneId: string }) {
                 </div>
               </div>
               <div className="hidden shrink-0 items-center gap-2 sm:flex">
-                <Badge tone={TYPE_TONE[e.type] ?? 'neutral'}>{typeLabel(e.type, locale)}</Badge>
+                <Badge tone={TYPE_TONE[e.type] ?? 'neutral'}>{tt(e.type)}</Badge>
               </div>
               <div className="flex shrink-0 items-center gap-3">
                 <Badge tone={STATUS_TONE[e.status]} dot>
@@ -227,15 +228,4 @@ export function TodayScreen({ paneId }: { paneId: string }) {
       </div>
     </ScreenContainer>
   );
-}
-
-export const ENCOUNTER_TYPE_LABELS: Record<string, Record<string, string>> = {
-  firstVisit: { 'pt-BR': '1ª consulta', en: 'First visit', 'zh-CN': '初诊', 'fr-FR': '1re visite' },
-  followUp: { 'pt-BR': 'Retorno', en: 'Follow-up', 'zh-CN': '复诊', 'fr-FR': 'Suivi' },
-  urgent: { 'pt-BR': 'Urgência', en: 'Urgent', 'zh-CN': '急诊', 'fr-FR': 'Urgence' },
-  telemedicine: { 'pt-BR': 'Telemedicina', en: 'Telehealth', 'zh-CN': '远程', 'fr-FR': 'Téléconsult.' },
-};
-
-function typeLabel(type: string, locale: string) {
-  return ENCOUNTER_TYPE_LABELS[type]?.[locale] ?? ENCOUNTER_TYPE_LABELS[type]?.['pt-BR'] ?? type;
 }
