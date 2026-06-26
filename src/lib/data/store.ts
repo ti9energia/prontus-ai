@@ -330,9 +330,68 @@ function seed(): DB {
   };
 }
 
-const g = globalThis as unknown as { __auronis__?: DB };
+const g = globalThis as unknown as { __auronis__?: DB; __auronisPersist__?: boolean };
+
+/* Client-side persistence — snapshot the store to localStorage so a user's data
+   survives reloads in their browser, no database required. On the server (API
+   routes / RSC) there is no localStorage, so it falls back to the in-memory seed
+   per runtime. For production multi-device persistence, plug a Postgres adapter
+   gated on DATABASE_URL — see src/lib/data/PERSISTENCE.md. */
+const SNAPSHOT_KEY = 'auronis:store:v1';
+
+function hydrate(): DB {
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = window.localStorage.getItem(SNAPSHOT_KEY);
+      if (raw) {
+        const snap = JSON.parse(raw) as DB;
+        // Shape guard: only trust a snapshot that looks like a real DB.
+        if (snap && snap.user && Array.isArray(snap.patients) && Array.isArray(snap.guides)) {
+          return snap;
+        }
+      }
+    } catch {
+      /* corrupt snapshot — fall through to a fresh seed */
+    }
+  }
+  return seed();
+}
+
+/** Persist the current store to localStorage (client only; a no-op on the server). */
+export function persist(): void {
+  if (typeof window === 'undefined' || !g.__auronis__) return;
+  try {
+    window.localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(g.__auronis__));
+  } catch {
+    /* quota or serialization error — ignore, the in-memory store still works */
+  }
+}
+
+/** Reset the store to the seed and clear the persisted snapshot (client only). */
+export function resetStore(): void {
+  g.__auronis__ = seed();
+  if (typeof window !== 'undefined') {
+    try {
+      window.localStorage.removeItem(SNAPSHOT_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
 export function db(): DB {
-  if (!g.__auronis__) g.__auronis__ = seed();
+  if (!g.__auronis__) {
+    g.__auronis__ = hydrate();
+    // Wire client-side auto-persist once: periodic + on tab hide / unload.
+    if (typeof window !== 'undefined' && !g.__auronisPersist__) {
+      g.__auronisPersist__ = true;
+      window.setInterval(persist, 4000);
+      window.addEventListener('beforeunload', persist);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') persist();
+      });
+    }
+  }
   return g.__auronis__;
 }
 
