@@ -14,7 +14,7 @@ const startedAt = Date.now();
 export function GET() {
   return NextResponse.json({
     status: 'ok',
-    service: 'aureon-health',
+    service: 'auronis-health',
     time: new Date().toISOString(),
     uptimeSec: Math.round((Date.now() - startedAt) / 1000),
     version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? 'dev',

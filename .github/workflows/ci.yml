@@ -52,4 +52,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build image (no push)
-        run: docker build -t aureon-health:ci .
+        run: docker build -t auronis-health:ci .

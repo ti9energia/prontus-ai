@@ -8,9 +8,9 @@ export async function register() {
   // Only the Node.js runtime has process-level hooks; the edge runtime skips this.
   if (process.env.NEXT_RUNTIME !== 'nodejs') return;
 
-  const g = globalThis as unknown as { __aureonInstrumented__?: boolean };
-  if (g.__aureonInstrumented__) return; // avoid duplicate listeners across HMR reloads
-  g.__aureonInstrumented__ = true;
+  const g = globalThis as unknown as { __auronisInstrumented__?: boolean };
+  if (g.__auronisInstrumented__) return; // avoid duplicate listeners across HMR reloads
+  g.__auronisInstrumented__ = true;
 
   const emit = (record: Record<string, unknown>) =>
     process.stderr.write(JSON.stringify({ at: new Date().toISOString(), ...record }) + '\n');

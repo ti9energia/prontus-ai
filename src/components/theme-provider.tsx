@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 type Theme = 'light' | 'dark' | 'system';
-const KEY = 'aureon-theme';
+const KEY = 'auronis-theme';
 
 const ThemeCtx = React.createContext<{
   theme: Theme;
@@ -22,17 +22,17 @@ export function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>('system');
-  const [resolved, setResolved] = React.useState<'light' | 'dark'>('light');
+  const [theme, setThemeState] = React.useState<Theme>('dark');
+  const [resolved, setResolved] = React.useState<'light' | 'dark'>('dark');
 
   React.useEffect(() => {
-    const stored = (localStorage.getItem(KEY) as Theme) || 'system';
+    const stored = (localStorage.getItem(KEY) as Theme) || 'dark';
     setThemeState(stored);
     setResolved(applyTheme(stored) as 'light' | 'dark');
 
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const onChange = () => {
-      const current = (localStorage.getItem(KEY) as Theme) || 'system';
+      const current = (localStorage.getItem(KEY) as Theme) || 'dark';
       if (current === 'system') setResolved(applyTheme('system') as 'light' | 'dark');
     };
     mq.addEventListener('change', onChange);
@@ -52,7 +52,7 @@ export const useTheme = () => React.useContext(ThemeCtx);
 
 /** Inline script that sets the theme class before paint to avoid FOUC. */
 export function ThemeScript() {
-  const code = `(function(){try{var t=localStorage.getItem('${KEY}')||'system';var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t==='system'&&d)){document.documentElement.classList.add('dark')}}catch(e){}})();`;
+  const code = `(function(){try{var t=localStorage.getItem('${KEY}')||'dark';var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t==='system'&&d)){document.documentElement.classList.add('dark')}}catch(e){}})();`;
   return <script dangerouslySetInnerHTML={{ __html: code }} />;
 }
 

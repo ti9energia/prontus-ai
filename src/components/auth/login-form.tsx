@@ -91,7 +91,7 @@ export function LoginForm() {
             <Link href="/" className="inline-flex items-center gap-2.5 text-white">
               <LogoMark size={34} />
               <span className="font-display text-lg font-bold">
-                Aureon<span className="text-brand-200"> Health</span>
+                Auronis<span className="text-brand-200"> Health</span>
               </span>
             </Link>
             <p className="mt-3 text-sm text-white/70">
@@ -137,7 +137,7 @@ export function LoginForm() {
       <div className="relative flex flex-col">
         <div className="flex items-center justify-between p-5">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink">
-            <ArrowLeft className="h-4 w-4" /> Aureon Health
+            <ArrowLeft className="h-4 w-4" /> Auronis Health
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle compact />

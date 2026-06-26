@@ -4,7 +4,7 @@ Um padrão **genérico e niche-agnóstico** para colocar uma IA ("copiloto") den
 de qualquer SaaS, de um jeito que: (a) funciona desde o dia 1, (b) pode ser
 **desacoplada para um servidor próprio** depois sem reescrever o produto, e (c)
 **conecta com sistemas externos** por um contrato único. Foi extraído da
-Aureon Health, mas serve para qualquer nicho — jurídico, financeiro, logística,
+Auronis Health, mas serve para qualquer nicho — jurídico, financeiro, logística,
 educação, etc.
 
 > Substitua "Mari" pelo nome do seu copiloto e "clínica" pelo seu domínio. A
@@ -145,7 +145,7 @@ interface ConnectorRegistry { get(id:string): Connector|undefined; list(cat?:str
 
 ---
 
-## Mapa de arquivos de referência (na Aureon Health)
+## Mapa de arquivos de referência (na Auronis Health)
 
 | Camada | Arquivo |
 |---|---|

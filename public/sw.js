@@ -1,6 +1,6 @@
-/* Aureon Health — lightweight service worker (PWA offline shell). */
-const CACHE = 'aureon-v1';
-const PRECACHE = ['/icon.svg', '/icon-maskable.svg', '/manifest.webmanifest'];
+/* Auronis Health — lightweight service worker (PWA offline shell). */
+const CACHE = 'auronis-v2';
+const PRECACHE = ['/brand/icon-512.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));

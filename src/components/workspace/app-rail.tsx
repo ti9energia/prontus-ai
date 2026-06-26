@@ -38,7 +38,7 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
   if (collapsed) {
     return (
       <nav className="relative z-30 hidden w-[56px] shrink-0 flex-col items-center gap-1 border-r border-hairline bg-surface/40 py-3 md:flex">
-        <Link href="/app" className="mb-1 grid h-10 w-10 place-items-center" aria-label="Aureon Health">
+        <Link href="/app" className="mb-1 grid h-10 w-10 place-items-center" aria-label="Auronis Health">
           <LogoMark size={26} />
         </Link>
         <div className="flex flex-1 flex-col items-center gap-0.5 overflow-y-auto overflow-x-hidden">
@@ -86,7 +86,7 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
   return (
     <nav className="relative z-30 hidden w-[236px] shrink-0 flex-col border-r border-hairline bg-surface/40 md:flex">
       <div className="flex h-14 shrink-0 items-center justify-between gap-2 px-3">
-        <Link href="/app" className="flex items-center" aria-label="Aureon Health">
+        <Link href="/app" className="flex items-center" aria-label="Auronis Health">
           <Logo size={26} />
         </Link>
         <Tooltip label={c('collapseSidebar')} side="bottom">

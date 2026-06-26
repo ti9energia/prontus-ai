@@ -21,29 +21,25 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'meta.landing' });
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aureonhealth.com'),
-    title: { default: t('title'), template: '%s · Aureon Health' },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://auronishealth.com'),
+    title: { default: t('title'), template: '%s · Auronis Health' },
     description: t('description'),
-    applicationName: 'Aureon Health',
-    appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Aureon Health' },
+    applicationName: 'Auronis Health',
+    appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Auronis Health' },
     formatDetection: { telephone: false },
-    icons: {
-      icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-      apple: [{ url: '/icon.svg' }],
-    },
     openGraph: {
       title: t('title'),
       description: t('description'),
       type: 'website',
-      siteName: 'Aureon Health',
+      siteName: 'Auronis Health',
     },
   };
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fafaf9' },
-    { media: '(prefers-color-scheme: dark)', color: '#070b13' },
+    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+    { media: '(prefers-color-scheme: dark)', color: '#090b0f' },
   ],
   width: 'device-width',
   initialScale: 1,

@@ -64,10 +64,10 @@ const AI_MODELS = ['claude-opus-4-8', 'claude-sonnet-4-6'];
 /* Per-locale strings for copy that has no existing i18n key. */
 const COPY: Record<string, Record<Locale, string>> = {
   subtitle: {
-    'pt-BR': 'Gerencie seu perfil, sua clínica e como o Aureon Health trabalha para você.',
-    en: 'Manage your profile, your clinic, and how Aureon Health works for you.',
-    'zh-CN': '管理您的个人资料、诊所以及 Aureon Health 的工作方式。',
-    'fr-FR': 'Gérez votre profil, votre clinique et la façon dont Aureon Health travaille pour vous.',
+    'pt-BR': 'Gerencie seu perfil, sua clínica e como o Auronis Health trabalha para você.',
+    en: 'Manage your profile, your clinic, and how Auronis Health works for you.',
+    'zh-CN': '管理您的个人资料、诊所以及 Auronis Health 的工作方式。',
+    'fr-FR': 'Gérez votre profil, votre clinique et la façon dont Auronis Health travaille pour vous.',
   },
   profileDesc: {
     'pt-BR': 'Estas informações aparecem nas notas clínicas e nas guias TISS.',

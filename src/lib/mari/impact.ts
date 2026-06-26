@@ -1,7 +1,7 @@
 /**
- * Aureon Impact — the value ledger.
+ * Auronis Impact — the value ledger.
  *
- * The market differentiator: most scribes sell "saved minutes". Aureon quantifies
+ * The market differentiator: most scribes sell "saved minutes". Auronis quantifies
  * *money* — revenue recovered, denials ("glosas") prevented vs a baseline, and the
  * value of hours returned — into one honest, transparent number per month. Pure
  * and testable; `impactFromStore()` wires it to live data for the UI and Mari.
@@ -29,7 +29,7 @@ export interface ImpactResult {
 }
 
 // Transparent assumptions behind the value model (documented so it stays honest).
-export const BASELINE_DENIAL_RATE = 0.18; // typical pre-Aureon denial rate
+export const BASELINE_DENIAL_RATE = 0.18; // typical pre-Auronis denial rate
 export const DOCTOR_HOUR_BRL = 250; // value of an hour of clinical time
 const DEFAULT_GUIDE_VALUE = 180;
 

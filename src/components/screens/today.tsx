@@ -133,7 +133,7 @@ export function TodayScreen({ paneId }: { paneId: string }) {
         }
       />
 
-      {/* Aureon Impact — the money/outcome proof, front and centre */}
+      {/* Auronis Impact — the money/outcome proof, front and centre */}
       <div className="relative mb-4 overflow-hidden rounded-2xl border border-brand-500/20 bg-brand-600/[0.06] p-5">
         <div className="bg-aurora pointer-events-none absolute inset-0 opacity-[0.07]" />
         <div className="relative">

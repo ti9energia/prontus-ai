@@ -1,4 +1,4 @@
-# Deploy — Aureon Health
+# Deploy — Auronis Health
 
 App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente é obrigatória** — roda 100% com dados mock e copiloto em modo simulado. Defina as variáveis abaixo só se quiser ativar recursos reais.
 
@@ -8,13 +8,13 @@ menos `AUTH_SECRET`. Copie `.env.example` → `.env.local` (local) ou configure 
 
 | Variável | Para quê | Padrão |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | URL pública e canônica (OG, `sitemap.xml`, `robots.txt`) | `https://aureonhealth.com` |
+| `NEXT_PUBLIC_SITE_URL` | URL pública e canônica (OG, `sitemap.xml`, `robots.txt`) | `https://auronishealth.com` |
 | `ANTHROPIC_API_KEY` | Ativa a Mari com a Claude API de verdade (só p/ autenticados) | vazio → fallback inteligente |
 | `ANTHROPIC_MODEL` | Modelo da Mari quando há chave | `claude-sonnet-4-6` |
 | `MARI_API_URL` / `MARI_API_KEY` | Cérebro remoto da Mari (prioridade sobre a Claude local) | vazio |
 | `AUTH_SECRET` | Assina as sessões — **obrigatória em produção** (sem ela o login é fail-closed) | vazio |
-| `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD_HASH` | Login do dono (super-admin) | `owner@aureonhealth.com` / `Owner` / — |
-| `TEST_DOCTOR_EMAIL` / `TEST_DOCTOR_PASSWORD` | Conta de teste (lado médico) | `…@aureonhealth.com` / `aureon-demo` |
+| `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD_HASH` | Login do dono (super-admin) | `owner@auronishealth.com` / `Owner` / — |
+| `TEST_DOCTOR_EMAIL` / `TEST_DOCTOR_PASSWORD` | Conta de teste (lado médico) | `…@auronishealth.com` / `auronis-demo` |
 | `DEMO_MODE` | Botão "Entrar na demonstração"; `false` desativa em produção | habilitado |
 
 ---
@@ -39,12 +39,12 @@ vercel --prod     # produção
 O `next.config.mjs` usa `output: 'standalone'`, então a imagem fica pequena (~120 MB).
 
 ```bash
-docker build -t aureon-health .
+docker build -t auronis-health .
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_SITE_URL=https://seu-dominio.com \
   -e AUTH_SECRET=troque-por-uma-string-longa-e-aleatoria \
   -e ANTHROPIC_API_KEY=sk-ant-... \
-  aureon-health
+  auronis-health
 ```
 Acesse http://localhost:3000. Health check em `GET /api/health`.
 

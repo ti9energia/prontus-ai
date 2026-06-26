@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Aureon Health — lightweight security / pen-test scan.
- * Usage: node scripts/security-scan.mjs [url]   (default: https://aureonhealth.com)
+ * Auronis Health — lightweight security / pen-test scan.
+ * Usage: node scripts/security-scan.mjs [url]   (default: https://auronishealth.com)
  * Pass the live deploy URL as an argument when the canonical domain isn't wired yet,
  * e.g. `node scripts/security-scan.mjs https://prontus-ai.vercel.app`.
  * Checks security headers, blocked sensitive paths, API input validation,
  * method handling, info leakage and path traversal. Exits 1 on any failure.
  */
-const base = (process.argv[2] || process.env.TARGET || 'https://aureonhealth.com').replace(/\/$/, '');
+const base = (process.argv[2] || process.env.TARGET || 'https://auronishealth.com').replace(/\/$/, '');
 
 let pass = 0;
 let fail = 0;
@@ -26,7 +26,7 @@ async function probe(path, opts) {
 }
 
 (async () => {
-  console.log(`\n🔒 Aureon Health security scan → ${base}\n`);
+  console.log(`\n🔒 Auronis Health security scan → ${base}\n`);
 
   // 1) Security headers
   const home = await probe('/pt-BR');
