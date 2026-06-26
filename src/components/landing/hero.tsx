@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Play, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Play, ShieldCheck } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Aurora } from './aurora';
 import { HeroDemo } from './hero-demo';
@@ -10,7 +10,6 @@ import { buttonVariants } from '@/components/ui/button';
 
 export function Hero() {
   const t = useTranslations('landing.hero');
-  const tb = useTranslations('brand');
 
   // Pointer-driven 3D tilt on the product preview (disabled for reduced motion).
   const reduce = useReducedMotion();
@@ -36,22 +35,11 @@ export function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* copy */}
           <div className="max-w-xl">
-            {/* category eyebrow — clear context in 3s, no fake proof */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/60 px-3 py-1 text-2xs font-medium text-muted backdrop-blur"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-brand-500" />
-              {tb('promiseShort')}
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              className="mt-6 font-display text-[2.7rem] font-bold leading-[1.04] tracking-[-0.035em] sm:text-[3.9rem]"
+              className="font-display text-[2.7rem] font-bold leading-[1.04] tracking-[-0.035em] sm:text-[3.9rem]"
             >
               {t('title')}
               <span className="mt-1 block text-gradient">{t('titleHighlight')}</span>
@@ -110,7 +98,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
-                className="absolute -left-4 top-16 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
+                className="absolute right-full top-16 mr-4 hidden rounded-xl border border-hairline bg-card/95 px-3 py-2 shadow-lg backdrop-blur xl:block animate-float"
               >
                 <p className="font-display text-lg font-bold text-brand-600">−68%</p>
                 <p className="text-2xs text-muted">glosa</p>
@@ -119,7 +107,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.85, duration: 0.6 }}
-                className="absolute -right-3 bottom-20 hidden rounded-xl border border-hairline bg-card/90 px-3 py-2 shadow-lg backdrop-blur md:block animate-float"
+                className="absolute left-full bottom-20 ml-4 hidden rounded-xl border border-hairline bg-card/95 px-3 py-2 shadow-lg backdrop-blur xl:block animate-float"
                 style={{ animationDelay: '-3s' }}
               >
                 <p className="font-display text-lg font-bold text-accent-500">+2h</p>
