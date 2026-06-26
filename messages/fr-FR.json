@@ -1,4 +1,34 @@
 {
+  "documents": {
+    "title": "Documents",
+    "subtitle": "Générez ordonnances, arrêts de travail, orientations et plus — signés par le professionnel.",
+    "new": "Nouveau document",
+    "generate": "Générer",
+    "view": "Voir",
+    "download": "Télécharger le PDF",
+    "content": "Contenu",
+    "contentHint": "Laissez vide pour utiliser un modèle par défaut.",
+    "signedBy": "Signé par {name} · {council}",
+    "types": {
+      "receita": "Ordonnance",
+      "atestado": "Arrêt de travail",
+      "encaminhamento": "Orientation",
+      "declaracao": "Déclaration",
+      "relatorio": "Rapport",
+      "pedidoExame": "Demande d'examen",
+      "termo": "Consentement éclairé"
+    },
+    "columns": { "type": "Type", "patient": "Patient", "date": "Date", "actions": "Actions" },
+    "placeholders": {
+      "receita": "Médicament, dose, posologie et durée.",
+      "atestado": "Arrêt et période pour raison de santé.",
+      "encaminhamento": "Spécialité et motif de l'orientation.",
+      "declaracao": "Déclaration de présence.",
+      "relatorio": "Rapport clinique du patient.",
+      "pedidoExame": "Examens demandés et justification.",
+      "termo": "Formulaire de consentement éclairé."
+    }
+  },
   "feedback": {
     "saved": "Modifications enregistrées",
     "added": "Ajouté avec succès",
