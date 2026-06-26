@@ -29,6 +29,8 @@ jobs:
         run: npm test
       - name: Lint
         run: npm run lint
+      - name: i18n parity (all 4 catalogs must match)
+        run: npm run i18n:check
       - name: Audit (high severity and above)
         run: npm audit --audit-level=high
         continue-on-error: true # informative; supply-chain advisories shouldn't hard-block a deploy
