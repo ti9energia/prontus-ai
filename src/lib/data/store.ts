@@ -330,7 +330,11 @@ function seed(): DB {
   };
 }
 
-const g = globalThis as unknown as { __auronis__?: DB; __auronisPersist__?: boolean };
+const g = globalThis as unknown as {
+  __auronis__?: DB;
+  __auronisPersist__?: boolean;
+  __auronisInterval__?: number;
+};
 
 /* Client-side persistence — snapshot the store to localStorage so a user's data
    survives reloads in their browser, no database required. On the server (API
@@ -357,19 +361,39 @@ function hydrate(): DB {
   return seed();
 }
 
-/** Persist the current store to localStorage (client only; a no-op on the server). */
-export function persist(): void {
+/* Dirty flag so the idle auto-persist tick skips the (potentially expensive)
+   full-snapshot JSON.stringify when nothing changed since the last write. */
+let storeDirty = true;
+/** Mark the store as changed so the next persist tick flushes it. */
+export function markDirty(): void {
+  storeDirty = true;
+}
+
+function writeSnapshot(): void {
   if (typeof window === 'undefined' || !g.__auronis__) return;
   try {
     window.localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(g.__auronis__));
+    storeDirty = false;
   } catch {
     /* quota or serialization error — ignore, the in-memory store still works */
   }
 }
 
+/** Idle/interval persist — only writes when something actually changed. */
+export function persist(): void {
+  if (!storeDirty) return;
+  writeSnapshot();
+}
+
+/** Force a flush regardless of the dirty flag (tab hide / unload — never lose data). */
+function forcePersist(): void {
+  writeSnapshot();
+}
+
 /** Reset the store to the seed and clear the persisted snapshot (client only). */
 export function resetStore(): void {
   g.__auronis__ = seed();
+  storeDirty = true;
   if (typeof window !== 'undefined') {
     try {
       window.localStorage.removeItem(SNAPSHOT_KEY);
@@ -385,10 +409,14 @@ export function db(): DB {
     // Wire client-side auto-persist once: periodic + on tab hide / unload.
     if (typeof window !== 'undefined' && !g.__auronisPersist__) {
       g.__auronisPersist__ = true;
-      window.setInterval(persist, 4000);
-      window.addEventListener('beforeunload', persist);
+      // Idle tick is cheap (skips when clean); unload/hide force a flush so nothing is lost.
+      g.__auronisInterval__ = window.setInterval(persist, 4000);
+      window.addEventListener('beforeunload', () => {
+        forcePersist();
+        if (g.__auronisInterval__) window.clearInterval(g.__auronisInterval__);
+      });
       document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') persist();
+        if (document.visibilityState === 'hidden') forcePersist();
       });
     }
   }
@@ -651,6 +679,7 @@ export function pushAudit(
     result,
     source,
   });
+  markDirty();
 }
 
 /* ----------------------------- Owner ----------------------------- */
@@ -702,6 +731,7 @@ export function listFlags() {
 export function toggleFlag(module: string) {
   const f = db().flags.find((x) => x.module === module);
   if (f) f.enabled = !f.enabled;
+  markDirty();
   return f;
 }
 export function setTenantStatus(tid: string, status: Tenant['status']) {
