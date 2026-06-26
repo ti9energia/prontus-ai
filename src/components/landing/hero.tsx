@@ -51,21 +51,10 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              className="mt-6 font-display text-[2.75rem] font-bold leading-[1.0] tracking-[-0.035em] sm:text-[3.75rem]"
+              className="mt-6 font-display text-[2.7rem] font-bold leading-[1.04] tracking-[-0.035em] sm:text-[3.9rem]"
             >
-              {t('title')}{' '}
-              <span className="relative whitespace-nowrap">
-                <span className="text-gradient">{t('titleHighlight')}</span>
-                <svg
-                  aria-hidden
-                  viewBox="0 0 300 12"
-                  className="absolute -bottom-1 left-0 h-2.5 w-full text-brand-400/50"
-                  preserveAspectRatio="none"
-                >
-                  <path d="M2 9 C 80 2, 220 2, 298 8" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
-                </svg>
-              </span>
-              .
+              {t('title')}
+              <span className="mt-1 block text-gradient">{t('titleHighlight')}</span>
             </motion.h1>
 
             <motion.p

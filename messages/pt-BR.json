@@ -131,11 +131,11 @@
     "announce": "",
     "hero": {
       "eyebrow": "",
-      "title": "Termine a consulta com o prontuário e a guia",
-      "titleHighlight": "já prontos",
-      "subtitle": "O Auronis Health escuta a consulta e devolve, em segundos, o prontuário estruturado e a guia TISS preenchida. Menos digitação, menos glosa, mais tempo com o paciente.",
-      "ctaPrimary": "Testar com uma consulta",
-      "ctaSecondary": "Ver como funciona",
+      "title": "Termine a consulta.",
+      "titleHighlight": "A Mari faz o resto.",
+      "subtitle": "A Auronis Health escuta a consulta, gera o prontuário e preenche a documentação em segundos. Menos digitação, menos glosa, mais tempo com o paciente.",
+      "ctaPrimary": "Teste gratuitamente",
+      "ctaSecondary": "Ver demonstração",
       "trust": "Conforme LGPD · Dados de saúde criptografados · Human-in-the-loop",
       "liveBadge": "Gravando consulta",
       "noteBuilding": "Montando o prontuário…"

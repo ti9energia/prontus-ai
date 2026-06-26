@@ -131,11 +131,11 @@
     "announce": "",
     "hero": {
       "eyebrow": "",
-      "title": "Finish the visit with your note and claim form",
-      "titleHighlight": "already done",
-      "subtitle": "Auronis Health listens to the visit and returns a structured medical record and a completed TISS form in seconds. Less typing, fewer denials, more time with the patient.",
-      "ctaPrimary": "Try it with one visit",
-      "ctaSecondary": "See how it works",
+      "title": "Finish the consultation.",
+      "titleHighlight": "Mari does the rest.",
+      "subtitle": "Auronis Health listens to the consultation, generates the clinical note and fills the paperwork in seconds. Less typing, fewer denials, more time with the patient.",
+      "ctaPrimary": "Try it free",
+      "ctaSecondary": "Watch demo",
       "trust": "LGPD compliant · Encrypted health data · Human-in-the-loop",
       "liveBadge": "Recording visit",
       "noteBuilding": "Building the medical record…"
