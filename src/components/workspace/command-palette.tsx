@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight, CornerDownLeft, Mic, Search, Sparkles } from 'lucide-react';
 import { openTab, type ScreenKey } from '@/lib/workspace/store';
+import { isScreenVisible } from '@/lib/workspace/entitlements';
 import { SCREENS, SCREEN_ORDER } from './registry';
 import { useChrome } from './labels';
 import { Kbd } from '@/components/ui/misc';
@@ -36,7 +37,7 @@ export function CommandPalette({
     return def.titleMap?.[locale] ?? (def.titleKey ? t(def.titleKey) : key);
   };
 
-  const screenItems: Item[] = SCREEN_ORDER.map((k) => ({
+  const screenItems: Item[] = SCREEN_ORDER.filter(isScreenVisible).map((k) => ({
     kind: 'screen',
     key: k,
     label: title(k),

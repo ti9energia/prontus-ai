@@ -2,11 +2,12 @@
 
 import * as React from 'react';
 import { useLocale, useMessages, useTranslations } from 'next-intl';
-import { ArrowUp, Mic, ShieldCheck, Volume2, VolumeX, X } from 'lucide-react';
+import { ArrowUp, Mic, ShieldCheck, ThumbsDown, ThumbsUp, Volume2, VolumeX, X } from 'lucide-react';
 import { Sheet } from '@/components/ui/overlay';
 import { MariPortrait } from '@/components/brand/mari';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import type { ScreenKey } from '@/lib/workspace/store';
+import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
 interface Msg {
@@ -40,6 +41,7 @@ export function CopilotDock({
   const [input, setInput] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [voiceOn, setVoiceOn] = React.useState(false);
+  const [feedback, setFeedback] = React.useState<Record<number, 'up' | 'down'>>({});
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const { speak, cancel, speaking, supported: ttsSupported } = useSpeech();
@@ -72,6 +74,18 @@ export function CopilotDock({
     } finally {
       setLoading(false);
     }
+  };
+
+  const sendFeedback = (i: number, intent: 'up' | 'down') => {
+    setFeedback((f) => ({ ...f, [i]: intent }));
+    void fetch('/api/ai/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ intent, locale, screen: activeScreen, message: chat[i]?.content?.slice(0, 2000) }),
+    }).catch(() => {});
+    toast.success(
+      L('Obrigado pelo feedback', 'Thanks for the feedback', '感谢你的反馈', 'Merci pour votre retour'),
+    );
   };
 
   const { supported: micSupported, listening, start: startMic, stop: stopMic } = useSpeechRecognition({
@@ -155,18 +169,38 @@ export function CopilotDock({
           className="flex-1 space-y-4 overflow-y-auto px-4 py-4"
         >
           {chat.map((m, i) => (
-            <div key={i} className={cn('flex items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
-              {m.role === 'assistant' && <MariPortrait size={26} className="mb-0.5 shrink-0" rim={false} />}
-              <div
-                className={cn(
-                  'max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
-                  m.role === 'user'
-                    ? 'rounded-br-md bg-brand-600 text-white'
-                    : 'rounded-bl-md bg-ink/[0.05] text-ink',
-                )}
-              >
-                {m.content}
+            <div key={i} className={cn('flex flex-col gap-1', m.role === 'user' ? 'items-end' : 'items-start')}>
+              <div className={cn('flex w-full items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
+                {m.role === 'assistant' && <MariPortrait size={26} className="mb-0.5 shrink-0" rim={false} />}
+                <div
+                  className={cn(
+                    'max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
+                    m.role === 'user'
+                      ? 'rounded-br-md bg-brand-600 text-white'
+                      : 'rounded-bl-md bg-ink/[0.05] text-ink',
+                  )}
+                >
+                  {m.content}
+                </div>
               </div>
+              {m.role === 'assistant' && i > 0 && (
+                <div className="flex items-center gap-1 pl-8">
+                  <FeedbackButton
+                    active={feedback[i] === 'up'}
+                    onClick={() => sendFeedback(i, 'up')}
+                    label={L('Resposta útil', 'Helpful', '有帮助', 'Utile')}
+                  >
+                    <ThumbsUp className="h-3 w-3" />
+                  </FeedbackButton>
+                  <FeedbackButton
+                    active={feedback[i] === 'down'}
+                    onClick={() => sendFeedback(i, 'down')}
+                    label={L('Resposta ruim', 'Not helpful', '没帮助', 'Pas utile')}
+                  >
+                    <ThumbsDown className="h-3 w-3" />
+                  </FeedbackButton>
+                </div>
+              )}
             </div>
           ))}
           {loading && (
@@ -256,5 +290,33 @@ export function CopilotDock({
         </div>
       </div>
     </Sheet>
+  );
+}
+
+function FeedbackButton({
+  active,
+  onClick,
+  label,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={label}
+      title={label}
+      className={cn(
+        'grid h-6 w-6 place-items-center rounded-md transition-colors',
+        active ? 'bg-brand-600/15 text-brand-600' : 'text-subtle hover:bg-ink/[0.06] hover:text-muted',
+      )}
+    >
+      {children}
+    </button>
   );
 }

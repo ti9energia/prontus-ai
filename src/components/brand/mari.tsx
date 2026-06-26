@@ -8,7 +8,7 @@ export type MariState = 'idle' | 'listening' | 'thinking' | 'speaking';
 /**
  * Mari — the Auronis Health medical AI persona.
  *
- * A blonde physician in a white coat with a teal stethoscope, drawn as clean
+ * A brown-haired physician (soft honey highlights) in a white coat with a teal stethoscope, drawn as clean
  * vector art: themeable, crisp at any size, no raster, no "generic AI image"
  * look. Gradient ids are namespaced per-instance (useId) so multiple avatars
  * can coexist on one page.
@@ -45,8 +45,9 @@ export function MariFace({
           <stop offset="100%" stopColor="#8fe0d3" />
         </radialGradient>
         <linearGradient id={u('hair')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#caa472" />
-          <stop offset="100%" stopColor="#8c6a42" />
+          <stop offset="0%" stopColor="#7c5430" />
+          <stop offset="50%" stopColor="#573a20" />
+          <stop offset="100%" stopColor="#341f0f" />
         </linearGradient>
         <linearGradient id={u('skin')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#fcddc8" />
@@ -93,11 +94,12 @@ export function MariFace({
         <path d="M30 46C29 28 37 16 48 16C60 16 67 27 66 46C64 39 60 34 55 34C51 34 50 30 46 31C42.5 32 41 36 38 36C34 36 31 40 30 46Z" fill={`url(#${u('hair')})`} />
         <path d="M30 44c-1.5 8-1 17 1.6 25l4.2-1.2c-2.6-8-3.4-16-2.4-24Z" fill={`url(#${u('hair')})`} />
         <path d="M66 44c1.5 8 1 17-1.6 25l-4.2-1.2c2.6-8 3.4-16 2.4-24Z" fill={`url(#${u('hair')})`} />
-        <path d="M36 27q12-8 24 0" stroke="#fbe7ad" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
+        <path d="M36 27q12-8 24 0" stroke="#b8884e" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity="0.42" />
+        <path d="M33 41c1-7 4-12 9-15" stroke="#a87c46" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.28" />
 
         {/* brows */}
-        <path d="M38.5 40.8q4-2.6 7.5-.4" stroke="#bb8430" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-        <path d="M50 40.4q3.5-2.2 7.5.4" stroke="#bb8430" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <path d="M38.5 40.8q4-2.6 7.5-.4" stroke="#4a3119" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <path d="M50 40.4q3.5-2.2 7.5.4" stroke="#4a3119" strokeWidth="1.5" fill="none" strokeLinecap="round" />
 
         {/* eyes — lash line + iris + highlight */}
         <path d="M38.5 45.6q3.5-3 7 0" stroke="#4a3b33" strokeWidth="1.8" fill="none" strokeLinecap="round" />

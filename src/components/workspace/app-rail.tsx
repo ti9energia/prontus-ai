@@ -2,13 +2,15 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Lock, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { openTab, useWorkspace, type ScreenKey } from '@/lib/workspace/store';
+import { screenStatus, unlockPlanFor, type ScreenStatus } from '@/lib/workspace/entitlements';
 import { SCREENS, SCREEN_ORDER, type ScreenGroup } from './registry';
 import { useChrome } from './labels';
 import { Logo, LogoMark } from '@/components/brand/logo';
 import { Tooltip } from '@/components/ui/misc';
+import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
 const GROUP_LABEL: Record<ScreenGroup, string> = {
@@ -23,6 +25,14 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
   const c = useChrome();
   const ws = useWorkspace();
 
+  // Gating reads client-only state (localStorage flags/plan); compute it after
+  // mount so the server-rendered seed (everything open) matches first paint.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+
   const activePane = ws.panes.find((p) => p.id === ws.activePaneId) ?? ws.panes[0];
   const activeScreen = activePane?.tabs.find((tb) => tb.id === activePane.activeTabId)?.screen;
 
@@ -32,7 +42,28 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
     return def.titleMap?.[locale] ?? (def.titleKey ? t(def.titleKey) : key);
   };
 
-  const items = (g: ScreenGroup) => SCREEN_ORDER.filter((k) => SCREENS[k].group === g);
+  // Live feature-flag + plan-entitlement status (the owner panel's toggles, wired through).
+  const statusOf = (key: ScreenKey): ScreenStatus => (mounted ? screenStatus(key) : 'open');
+
+  // Hidden (flag off) screens leave the nav entirely; locked ones stay, with an upsell.
+  const items = (g: ScreenGroup) =>
+    SCREEN_ORDER.filter((k) => SCREENS[k].group === g && statusOf(k) !== 'hidden');
+
+  const openOrUpsell = (k: ScreenKey) => {
+    if (statusOf(k) === 'locked') {
+      const plan = unlockPlanFor(k);
+      toast.info(
+        L(
+          `Disponível no plano ${plan}`,
+          `Available on the ${plan} plan`,
+          `${plan} 套餐可用`,
+          `Disponible avec le forfait ${plan}`,
+        ),
+      );
+      return;
+    }
+    openTab(k);
+  };
 
   // Collapsed: a slim icon rail with tooltips. Vertical-only scroll, never sideways.
   if (collapsed) {
@@ -48,20 +79,27 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
               {items(g).map((k) => {
                 const Icon = SCREENS[k].icon;
                 const active = activeScreen === k;
+                const locked = statusOf(k) === 'locked';
                 return (
-                  <Tooltip key={k} label={title(k)} side="right">
+                  <Tooltip
+                    key={k}
+                    label={locked ? `${title(k)} · ${L('Bloqueado', 'Locked', '已锁定', 'Verrouillé')}` : title(k)}
+                    side="right"
+                  >
                     <button
-                      onClick={() => openTab(k)}
+                      onClick={() => openOrUpsell(k)}
                       className={cn(
-                        'grid h-10 w-10 place-items-center rounded-xl transition-all duration-150',
+                        'relative grid h-10 w-10 place-items-center rounded-xl transition-all duration-150',
                         active
                           ? 'bg-brand-600/12 text-brand-600 shadow-xs'
                           : 'text-muted hover:bg-ink/[0.06] hover:text-ink',
+                        locked && 'opacity-60',
                       )}
                       aria-label={title(k)}
                       aria-current={active ? 'page' : undefined}
                     >
                       <Icon className="h-[18px] w-[18px]" />
+                      {locked && <Lock className="absolute right-1 top-1 h-2.5 w-2.5 text-subtle" aria-hidden />}
                     </button>
                   </Tooltip>
                 );
@@ -110,15 +148,17 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
               {items(g).map((k) => {
                 const Icon = SCREENS[k].icon;
                 const active = activeScreen === k;
+                const locked = statusOf(k) === 'locked';
                 return (
                   <button
                     key={k}
-                    onClick={() => openTab(k)}
+                    onClick={() => openOrUpsell(k)}
                     className={cn(
                       'group flex h-9 items-center gap-3 rounded-lg px-2.5 text-sm font-medium transition-all duration-150',
                       active
                         ? 'bg-brand-600/12 text-brand-700 dark:text-brand-300'
                         : 'text-muted hover:bg-ink/[0.05] hover:text-ink',
+                      locked && 'opacity-70',
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -128,7 +168,8 @@ export function AppRail({ collapsed, onToggle }: { collapsed: boolean; onToggle:
                         active ? 'text-brand-600' : 'text-subtle group-hover:text-muted',
                       )}
                     />
-                    <span className="truncate">{title(k)}</span>
+                    <span className="flex-1 truncate text-left">{title(k)}</span>
+                    {locked && <Lock className="h-3.5 w-3.5 shrink-0 text-subtle" aria-hidden />}
                   </button>
                 );
               })}

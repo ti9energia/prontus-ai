@@ -212,23 +212,6 @@ export function LoginForm() {
                 {tc('signIn')}
               </Button>
             </form>
-
-            <div className="my-6 flex items-center gap-3 text-2xs text-subtle">
-              <div className="h-px flex-1 bg-hairline" />
-              <span>{t('demoNote')}</span>
-              <div className="h-px flex-1 bg-hairline" />
-            </div>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full"
-              loading={loading}
-              leftIcon={<Sparkles className="h-4 w-4" />}
-              onClick={() => post({ demo: true })}
-            >
-              {t('enterDemo')}
-            </Button>
           </div>
         </div>
       </div>
