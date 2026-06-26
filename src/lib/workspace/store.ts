@@ -15,6 +15,7 @@ export type ScreenKey =
   | 'integrations'
   | 'settings'
   | 'agent'
+  | 'agents'
   | 'whatsapp'
   | 'documents'
   | 'signature'

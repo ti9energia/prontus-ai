@@ -4,6 +4,7 @@ import * as React from 'react';
 import dynamic from 'next/dynamic';
 import {
   BarChart3,
+  Bot,
   CalendarClock,
   CalendarDays,
   Cable,
@@ -126,6 +127,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleMap: { 'pt-BR': 'Agente', en: 'Agent', 'zh-CN': '智能体', 'fr-FR': 'Agent' },
     Component: lazy(() => import('@/components/screens/agent').then((m) => ({ default: m.AgentScreen }))),
   },
+  agents: {
+    key: 'agents',
+    icon: Bot,
+    group: 'system',
+    titleMap: { 'pt-BR': 'Agentes IA', en: 'AI Agents', 'zh-CN': 'AI 智能体', 'fr-FR': 'Agents IA' },
+    Component: lazy(() => import('@/components/screens/agents').then((m) => ({ default: m.AgentsScreen }))),
+  },
   whatsapp: {
     key: 'whatsapp',
     icon: MessageCircle,
@@ -169,6 +177,7 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'documents',
   'signature',
   'agent',
+  'agents',
   'whatsapp',
   'automations',
   'integrations',
