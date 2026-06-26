@@ -1,0 +1,42 @@
+# Auronis Health — documentação para LLMs
+
+> Auronis Health é a plataforma de inteligência clínica que reduz a carga administrativa do médico, transformando a conversa da consulta em documentação estruturada. Propósito: devolver tempo ao profissional de saúde para cuidar do que importa — o paciente. Slogan: "Menos documentação. Mais medicina."
+
+## O que é
+Um escriba clínico de IA (comparável ao Ambience Healthcare, focado no Brasil). A IA chamada **Mari** escuta a consulta médica e gera automaticamente o **prontuário estruturado** e as **guias TISS** dos convênios, fechando o ciclo até a documentação pronta — não apenas a transcrição. Diferencial estratégico: **inteligência de glosa por operadora** (Unimed, Bradesco Saúde, SulAmérica, Amil…) que verifica a guia antes do envio (pré-glosa) e recupera guias negadas, quantificando o impacto financeiro em um número por mês.
+
+## Para quem
+- **Médico** (clínica particular, consultório, telemedicina): quer terminar a consulta com prontuário e documentação prontos, sem digitar.
+- **Secretária**: agenda, faturamento, documentos.
+- **Gestor de clínica**: produtividade, indicadores, equipe.
+- **Administrador**: usuários, segurança, configurações.
+
+## Como funciona
+1. **Escuta**: a Mari escuta a consulta (com consentimento do paciente; áudio criptografado).
+2. **Estrutura**: transcrição em tempo real → prontuário por seção (queixa, HMA, exame, hipóteses, conduta) com realce do que foi inferido.
+3. **Documenta**: gera guia TISS pré-preenchida e roda a verificação pré-glosa por operadora.
+4. **Exporta/Envia**: revisão e aprovação do médico (human-in-the-loop) antes de qualquer envio.
+
+## Recursos principais
+- Consulta ao vivo (consentimento, gravação, transcrição em streaming, nota montada em tempo real).
+- Prontuário eletrônico estruturado, editável por seção, com confiança por trecho.
+- Guia TISS pré-preenchida com validação pré-glosa (genérica + por operadora) e bloqueio de envio com pendências de alta severidade.
+- Copiloto "Mari" em toda tela (texto e voz), e console de operação para o dono do SaaS (MRR, churn, upsell).
+- Controle por WhatsApp (em evolução), templates por especialidade, gestão de pacientes, faturamento e glosas, BI/indicadores.
+- Impact ledger: quantifica em R$ o valor gerado (receita recuperada + glosa evitada + horas devolvidas).
+
+## Segurança e conformidade
+LGPD (e GDPR/PIPL), consentimento explícito, criptografia em trânsito e repouso, trilha de auditoria, autenticação com sessão assinada (HMAC) fail-closed, human-in-the-loop obrigatório para ações irreversíveis.
+
+## Planos
+Assinatura por médico/mês (Starter, Pro, Scale) com módulos/limites por plano.
+
+## Idiomas
+pt-BR (principal), inglês, chinês (zh-CN), francês (fr-FR) — desde o dia 1, com formatação local de datas/números/moeda e respostas da IA no idioma do usuário.
+
+## Links
+- Site: https://auronishealth.com
+- Como funciona: https://auronishealth.com/pt-BR#how
+- Recursos: https://auronishealth.com/pt-BR#features
+- Segurança: https://auronishealth.com/pt-BR#security
+- Preços: https://auronishealth.com/pt-BR#pricing
