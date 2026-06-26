@@ -17,6 +17,7 @@ import {
   Settings as SettingsIcon,
   Sparkles,
   Users,
+  Workflow,
   type LucideIcon,
 } from 'lucide-react';
 import type { ScreenKey } from '@/lib/workspace/store';
@@ -124,6 +125,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleMap: { 'pt-BR': 'WhatsApp', en: 'WhatsApp', 'zh-CN': 'WhatsApp', 'fr-FR': 'WhatsApp' },
     Component: lazy(() => import('@/components/screens/whatsapp').then((m) => ({ default: m.WhatsappScreen }))),
   },
+  automations: {
+    key: 'automations',
+    icon: Workflow,
+    group: 'system',
+    titleMap: { 'pt-BR': 'Automações', en: 'Automations', 'zh-CN': '自动化', 'fr-FR': 'Automatisations' },
+    Component: lazy(() => import('@/components/screens/automations').then((m) => ({ default: m.AutomationsScreen }))),
+  },
   integrations: {
     key: 'integrations',
     icon: Cable,
@@ -153,6 +161,7 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'documents',
   'agent',
   'whatsapp',
+  'automations',
   'integrations',
   'settings',
 ];
