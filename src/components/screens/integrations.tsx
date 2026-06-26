@@ -17,6 +17,7 @@ import { ScreenContainer, ScreenHeader, SectionTitle } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/toast';
 
 type Status = 'connected' | 'available' | 'soon';
 type CategoryKey = 'pep' | 'payers' | 'asr' | 'messaging';
@@ -51,19 +52,23 @@ function hueOf(name: string): number {
 export function IntegrationsScreen({ paneId }: { paneId: string }) {
   void paneId;
   const t = useTranslations('integrations');
+  const tf = useTranslations('feedback');
   const [connected, setConnected] = React.useState<Set<string>>(() => new Set(INITIAL_CONNECTED));
 
   const statusOf = (name: string): Status =>
     SOON.has(name) ? 'soon' : connected.has(name) ? 'connected' : 'available';
 
   const toggle = (name: string) => {
+    const willConnect = !connected.has(name);
     setConnected((prev) => {
       const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
+      if (willConnect) next.add(name);
+      else next.delete(name);
       return next;
     });
+    toast.success(willConnect ? tf('connected') : tf('disconnected'));
   };
+  const configure = () => toast.success(tf('comingSoon'));
 
   return (
     <ScreenContainer>
@@ -85,6 +90,7 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
                   name={name}
                   status={statusOf(name)}
                   onToggle={() => toggle(name)}
+                  onConfigure={configure}
                   t={t}
                 />
               ))}
@@ -100,11 +106,13 @@ function ProviderCard({
   name,
   status,
   onToggle,
+  onConfigure,
   t,
 }: {
   name: string;
   status: Status;
   onToggle: () => void;
+  onConfigure: () => void;
   t: ReturnType<typeof useTranslations>;
 }) {
   const hue = hueOf(name);
@@ -138,6 +146,7 @@ function ProviderCard({
               variant="outline"
               className="flex-1"
               leftIcon={<Settings2 className="h-3.5 w-3.5" />}
+              onClick={onConfigure}
             >
               {t('configure')}
             </Button>

@@ -32,6 +32,7 @@ import { Avatar, Switch, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
+import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
 type TabKey =
@@ -293,7 +294,7 @@ function ProfilePanel() {
       icon={User}
       title={t('tabs.profile')}
       description={localized('profileDesc', locale)}
-      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />}>{tc('actions.save')}</Button>}
+      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
     >
       <div className="flex items-center gap-4 rounded-xl border border-hairline bg-surface/60 p-4">
         <Avatar name={displayName} hue={172} size={56} />
@@ -333,7 +334,7 @@ function ClinicPanel() {
       icon={Building2}
       title={localized('clinicTitle', locale)}
       description={user.orgName}
-      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />}>{tc('actions.save')}</Button>}
+      footer={<Button leftIcon={<SettingsIcon className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={localized('clinicName', locale)}>
@@ -393,7 +394,7 @@ function UsersPanel() {
       title={t('tabs.users')}
       description={localized('subtitle', locale)}
       action={
-        <Button size="sm" leftIcon={<Plus className="h-4 w-4" />}>
+        <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>
           {t('users.invite')}
         </Button>
       }
@@ -447,6 +448,7 @@ function UsersPanel() {
 
 function SecurityPanel() {
   const t = useTranslations('settings');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [twoFactor, setTwoFactor] = React.useState(true);
   const [sso, setSso] = React.useState(false);
@@ -481,7 +483,7 @@ function SecurityPanel() {
             <p className="text-xs text-muted">{localized('activeSessions', locale)}: 1</p>
           </div>
         </div>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => toast.success(tc('states.success'))}>
           {localized('changePassword', locale)}
         </Button>
       </div>
@@ -495,6 +497,7 @@ function SecurityPanel() {
 
 function ConsentPanel() {
   const t = useTranslations('settings');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [requireConsent, setRequireConsent] = React.useState(true);
   const [retention, setRetention] = React.useState(90);
@@ -555,7 +558,7 @@ function ConsentPanel() {
           </span>
           <p className="text-sm text-muted">{t('consent.retentionDesc')}</p>
         </div>
-        <Button variant="danger" size="sm" leftIcon={<Trash2 className="h-4 w-4" />} className="shrink-0">
+        <Button variant="danger" size="sm" leftIcon={<Trash2 className="h-4 w-4" />} className="shrink-0" onClick={() => toast.success(tc('states.success'))}>
           {t('consent.purgeNow')}
         </Button>
       </div>
@@ -572,7 +575,7 @@ function LanguagePanel() {
       icon={Languages}
       title={t('tabs.language')}
       description={localized('subtitle', locale)}
-      footer={<Button leftIcon={<Globe2 className="h-4 w-4" />}>{tc('actions.save')}</Button>}
+      footer={<Button leftIcon={<Globe2 className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('language.interface')}>
@@ -653,7 +656,7 @@ function AiPanel() {
       icon={Sparkles}
       title={localized('aiTitle', locale)}
       description={localized('aiDesc', locale)}
-      footer={<Button leftIcon={<Sparkles className="h-4 w-4" />}>{tc('actions.save')}</Button>}
+      footer={<Button leftIcon={<Sparkles className="h-4 w-4" />} onClick={() => toast.success(tc('states.success'))}>{tc('actions.save')}</Button>}
     >
       <div className="flex items-center gap-4 rounded-xl border border-hairline bg-surface/60 p-4">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-600/12 text-brand-600">

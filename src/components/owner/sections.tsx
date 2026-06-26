@@ -51,6 +51,7 @@ import { Card } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { Avatar, SegmentedControl, Switch } from '@/components/ui/misc';
 import { Progress } from '@/components/ui/feedback';
+import { toast } from '@/lib/toast';
 import { cn, formatCurrency, formatDate, formatNumber, formatPercent, timeAgo } from '@/lib/utils';
 
 const L = (locale: string, pt: string, en: string, zh: string, fr: string) =>
@@ -150,6 +151,7 @@ const TENANT_TONE: Record<TenantStatus, React.ComponentProps<typeof Badge>['tone
 
 export function TenantsSection() {
   const t = useTranslations('owner.tenants');
+  const tf = useTranslations('feedback');
   const locale = useLocale();
   const { setImpersonating } = useOwner();
   const [, force] = React.useReducer((x) => x + 1, 0);
@@ -160,7 +162,7 @@ export function TenantsSection() {
       <ScreenHeader
         icon={Building2}
         title={t('title')}
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />}>{t('add')}</Button>}
+        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('add')}</Button>}
       />
       <Table>
         <thead>
@@ -233,6 +235,7 @@ export function TenantsSection() {
 export function PlansSection() {
   const t = useTranslations('owner.plans');
   const tm = useTranslations('modules');
+  const tf = useTranslations('feedback');
   const locale = useLocale();
   const plans = listPlans();
 
@@ -244,7 +247,7 @@ export function PlansSection() {
         icon={Tags}
         title={t('title')}
         subtitle={t('subtitle')}
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />}>{t('add')}</Button>}
+        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('add')}</Button>}
       />
       <div className="grid gap-4 lg:grid-cols-3">
         {plans.map((plan) => (
@@ -283,7 +286,7 @@ export function PlansSection() {
               </div>
             </div>
 
-            <Button variant="outline" className="mt-4 w-full" leftIcon={<PencilRuler className="h-4 w-4" />}>
+            <Button variant="outline" className="mt-4 w-full" leftIcon={<PencilRuler className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>
               {t('editPlan')}
             </Button>
           </Card>
@@ -299,6 +302,7 @@ const LANDING_LOCALES = ['pt-BR', 'en', 'zh-CN', 'fr-FR'];
 
 export function LandingSection() {
   const t = useTranslations('owner.landing');
+  const tf = useTranslations('feedback');
   const [sec, setSec] = React.useState<(typeof LANDING_SECTIONS)[number]>('hero');
   const [loc, setLoc] = React.useState('pt-BR');
 
@@ -310,8 +314,8 @@ export function LandingSection() {
         subtitle={t('subtitle')}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline">{t('preview')}</Button>
-            <Button leftIcon={<Send className="h-4 w-4" />}>{t('publish')}</Button>
+            <Button variant="outline" onClick={() => toast.success(tf('comingSoon'))}>{t('preview')}</Button>
+            <Button leftIcon={<Send className="h-4 w-4" />} onClick={() => toast.success(tf('published'))}>{t('publish')}</Button>
           </div>
         }
       />
@@ -582,6 +586,7 @@ export function WhatsappSection() {
 export function AccessSection() {
   const t = useTranslations('owner.access');
   const tr = useTranslations('roles');
+  const tf = useTranslations('feedback');
   const locale = useLocale();
 
   const roles = ['org_admin', 'medico', 'faturista', 'gestor', 'viewer'];
@@ -600,7 +605,7 @@ export function AccessSection() {
         icon={KeyRound}
         title={t('title')}
         subtitle={t('subtitle')}
-        actions={<Button variant="outline" leftIcon={<Plus className="h-4 w-4" />}>{t('addRole')}</Button>}
+        actions={<Button variant="outline" leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('addRole')}</Button>}
       />
       <SectionTitle>{t('matrix')}</SectionTitle>
       <Table>
