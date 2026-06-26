@@ -39,10 +39,9 @@ import {
   listTenants,
   mrrSeries,
   ownerStats,
-  setTenantStatus,
   toggleFlag,
 } from '@/lib/data/store';
-import type { AuditEntry, TenantStatus } from '@/lib/types';
+import type { AuditEntry, Plan, Tenant, TenantStatus } from '@/lib/types';
 import { useOwner } from './context';
 import { ScreenContainer, ScreenHeader, SectionTitle, StatCard, Table, Th, Td } from '@/components/screens/_kit';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +49,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { Avatar, SegmentedControl, Switch } from '@/components/ui/misc';
+import { Modal } from '@/components/ui/overlay';
 import { Progress } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { cn, formatCurrency, formatDate, formatNumber, formatPercent, timeAgo } from '@/lib/utils';
@@ -58,6 +58,9 @@ const L = (locale: string, pt: string, en: string, zh: string, fr: string) =>
   locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
 
 const usageTone = (v: number) => (v > 85 ? 'danger' : v > 60 ? 'warning' : 'brand');
+
+let __idSeq = 0;
+const uid = (prefix: string) => `${prefix}_${Date.now().toString(36)}${(__idSeq++).toString(36)}`;
 
 /* ============================== Overview ============================== */
 export function OverviewSection() {
@@ -151,18 +154,52 @@ const TENANT_TONE: Record<TenantStatus, React.ComponentProps<typeof Badge>['tone
 
 export function TenantsSection() {
   const t = useTranslations('owner.tenants');
+  const tc = useTranslations('common');
   const tf = useTranslations('feedback');
   const locale = useLocale();
   const { setImpersonating } = useOwner();
-  const [, force] = React.useReducer((x) => x + 1, 0);
-  const tenants = listTenants();
+  const plans = listPlans();
+  const [tenants, setTenants] = React.useState<Tenant[]>(() => listTenants().map((tn) => ({ ...tn })));
+
+  const [adding, setAdding] = React.useState(false);
+  const [name, setName] = React.useState('');
+  const [planId, setPlanId] = React.useState(plans[0]?.id ?? '');
+
+  const addTenant = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const plan = plans.find((p) => p.id === planId);
+    setTenants((list) => [
+      {
+        id: uid('ten'),
+        name: trimmed,
+        planId: planId || plans[0]?.id || '',
+        doctors: 1,
+        usagePct: 0,
+        mrr: plan?.price ?? 0,
+        status: 'trial',
+        locale: 'pt-BR',
+        createdAt: new Date().toISOString(),
+      },
+      ...list,
+    ]);
+    setAdding(false);
+    setName('');
+    setPlanId(plans[0]?.id ?? '');
+    toast.success(tf('added'));
+  };
+
+  const toggleStatus = (tid: string) =>
+    setTenants((list) =>
+      list.map((x) => (x.id === tid ? { ...x, status: x.status === 'suspended' ? 'active' : 'suspended' } : x)),
+    );
 
   return (
     <ScreenContainer>
       <ScreenHeader
         icon={Building2}
         title={t('title')}
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('add')}</Button>}
+        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setAdding(true)}>{t('add')}</Button>}
       />
       <Table>
         <thead>
@@ -211,14 +248,7 @@ export function TenantsSection() {
                   >
                     {t('impersonate')}
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setTenantStatus(tn.id, tn.status === 'suspended' ? 'active' : 'suspended');
-                      force();
-                    }}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => toggleStatus(tn.id)}>
                     {tn.status === 'suspended' ? t('activate') : t('suspend')}
                   </Button>
                 </div>
@@ -227,6 +257,48 @@ export function TenantsSection() {
           ))}
         </tbody>
       </Table>
+
+      <Modal
+        open={adding}
+        onClose={() => setAdding(false)}
+        title={t('add')}
+        description={L(
+          locale,
+          'Crie uma nova organização no seu workspace.',
+          'Create a new organization in your workspace.',
+          '在你的工作区中创建一个新组织。',
+          'Créez une nouvelle organisation dans votre espace.',
+        )}
+        size="sm"
+      >
+        <div className="space-y-4 p-5">
+          <Field label={t('columns.name')}>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
+              placeholder={L(locale, 'Clínica Aurora', 'Aurora Clinic', '极光诊所', 'Clinique Aurora')}
+            />
+          </Field>
+          <Field label={t('columns.plan')}>
+            <Select value={planId} onChange={(e) => setPlanId(e.target.value)}>
+              {plans.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </div>
+        <div className="flex justify-end gap-2 border-t border-hairline p-4">
+          <Button variant="outline" onClick={() => setAdding(false)}>
+            {tc('actions.cancel')}
+          </Button>
+          <Button onClick={addTenant} disabled={!name.trim()}>
+            {tc('actions.create')}
+          </Button>
+        </div>
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -234,12 +306,52 @@ export function TenantsSection() {
 /* ============================== Plans ============================== */
 export function PlansSection() {
   const t = useTranslations('owner.plans');
+  const tc = useTranslations('common');
   const tm = useTranslations('modules');
   const tf = useTranslations('feedback');
   const locale = useLocale();
-  const plans = listPlans();
+  const [plans, setPlans] = React.useState<Plan[]>(() =>
+    listPlans().map((p) => ({ ...p, quotas: { ...p.quotas }, modules: [...p.modules] })),
+  );
+  const [draft, setDraft] = React.useState<Plan | null>(null);
+  const [isNew, setIsNew] = React.useState(false);
 
   const quota = (v: number | 'unlimited') => (v === 'unlimited' ? '∞' : formatNumber(v, locale));
+  const quotaIn = (v: number | 'unlimited') => (v === 'unlimited' ? '∞' : String(v));
+  const quotaOut = (s: string): number | 'unlimited' => {
+    const raw = s.trim();
+    if (raw === '' || raw === '∞' || /unlim|ilim/i.test(raw)) return 'unlimited';
+    const n = Number(raw.replace(/[^\d]/g, ''));
+    return Number.isFinite(n) ? n : 'unlimited';
+  };
+
+  const openAdd = () => {
+    setIsNew(true);
+    setDraft({
+      id: uid('plan'),
+      name: '',
+      price: 0,
+      currency: 'BRL',
+      modules: ['encounters', 'clinical-notes', 'copilot'],
+      quotas: { doctors: 5, minutes: 2000, whatsapp: false },
+      featureKeys: [],
+    });
+  };
+  const openEdit = (plan: Plan) => {
+    setIsNew(false);
+    setDraft({ ...plan, quotas: { ...plan.quotas }, modules: [...plan.modules] });
+  };
+  const save = () => {
+    if (!draft || !draft.name.trim()) return;
+    const next: Plan = { ...draft, name: draft.name.trim() };
+    setPlans((list) => (isNew ? [...list, next] : list.map((p) => (p.id === next.id ? next : p))));
+    setDraft(null);
+    toast.success(isNew ? tf('added') : tf('saved'));
+  };
+  const toggleModule = (m: string) =>
+    setDraft((d) =>
+      d ? { ...d, modules: d.modules.includes(m) ? d.modules.filter((x) => x !== m) : [...d.modules, m] } : d,
+    );
 
   return (
     <ScreenContainer>
@@ -247,7 +359,7 @@ export function PlansSection() {
         icon={Tags}
         title={t('title')}
         subtitle={t('subtitle')}
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('add')}</Button>}
+        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={openAdd}>{t('add')}</Button>}
       />
       <div className="grid gap-4 lg:grid-cols-3">
         {plans.map((plan) => (
@@ -286,12 +398,96 @@ export function PlansSection() {
               </div>
             </div>
 
-            <Button variant="outline" className="mt-4 w-full" leftIcon={<PencilRuler className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>
+            <Button variant="outline" className="mt-4 w-full" leftIcon={<PencilRuler className="h-4 w-4" />} onClick={() => openEdit(plan)}>
               {t('editPlan')}
             </Button>
           </Card>
         ))}
       </div>
+
+      <Modal
+        open={!!draft}
+        onClose={() => setDraft(null)}
+        title={isNew ? t('add') : t('editPlan')}
+        description={L(
+          locale,
+          'Defina preço, limites e os módulos liberados.',
+          'Set price, limits and the unlocked modules.',
+          '设置价格、限额以及解锁的模块。',
+          'Définissez le prix, les limites et les modules débloqués.',
+        )}
+      >
+        {draft && (
+          <>
+            <div className="space-y-4 p-5">
+              <Field label={L(locale, 'Nome do plano', 'Plan name', '套餐名称', 'Nom de l’offre')}>
+                <Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} autoFocus />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={t('price')}>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={draft.price}
+                    onChange={(e) => setDraft({ ...draft, price: Number(e.target.value) || 0 })}
+                  />
+                </Field>
+                <Field label={t('quotaDoctors')}>
+                  <Input
+                    value={quotaIn(draft.quotas.doctors)}
+                    onChange={(e) => setDraft({ ...draft, quotas: { ...draft.quotas, doctors: quotaOut(e.target.value) } })}
+                  />
+                </Field>
+              </div>
+              <Field label={t('quotaMinutes')}>
+                <Input
+                  value={quotaIn(draft.quotas.minutes)}
+                  onChange={(e) => setDraft({ ...draft, quotas: { ...draft.quotas, minutes: quotaOut(e.target.value) } })}
+                />
+              </Field>
+              <label className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
+                <span className="text-sm">{t('quotaWhatsapp')}</span>
+                <Switch
+                  checked={draft.quotas.whatsapp}
+                  onChange={(v) => setDraft({ ...draft, quotas: { ...draft.quotas, whatsapp: v } })}
+                />
+              </label>
+              <div>
+                <p className="mb-2 text-[0.8125rem] font-medium text-ink/90">{t('modules')}</p>
+                <div className="flex flex-wrap gap-2">
+                  {ALL_MODULE_KEYS.map((m) => {
+                    const on = draft.modules.includes(m);
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => toggleModule(m)}
+                        className={cn(
+                          'inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-2xs transition-colors',
+                          on
+                            ? 'border-brand-500/40 bg-brand-600/10 text-brand-700 dark:text-brand-300'
+                            : 'border-hairline text-muted',
+                        )}
+                      >
+                        {on && <Check className="h-3 w-3" />}
+                        {tm(m as 'tiss')}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 border-t border-hairline p-4">
+              <Button variant="outline" onClick={() => setDraft(null)}>
+                {tc('actions.cancel')}
+              </Button>
+              <Button onClick={save} disabled={!draft.name.trim()}>
+                {isNew ? tc('actions.create') : t('save')}
+              </Button>
+            </div>
+          </>
+        )}
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -303,8 +499,20 @@ const LANDING_LOCALES = ['pt-BR', 'en', 'zh-CN', 'fr-FR'];
 export function LandingSection() {
   const t = useTranslations('owner.landing');
   const tf = useTranslations('feedback');
+  const locale = useLocale();
   const [sec, setSec] = React.useState<(typeof LANDING_SECTIONS)[number]>('hero');
   const [loc, setLoc] = React.useState('pt-BR');
+  const [title, setTitle] = React.useState(`${'hero'} · pt-BR`);
+  const [subtitle, setSubtitle] = React.useState('');
+  const [cta, setCta] = React.useState('');
+  const [preview, setPreview] = React.useState(false);
+
+  // Reset the editable copy when switching section or language (mirrors the old per-field reset).
+  React.useEffect(() => {
+    setTitle(`${sec} · ${loc}`);
+    setSubtitle('');
+    setCta('');
+  }, [sec, loc]);
 
   return (
     <ScreenContainer>
@@ -314,7 +522,7 @@ export function LandingSection() {
         subtitle={t('subtitle')}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => toast.success(tf('comingSoon'))}>{t('preview')}</Button>
+            <Button variant="outline" onClick={() => setPreview(true)}>{t('preview')}</Button>
             <Button leftIcon={<Send className="h-4 w-4" />} onClick={() => toast.success(tf('published'))}>{t('publish')}</Button>
           </div>
         }
@@ -356,18 +564,37 @@ export function LandingSection() {
           </div>
           <div className="space-y-4">
             <Field label={t('fields.title')}>
-              <Input key={`${sec}-${loc}-t`} defaultValue={`${sec} · ${loc}`} />
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>
             <Field label={t('fields.subtitle')}>
-              <Textarea key={`${sec}-${loc}-s`} defaultValue="" placeholder="…" />
+              <Textarea value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="…" />
             </Field>
             <Field label={t('fields.cta')}>
-              <Input key={`${sec}-${loc}-c`} defaultValue="" placeholder="…" />
+              <Input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="…" />
             </Field>
             <p className="text-2xs text-muted">{t('savedNote')}</p>
           </div>
         </Card>
       </div>
+
+      <Modal
+        open={preview}
+        onClose={() => setPreview(false)}
+        title={t('preview')}
+        description={`${t(`sections.${sec}` as 'sections.hero')} · ${loc}`}
+      >
+        <div className="p-5">
+          <div className="rounded-xl border border-hairline bg-gradient-to-b from-surface/80 to-card p-8 text-center">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
+              {title || t(`sections.${sec}` as 'sections.hero')}
+            </h2>
+            {subtitle && <p className="mx-auto mt-3 max-w-md text-sm text-muted">{subtitle}</p>}
+            <div className="mt-6">
+              <Button>{cta || L(locale, 'Começar agora', 'Get started', '立即开始', 'Commencer')}</Button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -585,11 +812,12 @@ export function WhatsappSection() {
 /* ============================== Access matrix ============================== */
 export function AccessSection() {
   const t = useTranslations('owner.access');
+  const tc = useTranslations('common');
   const tr = useTranslations('roles');
   const tf = useTranslations('feedback');
   const locale = useLocale();
 
-  const roles = ['org_admin', 'medico', 'faturista', 'gestor', 'viewer'];
+  const baseRoles = ['org_admin', 'medico', 'faturista', 'gestor', 'viewer'];
   const perms = [
     { key: 'view', label: L(locale, 'Ver dados', 'View data', '查看数据', 'Voir les données'), allow: [true, true, true, true, true] },
     { key: 'act', label: L(locale, 'Executar ação', 'Run action', '执行操作', 'Exécuter une action'), allow: [true, true, true, true, false] },
@@ -599,22 +827,44 @@ export function AccessSection() {
     { key: 'ai', label: L(locale, 'Configurar IA/WhatsApp', 'Configure AI/WhatsApp', '配置 AI/WhatsApp', 'Configurer IA/WhatsApp'), allow: [true, false, false, false, false] },
   ];
 
+  const [customRoles, setCustomRoles] = React.useState<{ key: string; label: string; allowed: string[] }[]>([]);
+  const [adding, setAdding] = React.useState(false);
+  const [roleName, setRoleName] = React.useState('');
+  const [sel, setSel] = React.useState<string[]>([]);
+
+  const togglePerm = (k: string) => setSel((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
+
+  const addRole = () => {
+    const trimmed = roleName.trim();
+    if (!trimmed) return;
+    setCustomRoles((list) => [...list, { key: uid('role'), label: trimmed, allowed: sel }]);
+    setAdding(false);
+    setRoleName('');
+    setSel([]);
+    toast.success(tf('added'));
+  };
+
   return (
     <ScreenContainer>
       <ScreenHeader
         icon={KeyRound}
         title={t('title')}
         subtitle={t('subtitle')}
-        actions={<Button variant="outline" leftIcon={<Plus className="h-4 w-4" />} onClick={() => toast.success(tf('comingSoon'))}>{t('addRole')}</Button>}
+        actions={<Button variant="outline" leftIcon={<Plus className="h-4 w-4" />} onClick={() => setAdding(true)}>{t('addRole')}</Button>}
       />
       <SectionTitle>{t('matrix')}</SectionTitle>
       <Table>
         <thead>
           <tr>
             <Th>{t('permission')}</Th>
-            {roles.map((r) => (
+            {baseRoles.map((r) => (
               <Th key={r} className="text-center">
                 {tr(r as 'medico')}
+              </Th>
+            ))}
+            {customRoles.map((r) => (
+              <Th key={r.key} className="text-center">
+                {r.label}
               </Th>
             ))}
           </tr>
@@ -632,10 +882,75 @@ export function AccessSection() {
                   )}
                 </Td>
               ))}
+              {customRoles.map((r) => (
+                <Td key={r.key} className="text-center">
+                  {r.allowed.includes(p.key) ? (
+                    <Check className="mx-auto h-4 w-4 text-success" />
+                  ) : (
+                    <Minus className="mx-auto h-4 w-4 text-subtle/50" />
+                  )}
+                </Td>
+              ))}
             </tr>
           ))}
         </tbody>
       </Table>
+
+      <Modal
+        open={adding}
+        onClose={() => setAdding(false)}
+        title={t('addRole')}
+        description={L(
+          locale,
+          'Defina o nome e as permissões iniciais do papel.',
+          'Set the name and starting permissions for the role.',
+          '设置角色的名称和初始权限。',
+          'Définissez le nom et les permissions initiales du rôle.',
+        )}
+      >
+        <div className="space-y-4 p-5">
+          <Field label={t('role')}>
+            <Input
+              value={roleName}
+              onChange={(e) => setRoleName(e.target.value)}
+              autoFocus
+              placeholder={L(locale, 'Ex.: Auditor', 'e.g. Auditor', '例如：审计员', 'p. ex. Auditeur')}
+            />
+          </Field>
+          <div>
+            <p className="mb-2 text-[0.8125rem] font-medium text-ink/90">{t('permission')}</p>
+            <div className="space-y-2">
+              {perms.map((p) => {
+                const on = sel.includes(p.key);
+                return (
+                  <button
+                    key={p.key}
+                    type="button"
+                    onClick={() => togglePerm(p.key)}
+                    className={cn(
+                      'flex w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition-colors',
+                      on
+                        ? 'border-brand-500/40 bg-brand-600/10 text-brand-700 dark:text-brand-300'
+                        : 'border-hairline text-muted',
+                    )}
+                  >
+                    <span>{p.label}</span>
+                    {on && <Check className="h-4 w-4" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end gap-2 border-t border-hairline p-4">
+          <Button variant="outline" onClick={() => setAdding(false)}>
+            {tc('actions.cancel')}
+          </Button>
+          <Button onClick={addRole} disabled={!roleName.trim()}>
+            {tc('actions.create')}
+          </Button>
+        </div>
+      </Modal>
     </ScreenContainer>
   );
 }

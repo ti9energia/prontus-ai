@@ -77,6 +77,10 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const [check, setCheck] = React.useState<
     { score: number; ready: boolean; issues: TissGuide['issues']; payer?: string } | null
   >(null);
+  const [addProcOpen, setAddProcOpen] = React.useState(false);
+  const [proc, setProc] = React.useState({ code: '', description: '', qty: 1, value: 0 });
+  const [addDiagOpen, setAddDiagOpen] = React.useState(false);
+  const [diag, setDiag] = React.useState({ code: '', label: '' });
 
   if (!guide) {
     return (
@@ -139,7 +143,33 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
     force();
     toast.success(tf('removed'));
   };
-  const comingSoon = () => toast.success(tf('comingSoon'));
+
+  const addProcedure = () => {
+    if (!proc.code.trim()) return;
+    guide.procedures.push({
+      code: proc.code.trim(),
+      description: proc.description.trim() || proc.code.trim(),
+      qty: Math.max(1, Number(proc.qty) || 1),
+      value: Math.max(0, Number(proc.value) || 0),
+    });
+    guide.value = guide.procedures.reduce((s, p) => s + p.value * p.qty, 0);
+    setAddProcOpen(false);
+    setProc({ code: '', description: '', qty: 1, value: 0 });
+    force();
+    toast.success(tf('added'));
+  };
+
+  const addDiagnosis = () => {
+    if (!diag.code.trim()) return;
+    guide.diagnoses.push({
+      code: diag.code.trim().toUpperCase(),
+      label: diag.label.trim() || diag.code.trim().toUpperCase(),
+    });
+    setAddDiagOpen(false);
+    setDiag({ code: '', label: '' });
+    force();
+    toast.success(tf('added'));
+  };
 
   // Ask Mari to run the pre-denial (pré-glosa) check on this guide.
   const runPreGlosa = async () => {
@@ -253,7 +283,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <div>
             <SectionTitle
               action={
-                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={comingSoon}>
+                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => setAddProcOpen(true)}>
                   {t('addProcedure')}
                 </Button>
               }
@@ -304,7 +334,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <div>
             <SectionTitle
               action={
-                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={comingSoon}>
+                <Button variant="ghost" size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => setAddDiagOpen(true)}>
                   {t('addDiagnosis')}
                 </Button>
               }
@@ -397,6 +427,77 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           <Button leftIcon={<Send className="h-4 w-4" />} onClick={doSubmit}>
             {t('submit')}
           </Button>
+        </div>
+      </Modal>
+
+      {/* add procedure */}
+      <Modal open={addProcOpen} onClose={() => setAddProcOpen(false)} title={t('addProcedure')}>
+        <div className="flex flex-col gap-4 p-5">
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={t('procedureCode')}>
+              <Input
+                value={proc.code}
+                onChange={(e) => setProc((p) => ({ ...p, code: e.target.value }))}
+                className="font-mono"
+                autoFocus
+                placeholder="10101012"
+              />
+            </Field>
+            <Field label={t('qty')}>
+              <Input
+                type="number"
+                min={1}
+                value={proc.qty}
+                onChange={(e) => setProc((p) => ({ ...p, qty: Number(e.target.value) }))}
+              />
+            </Field>
+          </div>
+          <Field label={t('procedureDesc')}>
+            <Input value={proc.description} onChange={(e) => setProc((p) => ({ ...p, description: e.target.value }))} />
+          </Field>
+          <Field label={tb('value')}>
+            <Input
+              type="number"
+              min={0}
+              step="0.01"
+              value={proc.value}
+              onChange={(e) => setProc((p) => ({ ...p, value: Number(e.target.value) }))}
+            />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setAddProcOpen(false)}>
+              {tc('cancel')}
+            </Button>
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={addProcedure} disabled={!proc.code.trim()}>
+              {t('addProcedure')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* add diagnosis */}
+      <Modal open={addDiagOpen} onClose={() => setAddDiagOpen(false)} title={t('addDiagnosis')}>
+        <div className="flex flex-col gap-4 p-5">
+          <Field label="CID-10">
+            <Input
+              value={diag.code}
+              onChange={(e) => setDiag((d) => ({ ...d, code: e.target.value }))}
+              className="font-mono uppercase"
+              autoFocus
+              placeholder="J45"
+            />
+          </Field>
+          <Field label={t('procedureDesc')}>
+            <Input value={diag.label} onChange={(e) => setDiag((d) => ({ ...d, label: e.target.value }))} placeholder="Asma" />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setAddDiagOpen(false)}>
+              {tc('cancel')}
+            </Button>
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={addDiagnosis} disabled={!diag.code.trim()}>
+              {t('addDiagnosis')}
+            </Button>
+          </div>
         </div>
       </Modal>
     </ScreenContainer>
