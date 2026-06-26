@@ -107,9 +107,11 @@ export function MariFace({
         <circle cx="42.8" cy="46.4" r="0.8" fill="#fff" />
         <circle cx="54.8" cy="46.4" r="0.8" fill="#fff" />
 
-        {/* nose + warm smile */}
+        {/* nose */}
         <path d="M47.6 48.8q1 2 .3 3.3" stroke="#e3a684" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-        <path d="M43 55.6q5 4.4 10 0" stroke="#c4685a" strokeWidth="1.9" fill="none" strokeLinecap="round" />
+        {/* full soft-pink lips + gentle smile */}
+        <path d="M43.4 54.8q4.6 1.5 9.2 0q-1.7 3.8-4.6 3.8q-2.9 0-4.6-3.8Z" fill="#e88f98" opacity="0.6" />
+        <path d="M43.4 54.8q4.6 1.5 9.2 0" stroke="#cf6f7b" strokeWidth="1.1" fill="none" strokeLinecap="round" />
 
         {/* blush */}
         <ellipse cx="37.5" cy="52.6" rx="2.5" ry="1.7" fill="#f59a93" opacity="0.38" />

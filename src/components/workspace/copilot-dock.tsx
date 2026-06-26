@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { ArrowUp, Mic, ShieldCheck, Volume2, VolumeX, X } from 'lucide-react';
 import { Sheet } from '@/components/ui/overlay';
-import { MariFace } from '@/components/brand/mari';
+import { MariPortrait } from '@/components/brand/mari';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import type { ScreenKey } from '@/lib/workspace/store';
 import { cn } from '@/lib/utils';
@@ -106,7 +106,7 @@ export function CopilotDock({
         <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
           <div className="flex min-w-0 items-center gap-2.5">
             <div className={cn('relative shrink-0 rounded-full transition-shadow', speaking && 'shadow-glow')}>
-              <MariFace size={40} />
+              <MariPortrait size={40} />
               {(speaking || listening) && (
                 <span className="absolute -bottom-0.5 -right-0.5 flex items-end gap-px rounded-full bg-card px-1 py-0.5 shadow-sm">
                   {[0, 1, 2].map((i) => (
@@ -156,7 +156,7 @@ export function CopilotDock({
         >
           {chat.map((m, i) => (
             <div key={i} className={cn('flex items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
-              {m.role === 'assistant' && <MariFace size={26} className="mb-0.5 shrink-0" rim={false} />}
+              {m.role === 'assistant' && <MariPortrait size={26} className="mb-0.5 shrink-0" rim={false} />}
               <div
                 className={cn(
                   'max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
@@ -171,7 +171,7 @@ export function CopilotDock({
           ))}
           {loading && (
             <div className="flex items-end gap-2">
-              <MariFace size={26} className="mb-0.5 shrink-0" rim={false} />
+              <MariPortrait size={26} className="mb-0.5 shrink-0" rim={false} />
               <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-ink/[0.05] px-3.5 py-3">
                 {[0, 1, 2].map((d) => (
                   <span
