@@ -13,6 +13,8 @@ import type {
   Tenant,
   TissGuide,
   Template,
+  User,
+  RoleKey,
 } from '../types';
 
 /* ============================================================
@@ -32,6 +34,7 @@ interface DB {
   tenants: Tenant[];
   plans: Plan[];
   flags: FeatureFlag[];
+  users: User[];
 }
 
 export const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
@@ -242,6 +245,32 @@ function seedTenants(): Tenant[] {
   }));
 }
 
+function seedUsers(): User[] {
+  const mk = (id_: string, orgId: string, name: string, email: string, roleKey: RoleKey): User => ({
+    id: id_,
+    orgId,
+    name,
+    email,
+    roleKey,
+    status: 'active',
+    locale: 'pt-BR',
+    createdAt: daysAgo(30),
+  });
+  return [
+    mk('usr_owner', 'platform', 'Owner', 'owner@auronishealth.com', 'owner'),
+    // Clínica Aurora (ten_0001)
+    mk('usr_doc_1', 'ten_0001', 'Dra. Helena Vasconcelos', 'helena@clinicaaurora.com.br', 'medico'),
+    mk('usr_fat_1', 'ten_0001', 'Patrícia Lopes', 'patricia@clinicaaurora.com.br', 'faturista'),
+    mk('usr_ges_1', 'ten_0001', 'Ricardo Alves', 'ricardo@clinicaaurora.com.br', 'gestor'),
+    mk('usr_vie_1', 'ten_0001', 'Camila Duarte', 'camila@clinicaaurora.com.br', 'viewer'),
+    // Hospital São Lucas (ten_0002) — multi-doctor org for the hospital login (Block 5)
+    mk('usr_adm_2', 'ten_0002', 'Dr. Admin Hospital', 'admin@saolucas.com.br', 'org_admin'),
+    mk('usr_doc_2a', 'ten_0002', 'Dr. Paulo Restrepo', 'paulo@saolucas.com.br', 'medico'),
+    mk('usr_doc_2b', 'ten_0002', 'Dra. Sônia Maia', 'sonia@saolucas.com.br', 'medico'),
+    mk('usr_fat_2', 'ten_0002', 'Equipe Faturamento', 'faturamento@saolucas.com.br', 'faturista'),
+  ];
+}
+
 const ALL_MODULES = [
   'encounters',
   'transcription',
@@ -342,6 +371,7 @@ function seed(): DB {
     tenants: seedTenants(),
     plans: seedPlans(),
     flags: seedFlags(),
+    users: seedUsers(),
   };
 }
 
@@ -788,6 +818,17 @@ export function ownerInsights() {
   const upsell = tenants.filter((t) => t.planId !== 'plan_scale' && t.usagePct >= 80);
   const highUsage = [...tenants].sort((a, b) => b.usagePct - a.usagePct).slice(0, 3);
   return { stats, atRisk, trials, upsell, highUsage, tenantCount: tenants.length };
+}
+
+export function listUsers() {
+  return db().users;
+}
+export function getUserByEmail(email: string): User | undefined {
+  const e = email.trim().toLowerCase();
+  return db().users.find((u) => u.email.toLowerCase() === e);
+}
+export function listOrgUsers(orgId: string) {
+  return db().users.filter((u) => u.orgId === orgId);
 }
 
 export function listTenants() {

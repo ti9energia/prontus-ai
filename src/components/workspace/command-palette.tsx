@@ -37,7 +37,7 @@ export function CommandPalette({
     return def.titleMap?.[locale] ?? (def.titleKey ? t(def.titleKey) : key);
   };
 
-  const screenItems: Item[] = SCREEN_ORDER.filter(isScreenVisible).map((k) => ({
+  const screenItems: Item[] = SCREEN_ORDER.filter((k) => isScreenVisible(k)).map((k) => ({
     kind: 'screen',
     key: k,
     label: title(k),
