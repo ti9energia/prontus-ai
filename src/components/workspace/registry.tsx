@@ -18,6 +18,7 @@ import {
   ReceiptText,
   Settings as SettingsIcon,
   Sparkles,
+  Store,
   Users,
   Workflow,
   type LucideIcon,
@@ -155,6 +156,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleKey: 'nav.integrations',
     Component: lazy(() => import('@/components/screens/integrations').then((m) => ({ default: m.IntegrationsScreen }))),
   },
+  marketplace: {
+    key: 'marketplace',
+    icon: Store,
+    group: 'system',
+    titleMap: { 'pt-BR': 'Marketplace', en: 'Marketplace', 'zh-CN': '应用市场', 'fr-FR': 'Marketplace' },
+    Component: lazy(() => import('@/components/screens/marketplace').then((m) => ({ default: m.MarketplaceScreen }))),
+  },
   settings: {
     key: 'settings',
     icon: SettingsIcon,
@@ -181,6 +189,7 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'whatsapp',
   'automations',
   'integrations',
+  'marketplace',
   'settings',
 ];
 
