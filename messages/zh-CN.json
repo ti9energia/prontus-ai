@@ -1,4 +1,34 @@
 {
+  "documents": {
+    "title": "文档",
+    "subtitle": "生成处方、病假条、转诊单等——由专业人员签署。",
+    "new": "新建文档",
+    "generate": "生成",
+    "view": "查看",
+    "download": "下载 PDF",
+    "content": "内容",
+    "contentHint": "留空则使用默认模板。",
+    "signedBy": "签署人 {name} · {council}",
+    "types": {
+      "receita": "处方",
+      "atestado": "病假条",
+      "encaminhamento": "转诊单",
+      "declaracao": "声明",
+      "relatorio": "报告",
+      "pedidoExame": "检查申请",
+      "termo": "知情同意书"
+    },
+    "columns": { "type": "类型", "patient": "患者", "date": "日期", "actions": "操作" },
+    "placeholders": {
+      "receita": "药物、剂量、用法与疗程。",
+      "atestado": "因健康原因请假及期限。",
+      "encaminhamento": "转诊科室与原因。",
+      "declaracao": "就诊证明。",
+      "relatorio": "患者临床报告。",
+      "pedidoExame": "申请的检查及理由。",
+      "termo": "知情同意书。"
+    }
+  },
   "feedback": {
     "saved": "更改已保存",
     "added": "添加成功",

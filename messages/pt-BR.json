@@ -1,4 +1,34 @@
 {
+  "documents": {
+    "title": "Documentos",
+    "subtitle": "Gere receitas, atestados, encaminhamentos e mais — assinados pelo profissional.",
+    "new": "Novo documento",
+    "generate": "Gerar",
+    "view": "Visualizar",
+    "download": "Baixar PDF",
+    "content": "Conteúdo",
+    "contentHint": "Deixe em branco para usar um modelo padrão.",
+    "signedBy": "Assinado por {name} · {council}",
+    "types": {
+      "receita": "Receita",
+      "atestado": "Atestado",
+      "encaminhamento": "Encaminhamento",
+      "declaracao": "Declaração",
+      "relatorio": "Relatório",
+      "pedidoExame": "Pedido de exame",
+      "termo": "Termo de consentimento"
+    },
+    "columns": { "type": "Tipo", "patient": "Paciente", "date": "Data", "actions": "Ações" },
+    "placeholders": {
+      "receita": "Medicamento, dose, posologia e duração.",
+      "atestado": "Afastamento e período por motivo de saúde.",
+      "encaminhamento": "Especialidade e motivo do encaminhamento.",
+      "declaracao": "Declaração de comparecimento à consulta.",
+      "relatorio": "Relatório clínico do paciente.",
+      "pedidoExame": "Exames solicitados e justificativa.",
+      "termo": "Termo de consentimento informado."
+    }
+  },
   "feedback": {
     "saved": "Alterações salvas",
     "added": "Adicionado com sucesso",

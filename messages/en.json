@@ -1,4 +1,34 @@
 {
+  "documents": {
+    "title": "Documents",
+    "subtitle": "Generate prescriptions, sick notes, referrals and more — signed by the professional.",
+    "new": "New document",
+    "generate": "Generate",
+    "view": "View",
+    "download": "Download PDF",
+    "content": "Content",
+    "contentHint": "Leave blank to use a default template.",
+    "signedBy": "Signed by {name} · {council}",
+    "types": {
+      "receita": "Prescription",
+      "atestado": "Sick note",
+      "encaminhamento": "Referral",
+      "declaracao": "Declaration",
+      "relatorio": "Report",
+      "pedidoExame": "Lab request",
+      "termo": "Consent form"
+    },
+    "columns": { "type": "Type", "patient": "Patient", "date": "Date", "actions": "Actions" },
+    "placeholders": {
+      "receita": "Medication, dose, posology and duration.",
+      "atestado": "Leave and period for health reasons.",
+      "encaminhamento": "Specialty and reason for the referral.",
+      "declaracao": "Declaration of attendance.",
+      "relatorio": "Clinical report of the patient.",
+      "pedidoExame": "Requested exams and justification.",
+      "termo": "Informed consent form."
+    }
+  },
   "feedback": {
     "saved": "Changes saved",
     "added": "Added successfully",
