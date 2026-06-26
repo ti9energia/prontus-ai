@@ -16,7 +16,8 @@ export type ScreenKey =
   | 'settings'
   | 'agent'
   | 'whatsapp'
-  | 'documents';
+  | 'documents'
+  | 'automations';
 
 export interface Tab {
   id: string;
