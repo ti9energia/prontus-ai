@@ -106,13 +106,21 @@ export interface TissGuide {
   glossReasonKey?: string;
   issues: TissIssue[];
   createdAt: string;
+  /** Whether this guide is the app-generated one or the pre-configured per-payer standard. */
+  source?: 'standard' | 'generated';
 }
 
 export interface Template {
   id: string;
   specialtyKey: string;
+  /** Payer/convênio this standard template targets (guide templates only). */
+  payer?: string;
+  /** 'note' = clinical-note template (default), 'guide' = standard TISS guide per payer. */
+  kind?: 'note' | 'guide';
   locale: Locale;
   sectionKeys: NoteSectionKey[];
+  /** Pre-configured procedures for a standard guide template. */
+  procedures?: TissProcedure[];
   usedCount: number;
   isDefault: boolean;
 }
