@@ -31,6 +31,9 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
       <Aurora />
+      {/* Readability scrim: solid bg under the copy column, fading to clear on the
+          right so the ambient DNA + product preview still breathe. */}
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-bg via-bg/70 to-transparent" />
       <div className="container-page relative">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* copy */}

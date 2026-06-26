@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   Cable,
   Plug,
-  Check,
   Settings2,
   HeartPulse,
   ShieldCheck,
@@ -21,7 +20,7 @@ import { Field, Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
 
-type Status = 'connected' | 'available' | 'soon';
+type Status = 'connected' | 'available';
 type CategoryKey = 'pep' | 'payers' | 'asr' | 'messaging';
 
 const CATEGORIES: { key: CategoryKey; icon: LucideIcon; providers: string[] }[] = [
@@ -36,12 +35,10 @@ const CATEGORIES: { key: CategoryKey; icon: LucideIcon; providers: string[] }[] 
 ];
 
 const INITIAL_CONNECTED = new Set(['Auronis ASR', 'Unimed', 'WhatsApp Business']);
-const SOON = new Set(['Telegram', 'Google Speech']);
 
 const STATUS_TONE: Record<Status, React.ComponentProps<typeof Badge>['tone']> = {
   connected: 'success',
   available: 'neutral',
-  soon: 'warning',
 };
 
 /** Deterministic hue from the provider name, so each logo tile gets a stable color. */
@@ -62,7 +59,7 @@ export function IntegrationsScreen({ paneId }: { paneId: string }) {
   const [configuring, setConfiguring] = React.useState<string | null>(null);
 
   const statusOf = (name: string): Status =>
-    SOON.has(name) ? 'soon' : connected.has(name) ? 'connected' : 'available';
+    connected.has(name) ? 'connected' : 'available';
 
   const toggle = (name: string) => {
     const willConnect = !connected.has(name);
@@ -196,11 +193,6 @@ function ProviderCard({
             onClick={onToggle}
           >
             {t('connect')}
-          </Button>
-        )}
-        {status === 'soon' && (
-          <Button size="sm" variant="subtle" className="flex-1" disabled leftIcon={<Check className="h-3.5 w-3.5" />}>
-            {t('status.soon')}
           </Button>
         )}
       </div>

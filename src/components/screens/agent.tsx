@@ -15,6 +15,7 @@ import {
   RefreshCw,
   FileWarning,
   FileText,
+  SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react';
 import { agentRecommendations } from '@/lib/data/store';
@@ -106,6 +107,9 @@ export function AgentScreen({ paneId }: { paneId: string }) {
 
   const dismiss = (id: string) => setItems((prev) => prev.filter((r) => r.id !== id));
 
+  const adjust = (id: string, patch: Partial<AgentRecommendation>) =>
+    setItems((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+
   const review = (rec: AgentRecommendation) => {
     if (rec.encounterId) openTab('review', { id: rec.encounterId }, { paneId });
     else if (rec.guideId) openTab('billing', undefined, { paneId });
@@ -171,6 +175,7 @@ export function AgentScreen({ paneId }: { paneId: string }) {
               onApply={() => apply(rec)}
               onDismiss={() => dismiss(rec.id)}
               onReview={() => review(rec)}
+              onAdjust={(patch) => adjust(rec.id, patch)}
             />
           ))}
         </div>
@@ -186,6 +191,7 @@ function RecommendationCard({
   onApply,
   onDismiss,
   onReview,
+  onAdjust,
 }: {
   rec: AgentRecommendation;
   locale: string;
@@ -193,11 +199,28 @@ function RecommendationCard({
   onApply: () => void;
   onDismiss: () => void;
   onReview: () => void;
+  onAdjust: (patch: Partial<AgentRecommendation>) => void;
 }) {
   const [showWhy, setShowWhy] = React.useState(false);
+  const [adjusting, setAdjusting] = React.useState(false);
+  const [impactDraft, setImpactDraft] = React.useState(String(rec.impact));
+  const [noteDraft, setNoteDraft] = React.useState('');
+  const [savedNote, setSavedNote] = React.useState('');
   const meta = CATEGORY_META[rec.category];
   const CatIcon = meta.icon;
   const patient = String(rec.params.patient ?? '');
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+
+  const saveAdjust = () => {
+    const n = Number(impactDraft);
+    onAdjust({ impact: Number.isFinite(n) && n >= 0 ? Math.round(n) : rec.impact });
+    const note = noteDraft.trim();
+    setSavedNote(note);
+    if (note) setShowWhy(true);
+    setAdjusting(false);
+    toast.success(L('Recomendação ajustada', 'Recommendation adjusted', '建议已调整', 'Recommandation ajustée'));
+  };
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-hairline bg-card shadow-xs transition-shadow duration-300 hover:shadow-md">
@@ -255,11 +278,57 @@ function RecommendationCard({
             {t('why')}
           </button>
           {showWhy && (
-            <p className="mt-2 rounded-lg border border-hairline bg-surface/60 px-3.5 py-2.5 text-sm leading-relaxed text-muted">
-              {rationaleFor(rec.id, locale)}
-            </p>
+            <div className="mt-2 flex flex-col gap-2">
+              <p className="rounded-lg border border-hairline bg-surface/60 px-3.5 py-2.5 text-sm leading-relaxed text-muted">
+                {rationaleFor(rec.id, locale)}
+              </p>
+              {savedNote && (
+                <p className="rounded-lg border border-brand-500/30 bg-brand-600/5 px-3.5 py-2.5 text-sm leading-relaxed text-ink">
+                  <span className="font-medium">{L('Ajuste', 'Adjustment', '调整', 'Ajustement')}: </span>
+                  {savedNote}
+                </p>
+              )}
+            </div>
           )}
         </div>
+
+        {/* adjust panel (approve / adjust / reject) */}
+        {adjusting && (
+          <div className="flex flex-col gap-3 rounded-lg border border-hairline bg-surface/60 p-3.5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-2xs font-medium uppercase tracking-wide text-subtle">
+                {L('Impacto estimado (R$)', 'Estimated impact (R$)', '预计影响（R$）', 'Impact estimé (R$)')}
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={impactDraft}
+                onChange={(e) => setImpactDraft(e.target.value)}
+                className="h-9 w-44 rounded-lg border border-line bg-surface px-3 text-sm tnum outline-none focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-2xs font-medium uppercase tracking-wide text-subtle">
+                {L('Observação (opcional)', 'Note (optional)', '备注（可选）', 'Note (facultatif)')}
+              </label>
+              <textarea
+                rows={2}
+                value={noteDraft}
+                onChange={(e) => setNoteDraft(e.target.value)}
+                placeholder={L('Ex.: ajustar após conferência', 'e.g. adjust after review', '例如：核对后调整', 'ex. : ajuster après vérification')}
+                className="resize-none rounded-lg border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button size="sm" variant="ghost" onClick={() => setAdjusting(false)}>
+                {L('Cancelar', 'Cancel', '取消', 'Annuler')}
+              </Button>
+              <Button size="sm" onClick={saveAdjust}>
+                {L('Salvar ajuste', 'Save adjustment', '保存调整', 'Enregistrer')}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* actions */}
         <div className="flex flex-wrap items-center gap-2 border-t border-hairline/70 pt-4">
@@ -273,6 +342,15 @@ function RecommendationCard({
             onClick={onReview}
           >
             {t('review')}
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            leftIcon={<SlidersHorizontal className="h-3.5 w-3.5" />}
+            onClick={() => setAdjusting((v) => !v)}
+            aria-expanded={adjusting}
+          >
+            {L('Ajustar', 'Adjust', '调整', 'Ajuster')}
           </Button>
           <Button
             size="sm"

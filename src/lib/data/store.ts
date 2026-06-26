@@ -316,7 +316,7 @@ function seed(): DB {
       email: 'helena@clinicaaurora.com.br',
       locale: 'pt-BR',
       orgName: 'Clínica Aurora',
-      planName: 'Pro',
+      planName: 'Scale',
     },
     patients: seedPatients(),
     encounters: seedEncounters(),
@@ -337,7 +337,7 @@ const g = globalThis as unknown as { __auronis__?: DB; __auronisPersist__?: bool
    routes / RSC) there is no localStorage, so it falls back to the in-memory seed
    per runtime. For production multi-device persistence, plug a Postgres adapter
    gated on DATABASE_URL — see src/lib/data/PERSISTENCE.md. */
-const SNAPSHOT_KEY = 'auronis:store:v1';
+const SNAPSHOT_KEY = 'auronis:store:v2';
 
 function hydrate(): DB {
   if (typeof window !== 'undefined') {
@@ -630,7 +630,9 @@ export function agentRecommendations(): AgentRecommendation[] {
 /* ----------------------------- Audit ----------------------------- */
 
 export function listAudit() {
-  return [...db().audit].sort((a, b) => (a.at < b.at ? 1 : -1));
+  // Stable, antisymmetric comparator (return 0 on ties) so same-millisecond
+  // entries keep a deterministic order; newest first.
+  return [...db().audit].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
 }
 export function pushAudit(
   actor: string,

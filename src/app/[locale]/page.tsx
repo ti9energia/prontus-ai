@@ -6,6 +6,7 @@ import {
   Features,
   FinalCTA,
   Footer,
+  ForWhom,
   How,
   LogoCloud,
   Security,
@@ -25,15 +26,20 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
       <LandingNav />
       <main>
         <Hero />
-        <LogoCloud />
-        <Stats />
-        <Features />
-        <How />
-        <Security />
-        <Pricing />
-        <Testimonials />
-        <FAQ />
-        <FinalCTA />
+        {/* Solid base below the hero so the ambient DNA stays a hero-only motif and never
+            bleeds behind body copy — every section below stays fully legible. */}
+        <div className="relative bg-bg">
+          <LogoCloud />
+          <Stats />
+          <Features />
+          <How />
+          <ForWhom />
+          <Security />
+          <Pricing />
+          <Testimonials />
+          <FAQ />
+          <FinalCTA />
+        </div>
       </main>
       <Footer />
     </div>

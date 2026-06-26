@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   ArrowRight,
   AudioLines,
+  BarChart3,
+  CalendarClock,
   ClipboardCheck,
   FileText,
   Globe,
@@ -12,9 +14,11 @@ import {
   Lock,
   MessageCircle,
   Mic,
+  ReceiptText,
   ScrollText,
   ShieldCheck,
   Sparkles,
+  Stethoscope,
   UserCheck,
   Quote,
   Star,
@@ -129,10 +133,19 @@ export function Stats() {
   return (
     <section className="py-16 sm:py-20" ref={ref}>
       <div className="container-page">
-        <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-          {items.map((it, i) => (
-            <StatItem key={i} {...it} active={inView} />
-          ))}
+        <div className="relative overflow-hidden rounded-3xl border border-hairline bg-card/60 px-6 py-12 shadow-xs backdrop-blur-sm sm:px-10">
+          {/* soft brand glow accent */}
+          <div
+            aria-hidden
+            className="absolute -top-1/3 left-1/2 h-64 w-[42rem] max-w-full -translate-x-1/2 rounded-full bg-brand-500/[0.08] blur-3xl"
+          />
+          <div className="relative grid grid-cols-2 gap-y-10 sm:gap-8 lg:grid-cols-4">
+            {items.map((it, i) => (
+              <div key={i} className={cn('lg:px-2', i > 0 && 'lg:border-l lg:border-hairline')}>
+                <StatItem {...it} active={inView} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -160,6 +173,10 @@ export function Features() {
             <RevealItem key={key} className={span}>
               <div className="group relative h-full overflow-hidden rounded-2xl border border-hairline bg-card p-6 shadow-xs transition-all duration-300 ease-spring hover:-translate-y-1 hover:shadow-lg">
                 <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-500/[0.06] blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-0" />
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-500/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                />
                 <div className="relative">
                   <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand-600/[0.1] text-brand-600 transition-colors group-hover:bg-brand-600 group-hover:text-white">
                     <Icon className="h-5 w-5" />
@@ -222,6 +239,91 @@ export function How() {
   );
 }
 
+/* ---------------- Who it's for (the whole clinic team) ----------------
+   Maps the product to the real roles a clinic runs on (ties to the RBAC model):
+   physician · front desk · billing · management — each with a concrete payoff. */
+export function ForWhom() {
+  const locale = useLocale();
+  const L = (pt: string, en: string, zh: string, fr: string) =>
+    locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+  const roles = [
+    {
+      icon: Stethoscope,
+      role: L('Médico(a)', 'Physician', '医生', 'Médecin'),
+      desc: L(
+        'Prontuário estruturado e guia TISS prontos ao fim da consulta — sem digitar.',
+        'Structured note and TISS claim ready when the visit ends — no typing.',
+        '问诊结束即生成结构化病历与 TISS 单据——无需打字。',
+        'Compte rendu structuré et feuille TISS prêts dès la fin de la consultation — sans saisie.',
+      ),
+    },
+    {
+      icon: CalendarClock,
+      role: L('Recepção', 'Front desk', '前台', 'Accueil'),
+      desc: L(
+        'Agenda, confirmação por WhatsApp e lista de espera que se reorganiza sozinha.',
+        'Scheduling, WhatsApp confirmations and a waitlist that re-fills itself.',
+        '排程、WhatsApp 确认与自动补位的候诊名单。',
+        'Agenda, confirmations WhatsApp et liste d’attente qui se remplit seule.',
+      ),
+    },
+    {
+      icon: ReceiptText,
+      role: L('Faturamento', 'Billing', '收费', 'Facturation'),
+      desc: L(
+        'Glosa prevista antes do envio e reenvio em um clique — menos dinheiro parado.',
+        'Denials caught before submission and one-click resubmits — less money stuck.',
+        '提交前预判拒付、一键重提——减少资金滞留。',
+        'Rejets détectés avant l’envoi et renvois en un clic — moins d’argent bloqué.',
+      ),
+    },
+    {
+      icon: BarChart3,
+      role: L('Gestão', 'Management', '管理', 'Direction'),
+      desc: L(
+        'BI em tempo real: produção, glosa e ROI por convênio, com o agente de IA avisando o que decidir.',
+        'Real-time BI: output, denials and ROI per payer, with the AI agent flagging what to decide.',
+        '实时 BI：按支付方查看产出、拒付与 ROI，AI 智能体提示需决策事项。',
+        'BI en temps réel : production, rejets et ROI par assureur, l’agent IA signalant les décisions.',
+      ),
+    },
+  ];
+  return (
+    <section className="py-16 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow={L('Para a clínica inteira', 'For the whole clinic', '面向整个诊所', 'Pour toute la clinique')}
+          title={L(
+            'Uma plataforma, cada papel no seu lugar',
+            'One platform, every role covered',
+            '一个平台，各司其职',
+            'Une plateforme, chaque rôle à sa place',
+          )}
+          subtitle={L(
+            'Do consultório à gestão — a mesma IA atende cada função, com a permissão certa.',
+            'From the exam room to the back office — the same AI serves each role, with the right permissions.',
+            '从诊室到后台——同一套 AI 服务每个角色，并匹配相应权限。',
+            'Du cabinet à la gestion — la même IA sert chaque rôle, avec les bonnes permissions.',
+          )}
+        />
+        <RevealStagger className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {roles.map((r) => (
+            <RevealItem key={r.role}>
+              <div className="group h-full rounded-2xl border border-hairline bg-card p-6 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand-600/[0.1] text-brand-600 transition-colors group-hover:bg-brand-600 group-hover:text-white">
+                  <r.icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{r.role}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{r.desc}</p>
+              </div>
+            </RevealItem>
+          ))}
+        </RevealStagger>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Security ---------------- */
 export function Security() {
   const t = useTranslations('landing.security');
@@ -234,27 +336,31 @@ export function Security() {
   return (
     <section id="security" className="scroll-mt-24 py-16 sm:py-24">
       <div className="container-page">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <SectionHead eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} center={false} />
+        <div className="relative overflow-hidden rounded-3xl border border-hairline bg-surface/50 p-8 sm:p-12">
+          <div aria-hidden className="absolute inset-0 bg-grid opacity-[0.35] mask-b" />
+          <div aria-hidden className="absolute -right-24 -top-10 h-72 w-72 rounded-full bg-brand-500/[0.07] blur-3xl" />
+          <div className="relative grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <SectionHead eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} center={false} />
+            </div>
+            <RevealStagger className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {items.map(({ key, icon: Icon }) => (
+                <RevealItem key={key}>
+                  <div className="flex h-full gap-4 rounded-2xl border border-hairline bg-card/80 p-5 backdrop-blur-sm transition-colors duration-300 hover:border-brand-500/30">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-600/10 text-brand-600">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-sm font-semibold">
+                        {t(`items.${key}.title` as 'items.lgpd.title')}
+                      </h3>
+                      <p className="mt-1 text-sm text-muted">{t(`items.${key}.desc` as 'items.lgpd.desc')}</p>
+                    </div>
+                  </div>
+                </RevealItem>
+              ))}
+            </RevealStagger>
           </div>
-          <RevealStagger className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {items.map(({ key, icon: Icon }) => (
-              <RevealItem key={key}>
-                <div className="flex h-full gap-4 rounded-2xl border border-hairline bg-card p-5">
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-600/10 text-brand-600">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-sm font-semibold">
-                      {t(`items.${key}.title` as 'items.lgpd.title')}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted">{t(`items.${key}.desc` as 'items.lgpd.desc')}</p>
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealStagger>
         </div>
       </div>
     </section>
