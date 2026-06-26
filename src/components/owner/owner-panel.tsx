@@ -88,7 +88,8 @@ function Shell() {
   const tn = useTranslations('nav');
   const router = useRouter();
   const { loading, authed, role, name } = useSession();
-  const [section, setSection] = React.useState<SectionKey>('overview');
+  // The owner lands on Mari — the operating brain greets them first.
+  const [section, setSection] = React.useState<SectionKey>('mari');
 
   // Middleware enforces owner-only access; this mirrors it client-side.
   React.useEffect(() => {

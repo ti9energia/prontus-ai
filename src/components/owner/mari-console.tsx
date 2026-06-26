@@ -297,7 +297,8 @@ export function MariConsoleSection() {
     <div className="flex h-full min-h-0 flex-col lg:flex-row">
       {/* stage */}
       <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-grid [background-size:44px_44px]">
-        <div className="flex flex-col items-center gap-5 px-6 py-8">
+        <div className="bg-aurora pointer-events-none absolute inset-0 opacity-40" />
+        <div className="relative flex flex-col items-center gap-5 px-6 py-8">
           <MariPresence size={180} state={presence} />
           <div className="text-center">
             <h2 className="font-display text-2xl font-bold tracking-tight">Mari</h2>

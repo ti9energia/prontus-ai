@@ -121,8 +121,39 @@ export function MariFace({
   );
 }
 
-/** Convenience alias. */
-export const MariAvatar = MariFace;
+/** Mari's portrait core: the user's 3D render (`/brand/mari.png`) when present,
+ *  else the vector MariFace. Drop a square PNG at `public/brand/mari.png` and Mari's
+ *  real face appears everywhere automatically — no code change needed. */
+export function MariPortrait({
+  size = 96,
+  rim = true,
+  className,
+  title = 'Mari',
+}: {
+  size?: number;
+  rim?: boolean;
+  className?: string;
+  title?: string;
+}) {
+  const [photo, setPhoto] = React.useState(true);
+  if (!photo) return <MariFace size={size} rim={rim} className={className} title={title} />;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/mari.png"
+      alt={title}
+      width={size}
+      height={size}
+      draggable={false}
+      onError={() => setPhoto(false)}
+      className={cn('rounded-full object-cover', rim && 'ring-2 ring-brand-300/40', className)}
+      style={{ width: size, height: size }}
+    />
+  );
+}
+
+/** Convenience alias — Mari's portrait (uses the photo when available). */
+export const MariAvatar = MariPortrait;
 
 /**
  * "Jarvis" presence — the face inside an animated aura of rotating rings, a
@@ -140,52 +171,64 @@ export function MariPresence({
   className?: string;
 }) {
   const active = state === 'listening' || state === 'speaking';
+  const intense = state === 'thinking' || active;
   return (
     <div
       className={cn('relative grid place-items-center', className)}
       style={{ width: size, height: size }}
       aria-hidden
     >
-      {/* glow */}
+      {/* deep layered glow */}
       <div
         className={cn(
-          'absolute inset-[6%] rounded-full bg-brand-500/20 blur-2xl transition-opacity duration-500',
-          active ? 'animate-pulse opacity-100' : state === 'thinking' ? 'opacity-80' : 'opacity-55',
+          'absolute inset-[3%] rounded-full bg-brand-500/25 blur-[42px] transition-opacity duration-700',
+          active ? 'animate-pulse opacity-100' : intense ? 'opacity-80' : 'opacity-55',
         )}
       />
+      <div className="absolute inset-[16%] rounded-full bg-accent-400/15 blur-2xl animate-glow-pulse" />
 
-      {/* rotating dashed ring */}
-      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full animate-spin-slow text-brand-500/55" aria-hidden>
-        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="0.9" strokeDasharray="3 7" strokeLinecap="round" />
-      </svg>
-      {/* counter-rotating thin ring */}
+      {/* outer orbital ring + particles */}
       <svg
         viewBox="0 0 100 100"
-        className="absolute inset-[7%] h-[86%] w-[86%] animate-spin-slow text-brand-400/45 [animation-direction:reverse] [animation-duration:15s]"
+        className={cn('absolute inset-0 h-full w-full text-brand-400/65 animate-spin-slow', active && '[animation-duration:6s]')}
         aria-hidden
       >
-        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="0.7" strokeDasharray="1 6" />
+        <circle cx="50" cy="50" r="47.5" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="0.4 5.6" strokeLinecap="round" />
+        {[0, 72, 144, 216, 288].map((deg) => {
+          const a = (deg * Math.PI) / 180;
+          return <circle key={deg} cx={50 + 47.5 * Math.cos(a)} cy={50 + 47.5 * Math.sin(a)} r="1.1" fill="currentColor" />;
+        })}
+      </svg>
+      {/* counter-rotating inner ring */}
+      <svg
+        viewBox="0 0 100 100"
+        className="absolute inset-[7%] h-[86%] w-[86%] text-accent-400/45 animate-spin-slow [animation-direction:reverse] [animation-duration:18s]"
+        aria-hidden
+      >
+        <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 8" />
       </svg>
 
-      {/* speaking pulse rings */}
+      {/* speaking waves */}
       {state === 'speaking' && (
         <>
-          <span className="absolute inset-[12%] rounded-full border border-brand-400/45 animate-ping" />
-          <span className="absolute inset-[12%] rounded-full border border-accent-400/35 animate-ping [animation-delay:0.6s]" />
+          <span className="absolute inset-[15%] rounded-full border border-brand-400/45 animate-ping" />
+          <span className="absolute inset-[15%] rounded-full border border-accent-400/35 animate-ping [animation-delay:0.7s]" />
         </>
       )}
 
-      {/* face */}
-      <MariFace size={size * 0.6} rim className="relative z-10 drop-shadow-[0_10px_28px_rgba(20,200,196,0.3)]" />
+      {/* portrait core (the user's render when present, else the vector face) */}
+      <div className={cn('relative z-10 grid place-items-center', state === 'idle' && 'animate-float')}>
+        <MariPortrait size={Math.round(size * 0.62)} rim className="drop-shadow-[0_14px_42px_-8px_rgba(20,200,196,0.5)]" />
+      </div>
 
       {/* listening / speaking equalizer */}
       {active && (
-        <div className="absolute bottom-[7%] z-20 flex items-end gap-[3px]">
+        <div className="absolute bottom-[6%] z-20 flex items-end gap-[3px]">
           {[0, 1, 2, 3, 4].map((i) => (
             <span
               key={i}
-              className="w-[3px] origin-bottom rounded-full bg-brand-500 animate-eq"
-              style={{ height: 16, animationDelay: `${i * 0.12}s` }}
+              className="w-[3px] origin-bottom rounded-full bg-brand-400 animate-eq"
+              style={{ height: 18, animationDelay: `${i * 0.11}s` }}
             />
           ))}
         </div>
