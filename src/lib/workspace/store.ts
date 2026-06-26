@@ -10,6 +10,7 @@ export type ScreenKey =
   | 'tiss'
   | 'patients'
   | 'billing'
+  | 'reports'
   | 'templates'
   | 'integrations'
   | 'settings'

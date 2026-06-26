@@ -3,6 +3,7 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import {
+  BarChart3,
   CalendarClock,
   CalendarDays,
   Cable,
@@ -88,6 +89,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleKey: 'nav.billing',
     Component: lazy(() => import('@/components/screens/billing').then((m) => ({ default: m.BillingScreen }))),
   },
+  reports: {
+    key: 'reports',
+    icon: BarChart3,
+    group: 'clinic',
+    titleMap: { 'pt-BR': 'Relatórios', en: 'Reports', 'zh-CN': '报告', 'fr-FR': 'Rapports' },
+    Component: lazy(() => import('@/components/screens/reports').then((m) => ({ default: m.ReportsScreen }))),
+  },
   templates: {
     key: 'templates',
     icon: LayoutTemplate,
@@ -140,6 +148,7 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'tiss',
   'patients',
   'billing',
+  'reports',
   'templates',
   'documents',
   'agent',
