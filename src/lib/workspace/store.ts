@@ -4,6 +4,7 @@ import * as React from 'react';
 
 export type ScreenKey =
   | 'today'
+  | 'agenda'
   | 'encounter'
   | 'review'
   | 'tiss'

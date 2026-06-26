@@ -3,6 +3,7 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import {
+  CalendarClock,
   CalendarDays,
   Cable,
   ClipboardCheck,
@@ -44,6 +45,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     group: 'product',
     titleKey: 'nav.today',
     Component: lazy(() => import('@/components/screens/today').then((m) => ({ default: m.TodayScreen }))),
+  },
+  agenda: {
+    key: 'agenda',
+    icon: CalendarClock,
+    group: 'product',
+    titleMap: { 'pt-BR': 'Agenda', en: 'Schedule', 'zh-CN': '日程', 'fr-FR': 'Agenda' },
+    Component: lazy(() => import('@/components/screens/agenda').then((m) => ({ default: m.AgendaScreen }))),
   },
   encounter: {
     key: 'encounter',
@@ -126,6 +134,7 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
 
 export const SCREEN_ORDER: ScreenKey[] = [
   'today',
+  'agenda',
   'encounter',
   'review',
   'tiss',
