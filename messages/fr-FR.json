@@ -131,11 +131,11 @@
     "announce": "",
     "hero": {
       "eyebrow": "",
-      "title": "Terminez la consultation avec le dossier et la feuille de soins",
-      "titleHighlight": "déjà prêts",
-      "subtitle": "Auronis Health écoute la consultation et renvoie, en quelques secondes, le dossier médical structuré et la feuille de soins TISS pré-remplie. Moins de saisie, moins de rejets, plus de temps avec le patient.",
-      "ctaPrimary": "Tester sur une consultation",
-      "ctaSecondary": "Voir le fonctionnement",
+      "title": "Terminez la consultation.",
+      "titleHighlight": "Mari fait le reste.",
+      "subtitle": "Auronis Health écoute la consultation, génère le compte rendu et remplit les documents en quelques secondes. Moins de saisie, moins de rejets, plus de temps avec le patient.",
+      "ctaPrimary": "Essayer gratuitement",
+      "ctaSecondary": "Voir la démo",
       "trust": "Conforme LGPD · Données de santé chiffrées · Human-in-the-loop",
       "liveBadge": "Enregistrement en cours",
       "noteBuilding": "Construction du dossier médical…"

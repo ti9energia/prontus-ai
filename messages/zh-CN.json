@@ -131,11 +131,11 @@
     "announce": "",
     "hero": {
       "eyebrow": "",
-      "title": "问诊结束，病历与单据",
-      "titleHighlight": "即刻就绪",
-      "subtitle": "Auronis Health 聆听问诊过程，几秒内即返回结构化病历和已填写的 TISS 单据。少打字、少拒付，把更多时间留给患者。",
-      "ctaPrimary": "用一次问诊试试",
-      "ctaSecondary": "了解运作方式",
+      "title": "结束问诊。",
+      "titleHighlight": "剩下的交给 Mari。",
+      "subtitle": "Auronis Health 聆听问诊，生成病历并在数秒内完成文书。少打字、少拒付，把更多时间留给患者。",
+      "ctaPrimary": "免费试用",
+      "ctaSecondary": "观看演示",
       "trust": "符合 LGPD · 健康数据加密 · 人工参与把关",
       "liveBadge": "正在录制问诊",
       "noteBuilding": "正在生成病历…"
