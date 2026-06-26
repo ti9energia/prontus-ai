@@ -34,7 +34,7 @@ interface DB {
   flags: FeatureFlag[];
 }
 
-const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
+export const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
 
 function atToday(hour: number, minute = 0): string {
   const d = new Date();
@@ -203,6 +203,21 @@ function seedTemplates(): Template[] {
   }));
 }
 
+function seedGuideTemplates(): Template[] {
+  // One pre-configured "standard" TISS guide per payer (the doctor's per-convênio default).
+  return PAYERS.map((payer, i) => ({
+    id: id('gtpl', i + 1),
+    specialtyKey: 'clinica',
+    payer,
+    kind: 'guide',
+    locale: 'pt-BR',
+    sectionKeys: [],
+    procedures: [{ code: '10101012', description: 'Consulta em consultório', qty: 1, value: 180 }],
+    usedCount: 0,
+    isDefault: false,
+  }));
+}
+
 function seedTenants(): Tenant[] {
   const raw: Array<[string, string, number, number, number, Tenant['status']]> = [
     ['Clínica Aurora', 'plan_pro', 12, 64, 2388, 'active'],
@@ -322,7 +337,7 @@ function seed(): DB {
     encounters: seedEncounters(),
     notes: { [id('enc', 3)]: NOTE_MARINA() },
     guides: seedGuides(),
-    templates: seedTemplates(),
+    templates: [...seedTemplates(), ...seedGuideTemplates()],
     audit: seedAudit(),
     tenants: seedTenants(),
     plans: seedPlans(),
@@ -507,7 +522,7 @@ export function getGuideByEncounter(encounterId: string) {
 
 export function createGuideFromEncounter(encounterId: string): TissGuide {
   const d = db();
-  const existing = getGuideByEncounter(encounterId);
+  const existing = getGuideByEncounterSource(encounterId, 'generated');
   if (existing) return existing;
   const enc = getEncounter(encounterId);
   const note = getNote(encounterId);
@@ -534,6 +549,7 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
     currency: 'BRL',
     issues: [],
     createdAt: new Date().toISOString(),
+    source: 'generated',
   };
   guide.value = guide.procedures.reduce((s, p) => s + p.value * p.qty, 0);
   // simple pre-gloss validation
@@ -544,6 +560,64 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
   if (enc) enc.hasGuide = true;
   pushAudit('Mari (IA)', 'tiss.create', `Guide ${guide.id}`, 'ok', 'ai');
   return guide;
+}
+
+function getGuideByEncounterSource(encounterId: string, source: 'standard' | 'generated') {
+  return db().guides.find(
+    (g2) => g2.encounterId === encounterId && (g2.source ?? 'generated') === source,
+  );
+}
+
+/** The pre-configured standard guide template for a payer (falls back to the first). */
+export function getGuideTemplate(payer: string): Template | undefined {
+  const guides = db().templates.filter((t) => t.kind === 'guide');
+  return guides.find((t) => t.payer === payer) ?? guides[0];
+}
+
+/** Build the per-payer STANDARD guide for an encounter (idempotent by source). */
+export function createStandardGuideFromEncounter(encounterId: string): TissGuide | null {
+  const d = db();
+  const existing = getGuideByEncounterSource(encounterId, 'standard');
+  if (existing) return existing;
+  const enc = getEncounter(encounterId);
+  const patient = enc ? getPatient(enc.patientId) : undefined;
+  if (!patient) return null;
+  const tpl = getGuideTemplate(patient.payer);
+  if (!tpl?.procedures?.length) return null;
+  const guide: TissGuide = {
+    id: id('gui', d.guides.length + 1),
+    encounterId,
+    patientId: patient.id,
+    type: 'consulta',
+    payer: patient.payer,
+    cardNumber: patient.cardNumber,
+    professional: d.user.name,
+    council: d.user.council,
+    cbo: '225125',
+    procedures: tpl.procedures.map((p) => ({ ...p })),
+    diagnoses: [],
+    status: 'draft',
+    value: tpl.procedures.reduce((s, p) => s + p.value * p.qty, 0),
+    currency: 'BRL',
+    issues: [],
+    createdAt: new Date().toISOString(),
+    source: 'standard',
+  };
+  d.guides.unshift(guide);
+  if (enc) enc.hasGuide = true;
+  tpl.usedCount += 1;
+  pushAudit(d.user.name, 'tiss.createStandard', `Guide ${guide.id}`, 'ok', 'ui');
+  return guide;
+}
+
+/** On convênio selection: generate BOTH the standard (configured) and the app-generated guide. */
+export function createGuidesFromEncounter(encounterId: string): {
+  generated: TissGuide;
+  standard: TissGuide | null;
+} {
+  const generated = createGuideFromEncounter(encounterId);
+  const standard = createStandardGuideFromEncounter(encounterId);
+  return { generated, standard };
 }
 
 export function submitGuide(gid: string) {

@@ -25,7 +25,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import {
-  createGuideFromEncounter,
+  createGuidesFromEncounter,
   ensureNote,
   getCurrentUser,
   getEncounter,
@@ -188,7 +188,7 @@ export function ReviewScreen({ paneId, params }: { paneId: string; params?: Reco
   const generateTiss = () => {
     persist();
     if (!note.approved) approveNoteStore(enc.id);
-    createGuideFromEncounter(enc.id);
+    createGuidesFromEncounter(enc.id);
     openTab('tiss', { id: enc.id }, { paneId });
   };
 
