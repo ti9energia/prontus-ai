@@ -3,15 +3,14 @@
 import * as React from 'react';
 
 /**
- * Living DNA double-helix — a clean, recognizable 3D double helix behind the landing.
+ * Living DNA double-helix — a thick, natural, fluid 3D double helix behind the landing.
  *
- * Two smooth sugar-phosphate backbones wind around a vertical axis as continuous
- * tubes (thicker and brighter in front, thinner and dimmer behind); regular base-pair
- * rungs step between them like the rungs of a twisted ladder; and shaded spherical
- * atoms sit at each pair. Everything is depth-sorted, so the strands cross over and
- * behind each other as the helix rotates and gently falls — the classic twisted
- * ladder, alive. Theme-aware (vivid on dark, deep saturated on light); honors
- * reduced-motion (one still frame).
+ * Two chunky sugar-phosphate backbones wind around a vertical axis as smooth glowing
+ * tubes (with a sheen highlight for cylinder volume — fat and bright in front, thin and
+ * dim behind). Between them, two-tone base pairs meet in the middle like real A-T / G-C
+ * bonds, and a shaded spherical atom sits at each pair. Everything is depth-sorted, so
+ * the strands genuinely cross over and behind each other as the helix rotates and slowly
+ * falls. Theme-aware (vivid on dark, deep saturated on light); honors reduced-motion.
  */
 export function DnaHelix() {
   const ref = React.useRef<HTMLCanvasElement>(null);
@@ -30,15 +29,15 @@ export function DnaHelix() {
     let scrollY = window.scrollY;
     const isDark = () => document.documentElement.classList.contains('dark');
 
-    // Pre-rendered shaded sphere sprites (bright core → colored body → dark rim → clear).
+    // Pre-rendered shaded sphere sprites (bright offset core → body → dark rim → clear).
     const makeSphere = (light: string, body: string, rim: string) => {
       const SS = 48;
       const s = document.createElement('canvas');
       s.width = s.height = SS;
       const c = s.getContext('2d');
       if (c) {
-        const g = c.createRadialGradient(SS * 0.38, SS * 0.36, SS * 0.04, SS / 2, SS / 2, SS / 2);
-        g.addColorStop(0, 'rgba(255,255,255,0.96)');
+        const g = c.createRadialGradient(SS * 0.38, SS * 0.35, SS * 0.04, SS / 2, SS / 2, SS / 2);
+        g.addColorStop(0, 'rgba(255,255,255,0.97)');
         g.addColorStop(0.3, light);
         g.addColorStop(0.72, body);
         g.addColorStop(0.96, rim);
@@ -71,11 +70,14 @@ export function DnaHelix() {
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    const TURN = 300; // px per full turn (elegant, readable twist)
-    const STEP = 13; // dense sampling → smooth strand tubes
+    const TURN = 320; // px per full turn (elegant, readable twist)
+    const STEP = 12; // dense sampling → smooth, fluid strand tubes
     const RUNG_EVERY = 3; // a base pair (rung + atoms) every N samples
     const t0 = performance.now();
     const edgeFade = (y: number) => Math.max(0, Math.min(1, Math.min(y, h - y) / (h * 0.14)));
+
+    const tealCol = (dark: boolean) => (dark ? '20 200 196' : '13 148 144');
+    const cyanCol = (dark: boolean) => (dark ? '34 211 238' : '14 165 183');
 
     type Pt = { x: number; y: number; d: number };
     type El =
@@ -87,11 +89,11 @@ export function DnaHelix() {
       const time = (now - t0) / 1000;
       ctx.clearRect(0, 0, w, h);
       const dark = isDark();
-      const pulse = 0.94 + 0.06 * Math.sin(time * 1.3);
+      const pulse = 0.95 + 0.05 * Math.sin(time * 1.2);
       const cx = w * 0.5;
-      const R = Math.max(96, Math.min(190, w * 0.13));
-      const fall = (time * 20 + scrollY * 0.1) % STEP;
-      const spin = time * 0.4;
+      const R = Math.max(110, Math.min(210, w * 0.14));
+      const fall = (time * 18 + scrollY * 0.1) % STEP;
+      const spin = time * 0.36;
       const count = Math.ceil(h / STEP) + 8;
 
       const A: Pt[] = [];
@@ -103,7 +105,6 @@ export function DnaHelix() {
         B.push({ x: cx + Math.sin(ang + Math.PI) * R, y, d: (Math.cos(ang + Math.PI) + 1) / 2 });
       }
 
-      // Connected geometry: backbone segments (every sample), rungs + atoms (spaced).
       const els: El[] = [];
       for (let i = 0; i < A.length - 1; i++) {
         els.push({ t: 'seg', a: A[i], b: A[i + 1], z: (A[i].d + A[i + 1].d) / 2, strand: 0 });
@@ -114,7 +115,7 @@ export function DnaHelix() {
           els.push({ t: 'atom', p: B[i], z: B[i].d, strand: 1 });
         }
       }
-      // Depth sort → far drawn first, near occludes it (true 3D twist).
+      // Depth sort → far drawn first, near occludes it (real 3D twist).
       els.sort((p, q) => p.z - q.z);
 
       ctx.lineCap = 'round';
@@ -122,45 +123,62 @@ export function DnaHelix() {
 
       for (const el of els) {
         if (el.t === 'rung') {
-          const y = (el.a.y + el.b.y) / 2;
-          const fade = edgeFade(y);
+          const fade = edgeFade(el.a.y);
           if (fade <= 0) continue;
-          ctx.globalAlpha = (dark ? 0.16 + el.z * 0.26 : 0.18 + el.z * 0.28) * fade * pulse;
-          ctx.strokeStyle = dark ? 'rgb(176 190 205)' : 'rgb(20 150 146)';
-          ctx.lineWidth = 1 + el.z * 2.2;
+          const mx = (el.a.x + el.b.x) / 2;
+          const my = (el.a.y + el.b.y) / 2;
+          ctx.lineWidth = 1.8 + el.z * 3.4;
+          ctx.globalAlpha = (dark ? 0.16 + el.z * 0.26 : 0.18 + el.z * 0.3) * fade * pulse;
+          // two-tone base pair meeting in the middle
+          ctx.strokeStyle = `rgb(${tealCol(dark)})`;
           ctx.beginPath();
           ctx.moveTo(el.a.x, el.a.y);
+          ctx.lineTo(mx, my);
+          ctx.stroke();
+          ctx.strokeStyle = `rgb(${cyanCol(dark)})`;
+          ctx.beginPath();
+          ctx.moveTo(mx, my);
           ctx.lineTo(el.b.x, el.b.y);
           ctx.stroke();
         } else if (el.t === 'seg') {
-          const y = (el.a.y + el.b.y) / 2;
-          const fade = edgeFade(y);
+          const fade = edgeFade((el.a.y + el.b.y) / 2);
           if (fade <= 0) continue;
           const teal = el.strand === 0;
-          const col = dark ? (teal ? '20 200 196' : '34 211 238') : teal ? '13 148 144' : '14 165 183';
-          const lw = 2.4 + el.z * 5.5; // strong depth: fat in front, thin behind
-          if (el.z > 0.4) {
-            // soft halo for the near strand (cheap glow, no shadowBlur)
-            ctx.globalAlpha = (dark ? 0.12 : 0.08) * fade * el.z * pulse;
+          const col = teal ? tealCol(dark) : cyanCol(dark);
+          const lw = 4 + el.z * 11; // thick tube: fat in front, thin behind
+          // outer halo (cheap glow)
+          if (el.z > 0.35) {
+            ctx.globalAlpha = (dark ? 0.1 : 0.07) * fade * el.z * pulse;
             ctx.strokeStyle = `rgb(${col})`;
-            ctx.lineWidth = lw * 2.4;
+            ctx.lineWidth = lw * 2.1;
             ctx.beginPath();
             ctx.moveTo(el.a.x, el.a.y);
             ctx.lineTo(el.b.x, el.b.y);
             ctx.stroke();
           }
-          ctx.globalAlpha = (dark ? 0.4 + el.z * 0.55 : 0.45 + el.z * 0.5) * fade * pulse;
+          // tube body
+          ctx.globalAlpha = (dark ? 0.45 + el.z * 0.5 : 0.5 + el.z * 0.45) * fade * pulse;
           ctx.strokeStyle = `rgb(${col})`;
           ctx.lineWidth = lw;
           ctx.beginPath();
           ctx.moveTo(el.a.x, el.a.y);
           ctx.lineTo(el.b.x, el.b.y);
           ctx.stroke();
+          // sheen highlight (cylinder volume) for the nearer half
+          if (el.z > 0.5) {
+            ctx.globalAlpha = 0.22 * (el.z - 0.5) * 2 * fade * pulse;
+            ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+            ctx.lineWidth = lw * 0.32;
+            ctx.beginPath();
+            ctx.moveTo(el.a.x, el.a.y - lw * 0.2);
+            ctx.lineTo(el.b.x, el.b.y - lw * 0.2);
+            ctx.stroke();
+          }
         } else {
           const fade = edgeFade(el.p.y);
           if (fade <= 0) continue;
-          const r = 4 + el.z * 9; // atom radius grows toward the viewer
-          const alpha = (0.55 + el.z * 0.45) * fade * pulse;
+          const r = 5 + el.z * 10; // atom radius grows toward the viewer
+          const alpha = (0.6 + el.z * 0.4) * fade * pulse;
           const sprite = dark
             ? el.strand === 1
               ? sphereCyan
