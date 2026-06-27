@@ -33,6 +33,7 @@ import {
 import {
   ALL_MODULE_KEYS,
   getPlan,
+  getTenant,
   listAudit,
   listFlags,
   listPlans,
@@ -40,8 +41,12 @@ import {
   mrrSeries,
   ownerStats,
   toggleFlag,
+  updateTenantAi,
+  updateTenantWhatsapp,
+  upsertTenantConnector,
 } from '@/lib/data/store';
 import type { AuditEntry, Plan, Tenant, TenantStatus } from '@/lib/types';
+import { listConnectors } from '@/lib/connectors/registry';
 import { useOwner } from './context';
 import { ScreenContainer, ScreenHeader, SectionTitle, StatCard, Table, Th, Td } from '@/components/screens/_kit';
 import { Badge } from '@/components/ui/badge';
@@ -657,10 +662,54 @@ export function AiSection() {
   const locale = useLocale();
   const tenants = listTenants();
   const stats = ownerStats();
-  const [autonomy, setAutonomy] = React.useState<'suggest' | 'semi' | 'scheduled'>('semi');
+  const { activeTenantId, setActiveTenant } = useOwner();
+  const tenantId = activeTenantId ?? tenants[0]?.id ?? '';
+  const [, bump] = React.useReducer((x: number) => x + 1, 0);
+  const ai0 = getTenant(tenantId)?.ai;
+  const [persona, setPersona] = React.useState(ai0?.persona ?? 'Mari');
+  const [model, setModel] = React.useState(ai0?.model ?? 'claude-opus-4-8');
+  const [budget, setBudget] = React.useState(String(ai0?.monthlyBudget ?? 2500));
+  const [autonomy, setAutonomy] = React.useState<'suggest' | 'semi' | 'scheduled'>(ai0?.autonomy ?? 'semi');
 
-  const tools = ['notes:read', 'tiss:create', 'tiss:submit', 'billing:gloss:read'];
-  const [enabled, setEnabled] = React.useState<string[]>(['notes:read', 'tiss:create', 'billing:gloss:read']);
+  const allTools = ['notes:read', 'tiss:create', 'tiss:submit', 'billing:gloss:read'];
+  const [enabled, setEnabled] = React.useState<string[]>(
+    ai0?.enabledTools ?? ['notes:read', 'tiss:create', 'billing:gloss:read'],
+  );
+
+  React.useEffect(() => {
+    const x = getTenant(tenantId)?.ai;
+    setPersona(x?.persona ?? 'Mari');
+    setModel(x?.model ?? 'claude-opus-4-8');
+    setBudget(String(x?.monthlyBudget ?? 2500));
+    setAutonomy(x?.autonomy ?? 'semi');
+    setEnabled(x?.enabledTools ?? ['notes:read', 'tiss:create', 'billing:gloss:read']);
+  }, [tenantId]);
+
+  const save = () => {
+    updateTenantAi(tenantId, {
+      persona,
+      model,
+      autonomy,
+      monthlyBudget: Number(budget) || 0,
+      enabledTools: enabled,
+    });
+    toast.success(L(locale, 'Configuração salva', 'Settings saved', '设置已保存', 'Paramètres enregistrés'));
+  };
+
+  const tenantConns = getTenant(tenantId)?.connectors ?? [];
+  const connOn = (id: string) => tenantConns.some((c) => c.id === id && c.configured);
+  const toggleConnector = (id: string, category: string) => {
+    const cur = tenantConns.find((c) => c.id === id);
+    const nextOn = !cur?.configured;
+    upsertTenantConnector(tenantId, {
+      id,
+      category,
+      status: nextOn ? 'connected' : 'disconnected',
+      configured: nextOn,
+      config: cur?.config ?? {},
+    });
+    bump();
+  };
 
   return (
     <ScreenContainer>
@@ -668,18 +717,20 @@ export function AiSection() {
       <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
         <Card className="space-y-5 p-5">
           <Field label={L(locale, 'Organização', 'Organization', '组织', 'Organisation')}>
-            <Select>
+            <Select value={tenantId} onChange={(e) => setActiveTenant(e.target.value)}>
               {tenants.map((tn) => (
-                <option key={tn.id}>{tn.name}</option>
+                <option key={tn.id} value={tn.id}>
+                  {tn.name}
+                </option>
               ))}
             </Select>
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t('persona')}>
-              <Input defaultValue="Mari" />
+              <Input value={persona} onChange={(e) => setPersona(e.target.value)} />
             </Field>
             <Field label={t('model')}>
-              <Select defaultValue="claude-opus-4-8">
+              <Select value={model} onChange={(e) => setModel(e.target.value)}>
                 <option value="claude-opus-4-8">claude-opus-4-8</option>
                 <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
                 <option value="claude-haiku-4-5">claude-haiku-4-5</option>
@@ -687,7 +738,7 @@ export function AiSection() {
             </Field>
           </div>
           <Field label={t('monthlyBudget')}>
-            <Input defaultValue={formatCurrency(2500, locale, 'BRL')} />
+            <Input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} />
           </Field>
           <div>
             <p className="mb-2 text-[0.8125rem] font-medium text-ink/90">{t('autonomy')}</p>
@@ -704,7 +755,7 @@ export function AiSection() {
           <div>
             <p className="mb-2 text-[0.8125rem] font-medium text-ink/90">{t('tools')}</p>
             <div className="flex flex-wrap gap-2">
-              {tools.map((tool) => {
+              {allTools.map((tool) => {
                 const on = enabled.includes(tool);
                 return (
                   <button
@@ -722,9 +773,29 @@ export function AiSection() {
               })}
             </div>
           </div>
+          <div className="flex justify-end">
+            <Button onClick={save}>{L(locale, 'Salvar', 'Save', '保存', 'Enregistrer')}</Button>
+          </div>
         </Card>
         <div className="space-y-4">
           <StatCard label={t('spend')} value={formatCurrency(stats.aiSpend, locale, 'BRL')} icon={Sparkles} tone="brand" />
+          <Card className="p-4">
+            <p className="mb-2 flex items-center gap-1.5 text-sm font-medium">
+              <KeyRound className="h-4 w-4 text-brand-500" />
+              {L(locale, 'Integrações do cliente', 'Client integrations', '客户集成', 'Intégrations du client')}
+            </p>
+            <div className="space-y-1.5">
+              {listConnectors().map((c) => (
+                <label
+                  key={c.id}
+                  className="flex items-center justify-between rounded-lg border border-hairline px-2.5 py-1.5 text-xs"
+                >
+                  <span className="truncate">{c.name}</span>
+                  <Switch checked={connOn(c.id)} onChange={() => toggleConnector(c.id, c.category)} />
+                </label>
+              ))}
+            </div>
+          </Card>
           <Card className="p-4">
             <p className="flex items-center gap-1.5 text-sm font-medium">
               <Sparkles className="h-4 w-4 text-brand-500" /> Mari
@@ -749,7 +820,25 @@ export function AiSection() {
 export function WhatsappSection() {
   const t = useTranslations('owner.whatsapp');
   const locale = useLocale();
-  const [perTenant, setPerTenant] = React.useState(true);
+  const tenants = listTenants();
+  const { activeTenantId, setActiveTenant } = useOwner();
+  const tenantId = activeTenantId ?? tenants[0]?.id ?? '';
+  const wa0 = getTenant(tenantId)?.whatsapp;
+  const [number, setNumber] = React.useState(wa0?.number ?? '+55 11 4000-2000');
+  const [waPersona, setWaPersona] = React.useState(wa0?.persona ?? 'Mari');
+  const [perTenant, setPerTenant] = React.useState(wa0?.perTenant ?? true);
+
+  React.useEffect(() => {
+    const x = getTenant(tenantId)?.whatsapp;
+    setNumber(x?.number ?? '+55 11 4000-2000');
+    setWaPersona(x?.persona ?? 'Mari');
+    setPerTenant(x?.perTenant ?? true);
+  }, [tenantId]);
+
+  const save = () => {
+    updateTenantWhatsapp(tenantId, { number, persona: waPersona, perTenant, enabled: true });
+    toast.success(L(locale, 'WhatsApp salvo', 'WhatsApp saved', 'WhatsApp 已保存', 'WhatsApp enregistré'));
+  };
 
   const commands = [
     L(locale, 'Consultar guias glosadas', 'Query denied claims', '查询被拒单据', 'Consulter les rejets'),
@@ -769,16 +858,28 @@ export function WhatsappSection() {
       <ScreenHeader icon={MessageCircle} title={t('title')} subtitle={t('subtitle')} />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="space-y-4 p-5">
+          <Field label={L(locale, 'Organização', 'Organization', '组织', 'Organisation')}>
+            <Select value={tenantId} onChange={(e) => setActiveTenant(e.target.value)}>
+              {tenants.map((tn) => (
+                <option key={tn.id} value={tn.id}>
+                  {tn.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
           <Field label={t('number')}>
-            <Input defaultValue="+55 11 4000-2000" className="font-mono" />
+            <Input value={number} onChange={(e) => setNumber(e.target.value)} className="font-mono" />
           </Field>
           <Field label={t('persona')}>
-            <Input defaultValue="Mari" />
+            <Input value={waPersona} onChange={(e) => setWaPersona(e.target.value)} />
           </Field>
           <label className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
             <span className="text-sm">{t('perTenant')}</span>
             <Switch checked={perTenant} onChange={setPerTenant} />
           </label>
+          <div className="flex justify-end">
+            <Button onClick={save}>{L(locale, 'Salvar', 'Save', '保存', 'Enregistrer')}</Button>
+          </div>
         </Card>
 
         <Card className="space-y-4 p-5">
