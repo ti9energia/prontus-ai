@@ -108,6 +108,10 @@ export interface TissGuide {
   createdAt: string;
   /** Whether this guide is the app-generated one or the pre-configured per-payer standard. */
   source?: 'standard' | 'generated';
+  /** Prior-authorization (requisição) workflow status for payer approval. */
+  authStatus?: 'requested' | 'in_review' | 'authorized' | 'denied';
+  authNumber?: string;
+  authorizedBy?: string;
 }
 
 export interface Template {

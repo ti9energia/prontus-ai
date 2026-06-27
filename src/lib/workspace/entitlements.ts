@@ -35,6 +35,8 @@ const SCREEN_PERMISSION: Partial<Record<ScreenKey, Permission>> = {
   billing: 'billing.view',
   patients: 'patients.view',
   templates: 'templates.edit',
+  requisicao: 'requisition.create',
+  faturamento: 'billing.view',
 };
 
 export type ScreenStatus = 'open' | 'locked' | 'hidden';

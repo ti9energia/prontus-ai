@@ -4,6 +4,7 @@ import * as React from 'react';
 import dynamic from 'next/dynamic';
 import {
   BarChart3,
+  Banknote,
   Bot,
   CalendarClock,
   CalendarDays,
@@ -11,6 +12,7 @@ import {
   ClipboardCheck,
   FileCheck,
   FileText,
+  FileSignature,
   LayoutTemplate,
   MessageCircle,
   Mic,
@@ -163,6 +165,20 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleMap: { 'pt-BR': 'Marketplace', en: 'Marketplace', 'zh-CN': '应用市场', 'fr-FR': 'Marketplace' },
     Component: lazy(() => import('@/components/screens/marketplace').then((m) => ({ default: m.MarketplaceScreen }))),
   },
+  requisicao: {
+    key: 'requisicao',
+    icon: FileSignature,
+    group: 'clinic',
+    titleMap: { 'pt-BR': 'Requisição', en: 'Requisition', 'zh-CN': '申请', 'fr-FR': 'Requête' },
+    Component: lazy(() => import('@/components/screens/requisicao').then((m) => ({ default: m.RequisicaoScreen }))),
+  },
+  faturamento: {
+    key: 'faturamento',
+    icon: Banknote,
+    group: 'clinic',
+    titleMap: { 'pt-BR': 'Faturamento', en: 'Billing team', 'zh-CN': '收费', 'fr-FR': 'Facturation' },
+    Component: lazy(() => import('@/components/screens/faturamento').then((m) => ({ default: m.FaturamentoScreen }))),
+  },
   settings: {
     key: 'settings',
     icon: SettingsIcon,
@@ -178,8 +194,10 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'encounter',
   'review',
   'tiss',
+  'requisicao',
   'patients',
   'billing',
+  'faturamento',
   'reports',
   'templates',
   'documents',
