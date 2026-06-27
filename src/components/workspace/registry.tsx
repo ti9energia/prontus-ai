@@ -13,6 +13,7 @@ import {
   FileCheck,
   FileText,
   FileSignature,
+  Handshake,
   LayoutTemplate,
   MessageCircle,
   Mic,
@@ -22,6 +23,7 @@ import {
   Sparkles,
   Store,
   Users,
+  UserCog,
   Workflow,
   type LucideIcon,
 } from 'lucide-react';
@@ -179,6 +181,20 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     titleMap: { 'pt-BR': 'Faturamento', en: 'Billing team', 'zh-CN': '收费', 'fr-FR': 'Facturation' },
     Component: lazy(() => import('@/components/screens/faturamento').then((m) => ({ default: m.FaturamentoScreen }))),
   },
+  equipe: {
+    key: 'equipe',
+    icon: UserCog,
+    group: 'system',
+    titleMap: { 'pt-BR': 'Equipe', en: 'Team', 'zh-CN': '团队', 'fr-FR': 'Équipe' },
+    Component: lazy(() => import('@/components/screens/equipe').then((m) => ({ default: m.EquipeScreen }))),
+  },
+  contratos: {
+    key: 'contratos',
+    icon: Handshake,
+    group: 'system',
+    titleMap: { 'pt-BR': 'Contratos', en: 'Contracts', 'zh-CN': '合同', 'fr-FR': 'Contrats' },
+    Component: lazy(() => import('@/components/screens/contratos').then((m) => ({ default: m.ContratosScreen }))),
+  },
   settings: {
     key: 'settings',
     icon: SettingsIcon,
@@ -208,6 +224,8 @@ export const SCREEN_ORDER: ScreenKey[] = [
   'automations',
   'integrations',
   'marketplace',
+  'equipe',
+  'contratos',
   'settings',
 ];
 
