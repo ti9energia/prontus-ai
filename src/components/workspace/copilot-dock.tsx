@@ -7,6 +7,8 @@ import { Sheet } from '@/components/ui/overlay';
 import { MariPortrait } from '@/components/brand/mari';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import type { ScreenKey } from '@/lib/workspace/store';
+import { detectNavIntent } from '@/lib/mari/intents';
+import { SCREENS } from './registry';
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
@@ -26,10 +28,12 @@ export function CopilotDock({
   open,
   onClose,
   activeScreen,
+  onNavigate,
 }: {
   open: boolean;
   onClose: () => void;
   activeScreen?: ScreenKey;
+  onNavigate?: (screen: ScreenKey) => void;
 }) {
   const t = useTranslations('copilot');
   const locale = useLocale();
@@ -58,6 +62,19 @@ export function CopilotDock({
     const next = [...chat, { role: 'user' as const, content }];
     setChat(next);
     setInput('');
+
+    // Mari can operate the app — navigate on command instead of just answering.
+    const nav = detectNavIntent(content);
+    if (nav && onNavigate) {
+      onNavigate(nav);
+      const label = SCREENS[nav].titleMap?.[locale] ?? nav;
+      setChat((c) => [
+        ...c,
+        { role: 'assistant', content: L(`Abrindo ${label}.`, `Opening ${label}.`, `正在打开 ${label}。`, `Ouverture de ${label}.`) },
+      ]);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/ai/chat', {

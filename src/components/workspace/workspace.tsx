@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from '@/i18n/routing';
-import { focusPane, hydrate, useWorkspace, type Pane } from '@/lib/workspace/store';
+import { focusPane, hydrate, openTab, useWorkspace, type Pane } from '@/lib/workspace/store';
 import { useSession } from '@/lib/auth';
 import { SCREENS } from './registry';
 import { TopBar } from './top-bar';
@@ -125,7 +125,12 @@ export function Workspace() {
           setCopilotOpen(true);
         }}
       />
-      <CopilotDock open={copilotOpen} onClose={() => setCopilotOpen(false)} activeScreen={activeScreen} />
+      <CopilotDock
+        open={copilotOpen}
+        onClose={() => setCopilotOpen(false)}
+        activeScreen={activeScreen}
+        onNavigate={(s) => openTab(s)}
+      />
     </div>
   );
 }
