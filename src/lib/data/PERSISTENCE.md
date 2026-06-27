@@ -59,5 +59,23 @@ export async function saveSnapshot(data: DB): Promise<void> {
 
 > O snapshot JSON é o caminho mais rápido para persistência real. Para um schema
 > relacional por entidade (consultas, guias, pacientes…) — necessário para queries e
-> escala — migre o repositório para Drizzle/Prisma sobre o mesmo `DATABASE_URL`. As
-> rotas `/api/v1/*` já expõem o contrato; é o ponto natural para essa evolução.
+> escala — use o schema Prisma abaixo.
+
+## 3. Schema relacional (Prisma) — RECOMENDADO p/ produção (Bloco 8)
+
+O **banco completo** já está definido em **`prisma/schema.prisma`** (Tenant, User, Plan,
+Subscription, FeatureFlag, Patient, Encounter, ClinicalNote, TissGuide, Template,
+AuditLog, ConnectorSecret). O app continua rodando **local** (`store.ts`) até o banco ser
+provisionado — **nada importa Prisma ainda, então o build não quebra**.
+
+### Ativar (quando subir o banco)
+1. Provisione Postgres (Neon/Supabase) e defina `DATABASE_URL`.
+2. `npm i -D prisma && npm i @prisma/client`.
+3. `npm run db:generate && npm run db:migrate` (cria as tabelas).
+4. Crie `src/lib/data/postgres.ts` implementando as **mesmas funções** de `store.ts`
+   (o contrato/repositório) sobre o `PrismaClient`, e troque o re-export em
+   **`src/lib/data/index.ts`** de `./store` para `./postgres` quando `DATABASE_URL`
+   estiver setado. Esse arquivo é o **único ponto de troca**; consumidores que importam
+   de `@/lib/data` ficam agnósticos ao adapter.
+5. Segredos de connector e hashes de senha por usuário vivem no banco
+   (`ConnectorSecret.config`, `User.passwordHash`), **nunca** no snapshot localStorage.
