@@ -673,6 +673,36 @@ export function resubmitGuide(gid: string) {
   return guide;
 }
 
+/* --------------------- Requisition / prior authorization --------------------- */
+export function requestAuthorization(gid: string) {
+  const g = getGuide(gid);
+  if (g) {
+    g.authStatus = 'requested';
+    pushAudit(db().user.name, 'requisition.request', `Guide ${g.id}`, 'ok', 'ui');
+  }
+  return g;
+}
+export function reviewAuthorization(gid: string) {
+  const g = getGuide(gid);
+  if (g) {
+    g.authStatus = 'in_review';
+    pushAudit(db().user.name, 'requisition.review', `Guide ${g.id}`, 'ok', 'ui');
+  }
+  return g;
+}
+export function decideAuthorization(gid: string, decision: 'authorized' | 'denied', authNumber?: string) {
+  const g = getGuide(gid);
+  if (g) {
+    g.authStatus = decision;
+    if (decision === 'authorized') {
+      g.authNumber = authNumber ?? `AUT-${g.id.slice(-4)}`;
+      g.authorizedBy = db().user.name;
+    }
+    pushAudit(db().user.name, `requisition.${decision}`, `Guide ${g.id}`, decision === 'authorized' ? 'ok' : 'blocked', 'ui');
+  }
+  return g;
+}
+
 export function listTemplates() {
   return db().templates;
 }

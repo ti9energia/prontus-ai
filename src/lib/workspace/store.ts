@@ -20,7 +20,9 @@ export type ScreenKey =
   | 'documents'
   | 'signature'
   | 'automations'
-  | 'marketplace';
+  | 'marketplace'
+  | 'requisicao'
+  | 'faturamento';
 
 export interface Tab {
   id: string;
