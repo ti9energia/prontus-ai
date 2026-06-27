@@ -19,6 +19,7 @@ import type {
   User,
   RoleKey,
 } from '../types';
+import { bus } from '@/lib/events/bus';
 
 /* ============================================================
    In-memory database. A clean repository layer that reads like
@@ -592,6 +593,7 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
   d.guides.unshift(guide);
   if (enc) enc.hasGuide = true;
   pushAudit('Mari (IA)', 'tiss.create', `Guide ${guide.id}`, 'ok', 'ai');
+  bus.emit('guide.created', { guideId: guide.id, encounterId });
   return guide;
 }
 
