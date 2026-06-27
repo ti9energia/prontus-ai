@@ -1,0 +1,197 @@
+// Auronis Health — complete relational schema (Block 8: "todo o banco").
+//
+// The app runs LOCAL on the in-memory + localStorage repository (src/lib/data/store.ts)
+// until a database is provisioned — nothing in the app imports Prisma yet, so the build
+// stays green. To activate: set DATABASE_URL, `npm i -D prisma && npm i @prisma/client`,
+// then `npm run db:generate && npm run db:migrate`. See src/lib/data/PERSISTENCE.md.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id            String         @id
+  name          String
+  planId        String
+  doctors       Int            @default(0)
+  usagePct      Int            @default(0)
+  mrr           Int            @default(0)
+  status        String         @default("active")
+  locale        String         @default("pt-BR")
+  createdAt     DateTime       @default(now())
+  ai            Json?
+  whatsapp      Json?
+  connectors    Json?
+  users         User[]
+  subscriptions Subscription[]
+  patients      Patient[]
+  auditLogs     AuditLog[]
+}
+
+model User {
+  id           String   @id
+  orgId        String
+  name         String
+  email        String   @unique
+  roleKey      String
+  status       String   @default("active")
+  specialtyKey String?
+  council      String?
+  locale       String   @default("pt-BR")
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  tenant       Tenant   @relation(fields: [orgId], references: [id])
+
+  @@index([orgId])
+}
+
+model Plan {
+  id            String         @id
+  name          String
+  price         Int
+  currency      String         @default("BRL")
+  popular       Boolean        @default(false)
+  modules       Json
+  quotas        Json
+  featureKeys   Json
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  tenantId  String
+  planId    String
+  status    String   @default("active")
+  startedAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  plan      Plan     @relation(fields: [planId], references: [id])
+
+  @@index([tenantId])
+}
+
+model FeatureFlag {
+  module  String  @id
+  scope   String
+  enabled Boolean @default(true)
+  rollout Int     @default(100)
+}
+
+model Patient {
+  id         String      @id
+  orgId      String
+  name       String
+  birthDate  String
+  sex        String
+  payer      String
+  cardNumber String
+  consent    String      @default("pending")
+  hue        Int         @default(0)
+  phone      String?
+  lastVisit  String?
+  tenant     Tenant      @relation(fields: [orgId], references: [id])
+  encounters Encounter[]
+
+  @@index([orgId])
+}
+
+model Encounter {
+  id           String        @id
+  patientId    String
+  doctorId     String
+  status       String
+  type         String
+  specialtyKey String
+  scheduledAt  String
+  startedAt    String?
+  durationSec  Int?
+  minutesSaved Int?
+  hasNote      Boolean       @default(false)
+  hasGuide     Boolean       @default(false)
+  patient      Patient       @relation(fields: [patientId], references: [id])
+  note         ClinicalNote?
+  guides       TissGuide[]
+
+  @@index([patientId])
+}
+
+model ClinicalNote {
+  encounterId String    @id
+  approved    Boolean   @default(false)
+  version     Int       @default(1)
+  updatedAt   DateTime  @default(now())
+  sections    Json
+  cids        Json
+  procedures  Json
+  encounter   Encounter @relation(fields: [encounterId], references: [id])
+}
+
+model TissGuide {
+  id             String    @id
+  encounterId    String
+  patientId      String
+  type           String
+  payer          String
+  cardNumber     String
+  professional   String
+  council        String
+  cbo            String
+  procedures     Json
+  diagnoses      Json
+  status         String    @default("draft")
+  value          Int       @default(0)
+  currency       String    @default("BRL")
+  glossReasonKey String?
+  issues         Json
+  source         String?
+  authStatus     String?
+  authNumber     String?
+  authorizedBy   String?
+  createdAt      DateTime  @default(now())
+  encounter      Encounter @relation(fields: [encounterId], references: [id])
+
+  @@index([encounterId])
+  @@index([patientId])
+}
+
+model Template {
+  id           String  @id
+  specialtyKey String
+  payer        String?
+  kind         String  @default("note")
+  locale       String  @default("pt-BR")
+  sectionKeys  Json
+  procedures   Json?
+  usedCount    Int     @default(0)
+  isDefault    Boolean @default(false)
+}
+
+model AuditLog {
+  id     String   @id @default(cuid())
+  orgId  String?
+  at     DateTime @default(now())
+  actor  String
+  action String
+  target String
+  result String
+  source String
+  tenant Tenant?  @relation(fields: [orgId], references: [id])
+
+  @@index([orgId])
+  @@index([at])
+}
+
+// Per-tenant connector secrets (API keys) — server-only, never the localStorage snapshot.
+model ConnectorSecret {
+  id        String   @id @default(cuid())
+  orgId     String
+  connector String
+  config    Json
+  updatedAt DateTime @default(now())
+
+  @@unique([orgId, connector])
+}

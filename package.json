@@ -13,7 +13,10 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "security:scan": "node scripts/security-scan.mjs",
-    "i18n:check": "node scripts/i18n-check.mjs"
+    "i18n:check": "node scripts/i18n-check.mjs",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
