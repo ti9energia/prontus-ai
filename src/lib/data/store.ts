@@ -11,6 +11,9 @@ import type {
   Plan,
   SeriesPoint,
   Tenant,
+  TenantAiConfig,
+  TenantWhatsappConfig,
+  TenantConnectorConfig,
   TissGuide,
   Template,
   User,
@@ -856,6 +859,56 @@ export function setTenantStatus(tid: string, status: Tenant['status']) {
     pushAudit('platform_owner', `tenant.${status}`, `Tenant ${tid}`, 'ok', 'ui');
   }
   return t;
+}
+
+export function getTenant(id: string) {
+  return db().tenants.find((t) => t.id === id);
+}
+
+/** Owner configures a tenant's Mari on their behalf (persisted + audited). */
+export function updateTenantAi(id: string, patch: Partial<TenantAiConfig>) {
+  const t = getTenant(id);
+  if (!t) return undefined;
+  t.ai = {
+    persona: 'Mari',
+    model: 'claude-opus-4-8',
+    autonomy: 'semi',
+    monthlyBudget: 2500,
+    enabledTools: [],
+    ...t.ai,
+    ...patch,
+  };
+  pushAudit('platform_owner', 'tenant.ai.update', `Tenant ${id}`, 'ok', 'ui');
+  return t.ai;
+}
+
+/** Owner configures a tenant's WhatsApp channel on their behalf. */
+export function updateTenantWhatsapp(id: string, patch: Partial<TenantWhatsappConfig>) {
+  const t = getTenant(id);
+  if (!t) return undefined;
+  t.whatsapp = {
+    enabled: true,
+    number: '',
+    persona: 'Mari',
+    commands: [],
+    perTenant: true,
+    ...t.whatsapp,
+    ...patch,
+  };
+  pushAudit('platform_owner', 'tenant.whatsapp.update', `Tenant ${id}`, 'ok', 'ui');
+  return t.whatsapp;
+}
+
+/** Enable/configure a connector for a tenant (idempotent by connector id). */
+export function upsertTenantConnector(id: string, conn: TenantConnectorConfig) {
+  const t = getTenant(id);
+  if (!t) return undefined;
+  t.connectors = t.connectors ?? [];
+  const idx = t.connectors.findIndex((c) => c.id === conn.id);
+  if (idx >= 0) t.connectors[idx] = conn;
+  else t.connectors.push(conn);
+  pushAudit('platform_owner', 'tenant.connector.upsert', `Tenant ${id}`, 'ok', 'ui');
+  return t.connectors;
 }
 
 /* ----------------------------- Templates (mutations) ----------------------------- */

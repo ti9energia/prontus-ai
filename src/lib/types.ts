@@ -155,6 +155,29 @@ export interface AuditEntry {
 
 export type TenantStatus = 'active' | 'trial' | 'suspended' | 'past_due';
 
+export interface TenantAiConfig {
+  persona: string;
+  model: string;
+  autonomy: 'suggest' | 'semi' | 'scheduled';
+  monthlyBudget: number;
+  enabledTools: string[];
+}
+export interface TenantWhatsappConfig {
+  enabled: boolean;
+  number: string;
+  persona: string;
+  commands: string[];
+  perTenant: boolean;
+}
+export interface TenantConnectorConfig {
+  id: string;
+  category: string;
+  status: 'connected' | 'disconnected' | 'error';
+  configured: boolean;
+  /** Non-secret config only — real API keys live in a server secret store (Block 8). */
+  config: Record<string, string>;
+}
+
 export interface Tenant {
   id: string;
   name: string;
@@ -165,6 +188,9 @@ export interface Tenant {
   status: TenantStatus;
   locale: Locale;
   createdAt: string;
+  ai?: TenantAiConfig;
+  whatsapp?: TenantWhatsappConfig;
+  connectors?: TenantConnectorConfig[];
 }
 
 export interface Plan {
