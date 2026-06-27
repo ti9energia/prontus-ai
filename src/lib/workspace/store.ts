@@ -22,7 +22,9 @@ export type ScreenKey =
   | 'automations'
   | 'marketplace'
   | 'requisicao'
-  | 'faturamento';
+  | 'faturamento'
+  | 'equipe'
+  | 'contratos';
 
 export interface Tab {
   id: string;

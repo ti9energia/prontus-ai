@@ -863,6 +863,25 @@ export function getUserByEmail(email: string): User | undefined {
 export function listOrgUsers(orgId: string) {
   return db().users.filter((u) => u.orgId === orgId);
 }
+export function currentOrgId(): string {
+  return getUserByEmail(getCurrentUser().email)?.orgId ?? 'ten_0001';
+}
+export function addOrgUser(orgId: string, input: { name: string; email: string; roleKey: RoleKey }): User {
+  const d = db();
+  const user: User = {
+    id: id('usr', d.users.length + 1),
+    orgId,
+    name: input.name.trim() || 'Novo usuário',
+    email: input.email.trim().toLowerCase(),
+    roleKey: input.roleKey,
+    status: 'invited',
+    locale: 'pt-BR',
+    createdAt: new Date().toISOString(),
+  };
+  d.users.push(user);
+  pushAudit(d.user.name, 'team.invite', `User ${user.id}`, 'ok', 'ui');
+  return user;
+}
 
 export function listTenants() {
   return db().tenants;
