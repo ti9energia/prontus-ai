@@ -331,11 +331,11 @@ function TestimonialCard({
 }) {
   return (
     <figure className="flex h-full flex-col rounded-2xl border border-hairline bg-card p-6 shadow-xs">
-      <Quote className="h-6 w-6 text-brand-500/40" />
-      <div className="mt-2 flex gap-0.5">
-        {Array.from({ length: 5 }).map((_, s) => (
-          <Star key={s} className="h-3.5 w-3.5 fill-accent-400 text-accent-400" />
-        ))}
+      <Quote className="h-6 w-6 text-brand-500/40" aria-hidden />
+      <div className="mt-2 flex gap-0.5" aria-label="5 estrelas">
+        {Array.from({ length: 5 }).map((_, s) => (
+          <Star key={s} className="h-3.5 w-3.5 fill-accent-400 text-accent-400" aria-hidden />
+        ))}
       </div>
       <blockquote className="mt-3 flex-1 font-display text-lg leading-snug tracking-tight">
         &ldquo;{quote}&rdquo;
