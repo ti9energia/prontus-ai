@@ -38,15 +38,15 @@ export function Aurora({ className, interactive = true }: { className?: string; 
       style={{ ['--mx' as string]: '0px', ['--my' as string]: '0px' }}
     >
       <div
-        className="absolute -left-[10%] -top-[20%] h-[55vh] w-[55vh] rounded-full bg-brand-500/30 blur-[90px] animate-aurora"
+        className="absolute -left-[10%] -top-[20%] h-[55vh] w-[55vh] rounded-full bg-brand-500/30 blur-[60px] animate-aurora"
         style={{ transform: 'translate(var(--mx), var(--my))' }}
       />
       <div
-        className="absolute right-[2%] top-[-10%] h-[48vh] w-[48vh] rounded-full bg-brand-300/25 blur-[100px] animate-aurora"
+        className="absolute right-[2%] top-[-10%] h-[48vh] w-[48vh] rounded-full bg-brand-300/25 blur-[70px] animate-aurora"
         style={{ animationDelay: '-5s', transform: 'translate(calc(var(--mx) * -1), var(--my))' }}
       />
       <div
-        className="absolute bottom-[-25%] left-[35%] h-[50vh] w-[50vh] rounded-full bg-accent-400/20 blur-[110px] animate-aurora"
+        className="absolute bottom-[-25%] left-[35%] h-[50vh] w-[50vh] rounded-full bg-accent-400/20 blur-[80px] animate-aurora"
         style={{ animationDelay: '-9s', transform: 'translate(var(--mx), calc(var(--my) * -1))' }}
       />
       {/* faint grid */}

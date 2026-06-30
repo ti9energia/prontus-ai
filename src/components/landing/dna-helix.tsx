@@ -107,6 +107,14 @@ export function DnaHelix() {
     };
     if (finePointer && !reduce) window.addEventListener('pointermove', onPointer, { passive: true });
 
+    // Pause the rAF loop while the tab is hidden — saves CPU + battery.
+    const onVisibility = () => {
+      if (!document.hidden && raf === 0 && !reduce) {
+        raf = requestAnimationFrame(frame);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
     /* ---- ambient depth motes ---- */
     type Mote = { x: number; y: number; z: number; r: number; spd: number; hue: 0 | 1 };
     const MOTES = reduce ? 0 : 28;
@@ -297,7 +305,7 @@ export function DnaHelix() {
       ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = 1;
 
-      if (!reduce) raf = requestAnimationFrame(frame);
+      if (!reduce && !document.hidden) raf = requestAnimationFrame(frame);
     };
 
     if (reduce) frame(t0 + 1200);
@@ -308,6 +316,7 @@ export function DnaHelix() {
       window.removeEventListener('resize', resize);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('pointermove', onPointer);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 

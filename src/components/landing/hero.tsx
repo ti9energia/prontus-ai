@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Play, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Aurora } from './aurora';
 import { HeroDemo } from './hero-demo';
@@ -38,15 +38,11 @@ export function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
           {/* copy */}
           <div className="max-w-xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              className="font-display text-[2.7rem] font-bold leading-[1.04] tracking-[-0.035em] sm:text-[3.9rem]"
-            >
+            {/* LCP element — must be visible without JS. CSS fade-up as progressive enhancement. */}
+            <h1 className="font-display text-display-sm font-bold sm:text-display-md animate-fade-up">
               {t('title')}
               <span className="mt-1 block text-gradient">{t('titleHighlight')}</span>
-            </motion.h1>
+            </h1>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -68,7 +64,6 @@ export function Hero() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a href="#how" className={buttonVariants({ variant: 'outline', size: 'lg' })}>
-                <Play className="h-4 w-4" />
                 {t('ctaSecondary')}
               </a>
             </motion.div>
