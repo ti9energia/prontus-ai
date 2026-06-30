@@ -1,7 +1,9 @@
+import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
+import { getApiKeyByHash } from '@/lib/data';
 
 /**
- * Public REST API helpers — consistent JSON envelopes + a tiny bearer-key guard.
+ * Public REST API helpers — consistent JSON envelopes + a bearer-key guard.
  *
  * Success responses are wrapped as `{ data }` and errors as
  * `{ error: { code, message } }` so every `/api/v1/*` route looks the same.
@@ -25,23 +27,39 @@ function readToken(req: Request): string {
 }
 
 /**
- * Demo-grade API-key gate. Reads `Authorization: Bearer <token>` (or `x-api-key`)
- * and accepts any token that looks like a secret key (`sk_...`). Returns a 401
- * response when the token is missing or malformed, or `null` when the request is
- * allowed to proceed.
+ * API-key gate. Reads `Authorization: Bearer <token>` (or `x-api-key`) and
+ * validates by SHA-256 hash lookup against stored keys. In non-production
+ * environments, `sk_test_*` tokens are accepted without a hash match so local
+ * dev/testing works without seeding a real key.
  *
- * PRODUCTION: replace the prefix check with a lookup against stored, hashed API
- * keys (e.g. SHA-256 of `sk_live_...`) scoped to the calling tenant — never trust
- * an arbitrary `sk_` prefix.
+ * Returns a 401 response when the token is rejected, or `null` to proceed.
  */
 export function authError(req: Request): NextResponse | null {
   const token = readToken(req);
-  if (!token || !token.startsWith('sk_')) {
+
+  if (!token) {
     return apiError(
       'unauthorized',
-      'Missing or invalid API key. Send `Authorization: Bearer sk_...` or an `x-api-key` header.',
+      'Missing API key. Send `Authorization: Bearer <key>` or an `x-api-key` header.',
       401,
     );
   }
+
+  // Dev fallback: accept sk_test_* without a DB lookup in non-production.
+  if (process.env.NODE_ENV !== 'production' && token.startsWith('sk_test_')) {
+    return null;
+  }
+
+  const hash = createHash('sha256').update(token).digest('hex');
+  const record = getApiKeyByHash(hash);
+
+  if (!record || record.revokedAt) {
+    return apiError(
+      'unauthorized',
+      'Invalid or revoked API key.',
+      401,
+    );
+  }
+
   return null;
 }

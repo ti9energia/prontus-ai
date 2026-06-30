@@ -203,6 +203,20 @@ model AuditLog {
   @@index([at])
 }
 
+// Platform API keys — stored as SHA-256 hash of the raw key. Raw key is never persisted.
+model ApiKey {
+  id        String    @id
+  orgId     String
+  name      String
+  prefix    String
+  hash      String    @unique
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  @@index([orgId])
+  @@index([hash])
+}
+
 // Per-tenant connector secrets (API keys) — server-only, never the localStorage snapshot.
 model ConnectorSecret {
   id        String   @id @default(cuid())
