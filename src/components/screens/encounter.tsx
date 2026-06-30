@@ -125,6 +125,10 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
   const [visible, setVisible] = React.useState(0);
   const [noteStep, setNoteStep] = React.useState(0);
   const transcriptRef = React.useRef<HTMLDivElement>(null);
+  const mediaRef = React.useRef<MediaRecorder | null>(null);
+  const streamRef = React.useRef<MediaStream | null>(null);
+  const [asrReal, setAsrReal] = React.useState<boolean | null>(null);
+  const [liveLines, setLiveLines] = React.useState<Line[]>([]);
 
   // timer
   React.useEffect(() => {
@@ -149,24 +153,67 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
 
   React.useEffect(() => {
     transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: 'smooth' });
-  }, [visible]);
+  }, [visible, liveLines]);
+
+  // Probe ASR capability once on mount.
+  React.useEffect(() => {
+    fetch('/api/ai/transcribe')
+      .then((r) => r.json())
+      .then((d: { real: boolean }) => setAsrReal(d.real))
+      .catch(() => setAsrReal(false));
+  }, []);
+
+  // Cleanup media resources on unmount.
+  React.useEffect(() => {
+    return () => {
+      mediaRef.current?.stop();
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
 
   const startConsent = () => setConsentOpen(true);
-  const beginRecording = () => {
+  const beginRecording = async () => {
     setConsentOpen(false);
+    if (asrReal) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamRef.current = stream;
+        const mr = new MediaRecorder(stream);
+        mediaRef.current = mr;
+        mr.ondataavailable = async (e) => {
+          if (e.data.size < 100) return;
+          const fd = new FormData();
+          fd.append('audio', e.data);
+          fd.append('locale', locale);
+          const res = await fetch('/api/ai/transcribe', { method: 'POST', body: fd }).catch(() => null);
+          if (res?.ok) {
+            const { text } = (await res.json()) as { text: string };
+            if (text) setLiveLines((prev) => [...prev, { who: 'patient', text }]);
+          }
+        };
+        mr.start(5000);
+      } catch {
+        // Mic permission denied or unavailable — fall back to demo.
+        setAsrReal(false);
+      }
+    }
     setPhase('recording');
   };
 
   const finish = () => {
     if (!enc) return;
-    // Persist the generated note to the in-memory store, then go to review.
+    if (mediaRef.current && mediaRef.current.state !== 'inactive') {
+      mediaRef.current.requestData();
+      mediaRef.current.stop();
+    }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
     const note = ensureNote(enc.id);
     NOTE_KEYS.forEach((k) => {
       const sec = note.sections.find((s) => s.key === k);
       if (sec) {
         sec.content = script.note[k];
         sec.inferred = true;
-        sec.confidence = 0.8 + Math.random() * 0.15;
+        sec.confidence = 0.85;
         sec.approved = false;
       }
     });
@@ -193,6 +240,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
 
   const recording = phase === 'recording';
   const progressPct = (noteStep / NOTE_KEYS.length) * 100;
+  const displayLines = asrReal ? liveLines : script.lines.slice(0, visible);
 
   return (
     <div className="flex h-full flex-col">
@@ -258,7 +306,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
             ) : (
               <>
                 <AnimatePresence>
-                  {script.lines.slice(0, visible).map((line, i) => (
+                  {displayLines.map((line, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, y: 8 }}
@@ -279,7 +327,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
                     </motion.div>
                   ))}
                 </AnimatePresence>
-                {recording && visible < script.lines.length && (
+                {recording && (asrReal ? true : visible < script.lines.length) && (
                   <span className="inline-flex items-center gap-1.5 text-2xs text-subtle">
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-500" />
                     {t('capturing')}
@@ -290,7 +338,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
           </div>
           {/* waveform + controls */}
           <div className="border-t border-hairline px-5 py-4">
-            <AudioWave active={recording} bars={64} height={40} color="#0d9488" />
+            <AudioWave active={recording} bars={64} height={40} color="#14c8c4" />
             <div className="mt-3 flex items-center justify-center gap-3">
               {phase === 'idle' && (
                 <Button size="lg" leftIcon={<Radio className="h-4 w-4" />} onClick={startConsent}>
@@ -299,7 +347,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
               )}
               {recording && (
                 <>
-                  <Button variant="outline" size="lg" leftIcon={<Pause className="h-4 w-4" />} onClick={() => setPhase('paused')}>
+                  <Button variant="outline" size="lg" leftIcon={<Pause className="h-4 w-4" />} onClick={() => { mediaRef.current?.pause(); setPhase('paused'); }}>
                     {t('pause')}
                   </Button>
                   <Button
@@ -314,7 +362,7 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
               )}
               {phase === 'paused' && (
                 <>
-                  <Button size="lg" leftIcon={<Play className="h-4 w-4" />} onClick={() => setPhase('recording')}>
+                  <Button size="lg" leftIcon={<Play className="h-4 w-4" />} onClick={() => { mediaRef.current?.resume(); setPhase('recording'); }}>
                     {t('resume')}
                   </Button>
                   <Button variant="outline" size="lg" leftIcon={<Square className="h-4 w-4" />} onClick={finish}>
