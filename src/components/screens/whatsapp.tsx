@@ -56,27 +56,33 @@ const COPY: Record<string, Record<Locale, string>> = {
   },
   greeting: {
     'pt-BR': 'Oi! Sou a Mari no WhatsApp. Me peça suas guias, agenda ou minutos economizados — eu puxo e ajo, sempre com a sua confirmação.',
-    en: 'Hi! I’m Mari on WhatsApp. Ask me for your guides, schedule or saved minutes — I pull data and act, always with your confirmation.',
+    en: "Hi! I'm Mari on WhatsApp. Ask me for your guides, schedule or saved minutes — I pull data and act, always with your confirmation.",
     'zh-CN': '你好！我是 WhatsApp 上的 Mari。向我索取您的表单、日程或节省的时间——我会提取数据并执行操作，始终需要您的确认。',
-    'fr-FR': 'Bonjour ! Je suis Mari sur WhatsApp. Demandez-moi vos guides, votre agenda ou vos minutes gagnées — j’extrais les données et j’agis, toujours avec votre confirmation.',
+    'fr-FR': "Bonjour ! Je suis Mari sur WhatsApp. Demandez-moi vos guides, votre agenda ou vos minutes gagnées — j'extrais les données et j'agis, toujours avec votre confirmation.",
   },
   replyGeneric: {
     'pt-BR': 'Entendi. Já estou puxando isso do sistema e te trago o resumo em segundos.',
-    en: 'Got it. I’m pulling that from the system and will bring you the summary in seconds.',
+    en: "Got it. I'm pulling that from the system and will bring you the summary in seconds.",
     'zh-CN': '明白了。我正在从系统中提取信息，几秒钟后给您摘要。',
     'fr-FR': 'Compris. Je récupère cela dans le système et je vous apporte le résumé en quelques secondes.',
   },
   replyGloss: {
     'pt-BR': 'Encontrei 3 guias glosadas esta semana, somando R$ 780. A maior é a do paciente João Pedro (R$ 420) por código incompatível. Quer que eu corrija e reenvie?',
-    en: 'I found 3 denied guides this week, totaling R$ 780. The largest is patient João Pedro’s (R$ 420) for a code mismatch. Want me to fix and resubmit it?',
+    en: "I found 3 denied guides this week, totaling R$ 780. The largest is patient João Pedro's (R$ 420) for a code mismatch. Want me to fix and resubmit it?",
     'zh-CN': '本周我发现 3 份被拒付的表单，共计 R$ 780。金额最大的是患者 João Pedro 的（R$ 420），原因是编码不匹配。需要我修正并重新提交吗？',
-    'fr-FR': 'J’ai trouvé 3 guides rejetés cette semaine, pour un total de 780 R$. Le plus important est celui du patient João Pedro (420 R$) pour un code incompatible. Voulez-vous que je le corrige et le renvoie ?',
+    'fr-FR': "J'ai trouvé 3 guides rejetés cette semaine, pour un total de 780 R$. Le plus important est celui du patient João Pedro (420 R$) pour un code incompatible. Voulez-vous que je le corrige et le renvoie ?",
   },
   replyConfirm: {
     'pt-BR': 'Perfeito! Guia corrigida e reenviada à operadora. Te aviso assim que houver retorno. ✅',
-    en: 'Perfect! Guide fixed and resubmitted to the payer. I’ll let you know as soon as there’s a reply. ✅',
+    en: "Perfect! Guide fixed and resubmitted to the payer. I'll let you know as soon as there's a reply. ✅",
     'zh-CN': '完美！表单已修正并重新提交给付款方。一有回复我就通知您。✅',
-    'fr-FR': 'Parfait ! Guide corrigé et renvoyé à l’assureur. Je vous préviens dès qu’il y a une réponse. ✅',
+    'fr-FR': "Parfait ! Guide corrigé et renvoyé à l'assureur. Je vous préviens dès qu'il y a une réponse. ✅",
+  },
+  mockBadge: {
+    'pt-BR': 'Simulado',
+    en: 'Simulated',
+    'zh-CN': '模拟',
+    'fr-FR': 'Simulé',
   },
 };
 
@@ -108,6 +114,7 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
   const [proactive, setProactive] = React.useState(true);
   const [number, setNumber] = React.useState('+55 11 99000-0000');
   const [draft, setDraft] = React.useState('');
+  const [waReal, setWaReal] = React.useState(false);
   const seq = React.useRef(2);
 
   const [thread, setThread] = React.useState<Message[]>(() => [
@@ -116,6 +123,14 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const replyTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Probe WhatsApp Cloud API capability on mount
+  React.useEffect(() => {
+    fetch('/api/whatsapp?probe=1')
+      .then((r) => r.json())
+      .then((d: { real?: boolean }) => setWaReal(!!d.real))
+      .catch(() => {});
+  }, []);
 
   React.useEffect(() => {
     const el = scrollRef.current;
@@ -135,6 +150,16 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
       const outId = seq.current++;
       setThread((prev) => [...prev, { id: outId, role: 'out', text: clean, at: new Date() }]);
       setDraft('');
+
+      // Fire-and-forget real send when Cloud API is available and number is linked
+      if (waReal && linked) {
+        fetch('/api/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'send', to: number, body: clean }),
+        }).catch(() => {});
+      }
+
       if (replyTimer.current) clearTimeout(replyTimer.current);
       replyTimer.current = setTimeout(() => {
         setThread((prev) => [
@@ -143,12 +168,27 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
         ]);
       }, 700);
     },
-    [locale],
+    [locale, waReal, linked, number],
   );
 
   return (
     <ScreenContainer>
-      <ScreenHeader icon={MessageCircle} title={t('title')} subtitle={t('subtitle')} />
+      <ScreenHeader
+        icon={MessageCircle}
+        title={t('title')}
+        subtitle={t('subtitle')}
+        actions={
+          waReal ? (
+            <Badge tone="success" dot>
+              WhatsApp Cloud
+            </Badge>
+          ) : (
+            <Badge tone="neutral">
+              {localized('mockBadge', locale)}
+            </Badge>
+          )
+        }
+      />
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
         {/* LEFT — config */}
