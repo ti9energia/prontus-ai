@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 export function AudioWave({
   active = true,
   className,
-  color = '#0d9488',
+  color = '#14c8c4',
   bars = 48,
   height = 56,
 }: {
@@ -30,6 +30,7 @@ export function AudioWave({
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let raf = 0;
     let t = 0;
+    let visible = true;
     const phases = Array.from({ length: bars }, (_, i) => i * 0.45);
 
     const resize = () => {
@@ -42,6 +43,11 @@ export function AudioWave({
     resize();
 
     const draw = () => {
+      // Pause when offscreen or tab is hidden — saves CPU + battery.
+      if (!visible || document.hidden) {
+        raf = 0;
+        return;
+      }
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
       ctx.clearRect(0, 0, w, h);
@@ -71,11 +77,32 @@ export function AudioWave({
       t += 1;
       raf = requestAnimationFrame(draw);
     };
+
+    const resume = () => {
+      if (visible && !document.hidden && raf === 0) {
+        raf = requestAnimationFrame(draw);
+      }
+    };
+
+    // Pause when the canvas scrolls off-screen.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) resume();
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(canvas);
+
+    document.addEventListener('visibilitychange', resume);
+
     draw();
     window.addEventListener('resize', resize);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', resume);
+      observer.disconnect();
     };
   }, [active, color, bars, reduced]);
 
