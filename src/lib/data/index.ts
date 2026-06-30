@@ -121,3 +121,8 @@ export const getPlan = _adapter.getPlan;
 
 export const listFlags = _adapter.listFlags;
 export const toggleFlag = _adapter.toggleFlag;
+
+export const listApiKeys = _adapter.listApiKeys;
+export const getApiKeyByHash = _adapter.getApiKeyByHash;
+export const addApiKey = _adapter.addApiKey;
+export const revokeApiKey = _adapter.revokeApiKey;

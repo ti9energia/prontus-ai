@@ -28,8 +28,8 @@ describe('authError — bearer/api-key gate', () => {
     expect(res!.status).toBe(401);
   });
 
-  it('allows a valid sk_ bearer token (returns null)', () => {
-    expect(authError(reqWith({ authorization: 'Bearer sk_live_123' }))).toBeNull();
+  it('allows a valid sk_test_ bearer token (dev fallback)', () => {
+    expect(authError(reqWith({ authorization: 'Bearer sk_test_dev123' }))).toBeNull();
   });
 
   it('accepts a lowercase "bearer" scheme (case-insensitive)', () => {
@@ -37,17 +37,21 @@ describe('authError — bearer/api-key gate', () => {
   });
 
   it('trims surrounding whitespace around the bearer token', () => {
-    expect(authError(reqWith({ authorization: 'Bearer    sk_x   ' }))).toBeNull();
+    expect(authError(reqWith({ authorization: 'Bearer    sk_test_padded   ' }))).toBeNull();
   });
 
-  it('allows a valid sk_ via the x-api-key header', () => {
-    expect(authError(reqWith({ 'x-api-key': 'sk_abc' }))).toBeNull();
+  it('allows a valid sk_test_ via the x-api-key header', () => {
+    expect(authError(reqWith({ 'x-api-key': 'sk_test_xkey' }))).toBeNull();
   });
 
   it('falls back to x-api-key when Authorization is not a bearer scheme', () => {
     // "Token ..." is not a bearer header → it reads x-api-key instead.
-    expect(authError(reqWith({ authorization: 'Token zzz', 'x-api-key': 'sk_ok' }))).toBeNull();
+    expect(authError(reqWith({ authorization: 'Token zzz', 'x-api-key': 'sk_test_ok' }))).toBeNull();
     expect(authError(reqWith({ authorization: 'Token zzz' }))).not.toBeNull();
+  });
+
+  it('rejects sk_live_ tokens without a matching stored hash', () => {
+    expect(authError(reqWith({ authorization: 'Bearer sk_live_unknown' }))).not.toBeNull();
   });
 });
 

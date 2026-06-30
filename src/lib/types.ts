@@ -292,3 +292,15 @@ export interface User {
   locale: Locale;
   createdAt: string;
 }
+
+/* ----------------------------- API keys ----------------------------- */
+
+export interface ApiKey {
+  id: string;
+  orgId: string;
+  name: string;
+  prefix: string;   // first 8 chars of the raw key, for safe display ("sk_live_")
+  hash: string;     // SHA-256 hex of the full key — what is stored and compared
+  createdAt: string;
+  revokedAt?: string;
+}

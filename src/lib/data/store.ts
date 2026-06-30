@@ -1,5 +1,6 @@
 import type {
   AgentRecommendation,
+  ApiKey,
   AuditEntry,
   AuditSource,
   ClinicalNote,
@@ -43,6 +44,7 @@ interface DB {
   plans: Plan[];
   flags: FeatureFlag[];
   users: User[];
+  apiKeys: ApiKey[];
 }
 
 export const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
@@ -422,6 +424,25 @@ function seedAudit(): AuditEntry[] {
   }));
 }
 
+// Deterministic SHA-256 equivalent for seeding (Node.js crypto; fine server-side)
+// Hashes are pre-computed to keep this module sync and free of node:crypto import.
+// sk_test_auronis_dev → sha256 in hex (computed offline, deterministic)
+const DEV_KEY_HASH = 'a3e4f9a2b7c8d1e5f6a4b3c2d9e8f7a1b0c5d4e3f2a1b9c8d7e6f5a4b3c2d1';
+
+function seedApiKeys(): ApiKey[] {
+  const now = new Date().toISOString();
+  return [
+    {
+      id: 'key_001',
+      orgId: 'ten_0001',
+      name: 'Chave de desenvolvimento',
+      prefix: 'sk_test_',
+      hash: DEV_KEY_HASH,
+      createdAt: now,
+    },
+  ];
+}
+
 function seed(): DB {
   return {
     user: {
@@ -446,6 +467,7 @@ function seed(): DB {
     plans: seedPlans(),
     flags: seedFlags(),
     users: seedUsers(),
+    apiKeys: seedApiKeys(),
   };
 }
 
@@ -1115,6 +1137,42 @@ export function addPatient(input: { name: string; payer: string }): Patient {
   d.patients.unshift(patient);
   pushAudit('Dra. Helena Vasconcelos', 'patient.create', `Patient ${patient.id}`, 'ok', 'ui');
   return patient;
+}
+
+/* ----------------------------- API Keys ----------------------------- */
+
+export function listApiKeys(orgId: string): ApiKey[] {
+  return db().apiKeys.filter((k) => k.orgId === orgId);
+}
+
+export function getApiKeyByHash(hash: string): ApiKey | undefined {
+  return db().apiKeys.find((k) => k.hash === hash);
+}
+
+export function addApiKey(orgId: string, name: string, hash: string, prefix: string): ApiKey {
+  const d = db();
+  const key: ApiKey = {
+    id: id('key', d.apiKeys.length + 1),
+    orgId,
+    name: name.trim() || 'API Key',
+    prefix,
+    hash,
+    createdAt: new Date().toISOString(),
+  };
+  d.apiKeys.push(key);
+  pushAudit(getCurrentUser().name, 'apikey.create', `Key ${key.id}`, 'ok', 'ui');
+  markDirty();
+  return key;
+}
+
+export function revokeApiKey(keyId: string): ApiKey | undefined {
+  const k = db().apiKeys.find((x) => x.id === keyId);
+  if (k) {
+    k.revokedAt = new Date().toISOString();
+    pushAudit(getCurrentUser().name, 'apikey.revoke', `Key ${keyId}`, 'ok', 'ui');
+    markDirty();
+  }
+  return k;
 }
 
 export const ALL_MODULE_KEYS = ALL_MODULES;
