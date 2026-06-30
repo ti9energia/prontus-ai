@@ -38,6 +38,8 @@ const KIND_META: Record<DocKind, { icon: LucideIcon; tone: React.ComponentProps<
   guiaTiss: { icon: FileCheck, tone: 'info' },
 };
 
+import type { IcpSource } from '@/lib/connectors/icp';
+
 interface SignDoc {
   id: string;
   kind: DocKind;
@@ -46,13 +48,10 @@ interface SignDoc {
   createdAt: string;
   signedAt?: string;
   hash?: string;
+  icpSource?: IcpSource;
 }
 
-/**
- * Deterministic mock fingerprint derived from a stable seed (never Math.random).
- * FNV-1a expanded over several rounds into a SHA-like hex string so the same
- * document always renders the same hash across reloads.
- */
+/** Deterministic mock fingerprint — kept for seeding already-signed demo docs. */
 function mockHash(seed: string): string {
   let h = 0x811c9dc5;
   const out: string[] = [];
@@ -146,21 +145,35 @@ export function SignatureScreen() {
   const [signingId, setSigningId] = React.useState<string | null>(null);
   const signingDoc = docs.find((d) => d.id === signingId) ?? null;
   const [pin, setPin] = React.useState('');
+  const [signing, setSigning] = React.useState(false);
 
   const openSign = (d: SignDoc) => {
     setPin('');
     setSigningId(d.id);
   };
-  const confirmSign = () => {
+  const confirmSign = async () => {
     if (!signingId) return;
     const id = signingId;
-    const stamp = new Date().toISOString();
-    setDocs((list) =>
-      list.map((d) => (d.id === id ? { ...d, signedAt: stamp, hash: `SHA256:${mockHash(d.id)}` } : d)),
-    );
-    setSigningId(null);
-    setPin('');
-    toast.success(L('Documento assinado', 'Document signed', '文档已签名', 'Document signé'));
+    setSigning(true);
+    try {
+      const res = await fetch('/api/icp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docId: id }),
+      });
+      if (!res.ok) throw new Error();
+      const { hash, signedAt, source } = await res.json();
+      setDocs((list) =>
+        list.map((d) => (d.id === id ? { ...d, signedAt, hash, icpSource: source } : d)),
+      );
+      setSigningId(null);
+      setPin('');
+      toast.success(L('Documento assinado', 'Document signed', '文档已签名', 'Document signé'));
+    } catch {
+      toast.error(L('Erro ao assinar', 'Signing error', '签名错误', 'Erreur de signature'));
+    } finally {
+      setSigning(false);
+    }
   };
 
   /* ----------------------------- doc cell UI ----------------------------- */
@@ -339,10 +352,15 @@ export function SignatureScreen() {
                   </Td>
                   <Td>
                     <div className="flex flex-col gap-1.5">
-                      <Badge tone="success">
-                        <Stamp className="h-3 w-3" />
-                        {L('Carimbo de tempo', 'Time-stamp', '时间戳', 'Horodatage')}
-                      </Badge>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Badge tone="success">
+                          <Stamp className="h-3 w-3" />
+                          {L('Carimbo de tempo', 'Time-stamp', '时间戳', 'Horodatage')}
+                        </Badge>
+                        {d.icpSource && d.icpSource !== 'mock' && (
+                          <Badge tone="brand">ICP-Brasil</Badge>
+                        )}
+                      </div>
                       <span className="inline-flex items-center gap-1 font-mono text-2xs text-muted">
                         <Hash className="h-3 w-3 shrink-0 text-subtle" />
                         <span className="max-w-[12rem] truncate">{d.hash}</span>
@@ -447,15 +465,17 @@ export function SignatureScreen() {
               />
             </Field>
             <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setSigningId(null)}>
+              <Button variant="ghost" onClick={() => setSigningId(null)} disabled={signing}>
                 {L('Cancelar', 'Cancel', '取消', 'Annuler')}
               </Button>
               <Button
                 leftIcon={<FileSignature className="h-4 w-4" />}
-                disabled={!pin.trim()}
+                disabled={!pin.trim() || signing}
                 onClick={confirmSign}
               >
-                {L('Assinar agora', 'Sign now', '立即签名', 'Signer maintenant')}
+                {signing
+                  ? L('Assinando…', 'Signing…', '签名中…', 'Signature…')
+                  : L('Assinar agora', 'Sign now', '立即签名', 'Signer maintenant')}
               </Button>
             </div>
           </div>
