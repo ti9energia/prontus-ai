@@ -6,6 +6,8 @@ import type {
   CurrentUser,
   Encounter,
   FeatureFlag,
+  LabOrder,
+  LabOrderStatus,
   OwnerStats,
   Patient,
   Plan,
@@ -33,6 +35,7 @@ interface DB {
   encounters: Encounter[];
   notes: Record<string, ClinicalNote>;
   guides: TissGuide[];
+  labOrders: LabOrder[];
   templates: Template[];
   audit: AuditEntry[];
   tenants: Tenant[];
@@ -195,6 +198,71 @@ function seedGuides(): TissGuide[] {
     base({ id: id('gui', 6), patientId: id('pat', 9), encounterId: id('enc', 0), payer: 'Amil', status: 'glossed', value: 180, glossReasonKey: 'expiredCard', diagnoses: [{ code: 'J06.9', label: 'Infecção aguda das vias aéreas superiores' }], issues: [], createdAt: daysAgo(8) }),
     base({ id: id('gui', 7), patientId: id('pat', 10), encounterId: id('enc', 0), payer: 'Unimed', status: 'sent', value: 180, diagnoses: [{ code: 'E78', label: 'Distúrbios do metabolismo de lipoproteínas' }], createdAt: daysAgo(1) }),
     base({ id: id('gui', 8), patientId: id('pat', 7), encounterId: id('enc', 0), payer: 'SulAmérica', status: 'paid', value: 180, diagnoses: [{ code: 'Z00', label: 'Exame médico geral' }], createdAt: daysAgo(7) }),
+  ];
+}
+
+function seedLabOrders(): LabOrder[] {
+  return [
+    {
+      id: id('lab', 1),
+      patientId: id('pat', 1),
+      encounterId: id('enc', 3),
+      orderedAt: daysAgo(14),
+      collectedAt: daysAgo(13),
+      resultedAt: daysAgo(12),
+      reviewedAt: daysAgo(12),
+      status: 'reviewed',
+      priority: 'routine',
+      lab: 'Fleury',
+      items: [
+        { code: '40301140', name: 'Hemograma completo', value: '14.2', unit: 'g/dL', refRange: '12–16', flag: undefined },
+        { code: '40301190', name: 'Glicemia em jejum', value: '112', unit: 'mg/dL', refRange: '<100', flag: 'H' },
+        { code: '40301310', name: 'Creatinina sérica', value: '0.9', unit: 'mg/dL', refRange: '0.5–1.1', flag: undefined },
+      ],
+    },
+    {
+      id: id('lab', 2),
+      patientId: id('pat', 5),
+      encounterId: id('enc', 5),
+      orderedAt: daysAgo(7),
+      collectedAt: daysAgo(6),
+      status: 'processing',
+      priority: 'urgent',
+      lab: 'DASA',
+      items: [
+        { code: '40301140', name: 'Hemograma completo' },
+        { code: '40301050', name: 'TSH ultrassensível' },
+        { code: '40301060', name: 'T4 livre' },
+      ],
+    },
+    {
+      id: id('lab', 3),
+      patientId: id('pat', 2),
+      orderedAt: daysAgo(2),
+      status: 'ordered',
+      priority: 'routine',
+      items: [
+        { code: '40301250', name: 'Colesterol total e frações' },
+        { code: '40301260', name: 'Triglicérides' },
+        { code: '40301050', name: 'TSH ultrassensível' },
+      ],
+    },
+    {
+      id: id('lab', 4),
+      patientId: id('pat', 1),
+      encounterId: id('enc', 1),
+      orderedAt: daysAgo(30),
+      collectedAt: daysAgo(29),
+      resultedAt: daysAgo(28),
+      reviewedAt: daysAgo(28),
+      status: 'reviewed',
+      priority: 'routine',
+      lab: 'Fleury',
+      items: [
+        { code: '40301140', name: 'Hemograma completo', value: '13.8', unit: 'g/dL', refRange: '12–16' },
+        { code: '40301310', name: 'Creatinina sérica', value: '0.8', unit: 'mg/dL', refRange: '0.5–1.1' },
+      ],
+    },
   ];
 }
 
@@ -370,6 +438,7 @@ function seed(): DB {
     encounters: seedEncounters(),
     notes: { [id('enc', 3)]: NOTE_MARINA() },
     guides: seedGuides(),
+    labOrders: seedLabOrders(),
     templates: [...seedTemplates(), ...seedGuideTemplates()],
     audit: seedAudit(),
     tenants: seedTenants(),
@@ -707,6 +776,55 @@ export function decideAuthorization(gid: string, decision: 'authorized' | 'denie
 
 export function listTemplates() {
   return db().templates;
+}
+
+/* ----------------------------- Lab Orders ----------------------------- */
+
+export function listLabOrders(patientId?: string): LabOrder[] {
+  const orders = db().labOrders;
+  return patientId ? orders.filter((o) => o.patientId === patientId) : orders;
+}
+
+export function getLabOrder(labId: string): LabOrder | undefined {
+  return db().labOrders.find((o) => o.id === labId);
+}
+
+export function addLabOrder(
+  input: Pick<LabOrder, 'patientId' | 'items' | 'priority' | 'notes' | 'lab'> & { encounterId?: string },
+): LabOrder {
+  const d = db();
+  const order: LabOrder = {
+    id: `lab_${Date.now()}`,
+    patientId: input.patientId,
+    encounterId: input.encounterId,
+    orderedAt: new Date().toISOString(),
+    status: 'ordered',
+    priority: input.priority ?? 'routine',
+    items: input.items ?? [],
+    notes: input.notes,
+    lab: input.lab,
+  };
+  d.labOrders.push(order);
+  markDirty();
+  pushAudit(d.user.name, 'lab.order', `Patient ${input.patientId}`, 'ok', 'ui');
+  return order;
+}
+
+export function updateLabOrderStatus(
+  labId: string,
+  status: LabOrderStatus,
+  extra?: { collectedAt?: string; resultedAt?: string; reviewedAt?: string; items?: LabOrder['items'] },
+): LabOrder | undefined {
+  const order = getLabOrder(labId);
+  if (!order) return undefined;
+  order.status = status;
+  if (extra?.collectedAt) order.collectedAt = extra.collectedAt;
+  if (extra?.resultedAt) order.resultedAt = extra.resultedAt;
+  if (extra?.reviewedAt) order.reviewedAt = extra.reviewedAt;
+  if (extra?.items) order.items = extra.items;
+  markDirty();
+  pushAudit(db().user.name, `lab.${status}`, `LabOrder ${labId}`, 'ok', 'ui');
+  return order;
 }
 
 /* ----------------------------- Billing ----------------------------- */

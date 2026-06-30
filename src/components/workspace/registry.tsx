@@ -13,6 +13,7 @@ import {
   FileCheck,
   FileText,
   FileSignature,
+  FlaskConical,
   Handshake,
   LayoutTemplate,
   MessageCircle,
@@ -89,6 +90,13 @@ export const SCREENS: Record<ScreenKey, ScreenDef> = {
     group: 'clinic',
     titleKey: 'nav.patients',
     Component: lazy(() => import('@/components/screens/patients').then((m) => ({ default: m.PatientsScreen }))),
+  },
+  exams: {
+    key: 'exams',
+    icon: FlaskConical,
+    group: 'clinic',
+    titleMap: { 'pt-BR': 'Exames', en: 'Lab Orders', 'zh-CN': '检验', 'fr-FR': 'Examens' },
+    Component: lazy(() => import('@/components/screens/exams').then((m) => ({ default: m.ExamsScreen }))),
   },
   billing: {
     key: 'billing',

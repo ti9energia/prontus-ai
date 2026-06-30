@@ -85,6 +85,11 @@ export const listTemplates = _adapter.listTemplates;
 export const setDefaultTemplate = _adapter.setDefaultTemplate;
 export const duplicateTemplate = _adapter.duplicateTemplate;
 
+export const listLabOrders = _adapter.listLabOrders;
+export const getLabOrder = _adapter.getLabOrder;
+export const addLabOrder = _adapter.addLabOrder;
+export const updateLabOrderStatus = _adapter.updateLabOrderStatus;
+
 export const billingStats = _adapter.billingStats;
 export const glossReasons = _adapter.glossReasons;
 export const glossTimeSeries = _adapter.glossTimeSeries;

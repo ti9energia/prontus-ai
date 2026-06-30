@@ -170,6 +170,24 @@ model Template {
   isDefault    Boolean @default(false)
 }
 
+model LabOrder {
+  id          String   @id
+  patientId   String
+  encounterId String?
+  orderedAt   DateTime @default(now())
+  collectedAt DateTime?
+  resultedAt  DateTime?
+  reviewedAt  DateTime?
+  status      String   @default("ordered")
+  priority    String   @default("routine")
+  items       Json
+  notes       String?
+  lab         String?
+
+  @@index([patientId])
+  @@index([encounterId])
+}
+
 model AuditLog {
   id     String   @id @default(cuid())
   orgId  String?
