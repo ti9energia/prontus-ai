@@ -18,7 +18,12 @@
       "pedidoExame": "Demande d'examen",
       "termo": "Consentement éclairé"
     },
-    "columns": { "type": "Type", "patient": "Patient", "date": "Date", "actions": "Actions" },
+    "columns": {
+      "type": "Type",
+      "patient": "Patient",
+      "date": "Date",
+      "actions": "Actions"
+    },
     "placeholders": {
       "receita": "Médicament, dose, posologie et durée.",
       "atestado": "Arrêt et période pour raison de santé.",
@@ -534,7 +539,10 @@
       "consents": "Consentements",
       "notes": "Notes",
       "noEncounters": "Aucune consultation enregistrée"
-    }
+    },
+    "timeline": "Historique",
+    "labOrdersTitle": "Examens prescrits",
+    "noLabOrders": "Aucun examen prescrit."
   },
   "billing": {
     "title": "Facturation et rejets",
@@ -946,6 +954,41 @@
     "app": {
       "title": "Auronis Health",
       "description": "Dossiers médicaux structurés et feuilles de soins TISS à partir de l’audio de la consultation."
+    }
+  },
+  "exams": {
+    "title": "Examens",
+    "subtitle": "Prescriptions, prélèvements et résultats.",
+    "search": "Rechercher un examen ou un patient",
+    "order": "Prescrire un examen",
+    "ordered": "Examen prescrit avec succès.",
+    "selectExams": "Sélectionner les examens",
+    "status": {
+      "ordered": "Prescrit",
+      "collected": "Prélevé",
+      "processing": "En analyse",
+      "resulted": "Résultat disponible",
+      "reviewed": "Relu"
+    },
+    "priority": {
+      "routine": "Routine",
+      "urgent": "Urgent",
+      "stat": "Immédiat"
+    },
+    "advance": {
+      "collected": "Marquer comme prélevé",
+      "processing": "Marquer en analyse",
+      "resulted": "Enregistrer le résultat",
+      "reviewed": "Marquer comme relu"
+    },
+    "columns": {
+      "patient": "Patient",
+      "items": "Examens",
+      "lab": "Laboratoire",
+      "ordered": "Prescrit le",
+      "collected": "Prélevé le",
+      "resulted": "Résultat le",
+      "status": "Statut"
     }
   }
 }

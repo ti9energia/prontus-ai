@@ -129,6 +129,33 @@ export interface Template {
   isDefault: boolean;
 }
 
+export type LabOrderStatus = 'ordered' | 'collected' | 'processing' | 'resulted' | 'reviewed';
+export type LabOrderPriority = 'routine' | 'urgent' | 'stat';
+
+export interface LabOrderItem {
+  code: string;
+  name: string;
+  value?: string;
+  unit?: string;
+  refRange?: string;
+  flag?: 'H' | 'L' | 'C'; // High, Low, Critical
+}
+
+export interface LabOrder {
+  id: string;
+  patientId: string;
+  encounterId?: string;
+  orderedAt: string; // ISO
+  collectedAt?: string;
+  resultedAt?: string;
+  reviewedAt?: string;
+  status: LabOrderStatus;
+  priority: LabOrderPriority;
+  items: LabOrderItem[];
+  notes?: string;
+  lab?: string;
+}
+
 export type AgentCategory = 'gloss' | 'resubmit' | 'incomplete' | 'template';
 
 export interface AgentRecommendation {

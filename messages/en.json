@@ -18,7 +18,12 @@
       "pedidoExame": "Lab request",
       "termo": "Consent form"
     },
-    "columns": { "type": "Type", "patient": "Patient", "date": "Date", "actions": "Actions" },
+    "columns": {
+      "type": "Type",
+      "patient": "Patient",
+      "date": "Date",
+      "actions": "Actions"
+    },
     "placeholders": {
       "receita": "Medication, dose, posology and duration.",
       "atestado": "Leave and period for health reasons.",
@@ -534,7 +539,10 @@
       "consents": "Consents",
       "notes": "Notes",
       "noEncounters": "No visits on record"
-    }
+    },
+    "timeline": "Timeline",
+    "labOrdersTitle": "Lab orders",
+    "noLabOrders": "No lab orders yet."
   },
   "billing": {
     "title": "Billing & denials",
@@ -946,6 +954,41 @@
     "app": {
       "title": "Auronis Health",
       "description": "Structured medical records and TISS claims from the consultation audio."
+    }
+  },
+  "exams": {
+    "title": "Lab Orders",
+    "subtitle": "Lab orders, collection, and results.",
+    "search": "Search exam or patient",
+    "order": "Order exam",
+    "ordered": "Exam ordered successfully.",
+    "selectExams": "Select exams",
+    "status": {
+      "ordered": "Ordered",
+      "collected": "Collected",
+      "processing": "Processing",
+      "resulted": "Result available",
+      "reviewed": "Reviewed"
+    },
+    "priority": {
+      "routine": "Routine",
+      "urgent": "Urgent",
+      "stat": "STAT"
+    },
+    "advance": {
+      "collected": "Mark as collected",
+      "processing": "Mark as processing",
+      "resulted": "Register result",
+      "reviewed": "Mark as reviewed"
+    },
+    "columns": {
+      "patient": "Patient",
+      "items": "Tests",
+      "lab": "Laboratory",
+      "ordered": "Ordered on",
+      "collected": "Collected on",
+      "resulted": "Result on",
+      "status": "Status"
     }
   }
 }

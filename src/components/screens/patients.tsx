@@ -25,7 +25,8 @@ import {
   Activity,
   type LucideIcon,
 } from 'lucide-react';
-import { listPatients, listEncounters, getPatient, addPatient } from '@/lib/data';
+import { listPatients, listEncounters, getPatient, addPatient, listLabOrders } from '@/lib/data';
+import type { LabOrderStatus } from '@/lib/types';
 import type { ConsentStatus, EncounterStatus, Patient } from '@/lib/types';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar, IconButton } from '@/components/ui/misc';
@@ -440,6 +441,9 @@ function PatientDetail({
 
   const seed = React.useMemo(() => hashSeed(`${patient.id}:${patient.name}`), [patient.id, patient.name]);
   const record = React.useMemo(() => buildRecord(seed, patient.phone), [seed, patient.phone]);
+  const labOrders = React.useMemo(() => listLabOrders(patient.id).slice().sort((a, b) =>
+    a.orderedAt < b.orderedAt ? 1 : -1
+  ), [patient.id]);
   const now = React.useMemo(() => Date.now(), []);
   const dateFrom = React.useCallback((d: number) => new Date(now - d * 86_400_000), [now]);
 
@@ -593,39 +597,48 @@ function PatientDetail({
           </div>
         </section>
 
-        {/* exames recentes */}
+        {/* exames solicitados (real lab orders from store) */}
         <section>
           <SectionTitle>
             <span className="inline-flex items-center gap-1.5">
               <FlaskConical className="h-3.5 w-3.5" />
-              {L('Exames recentes', 'Recent exams', '近期检查', 'Examens récents')}
+              {t('labOrdersTitle')}
             </span>
           </SectionTitle>
-          <ol className="mt-2.5 overflow-hidden rounded-xl border border-hairline bg-card shadow-xs">
-            {record.exams.map((ex, i) => {
-              const meta = EXAM_STATUS_META[ex.status];
-              return (
-                <li
-                  key={ex.id}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-3',
-                    i !== record.exams.length - 1 && 'border-b border-hairline/60',
-                  )}
-                >
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink/[0.05] text-muted">
-                    <FlaskConical className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{T(ex.name)}</p>
-                    <p className="text-xs text-muted">{formatDate(dateFrom(ex.daysAgo), locale)}</p>
-                  </div>
-                  <Badge tone={meta.tone} dot>
-                    {T(meta.label)}
-                  </Badge>
-                </li>
-              );
-            })}
-          </ol>
+          {labOrders.length === 0 ? (
+            <p className="mt-2 text-sm text-muted">{t('noLabOrders')}</p>
+          ) : (
+            <ol className="mt-2.5 overflow-hidden rounded-xl border border-hairline bg-card shadow-xs">
+              {labOrders.map((order, i) => {
+                const LAB_STATUS_TONE: Record<LabOrderStatus, BadgeTone> = {
+                  ordered: 'neutral', collected: 'info', processing: 'warning',
+                  resulted: 'success', reviewed: 'neutral',
+                };
+                return (
+                  <li
+                    key={order.id}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-3',
+                      i !== labOrders.length - 1 && 'border-b border-hairline/60',
+                    )}
+                  >
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink/[0.05] text-muted">
+                      <FlaskConical className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
+                        {order.items.map((it) => it.name).join(', ') || '—'}
+                      </p>
+                      <p className="text-xs text-muted">{formatDate(order.orderedAt, locale)}{order.lab ? ` · ${order.lab}` : ''}</p>
+                    </div>
+                    <Badge tone={LAB_STATUS_TONE[order.status]} dot>
+                      {order.status}
+                    </Badge>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </section>
 
         {/* linha do tempo */}

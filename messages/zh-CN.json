@@ -18,7 +18,12 @@
       "pedidoExame": "检查申请",
       "termo": "知情同意书"
     },
-    "columns": { "type": "类型", "patient": "患者", "date": "日期", "actions": "操作" },
+    "columns": {
+      "type": "类型",
+      "patient": "患者",
+      "date": "日期",
+      "actions": "操作"
+    },
     "placeholders": {
       "receita": "药物、剂量、用法与疗程。",
       "atestado": "因健康原因请假及期限。",
@@ -534,7 +539,10 @@
       "consents": "授权记录",
       "notes": "备注",
       "noEncounters": "暂无问诊记录"
-    }
+    },
+    "timeline": "历史记录",
+    "labOrdersTitle": "检验申请",
+    "noLabOrders": "暂无检验申请。"
   },
   "billing": {
     "title": "结算与拒付",
@@ -946,6 +954,41 @@
     "app": {
       "title": "Auronis Health",
       "description": "根据问诊语音生成结构化病历和 TISS 单据。"
+    }
+  },
+  "exams": {
+    "title": "检验单",
+    "subtitle": "检验申请、采样和结果。",
+    "search": "搜索检验或患者",
+    "order": "申请检验",
+    "ordered": "检验申请成功。",
+    "selectExams": "选择检验项目",
+    "status": {
+      "ordered": "已申请",
+      "collected": "已采样",
+      "processing": "检测中",
+      "resulted": "结果可查",
+      "reviewed": "已审阅"
+    },
+    "priority": {
+      "routine": "常规",
+      "urgent": "急诊",
+      "stat": "即刻"
+    },
+    "advance": {
+      "collected": "标记为已采样",
+      "processing": "标记为检测中",
+      "resulted": "登记结果",
+      "reviewed": "标记为已审阅"
+    },
+    "columns": {
+      "patient": "患者",
+      "items": "检验项",
+      "lab": "实验室",
+      "ordered": "申请日期",
+      "collected": "采样日期",
+      "resulted": "结果日期",
+      "status": "状态"
     }
   }
 }

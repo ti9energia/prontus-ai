@@ -18,7 +18,12 @@
       "pedidoExame": "Pedido de exame",
       "termo": "Termo de consentimento"
     },
-    "columns": { "type": "Tipo", "patient": "Paciente", "date": "Data", "actions": "Ações" },
+    "columns": {
+      "type": "Tipo",
+      "patient": "Paciente",
+      "date": "Data",
+      "actions": "Ações"
+    },
     "placeholders": {
       "receita": "Medicamento, dose, posologia e duração.",
       "atestado": "Afastamento e período por motivo de saúde.",
@@ -534,7 +539,10 @@
       "consents": "Consentimentos",
       "notes": "Notas",
       "noEncounters": "Sem consultas registradas"
-    }
+    },
+    "timeline": "Histórico",
+    "labOrdersTitle": "Exames solicitados",
+    "noLabOrders": "Nenhum exame solicitado."
   },
   "billing": {
     "title": "Faturamento & glosas",
@@ -946,6 +954,41 @@
     "app": {
       "title": "Auronis Health",
       "description": "Prontuário estruturado e guias TISS a partir do áudio da consulta."
+    }
+  },
+  "exams": {
+    "title": "Exames",
+    "subtitle": "Pedidos de exame, coleta e resultados.",
+    "search": "Buscar exame ou paciente",
+    "order": "Pedir exame",
+    "ordered": "Exame pedido com sucesso.",
+    "selectExams": "Selecione os exames",
+    "status": {
+      "ordered": "Pedido",
+      "collected": "Coletado",
+      "processing": "Em análise",
+      "resulted": "Resultado disponível",
+      "reviewed": "Revisado"
+    },
+    "priority": {
+      "routine": "Rotina",
+      "urgent": "Urgente",
+      "stat": "Imediato"
+    },
+    "advance": {
+      "collected": "Marcar como coletado",
+      "processing": "Marcar em análise",
+      "resulted": "Registrar resultado",
+      "reviewed": "Marcar como revisado"
+    },
+    "columns": {
+      "patient": "Paciente",
+      "items": "Exames",
+      "lab": "Laboratório",
+      "ordered": "Pedido em",
+      "collected": "Coletado em",
+      "resulted": "Resultado em",
+      "status": "Status"
     }
   }
 }

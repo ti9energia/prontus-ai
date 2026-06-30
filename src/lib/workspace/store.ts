@@ -9,6 +9,7 @@ export type ScreenKey =
   | 'review'
   | 'tiss'
   | 'patients'
+  | 'exams'
   | 'billing'
   | 'reports'
   | 'templates'
