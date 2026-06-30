@@ -22,6 +22,7 @@ import type {
   RoleKey,
 } from '../types';
 import { bus } from '@/lib/events/bus';
+import { lookupTussPrice } from '@/lib/tuss';
 
 /* ============================================================
    In-memory database. A clean repository layer that reads like
@@ -180,10 +181,10 @@ function seedGuides(): TissGuide[] {
     professional: 'Dra. Helena Vasconcelos',
     council: 'CRM-SP 142.857',
     cbo: '225125',
-    procedures: [{ code: '10101012', description: 'Consulta em consultório', qty: 1, value: 180 }],
+    procedures: [{ code: '10101012', description: 'Consulta em consultório', qty: 1, value: lookupTussPrice('10101012', 'Unimed') }],
     diagnoses: [{ code: 'I10', label: 'Hipertensão essencial' }],
     status: 'sent',
-    value: 180,
+    value: lookupTussPrice('10101012', 'Unimed'),
     currency: 'BRL',
     issues: [],
     createdAt: daysAgo(2),
@@ -287,7 +288,7 @@ function seedGuideTemplates(): Template[] {
     kind: 'guide',
     locale: 'pt-BR',
     sectionKeys: [],
-    procedures: [{ code: '10101012', description: 'Consulta em consultório', qty: 1, value: 180 }],
+    procedures: [{ code: '10101012', description: 'Consulta em consultório', qty: 1, value: lookupTussPrice('10101012', payer) }],
     usedCount: 0,
     isDefault: false,
   }));
@@ -644,7 +645,7 @@ export function createGuideFromEncounter(encounterId: string): TissGuide {
       code: p.code,
       description: p.label,
       qty: 1,
-      value: 180, // mock flat price; real TUSS pricing table is a future connector
+      value: lookupTussPrice(p.code, patient?.payer),
     })),
     diagnoses: (note?.cids ?? []).map((c) => ({ code: c.code, label: c.label })),
     status: 'draft',

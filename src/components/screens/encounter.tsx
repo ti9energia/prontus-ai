@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
 import { clock, cn } from '@/lib/utils';
+import { suggestCids, suggestProcs } from '@/lib/tuss';
 
 type Line = { who: 'doctor' | 'patient'; text: string };
 const NOTE_KEYS: NoteSectionKey[] = ['queixa', 'hma', 'exame', 'hipoteses', 'conduta'];
@@ -95,11 +96,13 @@ const SCRIPT: Record<string, { lines: Line[]; note: Record<NoteSectionKey, strin
   },
 };
 
-const CIDS = [{ code: 'I10', label: 'Hipertensão essencial (primária)', confidence: 0.92 }];
-const PROCS = [
-  { code: '10101012', label: 'Consulta em consultório', confidence: 0.98 },
-  { code: '40901360', label: 'Eletrocardiograma convencional (ECG)', confidence: 0.79 },
-];
+/** Derive CID/TUSS codes from the note text using the keyword matcher. */
+function codesFromNote(noteText: string) {
+  return {
+    cids: suggestCids(noteText).length > 0 ? suggestCids(noteText) : [{ code: 'Z00', label: 'Exame médico geral', confidence: 0.5 }],
+    procs: suggestProcs(noteText),
+  };
+}
 
 function resolveEncounter(id?: string) {
   const all = listEncounters();
@@ -217,8 +220,11 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
         sec.approved = false;
       }
     });
-    note.cids = CIDS;
-    note.procedures = PROCS;
+    // Derive CID/TUSS codes from the actual note text.
+    const fullText = NOTE_KEYS.map((k) => script.note[k]).join(' ');
+    const { cids, procs } = codesFromNote(fullText);
+    note.cids = cids;
+    note.procedures = procs;
     note.version += 1;
     note.updatedAt = new Date().toISOString();
     note.approved = false;
