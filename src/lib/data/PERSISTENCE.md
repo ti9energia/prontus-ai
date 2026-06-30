@@ -1,7 +1,8 @@
 # Persistência de dados — Auronis Health
 
 O repositório de dados vive em `src/lib/data/store.ts` (`db()` → `globalThis.__auronis__`).
-Há **duas camadas** de persistência:
+O ponto de troca único é **`src/lib/data/index.ts`** — todo o código de app importa de `@/lib/data`
+e nunca de `@/lib/data/store` diretamente.
 
 ## 1. Client-side (ativa, sem configuração) — localStorage
 
@@ -15,67 +16,64 @@ salvo automaticamente (`persist()`):
 Isso dá **persistência real entre reloads** no mesmo navegador, sem banco. No servidor
 (API routes / RSC) não há `localStorage`, então cai no seed em memória por runtime.
 
-## 2. Server-side (produção, multi-device) — Postgres
+## 2. Server-side (produção, multi-dispositivo) — Postgres (Block 10) ✅
 
-Para dados compartilhados entre dispositivos/usuários, ligue um Postgres gerenciado
-(**Neon** ou **Supabase** via Vercel Marketplace — Vercel Postgres/KV foram descontinuados).
+O adapter completo já está em `src/lib/data/postgres.ts` (write-through cache sobre Prisma).
+O `index.ts` ativa-o automaticamente quando `DATABASE_URL` está presente.
 
-### Passo a passo
-1. Provisione o banco e copie a connection string.
-2. Defina `DATABASE_URL` nas variáveis de ambiente (local em `.env.local`, na Vercel em
-   *Project → Settings → Environment Variables*).
-3. Instale o cliente: `npm i @vercel/postgres` (ou `pg`).
-4. Implemente o adapter abaixo e chame `loadSnapshot()` na inicialização do `db()`
-   server-side e `saveSnapshot()` após mutações nas rotas `/api/v1/*`.
+**Para ativar (ações do dono):**
 
-### Esqueleto do adapter (`src/lib/data/db-postgres.ts`)
-```ts
-import { sql } from '@vercel/postgres'; // npm i @vercel/postgres
-import type { DB } from './store';
+1. Provisione o banco: **Neon** ou **Supabase** via Vercel Marketplace.
+   (Vercel Postgres/KV foram descontinuados — use os marketplaces.)
+2. Copie a connection string e defina `DATABASE_URL`:
+   - Local: `DATABASE_URL="postgresql://..."` em `.env.local`
+   - Produção: *Project → Settings → Environment Variables* no painel Vercel.
+3. Instale e gere o cliente Prisma (já incluído no package.json desde B10):
+   ```bash
+   npm install              # instala prisma, @prisma/client, tsx
+   npm run db:generate      # gera o PrismaClient tipado
+   npm run db:migrate       # cria as tabelas
+   npm run db:seed          # popula o banco com dados de demonstração
+   ```
+4. Deploy: `vercel --prod` (o app detecta `DATABASE_URL` e usa o adapter Postgres).
 
-const ENABLED = !!process.env.DATABASE_URL;
+**Sem `DATABASE_URL`:** o app continua 100% funcional via in-memory + localStorage —
+comportamento idêntico ao de antes do B10.
 
-export async function ensureTable() {
-  if (!ENABLED) return;
-  await sql`CREATE TABLE IF NOT EXISTS auronis_snapshot (
-    id text PRIMARY KEY, data jsonb NOT NULL, updated_at timestamptz DEFAULT now()
-  )`;
-}
+## 3. Arquitetura do adapter (para desenvolvedores)
 
-export async function loadSnapshot(): Promise<DB | null> {
-  if (!ENABLED) return null;
-  await ensureTable();
-  const { rows } = await sql`SELECT data FROM auronis_snapshot WHERE id = 'main'`;
-  return rows[0]?.data ?? null;
-}
+```
+src/lib/data/
+  index.ts       ← ÚNICO ponto de troca (importar daqui sempre)
+  store.ts       ← in-memory + localStorage (sempre disponível, sem deps)
+  postgres.ts    ← write-through cache sobre Prisma (carregado só com DATABASE_URL)
+  PERSISTENCE.md ← este arquivo
+  __tests__/     ← testes de contrato (importam de ./store diretamente — ok)
 
-export async function saveSnapshot(data: DB): Promise<void> {
-  if (!ENABLED) return;
-  await ensureTable();
-  await sql`INSERT INTO auronis_snapshot (id, data) VALUES ('main', ${JSON.stringify(data)}::jsonb)
-            ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`;
-}
+prisma/
+  schema.prisma  ← 12 modelos relacionais (Tenant, User, Patient, Encounter, ...)
+  seed.ts        ← seed idempotente espelhando os dados de demonstração do store
 ```
 
-> O snapshot JSON é o caminho mais rápido para persistência real. Para um schema
-> relacional por entidade (consultas, guias, pacientes…) — necessário para queries e
-> escala — use o schema Prisma abaixo.
+### Padrão write-through
 
-## 3. Schema relacional (Prisma) — RECOMENDADO p/ produção (Bloco 8)
+- **Leituras** (`listPatients`, `getEncounter`, etc.): síncronas, do cache `globalThis.__auronis__`.
+  Após a hidratação inicial do Postgres, o cache reflete os dados do banco.
+- **Escritas** (`addPatient`, `approveNote`, etc.): síncronas no cache + fire-and-forget assíncrono
+  para o Postgres. Nunca bloqueiam a resposta ao usuário.
+- **Hidratação**: triggered na primeira chamada `db()` em contexto servidor (sem `window`).
+  Popula `globalThis.__auronis__` com todos os dados do banco.
 
-O **banco completo** já está definido em **`prisma/schema.prisma`** (Tenant, User, Plan,
-Subscription, FeatureFlag, Patient, Encounter, ClinicalNote, TissGuide, Template,
-AuditLog, ConnectorSecret). O app continua rodando **local** (`store.ts`) até o banco ser
-provisionado — **nada importa Prisma ainda, então o build não quebra**.
+### Segurança
 
-### Ativar (quando subir o banco)
-1. Provisione Postgres (Neon/Supabase) e defina `DATABASE_URL`.
-2. `npm i -D prisma && npm i @prisma/client`.
-3. `npm run db:generate && npm run db:migrate` (cria as tabelas).
-4. Crie `src/lib/data/postgres.ts` implementando as **mesmas funções** de `store.ts`
-   (o contrato/repositório) sobre o `PrismaClient`, e troque o re-export em
-   **`src/lib/data/index.ts`** de `./store` para `./postgres` quando `DATABASE_URL`
-   estiver setado. Esse arquivo é o **único ponto de troca**; consumidores que importam
-   de `@/lib/data` ficam agnósticos ao adapter.
-5. Segredos de connector e hashes de senha por usuário vivem no banco
-   (`ConnectorSecret.config`, `User.passwordHash`), **nunca** no snapshot localStorage.
+- Segredos de connector (`ConnectorSecret.config`) e hashes de senha (`User.passwordHash`)
+  vivem **somente no banco**, nunca no snapshot localStorage.
+- `pgFire()` engole erros de escrita (loga, não joga exceção) — o usuário nunca vê erro
+  de banco em operações de UI; as escritas falhas são registradas no log do servidor.
+
+## 4. Schema Prisma (12 modelos)
+
+`Tenant · User · Plan · Subscription · FeatureFlag · Patient · Encounter · ClinicalNote
+TissGuide · Template · AuditLog · ConnectorSecret`
+
+Provider: `postgresql` — URL via `env("DATABASE_URL")`.

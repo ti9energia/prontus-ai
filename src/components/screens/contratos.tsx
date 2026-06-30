@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useLocale } from 'next-intl';
 import { Handshake } from 'lucide-react';
-import { PAYERS, getGuideTemplate } from '@/lib/data/store';
+import { PAYERS, getGuideTemplate } from '@/lib/data';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

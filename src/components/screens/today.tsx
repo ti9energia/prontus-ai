@@ -18,7 +18,7 @@ import {
   getPatient,
   getCurrentUser,
   agentRecommendations,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import { impactFromStore } from '@/lib/mari/impact';
 import type { Encounter, EncounterStatus } from '@/lib/types';
 import { openTab, type ScreenKey } from '@/lib/workspace/store';

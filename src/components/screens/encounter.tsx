@@ -9,7 +9,7 @@ import {
   getEncounter,
   getPatient,
   listEncounters,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import type { NoteSectionKey } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';
 import { ScreenContainer } from './_kit';

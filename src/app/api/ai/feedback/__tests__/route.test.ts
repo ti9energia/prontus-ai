@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { POST } from '@/app/api/ai/feedback/route';
-import { listAudit, resetStore } from '@/lib/data/store';
+import { listAudit, resetStore } from '@/lib/data';
 
 function req(body: unknown) {
   return new Request('http://localhost/api/ai/feedback', {

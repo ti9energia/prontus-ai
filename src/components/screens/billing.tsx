@@ -32,7 +32,7 @@ import {
   getGuide,
   getPatient,
   resubmitGuide,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import { diagnoseGuide } from '@/lib/mari/tools';
 import type { GuideStatus } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';

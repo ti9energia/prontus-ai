@@ -8,7 +8,7 @@ import {
   requestAuthorization,
   reviewAuthorization,
   decideAuthorization,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

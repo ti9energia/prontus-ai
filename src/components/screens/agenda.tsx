@@ -16,7 +16,7 @@ import {
   MapPin,
   type LucideIcon,
 } from 'lucide-react';
-import { listPatients } from '@/lib/data/store';
+import { listPatients } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';

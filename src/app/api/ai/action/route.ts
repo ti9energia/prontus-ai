@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
-import { pushAudit } from '@/lib/data/store';
+import { pushAudit } from '@/lib/data';
 import { getTool, type ToolSurface } from '@/lib/mari/tools';
 
 export const runtime = 'nodejs';

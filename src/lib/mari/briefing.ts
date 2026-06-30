@@ -1,4 +1,4 @@
-import { ownerInsights } from '@/lib/data/store';
+import { ownerInsights } from '@/lib/data';
 
 export interface BriefingPoint {
   kind: 'risk' | 'opportunity' | 'metric';

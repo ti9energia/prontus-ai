@@ -12,7 +12,7 @@ import {
   Clock,
   type LucideIcon,
 } from 'lucide-react';
-import { billingStats, ownerInsights } from '@/lib/data/store';
+import { billingStats, ownerInsights } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, SectionTitle, Table, Th, Td } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

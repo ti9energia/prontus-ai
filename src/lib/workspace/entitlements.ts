@@ -1,6 +1,6 @@
 import type { ScreenKey } from './store';
 import type { RoleKey } from '@/lib/types';
-import { getCurrentUser, listFlags, listPlans } from '@/lib/data/store';
+import { getCurrentUser, listFlags, listPlans } from '@/lib/data';
 import { can, type Permission } from '@/lib/auth/permissions';
 
 /**
@@ -62,16 +62,16 @@ export function screenStatus(key: ScreenKey, role?: RoleKey): ScreenStatus {
   const perm = SCREEN_PERMISSION[key];
   if (role && perm && !can(role, perm)) return 'hidden';
 
-  const module = SCREEN_MODULE[key];
-  if (!module) return 'open'; // core screen — always on
+  const moduleKey = SCREEN_MODULE[key];
+  if (!moduleKey) return 'open'; // core screen — always on
 
   // Feature flag OFF → the tab disappears from UI + commands together (0D §3).
-  const flag = listFlags().find((f) => f.module === module);
+  const flag = listFlags().find((f) => f.module === moduleKey);
   if (flag && !flag.enabled) return 'hidden';
 
   // Plan entitlement: a module the plan doesn't include is locked → upsell (0C §4.4).
   const modules = currentPlanModules();
-  if (modules && !modules.includes(module)) return 'locked';
+  if (modules && !modules.includes(moduleKey)) return 'locked';
 
   return 'open';
 }
@@ -82,8 +82,8 @@ export function isScreenVisible(key: ScreenKey, role?: RoleKey): boolean {
 
 /** Lowest plan name that first unlocks a module — used to phrase the upsell. */
 export function unlockPlanFor(key: ScreenKey): string | undefined {
-  const module = SCREEN_MODULE[key];
-  if (!module) return undefined;
-  const plan = listPlans().find((p) => p.modules.includes(module));
+  const moduleKey = SCREEN_MODULE[key];
+  if (!moduleKey) return undefined;
+  const plan = listPlans().find((p) => p.modules.includes(moduleKey));
   return plan?.name;
 }

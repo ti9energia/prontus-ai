@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { POST } from '@/app/api/ai/action/route';
 import { createSession, SESSION_COOKIE } from '@/lib/auth/session';
-import { listEncounters, createGuideFromEncounter } from '@/lib/data/store';
+import { listEncounters, createGuideFromEncounter } from '@/lib/data';
 
 // Mint real signed sessions for the authed paths.
 const SECRET = 'test-secret-for-action-route-abcdef';

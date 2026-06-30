@@ -23,7 +23,7 @@ import {
   Stethoscope,
   type LucideIcon,
 } from 'lucide-react';
-import { getCurrentUser } from '@/lib/data/store';
+import { getCurrentUser } from '@/lib/data';
 import { useSession } from '@/lib/auth';
 import { locales, localeMeta, type Locale } from '@/i18n/routing';
 import { openTab } from '@/lib/workspace/store';

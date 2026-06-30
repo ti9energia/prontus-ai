@@ -1,5 +1,5 @@
 import { authError, json } from '@/lib/api/auth';
-import { billingStats, ownerInsights } from '@/lib/data/store';
+import { billingStats, ownerInsights } from '@/lib/data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

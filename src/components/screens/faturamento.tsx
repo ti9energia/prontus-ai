@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useLocale } from 'next-intl';
 import { Banknote, RefreshCw, TrendingUp, AlertTriangle, ShieldCheck, Send } from 'lucide-react';
-import { listGuides, billingStats, resubmitGuide } from '@/lib/data/store';
+import { listGuides, billingStats, resubmitGuide } from '@/lib/data';
 import type { GuideStatus } from '@/lib/types';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
 import { Card } from '@/components/ui/card';

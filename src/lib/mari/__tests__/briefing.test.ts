@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { resetStore } from '@/lib/data/store';
+import { resetStore } from '@/lib/data';
 import { ownerBriefing } from '@/lib/mari/briefing';
 
 /** Block 7 — the owner "Mari reunião" briefing deck. */

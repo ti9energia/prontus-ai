@@ -5,7 +5,7 @@ import {
   unlockPlanFor,
   moduleForScreen,
 } from '@/lib/workspace/entitlements';
-import { getCurrentUser, toggleFlag, resetStore } from '@/lib/data/store';
+import { getCurrentUser, toggleFlag, resetStore } from '@/lib/data';
 
 // The entitlement helpers read live state from the in-memory store (feature
 // flags + the signed-in user's plan), so every case starts from a clean seed.

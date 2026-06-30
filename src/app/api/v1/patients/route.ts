@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { apiError, authError, json } from '@/lib/api/auth';
-import { addPatient, listPatients } from '@/lib/data/store';
+import { addPatient, listPatients } from '@/lib/data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

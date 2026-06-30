@@ -7,7 +7,7 @@
  * and testable; `impactFromStore()` wires it to live data for the UI and Mari.
  */
 
-import { billingStats, listEncounters } from '@/lib/data/store';
+import { billingStats, listEncounters } from '@/lib/data';
 
 export interface ImpactInput {
   glossRate: number; // current denial rate (0..1)
