@@ -106,6 +106,63 @@ async function callLocalModel(req: MariChatRequest): Promise<string | null> {
 }
 
 /**
+ * Streaming variant: returns a ReadableStream of SSE chunks.
+ * Each chunk is `data: {"delta":"...","done":false}\n\n`.
+ * Final chunk: `data: {"delta":"","done":true,"source":"claude"}\n\n`.
+ * Falls back to a single-shot "chunk" when streaming is unavailable.
+ */
+export function mariChatStream(req: MariChatRequest): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  const sse = (payload: object) => encoder.encode(`data: ${JSON.stringify(payload)}\n\n`);
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const enqueue = (payload: object) => controller.enqueue(sse(payload));
+      const finish = (full: string, source: MariSource) => {
+        enqueue({ delta: '', done: true, source, full });
+        controller.close();
+      };
+
+      if (req.allowModel) {
+        const apiKey = process.env.ANTHROPIC_API_KEY;
+        if (apiKey) {
+          try {
+            const { default: Anthropic } = await import('@anthropic-ai/sdk');
+            const client = new Anthropic({ apiKey });
+            const stream = await client.messages.stream({
+              model: model(),
+              max_tokens: req.maxTokens ?? 600,
+              system: req.system,
+              messages: req.messages.map((m) => ({ role: m.role, content: m.content })),
+            });
+            let full = '';
+            for await (const chunk of stream) {
+              if (
+                chunk.type === 'content_block_delta' &&
+                chunk.delta.type === 'text_delta'
+              ) {
+                const delta = chunk.delta.text;
+                full += delta;
+                enqueue({ delta, done: false });
+              }
+            }
+            finish(full, 'claude');
+            return;
+          } catch {
+            // fall through to mock
+          }
+        }
+      }
+
+      // Mock: emit the whole reply as one chunk then close.
+      const reply = req.fallback();
+      enqueue({ delta: reply, done: false });
+      finish(reply, 'mock');
+    },
+  });
+}
+
+/**
  * The single entry point every Mari surface calls. Where the intelligence
  * actually runs (remote brain, local model, or mock) is an env/ops decision —
  * not a code change.

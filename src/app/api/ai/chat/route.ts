@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
-import { mariChat } from '@/lib/mari/service';
+import { mariChat, mariChatStream } from '@/lib/mari/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -89,6 +89,7 @@ const BodySchema = z.object({
     .optional(),
   locale: z.string().max(12).optional(),
   screen: z.string().max(48).optional(),
+  stream: z.boolean().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -123,8 +124,8 @@ export async function POST(req: NextRequest) {
     !!(process.env.ANTHROPIC_API_KEY || process.env.MARI_API_URL) &&
     !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
 
-  const result = await mariChat({
-    surface: 'clinical',
+  const mariReq = {
+    surface: 'clinical' as const,
     system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
     messages,
     locale,
@@ -132,7 +133,21 @@ export async function POST(req: NextRequest) {
     allowModel,
     maxTokens: 600,
     fallback: () => mockReply(last, locale),
-  });
+  };
+
+  // Streaming path: client sends { stream: true } to get SSE deltas.
+  if (parsed.data.stream) {
+    const readable = mariChatStream(mariReq);
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+      },
+    });
+  }
+
+  const result = await mariChat(mariReq);
 
   // A little latency on the mock path so the typing indicator reads naturally.
   if (result.source === 'mock') await new Promise((r) => setTimeout(r, 450));
