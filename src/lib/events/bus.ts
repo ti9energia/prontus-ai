@@ -11,6 +11,7 @@ export interface PlatformEvents {
   'requisition.decided': { guideId: string; decision: 'authorized' | 'denied' };
   'note.approved': { encounterId: string };
   'tenant.config.updated': { tenantId: string };
+  'whatsapp.inbound': { from: string; body: string; messageId: string; timestamp: number };
 }
 
 class EventBus {
