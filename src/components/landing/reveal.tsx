@@ -1,13 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { useEffect, useRef, type CSSProperties } from 'react';
+import { cn } from '@/lib/utils';
 
-const variants: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0 },
-};
-
+// Single-element fade-up reveal on scroll (replaces framer-motion).
+// CSS transition fires once when IntersectionObserver fires [data-in].
 export function Reveal({
   children,
   delay = 0,
@@ -19,21 +17,38 @@ export function Reveal({
   className?: string;
   as?: 'div' | 'section' | 'li' | 'span';
 }) {
-  const MotionTag = motion[as] as typeof motion.div;
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.setAttribute('data-in', '');
+          obs.disconnect();
+        }
+      },
+      { rootMargin: '-80px' },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const Tag = as as 'div';
   return (
-    <MotionTag
-      className={className}
-      variants={variants}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
+    <Tag
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={cn('rv', className)}
+      style={delay ? ({ '--rv-delay': `${delay}s` } as CSSProperties) : undefined}
     >
       {children}
-    </MotionTag>
+    </Tag>
   );
 }
 
+// Stagger-reveal container: sets [data-in] on itself, which triggers
+// staggered transitions on each RevealItem child via --rv-delay injected per-child.
 export function RevealStagger({
   children,
   className,
@@ -43,27 +58,48 @@ export function RevealStagger({
   className?: string;
   stagger?: number;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.setAttribute('data-in', '');
+          obs.disconnect();
+        }
+      },
+      { rootMargin: '-80px' },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const items = React.Children.toArray(children);
   return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ staggerChildren: stagger }}
-    >
-      {children}
-    </motion.div>
+    <div ref={ref} className={cn('rv-stagger', className)}>
+      {items.map((child, i) =>
+        React.isValidElement(child)
+          ? React.cloneElement(child as React.ReactElement<{ style?: CSSProperties }>, {
+              style: {
+                ...(child.props.style ?? {}),
+                '--rv-delay': `${(i * stagger).toFixed(3)}s`,
+              } as CSSProperties,
+            })
+          : child,
+      )}
+    </div>
   );
 }
 
-export function RevealItem({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <motion.div
-      className={className}
-      variants={variants}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
+// Stagger child — used inside RevealStagger.
+export function RevealItem({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={cn('rvi', className)}>{children}</div>;
 }
