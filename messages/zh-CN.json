@@ -301,9 +301,21 @@
       "eyebrow": "客户",
       "title": "医生们找回了最稀缺的东西：时间。",
       "items": [
-        {"quote": "看完诊病历就已经写好了，我把晚上的时间找回来了。", "name": "Helena Vasconcelos 医生", "role": "全科 · Clínica Aurora"},
-        {"quote": "拒付大幅下降，仅凭提交前核查就值回了订阅费。", "name": "Rodrigo Menezes", "role": "管理者 · Hospital São Lucas"},
-        {"quote": "我在 WhatsApp 上问，Mari 全部帮我搞定，像魔法一样。", "name": "Camila Prado 医生", "role": "心脏科 · Instituto Cardio+"}
+        {
+          "quote": "看完诊病历就已经写好了，我把晚上的时间找回来了。",
+          "name": "Helena Vasconcelos 医生",
+          "role": "全科 · Clínica Aurora"
+        },
+        {
+          "quote": "拒付大幅下降，仅凭提交前核查就值回了订阅费。",
+          "name": "Rodrigo Menezes",
+          "role": "管理者 · Hospital São Lucas"
+        },
+        {
+          "quote": "我在 WhatsApp 上问，Mari 全部帮我搞定，像魔法一样。",
+          "name": "Camila Prado 医生",
+          "role": "心脏科 · Instituto Cardio+"
+        }
       ]
     },
     "forWhom": {
@@ -311,10 +323,67 @@
       "title": "一个平台，各司其职",
       "subtitle": "从诊室到后台——同一套 AI 服务每个角色，并匹配相应权限。",
       "roles": {
-        "medico": {"role": "医生", "desc": "问诊结束即生成结构化病历与 TISS 单据——无需打字。"},
-        "recepcao": {"role": "前台", "desc": "排程、WhatsApp 确认与自动补位的候诊名单。"},
-        "faturamento": {"role": "收费", "desc": "提交前预判拒付、一键重提——减少资金滞留。"},
-        "gestao": {"role": "管理", "desc": "实时 BI：按支付方查看产出、拒付与 ROI，AI 智能体提示需决策事项。"}
+        "medico": {
+          "role": "医生",
+          "desc": "问诊结束即生成结构化病历与 TISS 单据——无需打字。"
+        },
+        "recepcao": {
+          "role": "前台",
+          "desc": "排程、WhatsApp 确认与自动补位的候诊名单。"
+        },
+        "faturamento": {
+          "role": "收费",
+          "desc": "提交前预判拒付、一键重提——减少资金滞留。"
+        },
+        "gestao": {
+          "role": "管理",
+          "desc": "实时 BI：按支付方查看产出、拒付与 ROI，AI 智能体提示需决策事项。"
+        }
+      }
+    },
+    "roi": {
+      "eyebrow": "计算您的收益",
+      "title": "您的诊所每月可追回多少拒付金额？",
+      "subtitle": "调整诊所数据，查看实际追回潜力——真实金额，非空洞承诺。",
+      "methodology": "假设：每月22个工作日 · 拒付减少70%（Auronis内部客户基准）· 每位医生每天节偰1.8小时文档时间。",
+      "methodologyToggle": "查看计算依据",
+      "cardTitle": "计算您的收益",
+      "inputs": {
+        "doctors": {
+          "label": "诊所医生数量",
+          "unit": "位医生"
+        },
+        "consults": {
+          "label": "每位医生每天诊次",
+          "unit": "次"
+        },
+        "ticket": {
+          "label": "平均诊次费用",
+          "unit": "R$"
+        },
+        "gloss": {
+          "label": "当前拒付率",
+          "unit": "%"
+        }
+      },
+      "results": {
+        "recovery": {
+          "label": "每月预估追回金额",
+          "note": "使用Auronis的估计值"
+        },
+        "time": {
+          "label": "每月节省时间",
+          "unit": "小时"
+        },
+        "roi": {
+          "label": "方案回本时间",
+          "unit": "天"
+        }
+      },
+      "plan": "{plan}方案 — R$ {price}/月",
+      "cta": {
+        "label": "立即开始",
+        "sub": "无需信用卡，随时取消。"
       }
     },
     "faq": {

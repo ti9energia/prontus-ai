@@ -13,6 +13,7 @@ import {
   Stats,
   Testimonials,
 } from '@/components/landing/sections';
+import { ROICalculator } from '@/components/landing/roi-calculator';
 import { Pricing } from '@/components/landing/pricing';
 import { FAQ } from '@/components/landing/faq';
 import { JsonLd } from '@/components/seo/json-ld';
@@ -31,6 +32,7 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
         <div className="relative bg-bg">
           <LogoCloud />
           <Stats />
+          <ROICalculator />
           <Features />
           <How />
           <ForWhom />
