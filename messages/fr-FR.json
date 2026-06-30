@@ -301,9 +301,21 @@
       "eyebrow": "Clients",
       "title": "Des médecins qui récupèrent ce qui leur manque le plus : du temps.",
       "items": [
-        {"quote": "Je sors du cabinet avec le dossier déjà prêt. J'ai retrouvé mes soirées.", "name": "Dre Helena Vasconcelos", "role": "Médecine générale · Clínica Aurora"},
-        {"quote": "Les rejets ont chuté. Le contrôle avant envoi rentabilise à lui seul l'offre.", "name": "Rodrigo Menezes", "role": "Gestionnaire · Hospital São Lucas"},
-        {"quote": "Je demande sur WhatsApp et Mari m'apporte tout. On dirait de la magie.", "name": "Dre Camila Prado", "role": "Cardiologie · Instituto Cardio+"}
+        {
+          "quote": "Je sors du cabinet avec le dossier déjà prêt. J'ai retrouvé mes soirées.",
+          "name": "Dre Helena Vasconcelos",
+          "role": "Médecine générale · Clínica Aurora"
+        },
+        {
+          "quote": "Les rejets ont chuté. Le contrôle avant envoi rentabilise à lui seul l'offre.",
+          "name": "Rodrigo Menezes",
+          "role": "Gestionnaire · Hospital São Lucas"
+        },
+        {
+          "quote": "Je demande sur WhatsApp et Mari m'apporte tout. On dirait de la magie.",
+          "name": "Dre Camila Prado",
+          "role": "Cardiologie · Instituto Cardio+"
+        }
       ]
     },
     "forWhom": {
@@ -311,10 +323,67 @@
       "title": "Une plateforme, chaque rôle à sa place",
       "subtitle": "Du cabinet à la gestion — la même IA sert chaque rôle, avec les bonnes permissions.",
       "roles": {
-        "medico": {"role": "Médecin", "desc": "Compte rendu structuré et feuille TISS prêts dès la fin de la consultation — sans saisie."},
-        "recepcao": {"role": "Accueil", "desc": "Agenda, confirmations WhatsApp et liste d'attente qui se remplit seule."},
-        "faturamento": {"role": "Facturation", "desc": "Rejets détectés avant l'envoi et renvois en un clic — moins d'argent bloqué."},
-        "gestao": {"role": "Direction", "desc": "BI en temps réel : production, rejets et ROI par assureur, l'agent IA signalant les décisions."}
+        "medico": {
+          "role": "Médecin",
+          "desc": "Compte rendu structuré et feuille TISS prêts dès la fin de la consultation — sans saisie."
+        },
+        "recepcao": {
+          "role": "Accueil",
+          "desc": "Agenda, confirmations WhatsApp et liste d'attente qui se remplit seule."
+        },
+        "faturamento": {
+          "role": "Facturation",
+          "desc": "Rejets détectés avant l'envoi et renvois en un clic — moins d'argent bloqué."
+        },
+        "gestao": {
+          "role": "Direction",
+          "desc": "BI en temps réel : production, rejets et ROI par assureur, l'agent IA signalant les décisions."
+        }
+      }
+    },
+    "roi": {
+      "eyebrow": "Calculez votre impact",
+      "title": "Combien votre cabinet pourrait-il récupérer en rejets par mois ?",
+      "subtitle": "Ajustez les chiffres de votre cabinet et découvrez le potentiel de récupération — en argent réel, pas en promesses.",
+      "methodology": "Hypothèses : 22 jours ouvrés/mois · réduction des rejets de 70 % (benchmark interne clients Auronis) · 1,8 h/médecin/jour de documentation économisée.",
+      "methodologyToggle": "Voir les hypothèses du calcul",
+      "cardTitle": "Calculez votre impact",
+      "inputs": {
+        "doctors": {
+          "label": "Médecins dans le cabinet",
+          "unit": "médecin(s)"
+        },
+        "consults": {
+          "label": "Consultations par médecin/jour",
+          "unit": "consultations"
+        },
+        "ticket": {
+          "label": "Tarif moyen par consultation",
+          "unit": "R$"
+        },
+        "gloss": {
+          "label": "Taux de rejet actuel",
+          "unit": "%"
+        }
+      },
+      "results": {
+        "recovery": {
+          "label": "Récupération estimée/mois",
+          "note": "estimation avec Auronis"
+        },
+        "time": {
+          "label": "Temps rendu/mois",
+          "unit": "h"
+        },
+        "roi": {
+          "label": "La formule s’amortit en",
+          "unit": "jours"
+        }
+      },
+      "plan": "Formule {plan} — R$ {price}/mois",
+      "cta": {
+        "label": "Commencer maintenant",
+        "sub": "Sans carte. Résiliez quand vous voulez."
       }
     },
     "faq": {

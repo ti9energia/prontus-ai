@@ -301,9 +301,21 @@
       "eyebrow": "Clientes",
       "title": "Médicos recuperando o que mais falta: tempo.",
       "items": [
-        {"quote": "Saio do consultório com o prontuário pronto. Recuperei minhas noites.", "name": "Dra. Helena Vasconcelos", "role": "Clínica geral · Clínica Aurora"},
-        {"quote": "A glosa despencou. A verificação pré-envio sozinha já paga o plano.", "name": "Rodrigo Menezes", "role": "Gestor · Hospital São Lucas"},
-        {"quote": "Pergunto pelo WhatsApp e a Mari me traz tudo. Parece mágica, mas é sério.", "name": "Dra. Camila Prado", "role": "Cardiologia · Instituto Cardio+"}
+        {
+          "quote": "Saio do consultório com o prontuário pronto. Recuperei minhas noites.",
+          "name": "Dra. Helena Vasconcelos",
+          "role": "Clínica geral · Clínica Aurora"
+        },
+        {
+          "quote": "A glosa despencou. A verificação pré-envio sozinha já paga o plano.",
+          "name": "Rodrigo Menezes",
+          "role": "Gestor · Hospital São Lucas"
+        },
+        {
+          "quote": "Pergunto pelo WhatsApp e a Mari me traz tudo. Parece mágica, mas é sério.",
+          "name": "Dra. Camila Prado",
+          "role": "Cardiologia · Instituto Cardio+"
+        }
       ]
     },
     "forWhom": {
@@ -311,10 +323,67 @@
       "title": "Uma plataforma, cada papel no seu lugar",
       "subtitle": "Do consultório à gestão — a mesma IA atende cada função, com a permissão certa.",
       "roles": {
-        "medico": {"role": "Médico(a)", "desc": "Prontuário estruturado e guia TISS prontos ao fim da consulta — sem digitar."},
-        "recepcao": {"role": "Recepção", "desc": "Agenda, confirmação por WhatsApp e lista de espera que se reorganiza sozinha."},
-        "faturamento": {"role": "Faturamento", "desc": "Glosa prevista antes do envio e reenvio em um clique — menos dinheiro parado."},
-        "gestao": {"role": "Gestão", "desc": "BI em tempo real: produção, glosa e ROI por convênio, com o agente de IA avisando o que decidir."}
+        "medico": {
+          "role": "Médico(a)",
+          "desc": "Prontuário estruturado e guia TISS prontos ao fim da consulta — sem digitar."
+        },
+        "recepcao": {
+          "role": "Recepção",
+          "desc": "Agenda, confirmação por WhatsApp e lista de espera que se reorganiza sozinha."
+        },
+        "faturamento": {
+          "role": "Faturamento",
+          "desc": "Glosa prevista antes do envio e reenvio em um clique — menos dinheiro parado."
+        },
+        "gestao": {
+          "role": "Gestão",
+          "desc": "BI em tempo real: produção, glosa e ROI por convênio, com o agente de IA avisando o que decidir."
+        }
+      }
+    },
+    "roi": {
+      "eyebrow": "Calcule seu impacto",
+      "title": "Quanto sua clínica recupera em glosas por mês?",
+      "subtitle": "Ajuste os números da sua clínica e veja o potencial de recuperação — em reais, não em promessas.",
+      "methodology": "Premissas: 22 dias úteis/mês · redução de glosa de 70% (benchmark interno de clientes Auronis) · 1,8 h/médico/dia de documentação economizada.",
+      "methodologyToggle": "Ver premissas do cálculo",
+      "cardTitle": "Calcule seu impacto",
+      "inputs": {
+        "doctors": {
+          "label": "Médicos na clínica",
+          "unit": "médico(s)"
+        },
+        "consults": {
+          "label": "Consultas por médico/dia",
+          "unit": "consultas"
+        },
+        "ticket": {
+          "label": "Ticket médio por consulta",
+          "unit": "R$"
+        },
+        "gloss": {
+          "label": "Taxa de glosa atual",
+          "unit": "%"
+        }
+      },
+      "results": {
+        "recovery": {
+          "label": "Recuperação estimada/mês",
+          "note": "estimativa com Auronis"
+        },
+        "time": {
+          "label": "Tempo devolvido/mês",
+          "unit": "h"
+        },
+        "roi": {
+          "label": "Plano se paga em",
+          "unit": "dias"
+        }
+      },
+      "plan": "Plano {plan} — R$ {price}/mês",
+      "cta": {
+        "label": "Começar agora",
+        "sub": "Sem cartão. Cancele quando quiser."
       }
     },
     "faq": {
