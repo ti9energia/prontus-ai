@@ -25,7 +25,7 @@ import {
   Activity,
   type LucideIcon,
 } from 'lucide-react';
-import { listPatients, listEncounters, getPatient, addPatient } from '@/lib/data/store';
+import { listPatients, listEncounters, getPatient, addPatient } from '@/lib/data';
 import type { ConsentStatus, EncounterStatus, Patient } from '@/lib/types';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar, IconButton } from '@/components/ui/misc';

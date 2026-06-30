@@ -44,7 +44,7 @@ import {
   updateTenantAi,
   updateTenantWhatsapp,
   upsertTenantConnector,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import type { AuditEntry, Plan, Tenant, TenantStatus } from '@/lib/types';
 import { listConnectors } from '@/lib/connectors/registry';
 import { useOwner } from './context';

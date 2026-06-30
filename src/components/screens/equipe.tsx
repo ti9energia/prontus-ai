@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useLocale } from 'next-intl';
 import { UserCog, Plus } from 'lucide-react';
-import { currentOrgId, listOrgUsers, addOrgUser } from '@/lib/data/store';
+import { currentOrgId, listOrgUsers, addOrgUser } from '@/lib/data';
 import type { RoleKey } from '@/lib/types';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Card } from '@/components/ui/card';

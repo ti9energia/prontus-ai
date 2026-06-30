@@ -21,7 +21,7 @@ import {
   getPatient,
   listGuides,
   submitGuide as submitGuideStore,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import type { GuideStatus, GuideType, IssueSeverity, TissGuide } from '@/lib/types';
 import { ScreenContainer, ScreenHeader, SectionTitle, Table, Th, Td } from './_kit';
 import { Badge } from '@/components/ui/badge';

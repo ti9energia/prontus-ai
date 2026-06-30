@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { ownerInsights, pushAudit } from '@/lib/data/store';
+import { ownerInsights, pushAudit } from '@/lib/data';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
 import { mariChat } from '@/lib/mari/service';
 

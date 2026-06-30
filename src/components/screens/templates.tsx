@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
-import { listTemplates, setDefaultTemplate, duplicateTemplate } from '@/lib/data/store';
+import { listTemplates, setDefaultTemplate, duplicateTemplate } from '@/lib/data';
 import type { NoteSectionKey, Template } from '@/lib/types';
 import { toast } from '@/lib/toast';
 import { ScreenContainer, ScreenHeader } from './_kit';

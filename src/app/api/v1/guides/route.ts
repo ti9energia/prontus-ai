@@ -1,5 +1,5 @@
 import { authError, json } from '@/lib/api/auth';
-import { listGuides } from '@/lib/data/store';
+import { listGuides } from '@/lib/data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

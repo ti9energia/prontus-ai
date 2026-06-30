@@ -33,7 +33,7 @@ import {
   getPatient,
   listEncounters,
   approveNote as approveNoteStore,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import type { ClinicalNote, Encounter, NoteSection, NoteSectionKey, Patient } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';
 import { ScreenContainer } from './_kit';

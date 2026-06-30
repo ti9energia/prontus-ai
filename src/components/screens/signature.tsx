@@ -16,7 +16,7 @@ import {
   FileCheck,
   type LucideIcon,
 } from 'lucide-react';
-import { listPatients, getCurrentUser } from '@/lib/data/store';
+import { listPatients, getCurrentUser } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, SectionTitle, Table, Th, Td } from './_kit';
 import { Avatar } from '@/components/ui/misc';
 import { Card } from '@/components/ui/card';

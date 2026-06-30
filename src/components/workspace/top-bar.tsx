@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useTranslations } from 'next-intl';
 import { LogOut, Menu, Search, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
-import { getCurrentUser } from '@/lib/data/store';
+import { getCurrentUser } from '@/lib/data';
 import { openTab } from '@/lib/workspace/store';
 import { signOut, useSession } from '@/lib/auth';
 import { SCREEN_ORDER } from './registry';

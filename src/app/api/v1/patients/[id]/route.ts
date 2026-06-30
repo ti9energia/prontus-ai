@@ -1,5 +1,5 @@
 import { apiError, authError, json } from '@/lib/api/auth';
-import { getPatient } from '@/lib/data/store';
+import { getPatient } from '@/lib/data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

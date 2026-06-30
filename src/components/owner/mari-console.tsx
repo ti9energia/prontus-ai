@@ -17,7 +17,7 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { ownerInsights } from '@/lib/data/store';
+import { ownerInsights } from '@/lib/data';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import { MariPortrait, MariPresence, type MariState } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';

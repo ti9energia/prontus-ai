@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { resetStore, listUsers, getUserByEmail, listOrgUsers } from '@/lib/data/store';
+import { resetStore, listUsers, getUserByEmail, listOrgUsers } from '@/lib/data';
 import { screenStatus, isScreenVisible } from '@/lib/workspace/entitlements';
 
 /** Block 3 — seeded org/user model + role-aware screen gating. */

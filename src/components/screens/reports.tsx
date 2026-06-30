@@ -22,7 +22,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import { listEncounters, billingStats, getCurrentUser } from '@/lib/data/store';
+import { listEncounters, billingStats, getCurrentUser } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Avatar, SegmentedControl } from '@/components/ui/misc';

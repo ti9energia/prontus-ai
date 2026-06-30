@@ -21,7 +21,7 @@ import {
   submitGuide,
   resubmitGuide,
   agentRecommendations,
-} from '@/lib/data/store';
+} from '@/lib/data';
 import type { TissGuide, TissIssue } from '@/lib/types';
 import { impactFromStore } from './impact';
 import { evaluatePayer, getPayerRule } from './payer-rules';

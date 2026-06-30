@@ -18,7 +18,7 @@ import {
   SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react';
-import { agentRecommendations } from '@/lib/data/store';
+import { agentRecommendations } from '@/lib/data';
 import type { AgentCategory, AgentRecommendation } from '@/lib/types';
 import { openTab } from '@/lib/workspace/store';
 import { toast } from '@/lib/toast';
