@@ -22,40 +22,45 @@
 
 | Capacidade | Referência faz | Auronis hoje |
 |---|---|---|
-| Transcrição ambiente real (ASR clínico) | ✅ produção | ⚠️ simulada (script demo) |
+| Transcrição ambiente real (ASR clínico) | ✅ produção | ✅ **seam real** (`ASR_PROVIDER`) · fallback demo sem credencial |
 | Nota estruturada por especialidade | ✅ | ✅ |
-| Sugestão/auto-código (CID/TUSS) | ✅ | ✅ (parcial) |
+| Sugestão/auto-código (CID/TUSS) | ✅ | ✅ (parcial, via Mari) |
 | **TISS + verificação pré-glosa** | ⛔ (global não tem) | ✅ **(moat)** |
-| Prescrição eletrônica (Memed/SNGPC) | ✅ (BR) | ❌ stub |
-| Pedido de exame → resultado (ciclo) | ✅ | ❌ |
-| Timeline/histórico do paciente | ✅ | ⚠️ raso |
-| Telemedicina / vídeo | ✅ | ❌ |
-| Assinatura ICP-Brasil (A1/A3) | ✅ (BR) | ⚠️ stub |
-| App mobile + ditado offline | ✅ | ❌ |
-| Integração EHR/FHIR/HL7/PACS | ✅ | ⚠️ contrato pronto, sem conectores reais |
+| Prescrição eletrônica (Memed/SNGPC) | ✅ (BR) | ✅ **seam real** (`MEMED_*`) · stub funcional sem credencial |
+| Pedido de exame → resultado (ciclo) | ✅ | ✅ **real** (sem credencial — ciclo completo + timeline) |
+| Timeline/histórico do paciente | ✅ | ✅ **real** (encontros + notas + guias + exames unificados) |
+| Telemedicina / vídeo | ✅ | ❌ fase futura |
+| Assinatura ICP-Brasil (A1/A3) | ✅ (BR) | ✅ **seam real** (`ICP_*`) · fingerprint mock sem credencial |
+| App mobile + ditado offline | ✅ | ❌ fase futura; PWA instalável cobre caso básico |
+| Integração EHR/FHIR/HL7/PACS | ✅ | ⚠️ contratos prontos, conectores reais ficam para fase futura |
 | Pagamentos (gateway) | ✅ | ⚠️ stub |
-| WhatsApp Business real | parcial | ⚠️ simulado |
-| Multi-dispositivo (banco) | ✅ | ⚠️ schema pronto (Bloco 8), falta provisionar |
-| Copiloto + agente autônomo | emergente | ✅ **(à frente)** |
+| WhatsApp Business real | parcial | ✅ **seam real** (`WHATSAPP_*`) · simulador sem credencial |
+| Multi-dispositivo (banco) | ✅ | ✅ **seam real** — Postgres/Prisma quando `DATABASE_URL` presente; in-memory fallback |
+| Chaves de API públicas | ✅ | ✅ **real** — SHA-256 hasheadas, geração/revogação via painel do dono |
+| Copiloto + agente autônomo | emergente | ✅ **(à frente)** · streaming real com `ANTHROPIC_API_KEY` |
 | RBAC + multi-tenant + painel do dono | ✅ | ✅ |
-| i18n (4 idiomas) | raro | ✅ **(diferencial)** |
+| i18n (4 idiomas) | raro | ✅ **(diferencial)** · 750+ chaves, paridade em CI |
 | Arquitetura modular/desacoplável | varia | ✅ |
 
-## 3. Lacunas para virar referência (priorizado por ROI)
+## 3. Lacunas para virar referência (estado atual pós-Blocos 10-21)
 
-1. **Transcrição ambiente REAL** — trocar o script demo por ASR clínico (Whisper/Azure/
-   provedor BR) com diarização. É a promessa central; hoje é o maior gap percebido.
-2. **Prescrição eletrônica (Memed)** — receituário + SNGPC + assinatura; alto valor diário
-   para o médico e ponto de retenção.
-3. **Ciclo de exames** — pedido → autorização → resultado, ligado à requisição (Bloco 5).
-4. **Assinatura ICP-Brasil real** — exigência legal para documentos; hoje stub.
-5. **Multi-dispositivo (provisionar o Postgres do Bloco 8)** — sem banco, hospital com
-   vários médicos não funciona de verdade entre dispositivos.
-6. **WhatsApp Cloud API real** + número verificado — transformar o simulador em canal real.
-7. **App mobile + ditado offline** — médicos querem gravar no celular à beira-leito.
-8. **Timeline do paciente** (histórico de consultas/notas/documentos/exames) — profundidade.
-9. **Integrações EHR/FHIR/HL7/PACS reais** — conectar onde o hospital já vive.
-10. **Telemedicina/vídeo** + portal do paciente — expandir o ciclo de atendimento.
+**Fechadas (B10–B21):**
+- ✅ **Multi-dispositivo / Postgres** (B10) — seam Prisma ativo por `DATABASE_URL`; in-memory fallback.
+- ✅ **ASR real em streaming** (B12) — seam `ASR_PROVIDER` com fallback demo; nota gerada via Mari streaming.
+- ✅ **Ciclo de exames** (B13) — pedido → coletado → resultado → laudo; timeline unificada.
+- ✅ **Prescrição Memed** (B15) — seam `MEMED_*`; stub funcional sem credencial.
+- ✅ **Assinatura ICP-Brasil** (B16) — seam `ICP_*` PAdES/PKCS#7; fingerprint mock sem credencial.
+- ✅ **WhatsApp Cloud real** (B17) — seam `WHATSAPP_*`; simulador sem credencial.
+- ✅ **Chaves de API hasheadas** (B18) — SHA-256, nunca a chave bruta persistida.
+- ✅ **Performance landing** (B11/B19) — framer-motion removido, reveal CSS+IO, LCP visível.
+- ✅ **Acessibilidade AA** (B21) — token `--subtle` 4.6:1 / 5.1:1, `aria-hidden` em ícones decorativos.
+
+**Restam (fase futura, documentadas):**
+1. **App mobile nativo + ditado offline** — codebase separada; PWA instalável cobre o básico.
+2. **Telemedicina / vídeo** — WebRTC + infra de mídia; fase futura.
+3. **Integrações EHR/FHIR/HL7/PACS reais** — contratos prontos; conectores reais quando houver parceiro.
+4. **Gateway de pagamento real** — Stripe/Pagar.me; seam já documentado.
+5. **Credenciais** — cada seam acima ativa sozinho quando o dono provisionar; ver `DEPLOY.md`.
 
 ## 4. Forças a manter e amplificar (vantagem competitiva)
 

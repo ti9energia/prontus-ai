@@ -3,7 +3,7 @@
 Escriba clínico de IA: da fala da consulta ao **prontuário estruturado** e à **guia TISS** — sem digitar.
 Esta é a implementação **full-stack, premium e executável** das specs deste repositório (`00`, `0A`–`0D`, `02-Auronis-Health`).
 
-> **Stack:** Next.js 14 (App Router) · React 18 · TypeScript · Tailwind · next-intl (4 idiomas) · Recharts · Framer Motion · Claude API (opcional).
+> **Stack:** Next.js 14 (App Router) · React 18 · TypeScript · Tailwind · next-intl (4 idiomas) · Recharts · Prisma (Postgres/in-memory seam) · Claude API (opcional).
 
 ---
 
@@ -31,7 +31,7 @@ Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entr
   - **⌘K / Ctrl+K** → paleta de comandos (navegar + ações rápidas).
   - **⌘J / Ctrl+J** ou o botão **Mari** → copiloto de IA em toda tela.
   - Barra lateral de ícones para abrir qualquer módulo como aba.
-- **Fluxo clínico ponta a ponta:** Agenda → **Consulta ao vivo** (consentimento → gravação simulada → transcrição em streaming → nota se montando) → **Revisão da nota** (editar/aprovar) → **Guia TISS** (validação pré-glosa → enviar) → **Faturamento & glosas** (gráficos).
+- **Fluxo clínico ponta a ponta:** Agenda → **Consulta ao vivo** (consentimento → captura de áudio real via `MediaRecorder` com fallback ao script demo → transcrição em streaming → nota se montando via Mari streaming) → **Revisão da nota** (editar/aprovar) → **Guia TISS** (validação pré-glosa → enviar) → **Faturamento & glosas** (gráficos).
 - **Demais telas:** Pacientes, Modelos por especialidade, Integrações, Configurações, **Agente autônomo** (recomendações), **WhatsApp** (simulação de chat com a Mari).
 - **Painel do Dono** (`/pt-BR/owner` ou ícone 👑): visão geral (MRR), organizações + impersonação, planos & entitlements, **editor de landing (CMS 4 idiomas)**, feature flags, IA & Agente, WhatsApp, acessos (matriz) e auditoria.
 - **PWA:** instalável (manifest + service worker), responsivo, tema claro/escuro.
@@ -63,7 +63,11 @@ src/
 │  └─ ui/                design system (button, card, badge, input, overlay…)
 ├─ i18n/                 routing + request (next-intl)
 ├─ lib/
-│  ├─ data/store.ts      "back end" em memória (repositórios + seed + auditoria)
+│  ├─ data/index.ts      seam de dados: Postgres (prisma) quando DATABASE_URL presente, in-memory store como fallback
+│  ├─ data/store.ts      adapter in-memory (seed, repositórios, auditoria)
+│  ├─ data/postgres.ts   adapter Prisma (mesmas assinaturas, ativa por env var)
+│  ├─ asr/              seam ASR (Whisper/Azure real ou demo)
+│  ├─ connectors/        Memed, ICP-Brasil, WhatsApp, EHR — cada um gated por env var
 │  ├─ workspace/store.ts gerenciador de abas/painéis (split)
 │  └─ types.ts utils.ts hooks.ts auth.ts
 └─ messages/             pt-BR · en · zh-CN · fr-FR
@@ -74,6 +78,25 @@ src/
 
 ---
 
-## ⚠️ O que é real x simulado
-Por pedido ("foco em codar e performar, sem pesar"), o app é **leve e mockado**: dados em memória (`src/lib/data/store.ts`), captura de áudio/ASR **simulada**, TISS/WhatsApp/integrações **demonstrativos**. A estrutura (telas, funções, API, contratos, RBAC, i18n) está toda codada e pronta para plugar serviços reais (Postgres/Prisma, ASR, Meta WhatsApp, gateways) trocando a camada de dados — sem mexer na UI.
+## ✅ Real vs. simulado — estado atual
+
+| Capacidade | Estado |
+|---|---|
+| Dados / persistência | **Seam real**: Postgres (Prisma) quando `DATABASE_URL` presente; in-memory store como fallback |
+| Captura de áudio | **Real**: `MediaRecorder`/`getUserMedia`; fallback ao script demo sem permissão |
+| ASR (transcrição) | **Seam real**: `ASR_PROVIDER` + chave → provedor (Whisper/Azure); ausente → transcrição demo funcional |
+| Nota clínica / Mari | **Real streaming**: `@anthropic-ai/sdk` messages.stream; sem `ANTHROPIC_API_KEY` → fallback com dados reais do app |
+| Prescrição (Memed) | **Seam real**: credenciais `MEMED_*` → API Memed; ausente → stub funcional |
+| Ciclo de exames | **100% real** (sem credencial necessária) |
+| Assinatura ICP-Brasil | **Seam real**: certificado A1/A3 (`ICP_*`) → PAdES/PKCS#7; ausente → fingerprint mock |
+| WhatsApp Cloud | **Seam real**: `WHATSAPP_*` → Meta Cloud API + webhook; ausente → simulador funcional |
+| Chaves de API públicas | **Real**: SHA-256 hasheadas, geração/revogação no painel do dono |
+| TISS + pré-glosa | **100% real** (motor local, sem credencial) |
+| RBAC + multi-tenant + painel | **100% real** |
+| i18n (4 idiomas) | **100% real** |
+| Telemedicina / vídeo | Fase futura (documentada) |
+| App mobile nativo | Fase futura; PWA instalável cobre caso básico |
+| Integrações EHR/FHIR/HL7 | Contratos prontos; conectores reais ficam para fase futura |
+
+Nenhuma credencial é obrigatória para rodar — o fallback de cada seam é funcional e determinístico. Veja `DEPLOY.md` para as variáveis de ambiente de cada integração.
 ```
