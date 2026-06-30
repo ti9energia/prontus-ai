@@ -9,6 +9,31 @@
     "content": "内容",
     "contentHint": "留空则使用默认模板。",
     "signedBy": "签署人 {name} · {council}",
+    "prescription": {
+      "sectionTitle": "电子处方",
+      "addMed": "添加药品",
+      "medName": "药品",
+      "dose": "剂量",
+      "frequency": "用法",
+      "duration": "疗程",
+      "sign": "通过 Memed 签名",
+      "signing": "签名中…",
+      "signed": "已签名",
+      "sendTitle": "发送给患者",
+      "contact": "电话或邮箱",
+      "send": "发送",
+      "sending": "发送中…",
+      "sent": "已发送",
+      "viewPdf": "查看 PDF",
+      "memedBadge": "Memed",
+      "mockBadge": "模拟",
+      "noMeds": "请至少添加一种药品。",
+      "channels": {
+        "sms": "短信",
+        "email": "邮件",
+        "whatsapp": "WhatsApp"
+      }
+    },
     "types": {
       "receita": "处方",
       "atestado": "病假条",

@@ -9,6 +9,31 @@
     "content": "Content",
     "contentHint": "Leave blank to use a default template.",
     "signedBy": "Signed by {name} · {council}",
+    "prescription": {
+      "sectionTitle": "Electronic Prescription",
+      "addMed": "Add medication",
+      "medName": "Medication",
+      "dose": "Dose",
+      "frequency": "Directions",
+      "duration": "Duration",
+      "sign": "Sign with Memed",
+      "signing": "Signing…",
+      "signed": "Signed",
+      "sendTitle": "Send to patient",
+      "contact": "Phone or e-mail",
+      "send": "Send",
+      "sending": "Sending…",
+      "sent": "Sent",
+      "viewPdf": "View PDF",
+      "memedBadge": "Memed",
+      "mockBadge": "Simulated",
+      "noMeds": "Add at least one medication.",
+      "channels": {
+        "sms": "SMS",
+        "email": "E-mail",
+        "whatsapp": "WhatsApp"
+      }
+    },
     "types": {
       "receita": "Prescription",
       "atestado": "Sick note",

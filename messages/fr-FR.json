@@ -9,6 +9,31 @@
     "content": "Contenu",
     "contentHint": "Laissez vide pour utiliser un modèle par défaut.",
     "signedBy": "Signé par {name} · {council}",
+    "prescription": {
+      "sectionTitle": "Ordonnance électronique",
+      "addMed": "Ajouter un médicament",
+      "medName": "Médicament",
+      "dose": "Dose",
+      "frequency": "Posologie",
+      "duration": "Durée",
+      "sign": "Signer avec Memed",
+      "signing": "Signature…",
+      "signed": "Signée",
+      "sendTitle": "Envoyer au patient",
+      "contact": "Téléphone ou e-mail",
+      "send": "Envoyer",
+      "sending": "Envoi…",
+      "sent": "Envoyée",
+      "viewPdf": "Voir le PDF",
+      "memedBadge": "Memed",
+      "mockBadge": "Simulé",
+      "noMeds": "Ajoutez au moins un médicament.",
+      "channels": {
+        "sms": "SMS",
+        "email": "E-mail",
+        "whatsapp": "WhatsApp"
+      }
+    },
     "types": {
       "receita": "Ordonnance",
       "atestado": "Arrêt de travail",

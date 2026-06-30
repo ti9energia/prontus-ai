@@ -9,6 +9,31 @@
     "content": "Conteúdo",
     "contentHint": "Deixe em branco para usar um modelo padrão.",
     "signedBy": "Assinado por {name} · {council}",
+    "prescription": {
+      "sectionTitle": "Prescrição Eletrônica",
+      "addMed": "Adicionar medicamento",
+      "medName": "Medicamento",
+      "dose": "Dose",
+      "frequency": "Posologia",
+      "duration": "Duração",
+      "sign": "Assinar com Memed",
+      "signing": "Assinando…",
+      "signed": "Assinada",
+      "sendTitle": "Enviar ao paciente",
+      "contact": "Telefone ou e-mail",
+      "send": "Enviar",
+      "sending": "Enviando…",
+      "sent": "Enviada",
+      "viewPdf": "Ver PDF",
+      "memedBadge": "Memed",
+      "mockBadge": "Simulado",
+      "noMeds": "Adicione ao menos um medicamento.",
+      "channels": {
+        "sms": "SMS",
+        "email": "E-mail",
+        "whatsapp": "WhatsApp"
+      }
+    },
     "types": {
       "receita": "Receita",
       "atestado": "Atestado",
