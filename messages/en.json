@@ -299,7 +299,23 @@
     },
     "testimonials": {
       "eyebrow": "Customers",
-      "title": "Doctors getting back what they miss most: time."
+      "title": "Doctors getting back what they miss most: time.",
+      "items": [
+        {"quote": "I leave the office with the record already done. I got my evenings back.", "name": "Dr. Helena Vasconcelos", "role": "General practice · Clínica Aurora"},
+        {"quote": "Denials dropped sharply. The pre-submit check alone pays for the plan.", "name": "Rodrigo Menezes", "role": "Manager · Hospital São Lucas"},
+        {"quote": "I ask on WhatsApp and Mari brings it all. Feels like magic — but it's real.", "name": "Dr. Camila Prado", "role": "Cardiology · Instituto Cardio+"}
+      ]
+    },
+    "forWhom": {
+      "eyebrow": "For the whole clinic",
+      "title": "One platform, every role covered",
+      "subtitle": "From the exam room to the back office — the same AI serves each role, with the right permissions.",
+      "roles": {
+        "medico": {"role": "Physician", "desc": "Structured note and TISS claim ready when the visit ends — no typing."},
+        "recepcao": {"role": "Front desk", "desc": "Scheduling, WhatsApp confirmations and a waitlist that re-fills itself."},
+        "faturamento": {"role": "Billing", "desc": "Denials caught before submission and one-click resubmits — less money stuck."},
+        "gestao": {"role": "Management", "desc": "Real-time BI: output, denials and ROI per payer, with the AI agent flagging what to decide."}
+      }
     },
     "faq": {
       "eyebrow": "Questions",

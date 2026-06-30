@@ -299,7 +299,23 @@
     },
     "testimonials": {
       "eyebrow": "Clients",
-      "title": "Des médecins qui récupèrent ce qui leur manque le plus : du temps."
+      "title": "Des médecins qui récupèrent ce qui leur manque le plus : du temps.",
+      "items": [
+        {"quote": "Je sors du cabinet avec le dossier déjà prêt. J'ai retrouvé mes soirées.", "name": "Dre Helena Vasconcelos", "role": "Médecine générale · Clínica Aurora"},
+        {"quote": "Les rejets ont chuté. Le contrôle avant envoi rentabilise à lui seul l'offre.", "name": "Rodrigo Menezes", "role": "Gestionnaire · Hospital São Lucas"},
+        {"quote": "Je demande sur WhatsApp et Mari m'apporte tout. On dirait de la magie.", "name": "Dre Camila Prado", "role": "Cardiologie · Instituto Cardio+"}
+      ]
+    },
+    "forWhom": {
+      "eyebrow": "Pour toute la clinique",
+      "title": "Une plateforme, chaque rôle à sa place",
+      "subtitle": "Du cabinet à la gestion — la même IA sert chaque rôle, avec les bonnes permissions.",
+      "roles": {
+        "medico": {"role": "Médecin", "desc": "Compte rendu structuré et feuille TISS prêts dès la fin de la consultation — sans saisie."},
+        "recepcao": {"role": "Accueil", "desc": "Agenda, confirmations WhatsApp et liste d'attente qui se remplit seule."},
+        "faturamento": {"role": "Facturation", "desc": "Rejets détectés avant l'envoi et renvois en un clic — moins d'argent bloqué."},
+        "gestao": {"role": "Direction", "desc": "BI en temps réel : production, rejets et ROI par assureur, l'agent IA signalant les décisions."}
+      }
     },
     "faq": {
       "eyebrow": "Questions",
