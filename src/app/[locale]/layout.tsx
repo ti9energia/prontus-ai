@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from 'next';
+import type { AbstractIntlMessages } from 'next-intl';
+import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -9,6 +11,17 @@ import { PWARegister } from '@/components/pwa-register';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '../globals.css';
+
+// Namespaces needed by landing-page client components only.
+const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta']);
+
+// Return a filtered subset of messages when on a landing route (no /app or /login).
+function pickMessages(messages: AbstractIntlMessages, isLanding: boolean): AbstractIntlMessages {
+  if (!isLanding) return messages;
+  return Object.fromEntries(
+    Object.entries(messages).filter(([ns]) => LANDING_NS.has(ns)),
+  ) as AbstractIntlMessages;
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -82,7 +95,10 @@ export default async function LocaleLayout({
 }) {
   if (!routing.locales.includes(locale as Locale)) notFound();
   unstable_setRequestLocale(locale);
-  const messages = await getMessages();
+  const allMessages = await getMessages();
+  const url = headers().get('x-invoke-path') ?? headers().get('next-url') ?? '';
+  const isLanding = !url.includes('/app') && !url.includes('/login');
+  const messages = pickMessages(allMessages as AbstractIntlMessages, isLanding);
 
   return (
     <html lang={locale} dir="ltr" suppressHydrationWarning className={fontVariables}>

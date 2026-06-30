@@ -264,6 +264,31 @@
   }
 }
 
+/* ── CSS-native scroll reveal (replaces framer-motion on the landing) ── */
+.rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s);
+}
+.rv[data-in] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rv-stagger > .rvi {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s);
+}
+.rv-stagger[data-in] > .rvi {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @layer utilities {
   .step-anim > * {
     animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;

@@ -3,7 +3,7 @@ import { Sora, Inter, JetBrains_Mono, Noto_Sans_SC } from 'next/font/google';
 export const fontDisplay = Sora({
   subsets: ['latin', 'latin-ext'],
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['600', '700', '800'],
   variable: '--font-display',
 });
 
@@ -20,7 +20,8 @@ export const fontMono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
-// CJK fallback for zh-CN.
+// CJK fallback for zh-CN. next/font/google bundles Noto Sans SC with
+// latin-only subset; full CJK glyph coverage requires self-hosting (future).
 export const fontCJK = Noto_Sans_SC({
   subsets: ['latin'],
   display: 'swap',
