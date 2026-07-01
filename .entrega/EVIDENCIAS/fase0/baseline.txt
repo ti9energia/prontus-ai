@@ -1,0 +1,28 @@
+# Baseline FASE 0 — 2026-07-01
+
+## typecheck
+> auronis-health@1.0.0 typecheck
+> tsc --noEmit
+
+
+## lint
+> next lint
+
+✔ No ESLint warnings or errors
+
+## vitest
+
+[2m Test Files [22m [1m[32m37 passed[39m[22m[90m (37)[39m
+[2m      Tests [22m [1m[32m271 passed[39m[22m[90m (271)[39m
+[2m   Start at [22m 18:41:53
+[2m   Duration [22m 22.52s[2m (transform 19.90s, setup 22.16s, collect 35.15s, tests 3.27s, environment 107.94s, prepare 11.87s)[22m
+
+
+## rotas (curl)
+/pt-BR -> 200
+/pt-BR/login -> 200
+/pt-BR/app -> 307
+/pt-BR/owner -> 307
+/en -> 200
+/api/health -> 200
+/pt-BR/rota-inexistente -> 404
