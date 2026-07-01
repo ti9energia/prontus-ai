@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { config } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -17,10 +18,10 @@ export function GET() {
     service: 'auronis-health',
     time: new Date().toISOString(),
     uptimeSec: Math.round((Date.now() - startedAt) / 1000),
-    version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? 'dev',
+    version: config.runtime.commitSha?.slice(0, 7) ?? 'dev',
     checks: {
-      auth: !!process.env.AUTH_SECRET, // owner login enabled
-      model: !!(process.env.ANTHROPIC_API_KEY || process.env.MARI_API_URL), // live Mari brain
+      auth: !!config.auth.secret, // owner login enabled
+      model: !!(config.ai.anthropicApiKey || config.ai.mariApiUrl), // live Mari brain
     },
   });
 }

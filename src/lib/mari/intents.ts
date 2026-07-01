@@ -1,4 +1,4 @@
-import type { ScreenKey } from '@/lib/workspace/store';
+import type { ScreenKey } from '@/lib/workspace';
 
 /**
  * Lets Mari OPERATE the app, not just talk about it: maps a natural-language

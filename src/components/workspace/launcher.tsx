@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SCREENS, SCREEN_ORDER, type ScreenGroup } from './registry';
-import type { ScreenKey } from '@/lib/workspace/store';
+import type { ScreenKey } from '@/lib/workspace';
 import { cn } from '@/lib/utils';
 
 const GROUP_LABEL: Record<ScreenGroup, string> = {

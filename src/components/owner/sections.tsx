@@ -46,7 +46,7 @@ import {
   upsertTenantConnector,
 } from '@/lib/data';
 import type { AuditEntry, Plan, Tenant, TenantStatus } from '@/lib/types';
-import { listConnectors } from '@/lib/connectors/registry';
+import { listConnectors } from '@/lib/connectors';
 import { useOwner } from './context';
 import { ScreenContainer, ScreenHeader, SectionTitle, StatCard, Table, Th, Td } from '@/components/screens/_kit';
 import { Badge } from '@/components/ui/badge';

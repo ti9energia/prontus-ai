@@ -1,4 +1,5 @@
 import { scryptSync, timingSafeEqual } from 'node:crypto';
+import { config } from '@/lib/config';
 import { hasStrongSecret, type Role } from './session';
 
 /**
@@ -10,10 +11,6 @@ import { hasStrongSecret, type Role } from './session';
  * No real PII lives here: the owner identity is configured entirely via env
  * (OWNER_EMAIL / OWNER_NAME / OWNER_PASSWORD[_HASH]); the defaults are neutral.
  */
-
-const DEFAULT_OWNER_EMAIL = 'owner@auronishealth.com';
-const DEFAULT_TEST_EMAIL = 'marianabarreto@auronishealth.com';
-const DEFAULT_TEST_PASSWORD = 'auronis-demo';
 
 export interface Identity {
   role: Role;
@@ -45,22 +42,22 @@ function verifyScrypt(password: string, stored: string): boolean {
 /** Returns the identity for valid credentials, or null (fail-closed). */
 export function authenticate(emailRaw: string, password: string): Identity | null {
   const email = emailRaw.trim().toLowerCase();
-  const ownerEmail = (process.env.OWNER_EMAIL || DEFAULT_OWNER_EMAIL).trim().toLowerCase();
-  const testEmail = (process.env.TEST_DOCTOR_EMAIL || DEFAULT_TEST_EMAIL).trim().toLowerCase();
+  const ownerEmail = config.auth.ownerEmail.trim().toLowerCase();
+  const testEmail = config.auth.testDoctorEmail.trim().toLowerCase();
 
   if (email === ownerEmail) {
     if (!hasStrongSecret()) return null; // owner disabled without a real secret
-    const hash = process.env.OWNER_PASSWORD_HASH?.trim();
-    const plain = process.env.OWNER_PASSWORD;
+    const hash = config.auth.ownerPasswordHash?.trim();
+    const plain = config.auth.ownerPassword;
     let ok = false;
     if (hash) ok = verifyScrypt(password, hash);
     else if (plain) ok = timingEqual(password, plain);
     else return null; // no owner password configured → disabled
-    return ok ? { role: 'owner', email: ownerEmail, name: process.env.OWNER_NAME || 'Owner' } : null;
+    return ok ? { role: 'owner', email: ownerEmail, name: config.auth.ownerName } : null;
   }
 
   if (email === testEmail) {
-    const expected = process.env.TEST_DOCTOR_PASSWORD || DEFAULT_TEST_PASSWORD;
+    const expected = config.auth.testDoctorPassword;
     return timingEqual(password, expected) ? { role: 'doctor', email: testEmail, name: 'Dra. Mariana Barreto' } : null;
   }
 

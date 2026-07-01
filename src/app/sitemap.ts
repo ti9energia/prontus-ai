@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
+import { config } from '@/lib/config';
 
-const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://auronishealth.com';
+const base = config.site.url;
 const locales = ['pt-BR', 'en', 'zh-CN', 'fr-FR'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

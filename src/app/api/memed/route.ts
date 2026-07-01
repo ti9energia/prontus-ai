@@ -7,8 +7,8 @@ import {
   sendPrescription,
   type MemedMedication,
   type MemedPrescription,
-} from '@/lib/connectors/memed';
-import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
+} from '@/lib/connectors/server';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

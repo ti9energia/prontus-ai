@@ -9,6 +9,7 @@
  */
 
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { config } from '@/lib/config';
 
 export interface WhatsappMessage {
   to: string;
@@ -31,14 +32,14 @@ export interface WhatsappInboundMessage {
 }
 
 export function isWhatsappReal(): boolean {
-  return !!(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_ID);
+  return !!(config.whatsapp.token && config.whatsapp.phoneId);
 }
 
 export async function sendMessage(msg: WhatsappMessage): Promise<WhatsappSendResult> {
   if (isWhatsappReal()) {
-    const token = process.env.WHATSAPP_TOKEN!;
-    const phoneId = process.env.WHATSAPP_PHONE_ID!;
-    const baseUrl = process.env.WHATSAPP_API_URL ?? 'https://graph.facebook.com/v19.0';
+    const token = config.whatsapp.token!;
+    const phoneId = config.whatsapp.phoneId!;
+    const baseUrl = config.whatsapp.apiUrl;
 
     const res = await fetch(`${baseUrl}/${phoneId}/messages`, {
       method: 'POST',
@@ -114,7 +115,7 @@ export function parseWebhookPayload(raw: unknown): WhatsappInboundMessage[] {
  * Returns true when the signature is valid or when no secret is configured.
  */
 export function verifyWebhookSignature(rawBody: Buffer, signatureHeader: string | null): boolean {
-  const secret = process.env.WHATSAPP_WEBHOOK_SECRET;
+  const secret = config.whatsapp.webhookSecret;
   if (!secret) return true; // no secret configured → trust all (dev mode)
   if (!signatureHeader) return false;
 
@@ -135,7 +136,7 @@ export function verifyWebhookChallenge(
   token: string,
   challenge: string,
 ): string | null {
-  const expected = process.env.WHATSAPP_WEBHOOK_SECRET ?? 'auronis_whatsapp_verify';
+  const expected = config.whatsapp.webhookSecret ?? 'auronis_whatsapp_verify';
   if (mode === 'subscribe' && token === expected) return challenge;
   return null;
 }

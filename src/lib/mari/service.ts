@@ -15,6 +15,8 @@
  * See docs/ARCHITECTURE.md for the decoupling plan and the brain's API contract.
  */
 
+import { config } from '@/lib/config';
+
 export type MariSurface = 'clinical' | 'owner';
 export type MariSource = 'remote' | 'claude' | 'mock' | 'mock-fallback';
 
@@ -45,11 +47,11 @@ export interface MariChatResponse {
   source: MariSource;
 }
 
-const model = () => process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6';
+const model = () => config.ai.anthropicModel;
 
 /** Call the decoupled Mari brain over HTTP. Returns null on any failure (never throws). */
 async function callRemote(req: MariChatRequest): Promise<string | null> {
-  const base = process.env.MARI_API_URL;
+  const base = config.ai.mariApiUrl;
   if (!base) return null;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 15_000);
@@ -58,7 +60,7 @@ async function callRemote(req: MariChatRequest): Promise<string | null> {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        ...(process.env.MARI_API_KEY ? { authorization: `Bearer ${process.env.MARI_API_KEY}` } : {}),
+        ...(config.ai.mariApiKey ? { authorization: `Bearer ${config.ai.mariApiKey}` } : {}),
       },
       body: JSON.stringify({
         surface: req.surface,
@@ -83,7 +85,7 @@ async function callRemote(req: MariChatRequest): Promise<string | null> {
 
 /** Call the in-process Anthropic model. Returns null on any failure (never throws). */
 async function callLocalModel(req: MariChatRequest): Promise<string | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = config.ai.anthropicApiKey;
   if (!apiKey) return null;
   try {
     const { default: Anthropic } = await import('@anthropic-ai/sdk');
@@ -124,7 +126,7 @@ export function mariChatStream(req: MariChatRequest): ReadableStream<Uint8Array>
       };
 
       if (req.allowModel) {
-        const apiKey = process.env.ANTHROPIC_API_KEY;
+        const apiKey = config.ai.anthropicApiKey;
         if (apiKey) {
           try {
             const { default: Anthropic } = await import('@anthropic-ai/sdk');
@@ -172,7 +174,7 @@ export async function mariChat(req: MariChatRequest): Promise<MariChatResponse> 
     const remote = await callRemote(req);
     if (remote) return { reply: remote, source: 'remote' };
 
-    if (process.env.ANTHROPIC_API_KEY) {
+    if (config.ai.anthropicApiKey) {
       const local = await callLocalModel(req);
       return local
         ? { reply: local, source: 'claude' }

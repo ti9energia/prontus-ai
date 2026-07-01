@@ -11,6 +11,7 @@ import { PWARegister } from '@/components/pwa-register';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '../globals.css';
+import { config } from '@/lib/config';
 
 // Namespaces needed by landing-page client components only.
 const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta']);
@@ -34,7 +35,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'meta.landing' });
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://auronishealth.com'),
+    metadataBase: new URL(config.site.url),
     title: { default: t('title'), template: '%s · Auronis Health' },
     description: t('description'),
     applicationName: 'Auronis Health',

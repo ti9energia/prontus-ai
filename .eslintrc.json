@@ -1,3 +1,35 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": [
+              "@/lib/auth/*",
+              "!@/lib/auth/server",
+              "!@/lib/auth/client",
+              "@/lib/mari/*",
+              "!@/lib/mari/server",
+              "@/lib/connectors/*",
+              "!@/lib/connectors/server",
+              "@/lib/data/*",
+              "@/lib/events/*",
+              "@/lib/workspace/*",
+              "@/lib/api/*",
+              "@/lib/asr/*"
+            ],
+            "message": "Import profundo em módulo proibido — use a API pública do módulo: o barrel (@/lib/<modulo>) ou a entrada dedicada (server/client). Ver .entrega/ARQUITETURA.md."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/lib/**"],
+      "rules": { "no-restricted-imports": "off" }
+    }
+  ]
 }

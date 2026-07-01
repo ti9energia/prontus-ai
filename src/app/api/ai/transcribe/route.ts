@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { transcribeAudio, isAsrReal } from '@/lib/asr';
-import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

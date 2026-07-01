@@ -31,7 +31,7 @@ import { Modal } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { formatDate, cn } from '@/lib/utils';
-import type { MemedMedication, MemedPrescription } from '@/lib/connectors/memed';
+import type { MemedMedication, MemedPrescription } from '@/lib/connectors';
 
 type DocType = 'receita' | 'atestado' | 'encaminhamento' | 'declaracao' | 'relatorio' | 'pedidoExame' | 'termo';
 

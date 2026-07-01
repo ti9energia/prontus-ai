@@ -28,7 +28,7 @@ import {
   Workflow,
   type LucideIcon,
 } from 'lucide-react';
-import type { ScreenKey } from '@/lib/workspace/store';
+import type { ScreenKey } from '@/lib/workspace';
 import { ScreenSkeleton } from '@/components/screens/_kit';
 
 export type ScreenGroup = 'product' | 'clinic' | 'system';

@@ -1,3 +1,4 @@
+import { config } from '@/lib/config';
 /**
  * ASR seam — automatic speech recognition.
  *
@@ -24,10 +25,10 @@ export interface AsrResult {
 
 /** Returns true when a real ASR provider is configured server-side. */
 export function isAsrReal(): boolean {
-  const provider = process.env.ASR_PROVIDER;
+  const provider = config.asr.provider;
   if (!provider) return false;
-  if (provider === 'whisper') return !!process.env.OPENAI_API_KEY;
-  if (provider === 'azure') return !!(process.env.AZURE_SPEECH_KEY && process.env.AZURE_SPEECH_REGION);
+  if (provider === 'whisper') return !!config.asr.openaiApiKey;
+  if (provider === 'azure') return !!(config.asr.azureSpeechKey && config.asr.azureSpeechRegion);
   return false;
 }
 
@@ -44,7 +45,7 @@ function toProviderLocale(locale: string, provider: AsrSource): string {
 }
 
 async function transcribeWhisper(audio: Blob, locale: string): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY!;
+  const apiKey = config.asr.openaiApiKey!;
   const form = new FormData();
   form.append('file', audio, 'audio.webm');
   form.append('model', 'whisper-1');
@@ -64,8 +65,8 @@ async function transcribeWhisper(audio: Blob, locale: string): Promise<string> {
 }
 
 async function transcribeAzure(audio: Blob, locale: string): Promise<string> {
-  const key = process.env.AZURE_SPEECH_KEY!;
-  const region = process.env.AZURE_SPEECH_REGION!;
+  const key = config.asr.azureSpeechKey!;
+  const region = config.asr.azureSpeechRegion!;
   const lang = toProviderLocale(locale, 'azure');
 
   const res = await fetch(

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AlertCircle, ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/routing';
-import { useSession } from '@/lib/auth';
+import { useSession } from '@/lib/auth/client';
 import { Aurora } from '@/components/landing/aurora';
 import { Logo, LogoMark } from '@/components/brand/logo';
 import { MariFace } from '@/components/brand/mari';

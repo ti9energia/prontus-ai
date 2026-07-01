@@ -1,7 +1,7 @@
 import type { ScreenKey } from './store';
 import type { RoleKey } from '@/lib/types';
 import { getCurrentUser, listFlags, listPlans } from '@/lib/data';
-import { can, type Permission } from '@/lib/auth/permissions';
+import { can, type Permission } from '@/lib/auth';
 
 /**
  * Runtime access resolution for workspace screens — the live wiring behind the

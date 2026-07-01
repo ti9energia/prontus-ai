@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data';
-import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
-import { mariChat, mariChatStream } from '@/lib/mari/service';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
+import { mariChat, mariChatStream } from '@/lib/mari/server';
+import { config } from '@/lib/config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -121,7 +122,7 @@ export async function POST(req: NextRequest) {
   // Cost & auth gate: only authenticated callers may reach a paid model or the
   // remote brain on a public deploy. Checked lazily so the mock path stays cheap.
   const allowModel =
-    !!(process.env.ANTHROPIC_API_KEY || process.env.MARI_API_URL) &&
+    !!(config.ai.anthropicApiKey || config.ai.mariApiUrl) &&
     !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
 
   const mariReq = {

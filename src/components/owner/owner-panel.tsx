@@ -19,7 +19,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { useSession } from '@/lib/auth';
+import { useSession } from '@/lib/auth/client';
 import { useRouter } from '@/i18n/routing';
 import { OwnerProvider, useOwner } from './context';
 import {

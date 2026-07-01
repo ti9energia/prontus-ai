@@ -16,13 +16,14 @@
  */
 
 import * as _storeModule from './store';
+import { config } from '@/lib/config';
 
 type Adapter = typeof _storeModule;
 
 // Resolved once at module load to avoid per-call env checks.
 // NODE_ENV=test always uses the store so unit tests never need a real DB.
 const _adapter: Adapter = (() => {
-  if (process.env.NODE_ENV !== 'test' && process.env.DATABASE_URL) {
+  if (!config.runtime.isTest && config.db.url) {
     try {
       const pg = require('./postgres') as Adapter;
       return pg;

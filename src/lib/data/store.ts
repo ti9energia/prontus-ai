@@ -22,7 +22,7 @@ import type {
   User,
   RoleKey,
 } from '../types';
-import { bus } from '@/lib/events/bus';
+import { bus } from '@/lib/events';
 import { lookupTussPrice } from '@/lib/tuss';
 
 /* ============================================================

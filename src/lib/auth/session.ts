@@ -12,6 +12,8 @@
  *   access on the live site.
  */
 
+import { config } from '@/lib/config';
+
 export const SESSION_COOKIE = 'auronis_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
@@ -27,12 +29,12 @@ export interface SessionPayload {
 const DEV_FALLBACK = 'auronis-dev-secret-change-me';
 
 function secret(): string {
-  return process.env.AUTH_SECRET || DEV_FALLBACK;
+  return config.auth.secret || DEV_FALLBACK;
 }
 
 /** True only when a real AUTH_SECRET is configured (not the dev fallback). */
 export function hasStrongSecret(): boolean {
-  return !!process.env.AUTH_SECRET;
+  return !!config.auth.secret;
 }
 
 const encoder = new TextEncoder();
@@ -109,7 +111,7 @@ export async function verifySession(token: string | undefined | null): Promise<S
   if (payload.role === 'owner' && !hasStrongSecret()) return null;
   // Fail-closed on live deploys: the dev fallback secret must never authorize any
   // session in production, or a leaked/known fallback could forge doctor access too.
-  if (!hasStrongSecret() && process.env.NODE_ENV === 'production') return null;
+  if (!hasStrongSecret() && config.runtime.isProd) return null;
   return payload;
 }
 
