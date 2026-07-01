@@ -6,9 +6,9 @@ import {
   parseWebhookPayload,
   verifyWebhookSignature,
   verifyWebhookChallenge,
-} from '@/lib/connectors/whatsapp';
-import { bus } from '@/lib/events/bus';
-import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
+} from '@/lib/connectors/server';
+import { bus } from '@/lib/events';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

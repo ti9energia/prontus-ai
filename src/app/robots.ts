@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
+import { config } from '@/lib/config';
 
-const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://auronishealth.com';
+const base = config.site.url;
 
 export default function robots(): MetadataRoute.Robots {
   return {

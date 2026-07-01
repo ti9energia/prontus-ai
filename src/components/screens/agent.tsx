@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { agentRecommendations } from '@/lib/data';
 import type { AgentCategory, AgentRecommendation } from '@/lib/types';
-import { openTab } from '@/lib/workspace/store';
+import { openTab } from '@/lib/workspace';
 import { toast } from '@/lib/toast';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Badge } from '@/components/ui/badge';

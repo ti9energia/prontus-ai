@@ -11,7 +11,7 @@ import {
   listEncounters,
 } from '@/lib/data';
 import type { NoteSectionKey } from '@/lib/types';
-import { openTab } from '@/lib/workspace/store';
+import { openTab } from '@/lib/workspace';
 import { ScreenContainer } from './_kit';
 import { AudioWave } from '@/components/visual/audio-wave';
 import { Avatar, Switch } from '@/components/ui/misc';

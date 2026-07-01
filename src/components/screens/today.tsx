@@ -19,9 +19,9 @@ import {
   getCurrentUser,
   agentRecommendations,
 } from '@/lib/data';
-import { impactFromStore } from '@/lib/mari/impact';
+import { impactFromStore } from '@/lib/mari';
 import type { Encounter, EncounterStatus } from '@/lib/types';
-import { openTab, type ScreenKey } from '@/lib/workspace/store';
+import { openTab, type ScreenKey } from '@/lib/workspace';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
 import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';

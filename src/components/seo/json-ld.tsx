@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
+import { config } from '@/lib/config';
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://auronishealth.com';
+const SITE = config.site.url;
 
 /**
  * Structured data (schema.org) for SEO + AEO/GEO. Organization, the product as a

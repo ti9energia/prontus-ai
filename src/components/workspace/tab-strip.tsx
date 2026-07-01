@@ -10,7 +10,7 @@ import {
   setActiveTab,
   type Pane,
   type ScreenKey,
-} from '@/lib/workspace/store';
+} from '@/lib/workspace';
 import { SCREENS } from './registry';
 import { ScreenMenu } from './launcher';
 import { useChrome } from './labels';

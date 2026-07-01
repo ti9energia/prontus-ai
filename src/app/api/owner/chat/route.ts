@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ownerInsights, pushAudit } from '@/lib/data';
-import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth/session';
-import { mariChat } from '@/lib/mari/service';
+import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
+import { mariChat } from '@/lib/mari/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

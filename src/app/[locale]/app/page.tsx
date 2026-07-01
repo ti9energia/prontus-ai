@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { unstable_setRequestLocale } from 'next-intl/server';
-import { SessionProvider } from '@/lib/auth';
+import { SessionProvider } from '@/lib/auth/client';
 import { Workspace } from '@/components/workspace/workspace';
 
 export const metadata: Metadata = { title: 'Workspace' };

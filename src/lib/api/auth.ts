@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { getApiKeyByHash } from '@/lib/data';
+import { config } from '@/lib/config';
 
 /**
  * Public REST API helpers — consistent JSON envelopes + a bearer-key guard.
@@ -46,7 +47,7 @@ export function authError(req: Request): NextResponse | null {
   }
 
   // Dev fallback: accept sk_test_* without a DB lookup in non-production.
-  if (process.env.NODE_ENV !== 'production' && token.startsWith('sk_test_')) {
+  if (!config.runtime.isProd && token.startsWith('sk_test_')) {
     return null;
   }
 

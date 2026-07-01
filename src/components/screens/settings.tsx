@@ -24,9 +24,9 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/data';
-import { useSession } from '@/lib/auth';
+import { useSession } from '@/lib/auth/client';
 import { locales, localeMeta, type Locale } from '@/i18n/routing';
-import { openTab } from '@/lib/workspace/store';
+import { openTab } from '@/lib/workspace';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar, Switch, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';

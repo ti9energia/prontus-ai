@@ -1,4 +1,4 @@
-import { authError, json } from '@/lib/api/auth';
+import { authError, json } from '@/lib/api';
 import { billingStats, ownerInsights } from '@/lib/data';
 
 export const runtime = 'nodejs';

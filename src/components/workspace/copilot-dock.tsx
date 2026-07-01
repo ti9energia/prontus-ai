@@ -6,8 +6,8 @@ import { ArrowUp, Mic, ShieldCheck, ThumbsDown, ThumbsUp, Volume2, VolumeX, X } 
 import { Sheet } from '@/components/ui/overlay';
 import { MariPortrait } from '@/components/brand/mari';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
-import type { ScreenKey } from '@/lib/workspace/store';
-import { detectNavIntent } from '@/lib/mari/intents';
+import type { ScreenKey } from '@/lib/workspace';
+import { detectNavIntent } from '@/lib/mari';
 import { SCREENS } from './registry';
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';

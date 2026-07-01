@@ -35,7 +35,7 @@ import {
   approveNote as approveNoteStore,
 } from '@/lib/data';
 import type { ClinicalNote, Encounter, NoteSection, NoteSectionKey, Patient } from '@/lib/types';
-import { openTab } from '@/lib/workspace/store';
+import { openTab } from '@/lib/workspace';
 import { ScreenContainer } from './_kit';
 import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';

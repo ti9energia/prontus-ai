@@ -33,9 +33,9 @@ import {
   getPatient,
   resubmitGuide,
 } from '@/lib/data';
-import { diagnoseGuide } from '@/lib/mari/tools';
+import { diagnoseGuide } from '@/lib/mari';
 import type { GuideStatus } from '@/lib/types';
-import { openTab } from '@/lib/workspace/store';
+import { openTab } from '@/lib/workspace';
 import { ScreenContainer, ScreenHeader, StatCard, Table, Th, Td } from './_kit';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/misc';

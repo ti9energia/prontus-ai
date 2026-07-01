@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { authenticate, demoIdentity } from '@/lib/auth/credentials';
-import { createSession, SESSION_COOKIE, SESSION_TTL_SECONDS } from '@/lib/auth/session';
+import { authenticate, demoIdentity } from '@/lib/auth/server';
+import { createSession, SESSION_COOKIE, SESSION_TTL_SECONDS } from '@/lib/auth';
+import { config } from '@/lib/config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -61,11 +62,10 @@ export async function POST(req: NextRequest) {
 
   const { email, password, demo } = parsed.data;
   // Public demo is on by default; set DEMO_MODE=false (or 0) to disable the shortcut in prod.
-  const demoDisabled = process.env.DEMO_MODE === 'false' || process.env.DEMO_MODE === '0';
   const identity = demo
-    ? demoDisabled
-      ? null
-      : demoIdentity()
+    ? config.auth.demoEnabled
+      ? demoIdentity()
+      : null
     : email && password
       ? authenticate(email, password)
       : null;

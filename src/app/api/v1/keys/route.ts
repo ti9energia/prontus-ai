@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { z } from 'zod';
-import { apiError, authError, json } from '@/lib/api/auth';
+import { apiError, authError, json } from '@/lib/api';
 import { addApiKey, currentOrgId, listApiKeys, revokeApiKey } from '@/lib/data';
 
 export const runtime = 'nodejs';

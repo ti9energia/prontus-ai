@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { useRouter } from '@/i18n/routing';
-import { focusPane, hydrate, openTab, useWorkspace, type Pane } from '@/lib/workspace/store';
-import { useSession } from '@/lib/auth';
+import { focusPane, hydrate, openTab, useWorkspace, type Pane } from '@/lib/workspace';
+import { useSession } from '@/lib/auth/client';
 import { SCREENS } from './registry';
 import { TopBar } from './top-bar';
 import { AppRail } from './app-rail';

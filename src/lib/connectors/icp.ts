@@ -13,6 +13,7 @@
  */
 
 import { createHash } from 'node:crypto';
+import { config } from '@/lib/config';
 
 export type IcpSource = 'pkcs12' | 'pkcs11' | 'mock';
 
@@ -23,7 +24,7 @@ export interface IcpSignResult {
 }
 
 export function isIcpReal(): boolean {
-  return !!(process.env.ICP_PKCS12_PATH || process.env.ICP_P11_LIB);
+  return !!(config.icp.pkcs12Path || config.icp.p11Lib);
 }
 
 /** Deterministic mock fingerprint (FNV-1a × 8 rounds → 40-char hex). */
@@ -53,7 +54,7 @@ export async function signDocument(docId: string, content?: string): Promise<Icp
     const payload = content ?? docId;
     const rawHash = createHash('sha256').update(payload, 'utf8').digest('hex');
 
-    if (process.env.ICP_P11_LIB) {
+    if (config.icp.p11Lib) {
       return { hash: `SHA256-RSA:pkcs11:${rawHash}`, signedAt, source: 'pkcs11' };
     }
     return { hash: `SHA256-RSA:a1:${rawHash}`, signedAt, source: 'pkcs12' };

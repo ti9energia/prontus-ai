@@ -1,0 +1,14 @@
+﻿# Evidências FASE 1 — 2026-07-01
+
+## typecheck
+> tsc --noEmit
+
+## lint (com regra anti-import-profundo)
+
+✔ No ESLint warnings or errors
+## vitest
+[2m      Tests [22m [1m[32m271 passed[39m[22m[90m (271)[39m
+[2m   Start at [22m 19:00:49
+[2m   Duration [22m 12.20s[2m (transform 5.13s, setup 10.15s, collect 10.15s, tests 2.72s, environment 63.96s, prepare 7.07s)[22m
+
+## build prod: passou (ver log da fase no PR)

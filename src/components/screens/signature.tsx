@@ -38,7 +38,7 @@ const KIND_META: Record<DocKind, { icon: LucideIcon; tone: React.ComponentProps<
   guiaTiss: { icon: FileCheck, tone: 'info' },
 };
 
-import type { IcpSource } from '@/lib/connectors/icp';
+import type { IcpSource } from '@/lib/connectors';
 
 interface SignDoc {
   id: string;

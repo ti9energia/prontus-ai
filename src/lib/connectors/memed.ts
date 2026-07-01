@@ -1,3 +1,4 @@
+import { config } from '@/lib/config';
 /**
  * Memed electronic prescription seam.
  *
@@ -30,7 +31,7 @@ export interface MemedPrescription {
 }
 
 export function isMemedReal(): boolean {
-  return !!(process.env.MEMED_TOKEN);
+  return !!(config.memed.token);
 }
 
 let _seq = 1000;
@@ -43,9 +44,9 @@ export async function createPrescription(
   medications: MemedMedication[],
 ): Promise<MemedPrescription> {
   if (isMemedReal()) {
-    const token = process.env.MEMED_TOKEN!;
-    const base = process.env.MEMED_API_URL ?? 'https://api.memed.com.br/v1';
-    const publicToken = process.env.MEMED_PUBLIC_TOKEN;
+    const token = config.memed.token!;
+    const base = config.memed.apiUrl;
+    const publicToken = config.memed.publicToken;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${token}`,
@@ -78,8 +79,8 @@ export async function createPrescription(
 
 export async function signPrescription(prescription: MemedPrescription): Promise<MemedPrescription> {
   if (isMemedReal()) {
-    const token = process.env.MEMED_TOKEN!;
-    const base = process.env.MEMED_API_URL ?? 'https://api.memed.com.br/v1';
+    const token = config.memed.token!;
+    const base = config.memed.apiUrl;
 
     const res = await fetch(`${base}/prescricoes/${prescription.id}/assinar`, {
       method: 'POST',
@@ -112,8 +113,8 @@ export async function sendPrescription(
   contact: string,
 ): Promise<MemedPrescription> {
   if (isMemedReal()) {
-    const token = process.env.MEMED_TOKEN!;
-    const base = process.env.MEMED_API_URL ?? 'https://api.memed.com.br/v1';
+    const token = config.memed.token!;
+    const base = config.memed.apiUrl;
 
     const res = await fetch(`${base}/prescricoes/${prescription.id}/enviar`, {
       method: 'POST',
