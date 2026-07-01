@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from './button';
 
 function useMounted() {
   const [m, setM] = React.useState(false);
@@ -127,6 +128,77 @@ export function Modal({
       </div>
     </div>,
     document.body,
+  );
+}
+
+/**
+ * Confirmação para ações destrutivas/irreversíveis. Um único primitivo para o
+ * app inteiro: verbo explícito, alvo nomeado e (opcional) digitação do nome
+ * para ações de alto risco (suspender org, revogar chave de produção).
+ */
+export function ConfirmDialog({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  confirmLabel,
+  tone = 'danger',
+  requireText,
+  loading,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void | Promise<void>;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  /** Rótulo do botão de confirmação (default: common.actions.confirm). */
+  confirmLabel?: React.ReactNode;
+  tone?: 'danger' | 'default';
+  /** Exige digitar este texto exato para liberar a confirmação. */
+  requireText?: string;
+  loading?: boolean;
+}) {
+  const t = useTranslations('common');
+  const [typed, setTyped] = React.useState('');
+  React.useEffect(() => {
+    if (!open) setTyped('');
+  }, [open]);
+  const blocked = !!requireText && typed.trim() !== requireText;
+
+  return (
+    <Modal open={open} onClose={onClose} title={title} description={description} size="sm">
+      <div className="p-5 pt-4">
+        {requireText && (
+          <label className="mb-4 block">
+            <span className="mb-1.5 block text-xs font-medium text-muted">
+              {t('confirmDialog.typeToConfirm', { name: requireText })}
+            </span>
+            <input
+              value={typed}
+              onChange={(e) => setTyped(e.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              className="h-10 w-full rounded-md border border-line bg-surface px-3 text-sm text-ink placeholder:text-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              placeholder={requireText}
+            />
+          </label>
+        )}
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose} disabled={loading}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant={tone === 'danger' ? 'danger' : 'primary'}
+            onClick={() => void onConfirm()}
+            disabled={blocked}
+            loading={loading}
+          >
+            {confirmLabel ?? t('actions.confirm')}
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 

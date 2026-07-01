@@ -158,7 +158,10 @@
     "minutesShort": "分钟",
     "secondsShort": "秒",
     "of": "/",
-    "by": "由"
+    "by": "由",
+    "confirmDialog": {
+      "typeToConfirm": "输入 {name} 以确认"
+    }
   },
   "nav": {
     "today": "今日日程",

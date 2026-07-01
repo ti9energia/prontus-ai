@@ -158,7 +158,10 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "of": "of",
-    "by": "by"
+    "by": "by",
+    "confirmDialog": {
+      "typeToConfirm": "Type {name} to confirm"
+    }
   },
   "nav": {
     "today": "Today",

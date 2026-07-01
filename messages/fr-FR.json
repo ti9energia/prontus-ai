@@ -158,7 +158,10 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "of": "sur",
-    "by": "par"
+    "by": "par",
+    "confirmDialog": {
+      "typeToConfirm": "Saisissez {name} pour confirmer"
+    }
   },
   "nav": {
     "today": "Agenda du jour",
