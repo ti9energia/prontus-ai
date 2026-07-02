@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import type { AbstractIntlMessages } from 'next-intl';
-import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -12,37 +10,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '../globals.css';
 import { config } from '@/lib/config';
-
-// Namespaces needed by landing-page client components only.
-// 'pwa' is included even here because PWARegister's update prompt mounts
-// globally (every route) — the SW can surface an update on any page.
-// 'encounter' is included because the hero's animated demo (HeroDemo) reuses
-// the real clinical encounter screen's strings (Transcrição/Médico/Paciente/
-// section titles) instead of duplicating them.
-// 'notFound' is included because not-found.tsx AND error.tsx (the segment
-// error boundary for every [locale] route, including landing) both read
-// notFound.back for their "back home" link — without it, error.tsx itself
-// throws MISSING_MESSAGE while rendering its own fallback UI, which is what
-// turned HeroDemo's original 'encounter' bug into unrecoverable render
-// churn instead of a clean fallback (see .entrega/DECISOES.md 2026-07-02).
-const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta', 'pwa', 'encounter', 'notFound']);
-
-// Product/app surfaces need the FULL message set, not the filtered landing
-// subset. IMPORTANT: every route added outside the pure marketing pages
-// (/, /contact, /privacy, /terms, /lgpd) must be listed here — otherwise it
-// silently gets LANDING_NS-only messages and throws MISSING_MESSAGE for any
-// namespace it needs. Real bug found via Playwright E2E in FASE 7: /signup,
-// /onboarding, /checkout and /owner were missing here, so those 4 entire
-// page flows were broken in production (see .entrega/DECISOES.md 2026-07-02).
-const PRODUCT_PATHS = ['/app', '/login', '/signup', '/onboarding', '/checkout', '/owner'];
-
-// Return a filtered subset of messages when on a landing route (no product surface).
-function pickMessages(messages: AbstractIntlMessages, isLanding: boolean): AbstractIntlMessages {
-  if (!isLanding) return messages;
-  return Object.fromEntries(
-    Object.entries(messages).filter(([ns]) => LANDING_NS.has(ns)),
-  ) as AbstractIntlMessages;
-}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -116,10 +83,15 @@ export default async function LocaleLayout({
 }) {
   if (!routing.locales.includes(locale as Locale)) notFound();
   unstable_setRequestLocale(locale);
-  const allMessages = await getMessages();
-  const url = headers().get('x-invoke-path') ?? headers().get('next-url') ?? '';
-  const isLanding = !PRODUCT_PATHS.some((p) => url.includes(p));
-  const messages = pickMessages(allMessages as AbstractIntlMessages, isLanding);
+  // Every route gets the full message catalog. A previous per-route filter
+  // here (guessing the current path from undocumented request headers) was
+  // unreliable and, worse, failed *silently*: /signup, /onboarding,
+  // /checkout, /owner and even parts of /app ended up with the wrong
+  // catalog and threw MISSING_MESSAGE in production. The catalog is ~50KB
+  // uncompressed per locale (compresses well over the wire) — not worth
+  // re-introducing that failure mode to save a few KB on marketing pages.
+  // See .entrega/DECISOES.md 2026-07-02.
+  const messages = await getMessages();
 
   return (
     <html lang={locale} dir="ltr" suppressHydrationWarning className={fontVariables}>

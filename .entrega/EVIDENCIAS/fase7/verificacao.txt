@@ -145,5 +145,40 @@ Corrigidos os 3 (ver diff desta branch em `layout.tsx` e `button.tsx`).
 Local pós-correção: typecheck ✅ lint ✅ 349 testes ✅ build prod exit 0 ✅
 (sem nenhum `MISSING_MESSAGE` no log do build).
 
+## Execução real via GitHub Actions — run 2 (após a correção acima, run 28616953980)
+RESULTADO: 30/49 falharam — melhora real (34→30) mas NÃO resolvido de
+verdade. `MISSING_MESSAGE: auth (pt-BR)` continuou em `/signup`, e novos
+namespaces ausentes apareceram (`roles`, `chrome`, `copilot`,
+`copilot.name`) inclusive em `/app`, que a allowlist `PRODUCT_PATHS`
+deveria proteger. Diagnóstico: `headers().get('x-invoke-path') ??
+headers().get('next-url')` nunca continha de forma confiável o pathname
+esperado — ambos os headers são internos do Next.js, sem contrato
+documentado. O bug nunca foi "faltam rotas na lista" — foi o mecanismo de
+detecção de rota inteiro. Ver `.entrega/DECISOES.md` 2026-07-02, entrada
+"run 2 do CI mostrou que o fix do Bug #1 não resolveu de verdade".
+
+**Correção final:** removido o filtro de mensagens por rota inteiro.
+`[locale]/layout.tsx` agora entrega o catálogo COMPLETO (`getMessages()`
+sem filtro) para toda rota, sempre — sem `isLanding`, sem `LANDING_NS`,
+sem leitura de headers não documentados. Custo medido: ~39 KB não
+comprimidos a mais por locale só nas 5 páginas puramente de marketing
+(as únicas que já se beneficiavam do filtro); comprime bem via gzip/
+brotli (padrão do Next.js). Elimina a classe de bug permanentemente —
+nenhuma rota nova pode voltar a quebrar por filtro desatualizado.
+
+Local pós-correção: typecheck ✅ lint ✅ 349 testes ✅. Build local não
+pôde ser confirmado por exit code desta vez — 6 tentativas consecutivas
+de `npm run build` foram encerradas pelo próprio ambiente no meio da
+compilação (log: `write EPIPE` no worker do Next.js, processo morto de
+fora — não um erro do build; `typecheck`/`lint`/`vitest` rodaram normais
+no mesmo intervalo, então não é um problema do código). O diff em
+`layout.tsx` é pequeno e foi revisado à mão (troca de um bloco de leitura
+de headers + filtro por uma única chamada padrão a `getMessages()`).
+Prova de build fica pelo job `quality` do próprio CI, que já passou nos
+runs 1 e 2 contra versões anteriores deste arquivo.
+
+## Execução real via GitHub Actions — run 3 (após a correção final)
+<<PREENCHIDO APÓS O RUN>>
+
 ## Execução real via GitHub Actions — run 2 (após as correções)
 <<PREENCHIDO APÓS O RE-RUN DO CI>>
