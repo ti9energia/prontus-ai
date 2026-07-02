@@ -148,6 +148,28 @@ export const config = {
       return env('WHATSAPP_WEBHOOK_SECRET');
     },
   },
+
+  payments: {
+    /** Mercado Pago access token — real PIX/boleto/cartão via Payments API. Sandbox tokens (TEST-…) work too. */
+    get mercadopagoAccessToken(): string | undefined {
+      return env('MERCADOPAGO_ACCESS_TOKEN');
+    },
+    get mercadopagoWebhookSecret(): string | undefined {
+      return env('MERCADOPAGO_WEBHOOK_SECRET');
+    },
+    get mercadopagoApiUrl(): string {
+      return env('MERCADOPAGO_API_URL') ?? 'https://api.mercadopago.com';
+    },
+  },
+
+  email: {
+    get resendApiKey(): string | undefined {
+      return env('RESEND_API_KEY');
+    },
+    get from(): string {
+      return env('EMAIL_FROM') ?? 'Auronis Health <no-reply@auronishealth.com>';
+    },
+  },
 } as const;
 
 export type AppConfig = typeof config;

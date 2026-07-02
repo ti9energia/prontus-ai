@@ -17,16 +17,27 @@ export default async function middleware(req: NextRequest) {
   const sub = pathname.startsWith(`/${locale}`) ? pathname.slice(locale.length + 1) : pathname;
 
   const isOwner = sub === '/owner' || sub.startsWith('/owner/');
-  const isApp = sub === '/app' || sub.startsWith('/app/');
+  // /app, /onboarding and /checkout all require a signed-in identity — the
+  // three post-auth destinations of the signup → onboarding → app → checkout
+  // funnel — any role qualifies (role-specific gating is /owner only).
+  const isAuthedArea =
+    sub === '/app' ||
+    sub.startsWith('/app/') ||
+    sub === '/onboarding' ||
+    sub.startsWith('/onboarding/') ||
+    sub === '/checkout' ||
+    sub.startsWith('/checkout/');
 
-  if (isOwner || isApp) {
+  if (isOwner || isAuthedArea) {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
     const session = await verifySession(token);
     const ok = !!session && (isOwner ? session.role === 'owner' : true);
     if (!ok) {
+      const dest = pathname + req.nextUrl.search; // preserve e.g. /checkout?plan=pro&cycle=monthly
       const url = req.nextUrl.clone();
       url.pathname = `/${locale}/login`;
       url.search = '';
+      if (dest !== `/${locale}` && dest !== `/${locale}/app`) url.searchParams.set('next', dest);
       return NextResponse.redirect(url);
     }
   }

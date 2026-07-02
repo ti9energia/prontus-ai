@@ -40,6 +40,8 @@ export interface MariChatRequest {
   maxTokens?: number;
   /** Deterministic, data-aware reply used when no model is available. */
   fallback: () => string;
+  /** Per-tenant model override (owner's AI config) — falls back to the global default. */
+  model?: string;
 }
 
 export interface MariChatResponse {
@@ -47,7 +49,7 @@ export interface MariChatResponse {
   source: MariSource;
 }
 
-const model = () => config.ai.anthropicModel;
+const model = (req: MariChatRequest) => req.model || config.ai.anthropicModel;
 
 /** Call the decoupled Mari brain over HTTP. Returns null on any failure (never throws). */
 async function callRemote(req: MariChatRequest): Promise<string | null> {
@@ -91,7 +93,7 @@ async function callLocalModel(req: MariChatRequest): Promise<string | null> {
     const { default: Anthropic } = await import('@anthropic-ai/sdk');
     const client = new Anthropic({ apiKey });
     const completion = await client.messages.create({
-      model: model(),
+      model: model(req),
       max_tokens: req.maxTokens ?? 600,
       system: req.system,
       messages: req.messages.map((m) => ({ role: m.role, content: m.content })),
@@ -132,7 +134,7 @@ export function mariChatStream(req: MariChatRequest): ReadableStream<Uint8Array>
             const { default: Anthropic } = await import('@anthropic-ai/sdk');
             const client = new Anthropic({ apiKey });
             const stream = await client.messages.stream({
-              model: model(),
+              model: model(req),
               max_tokens: req.maxTokens ?? 600,
               system: req.system,
               messages: req.messages.map((m) => ({ role: m.role, content: m.content })),

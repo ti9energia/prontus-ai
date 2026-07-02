@@ -448,7 +448,11 @@
     "email": "E-mail",
     "password": "Senha",
     "demoNote": "Demo: clique em entrar para acessar com a clínica de exemplo.",
-    "enterDemo": "Entrar na demonstração"
+    "enterDemo": "Entrar na demonstração",
+    "signUpTitle": "Criar sua conta",
+    "signUpSubtitle": "Comece grátis — sem cartão de crédito.",
+    "orgName": "Nome da clínica",
+    "yourName": "Seu nome"
   },
   "appShell": {
     "search": "Buscar pacientes, consultas, guias…",
@@ -749,7 +753,8 @@
       "consent": "Consentimento & retenção",
       "language": "Idioma & região",
       "whatsapp": "WhatsApp",
-      "ai": "Copiloto & agente"
+      "ai": "Copiloto & agente",
+      "billing": "Plano & cobrança"
     },
     "profile": {
       "name": "Nome",
@@ -776,6 +781,17 @@
       "status": "Status",
       "active": "Ativo",
       "invited": "Convidado"
+    },
+    "billing": {
+      "title": "Plano & cobrança",
+      "subtitle": "Gerencie a assinatura da sua organização.",
+      "currentPlan": "Plano atual",
+      "trialBadge": "Período de teste",
+      "activeBadge": "Ativo",
+      "upgrade": "Assinar",
+      "change": "Trocar plano",
+      "perMonth": "/mês",
+      "sandboxNote": "Pagamento em ambiente de testes (sandbox) — nenhuma cobrança real acontece sem uma credencial de produção configurada."
     }
   },
   "roles": {
@@ -1240,5 +1256,103 @@
       },
       "sla": "Horário de atendimento: dias úteis, 9h–18h (BRT). Solicitações de privacidade têm prioridade e seguem os prazos da LGPD."
     }
+  },
+  "onboarding": {
+    "stepOf": "Etapa {n} de 4",
+    "skip": "Pular",
+    "profile": {
+      "title": "Conte sobre sua clínica",
+      "subtitle": "Isso ajuda a Mari a se adaptar ao tamanho da sua operação.",
+      "sizeLabel": "Quantos médicos usam o Auronis?",
+      "size1": "Só eu",
+      "size2to5": "2 a 5 médicos",
+      "size6to20": "6 a 20 médicos",
+      "size20plus": "Mais de 20 médicos"
+    },
+    "specialty": {
+      "title": "Qual sua especialidade principal?",
+      "subtitle": "A Mari ajusta modelos de nota e vocabulário clínico por especialidade."
+    },
+    "team": {
+      "title": "Convide sua equipe",
+      "subtitle": "Opcional — você também pode convidar depois em Configurações.",
+      "emailPlaceholder": "colega@clinica.com",
+      "add": "Adicionar",
+      "invited": "{count} convite(s) preparado(s)",
+      "note": "Os convites são enviados quando você ativar sua equipe em Configurações → Equipe."
+    },
+    "tour": {
+      "title": "Você está pronto",
+      "subtitle": "Um resumo rápido do que a Mari faz por você.",
+      "f1Title": "Consulta ao vivo",
+      "f1Desc": "Grave a consulta e receba o prontuário estruturado em minutos.",
+      "f2Title": "Guias TISS sem retrabalho",
+      "f2Desc": "Validação pré-glosa antes de enviar — menos guias rejeitadas.",
+      "f3Title": "Mari, sua copiloto",
+      "f3Desc": "Pergunte qualquer coisa sobre sua clínica, em qualquer tela.",
+      "cta": "Ir para o app"
+    },
+    "error": "Não foi possível salvar. Tente novamente."
+  },
+  "checkout": {
+    "title": "Assinar plano",
+    "subtitle": "Pagamento em ambiente de testes (sandbox) — nenhuma cobrança real acontece sem uma credencial de produção configurada.",
+    "planLabel": "Plano",
+    "cycleMonthly": "Mensal",
+    "cycleYearly": "Anual",
+    "yearlyHint": "2 meses grátis",
+    "payer": {
+      "title": "Seus dados",
+      "name": "Nome completo",
+      "email": "E-mail",
+      "taxId": "CPF ou CNPJ (opcional)"
+    },
+    "method": {
+      "title": "Forma de pagamento",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "card": "Cartão"
+    },
+    "card": {
+      "number": "Número do cartão",
+      "expiry": "Validade (MM/AA)",
+      "cvv": "CVV",
+      "name": "Nome no cartão",
+      "testHint": "Ambiente de testes: números terminados em dígito par são aprovados; ímpar é recusado."
+    },
+    "confirm": "Confirmar e pagar",
+    "pix": {
+      "title": "Pague com PIX",
+      "subtitle": "Escaneie o QR code ou copie o código abaixo no app do seu banco.",
+      "copyPaste": "Código copia e cola",
+      "copyButton": "Copiar código",
+      "copied": "Código copiado",
+      "waiting": "Aguardando confirmação do pagamento…",
+      "sandboxNote": "Ambiente de testes — a confirmação pode levar alguns segundos."
+    },
+    "boleto": {
+      "title": "Pague com boleto",
+      "subtitle": "Copie a linha digitável ou abra o boleto para pagar no seu banco.",
+      "line": "Linha digitável",
+      "view": "Ver boleto",
+      "waiting": "Aguardando confirmação do pagamento…"
+    },
+    "success": {
+      "title": "Pagamento confirmado",
+      "subtitle": "Sua assinatura está ativa. Bem-vindo(a) ao plano {plan}.",
+      "cta": "Ir para o app"
+    },
+    "failed": {
+      "title": "Pagamento não aprovado",
+      "subtitle": "Não foi possível confirmar o pagamento. Você pode tentar novamente.",
+      "retry": "Tentar novamente"
+    },
+    "errors": {
+      "planNotFound": "Plano não encontrado.",
+      "cardTokenRequired": "Preencha os dados do cartão.",
+      "provider": "O provedor de pagamento não respondeu. Tente novamente.",
+      "generic": "Não foi possível processar o pagamento. Tente novamente."
+    },
+    "backToPlans": "Escolher outro plano"
   }
 }

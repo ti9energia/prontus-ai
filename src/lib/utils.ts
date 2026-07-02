@@ -112,3 +112,12 @@ export function sleep(ms: number) {
 export function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
 }
+
+/**
+ * Yearly billing = 2 months free → effective monthly price.
+ * Single source of truth shared by the landing pricing table (display) and the
+ * checkout backend (actual amount charged) — they must never diverge.
+ */
+export function yearlyMonthlyPrice(monthly: number): number {
+  return Math.round((monthly * 10) / 12);
+}
