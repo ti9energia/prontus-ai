@@ -135,22 +135,25 @@ export function TabStrip({
             </div>
           );
         })}
+      </div>
 
-        {/* new tab */}
-        <div className="relative shrink-0" ref={menuRef}>
-          <button
-            onClick={() => setMenuOpen((o) => !o)}
-            className="grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
-            aria-label={c('newTab')}
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-          {menuOpen && (
-            <div className="absolute left-0 top-9 z-[60] animate-scale-in">
-              <ScreenMenu onPick={pick} />
-            </div>
-          )}
-        </div>
+      {/* new tab — a sibling of role="tablist", not a child: axe's
+          aria-required-children rule correctly flags a tablist whose direct
+          children aren't all role="tab" (found via Playwright a11y scan,
+          FASE 7 — see .entrega/DECISOES.md 2026-07-02). */}
+      <div className="relative shrink-0" ref={menuRef}>
+        <button
+          onClick={() => setMenuOpen((o) => !o)}
+          className="grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
+          aria-label={c('newTab')}
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+        {menuOpen && (
+          <div className="absolute left-0 top-9 z-[60] animate-scale-in">
+            <ScreenMenu onPick={pick} />
+          </div>
+        )}
       </div>
     </div>
   );

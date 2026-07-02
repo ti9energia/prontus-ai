@@ -25,17 +25,24 @@ export const buttonVariants = ({
     'disabled:pointer-events-none disabled:opacity-50',
     'active:scale-[0.98]',
     {
+      // brand-600/accent-400/danger DEFAULT all read below WCAG AA's 4.5:1
+      // against white text (2.95:1 / 1.81:1 / 3.91:1 — real violations found
+      // via axe in FASE 7's Playwright suite, not just these 3 pages: this
+      // is the shared button primitive, so every primary/accent/danger
+      // button app-wide was affected). Shifted to ramp steps that clear AA
+      // with real margin (see .entrega/DECISOES.md 2026-07-02 for the exact
+      // contrast math) instead of inventing new one-off colors.
       primary:
-        'bg-brand-600 text-white shadow-sm hover:bg-brand-700 hover:shadow-glow',
+        'bg-brand-800 text-white shadow-sm hover:bg-brand-900 hover:shadow-glow',
       accent:
-        'bg-accent-400 text-white shadow-sm hover:bg-accent-500 hover:shadow-glow-accent',
+        'bg-accent-700 text-white shadow-sm hover:bg-accent-800 hover:shadow-glow-accent',
       secondary:
         'bg-ink text-bg hover:opacity-90 shadow-sm',
       outline:
         'border border-line bg-surface text-ink hover:bg-elevated hover:border-subtle/40',
       ghost: 'text-ink/80 hover:text-ink hover:bg-ink/[0.05]',
       subtle: 'bg-ink/[0.05] text-ink hover:bg-ink/[0.08]',
-      danger: 'bg-danger text-white hover:bg-danger/90 shadow-sm',
+      danger: 'bg-danger-fg text-white hover:brightness-90 shadow-sm',
     }[variant],
     {
       sm: 'h-8 px-3 text-[0.8125rem]',

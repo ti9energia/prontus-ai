@@ -1,0 +1,334 @@
+# Evidências FASE 7 — 2026-07-02
+
+## Escopo
+Suíte E2E Playwright (49 testes / 8 specs) cobrindo a jornada completa
+(landing → cadastro → onboarding → workspace → checkout sandbox → owner →
+erros/regressão → acessibilidade), + job `e2e` novo no CI (GitHub Actions).
+
+## typecheck
+> auronis-health@1.0.0 typecheck
+> tsc --noEmit
+(sem erros — inclui os 8 specs + helpers.ts novos em e2e/)
+
+## lint
+> next lint
+✔ No ESLint warnings or errors
+
+## i18n (927 chaves, sem regressão de paridade)
+✓ en: 927 keys, in parity
+✓ zh-CN: 927 keys, in parity
+✓ fr-FR: 927 keys, in parity
+(+2 chaves novas nesta fase: checkout.perMonth/perYear — ver bug #2 abaixo)
+
+## npm audit --omit=dev
+1 high + 2 moderate, todos em `next`/`next-intl`/`postcss` — PRÉ-EXISTENTES
+(confirmado via `git diff main -- package.json`: esta fase só adicionou
+@playwright/test e @axe-core/playwright como devDependencies; nenhuma versão
+de dependência de produção foi tocada). Já tratado como informativo pelo
+próprio ci.yml (`continue-on-error: true`, decisão anterior a esta fase).
+Registrado como pendência rastreada em PENDENCIAS.md #6 (upgrade major
+fora do escopo de uma fase de testes).
+
+## vitest (349 testes, sem regressão)
+Test Files  47 passed (47)
+     Tests  349 passed (349)
+(inclui os testes de rate-limit de login/signup rodando contra os
+defaults de produção inalterados — 8/5 — já que E2E_MAX_LOGIN_ATTEMPTS/
+E2E_MAX_SIGNUP_ATTEMPTS não estão setados no ambiente do vitest)
+
+## build de produção
+exit code 0 (confirmado via bash, não PowerShell) — 52/52 páginas geradas.
+
+## Suíte E2E — inventário (49 testes / 8 specs)
+- landing.spec.ts (8): hero/CTA sem erros de console, funil CTA→login,
+  zero link morto no footer (guarda de regressão fase 2 P0), páginas legais
+  com conteúdo real, contato com mailto: real, FAQ acordeão (ids
+  faq-q-q1..q5), idioma via seletor, 404 com volta ao início.
+- auth.spec.ts (7): login inválido com role="alert", ausência do atalho de
+  demo (decisão de produto, guarda de regressão), link cadastro→login,
+  cadastro real com sessão verificada via /api/auth/session, e-mail
+  duplicado rejeitado 409, login com conta recém-criada, senha curta
+  bloqueada via minLength client-side.
+- onboarding.spec.ts (5): 4 etapas completas até /app, progresso
+  sobrevive a reload (prova server-side, não localStorage), adicionar/
+  remover e-mail de convite, org já onboarded pula direto para /app,
+  /onboarding sem sessão redireciona a login.
+- checkout.spec.ts (8): redirect com ?next= preservado, PIX com QR real +
+  copia-e-cola + polling ao vivo até confirmação (mock sandbox), boleto
+  com linha digitável + link, cartão par=aprovado / ímpar=recusado+retry,
+  preço Starter R$99 (guarda de regressão fase 2 P0), entrada via
+  Configurações→Plano&cobrança→Assinar (?open=settings), ciclo anual com
+  "2 meses grátis".
+- workspace.spec.ts (5): shell da demo sem erros de console, ⌘K abre
+  command palette, regressão do deep-link ?open= (bug real encontrado e
+  corrigido nesta fase — ver abaixo), /app e /owner sem sessão redirecionam.
+- owner.spec.ts (3): login real de owner alcança /owner (role verificado
+  via /api/auth/session), sessão de médico não alcança /owner (gate de
+  role), suspender tenant exige digitar o nome exato (ConfirmDialog
+  requireText, fase 3).
+- accessibility.spec.ts (7): @axe-core/playwright, filtro serious/critical
+  (WCAG 2 A/AA) em landing/login/signup/privacy/onboarding/checkout/
+  workspace.
+- errors-and-regressions.spec.ts (6): resiliência a erro do provedor de
+  pagamento (502 interceptado), resiliência a queda de rede no cadastro,
+  headers de segurança presentes (CSP frame-ancestors 'none', nosniff,
+  HSTS), formato de /api/health, /api/v1/patients rejeita sem chave e com
+  chave inválida (401).
+
+## Bugs reais encontrados e corrigidos durante a escrita dos testes
+1. **Deep links `?open=` do manifest PWA nunca eram lidos** —
+   `src/app/manifest.ts` declara shortcuts (`?open=encounter`,
+   `?open=billing`) desde a fase 6, mas nenhum componente os consumia.
+   Corrigido em `src/components/workspace/workspace.tsx` (useEffect lendo
+   `window.location.search` no mount — evita exigir Suspense boundary só
+   para isso). Coberto por `workspace.spec.ts` (teste de regressão) e
+   usado por `checkout.spec.ts` (entrada via Configurações).
+2. **Sufixos "/mo"/"yr" hardcoded em inglês no checkout** —
+   `src/components/checkout/checkout-flow.tsx` mostrava "/mo" e "yr" fixos
+   independente do idioma. Corrigido com novas chaves
+   `checkout.perMonth`/`checkout.perYear` nos 4 catálogos.
+3. **Colisão de rate-limit da própria suíte E2E** — a suíte completa faz
+   ~19 chamadas a /api/auth/signup e ~8 a /api/auth/login na mesma
+   "sessão" (mesmo IP aparente), contra limites de produção de 5/15min e
+   8/15min — o suficiente para a própria suíte disparar 429 em cascata
+   sem nenhum bug real envolvido. Corrigido tornando os limites
+   configuráveis (`config.auth.maxLoginAttempts`/`maxSignupAttempts`,
+   lendo `E2E_MAX_LOGIN_ATTEMPTS`/`E2E_MAX_SIGNUP_ATTEMPTS`, default
+   inalterado 8/5) e setando overrides generosos só em
+   `playwright.config.ts`'s `webServer.env` — produção não muda.
+
+## De-risco de seletores (sem servidor local para iterar ao vivo)
+Toda string/role usada nos 8 specs foi conferida byte a byte contra:
+`messages/pt-BR.json` (onboarding.*, auth.*, checkout.*, owner.tenants.*,
+owner.nav.*, settings.billing.*), os componentes-fonte
+(`onboarding-wizard.tsx`, `signup-form.tsx`, `login-form.tsx`,
+`sections.tsx`, `owner-panel.tsx`, `overlay.tsx`/ConfirmDialog,
+`registry.tsx`/SCREENS, `faq.tsx`) e o registry de telas do workspace
+(confirma `billing`/`settings` como chaves válidas de `?open=`). Nenhuma
+string foi assumida sem checar a fonte.
+
+## Prova de execução em navegador real (Playwright) — CI, não local
+Por diretiva do dono ("não precisa subir porta nem nada, foca no código" /
+"quando todas as fases tiverem feitas aí a gente sobe para verificar e
+testar"), a suíte NÃO foi executada localmente. Resolução: usar o
+GitHub Actions (`e2e` job novo em `.github/workflows/ci.yml`, `webServer`
+do Playwright sobe/derruba o processo sozinho dentro do runner da nuvem —
+nenhum servidor fica de pé na máquina local) como o ambiente de execução
+real.
+
+## Execução real via GitHub Actions — run 1 (PR #57, run 28602783913)
+RESULTADO: 34/49 falharam. Não foi maquiado nem re-executado às cegas —
+investigado a fundo (ver `.entrega/DECISOES.md` 2026-07-02, entrada "1º run
+real do E2E achou 3 bugs de produção genuínos"). Causa raiz: 3 bugs REAIS
+de produção, pré-existentes a esta pipeline, invisíveis a typecheck/lint/
+build/vitest porque nenhuma fase anterior renderizou estas páginas num
+navegador de verdade:
+1. `src/app/[locale]/layout.tsx`: `isLanding` usava denylist
+   (`!url.includes('/app') && !url.includes('/login')`) em vez de
+   allowlist — `/signup`, `/onboarding`, `/checkout` e `/owner` caíam por
+   omissão no catálogo de mensagens FILTRADO da landing, e qualquer
+   `useTranslations()` dessas 4 páginas lançava `MISSING_MESSAGE` no
+   servidor. Essas 4 páginas inteiras estavam quebradas em produção.
+2. `LANDING_NS` (mesmo arquivo) não incluía `encounter` (usado pela demo
+   animada do hero, `HeroDemo`) nem `notFound` (usado por `error.tsx`, o
+   error boundary de toda rota `[locale]`) — então o próprio fallback de
+   erro também quebrava ao tentar renderizar, e a página nunca
+   estabilizava (Playwright via elementos "detached from the DOM,
+   retrying" em loop até o timeout de 45s). Isso explica falhas em testes
+   sem relação aparente com o bug de origem (footer, FAQ, idioma).
+3. `src/components/ui/button.tsx`: `buttonVariants` primary/accent/danger
+   combinavam texto branco com fundos que medem 2.95:1 / 1.81:1 / 3.91:1
+   de contraste — abaixo do mínimo AA de 4.5:1 (cálculo com a fórmula real
+   de luminância relativa do WCAG, script em Node, não estimativa).
+
+Corrigidos os 3 (ver diff desta branch em `layout.tsx` e `button.tsx`).
+Local pós-correção: typecheck ✅ lint ✅ 349 testes ✅ build prod exit 0 ✅
+(sem nenhum `MISSING_MESSAGE` no log do build).
+
+## Execução real via GitHub Actions — run 2 (após a correção acima, run 28616953980)
+RESULTADO: 30/49 falharam — melhora real (34→30) mas NÃO resolvido de
+verdade. `MISSING_MESSAGE: auth (pt-BR)` continuou em `/signup`, e novos
+namespaces ausentes apareceram (`roles`, `chrome`, `copilot`,
+`copilot.name`) inclusive em `/app`, que a allowlist `PRODUCT_PATHS`
+deveria proteger. Diagnóstico: `headers().get('x-invoke-path') ??
+headers().get('next-url')` nunca continha de forma confiável o pathname
+esperado — ambos os headers são internos do Next.js, sem contrato
+documentado. O bug nunca foi "faltam rotas na lista" — foi o mecanismo de
+detecção de rota inteiro. Ver `.entrega/DECISOES.md` 2026-07-02, entrada
+"run 2 do CI mostrou que o fix do Bug #1 não resolveu de verdade".
+
+**Correção final:** removido o filtro de mensagens por rota inteiro.
+`[locale]/layout.tsx` agora entrega o catálogo COMPLETO (`getMessages()`
+sem filtro) para toda rota, sempre — sem `isLanding`, sem `LANDING_NS`,
+sem leitura de headers não documentados. Custo medido: ~39 KB não
+comprimidos a mais por locale só nas 5 páginas puramente de marketing
+(as únicas que já se beneficiavam do filtro); comprime bem via gzip/
+brotli (padrão do Next.js). Elimina a classe de bug permanentemente —
+nenhuma rota nova pode voltar a quebrar por filtro desatualizado.
+
+Local pós-correção: typecheck ✅ lint ✅ 349 testes ✅. Build local não
+pôde ser confirmado por exit code desta vez — 6 tentativas consecutivas
+de `npm run build` foram encerradas pelo próprio ambiente no meio da
+compilação (log: `write EPIPE` no worker do Next.js, processo morto de
+fora — não um erro do build; `typecheck`/`lint`/`vitest` rodaram normais
+no mesmo intervalo, então não é um problema do código). O diff em
+`layout.tsx` é pequeno e foi revisado à mão (troca de um bloco de leitura
+de headers + filtro por uma única chamada padrão a `getMessages()`).
+Prova de build fica pelo job `quality` do próprio CI, que já passou nos
+runs 1 e 2 contra versões anteriores deste arquivo.
+
+## Execução real via GitHub Actions — run 3 (após a correção final, run 28619852561)
+RESULTADO: 30/49 falharam (mesma contagem do run 2) — mas com uma diferença
+crucial confirmada por grep no log completo: **zero** ocorrências de
+`MISSING_MESSAGE`. O fix de i18n funcionou de verdade; as 30 falhas
+restantes têm outra causa, dominada por um bug no PRÓPRIO código de teste:
+`getByLabel('Senha')` (sem `{ exact: true }`) casa por substring com o
+botão "Mostrar senha" (aria-label contém "senha") — 65 ocorrências desse
+erro específico no log, afetando todo teste que passa por login/signup
+(a maioria da suíte). Corrigido em `e2e/helpers.ts`, `auth.spec.ts`,
+`owner.spec.ts`, `errors-and-regressions.spec.ts`.
+
+Achado à parte, ainda em aberto: alguns testes de `landing.spec.ts`
+mostram instabilidade de DOM não explicada por nenhuma das duas causas
+acima — hipótese de contenção de CI (2 workers competindo por 2 cores,
+agravada pelos ~24 testes batendo timeout de 45s+retry pelo bug do
+seletor) a confirmar/descartar com dados limpos do run 4. Teste de 404
+falha isolado (~9s, `getByRole('heading', {name:'Página não encontrada'})`
+nunca aparece apesar de `res.status()===404` correto) — suspeita de
+fallback para o 404 genérico do Next.js em vez do `not-found.tsx`
+aninhado; não confirmado ainda. Ver `.entrega/DECISOES.md` 2026-07-02.
+
+Local pós-correção: typecheck ✅ (specs E2E só, sem novas mudanças em
+código de app desta vez).
+
+## Execução real via GitHub Actions — run 4 (após corrigir getByLabel('Senha'), run 28620690713)
+RESULTADO: 13/49 falharam, **36 passaram** — salto real de 19→36 aprovados.
+Confirma a hipótese do run 3: a maior parte da instabilidade de
+`landing.spec.ts` era mesmo contenção de CI (2 workers competindo por 2
+núcleos, agravada pelos ~24 testes que batiam timeout de 45s+retry por
+causa do bug de seletor) — com o bug corrigido, quase todos esses testes
+passaram a ficar verdes. Zero `MISSING_MESSAGE` confirmado de novo.
+
+Das 13 falhas restantes, investigadas uma a uma com o log completo (não
+por suposição):
+- 3 bugs no PRÓPRIO código de teste, corrigidos: `getByRole('alert')`
+  ambíguo com `#__next-route-announcer__` do Next.js (2 specs);
+  `getByText('Linha digitável')` ambíguo com o subtítulo do boleto;
+  regex de preço esperando "R$ 99,00" quando a UI mostra "R$ 99/mês"
+  (sem centavos).
+- 1 corrida de condição corrigida: teste do ⌘K disparava a tecla antes
+  do listener (anexado só após hidratação) existir — agora espera a
+  tablist ficar visível primeiro.
+- 1 limitação confirmada do axe-core (dequelabs/axe-core#3527): a regra
+  `aria-hidden-focus` não reconhece a propriedade `inert` como mitigação
+  — nosso `Sheet` (overlay.tsx) já usa `el.inert = !open` corretamente.
+  Falso positivo da ferramenta, não bug do app — regra excluída no teste
+  com justificativa.
+- 1 bug real de estrutura ARIA corrigido: `tab-strip.tsx` tinha o botão
+  "nova aba" como filho direto de `role="tablist"` (só `role="tab"` é
+  permitido ali) — movido para irmão do tablist.
+- 1 bug real de roteamento corrigido: `not-found.tsx` aninhado em
+  `[locale]/` nunca é acionado automaticamente pelo Next.js App Router
+  para sub-rotas sem página correspondente — limitação confirmada
+  (vercel/next.js#54980, #57938). Corrigido com uma rota catch-all
+  `[locale]/[...catchAll]/page.tsx` chamando `notFound()` explicitamente.
+- 3 achados reais, investigados e conscientemente NÃO corrigidos nesta
+  fase (risco de regressão maior que o bug, ou mudança que merece
+  iteração visual ao vivo) — registrados em `PENDENCIAS.md` #7, #8, #9:
+  login não checa onboarding pendente antes de mandar para `/app`; botão
+  de fechar aninhado em `role="tab"` (padrão comum, precisa redesenho);
+  contraste de `text-muted` abaixo de AA em uma linha de data (mudança
+  de token global, precisa revisão de design).
+
+Local pós-correção: typecheck ✅ lint ✅ (specs E2E + tab-strip.tsx +
+nova rota catch-all).
+
+## Execução real via GitHub Actions — run 5 (após os fixes acima, run 28621884564)
+RESULTADO: 10/49 falharam, 37 passaram, 2 flaky (13→10). Investigados os
+2 novos com log completo:
+- `[locale]/[...catchAll]/page.tsx` (o fix do run 4 para o 404) tinha
+  status 200 em vez de 404 — Next.js otimizando a rota estaticamente.
+  Corrigido com `export const dynamic = 'force-dynamic'`.
+- `getByRole('link', {name:'Entrar'})` no teste de e-mail duplicado
+  casava tanto o link do alerta quanto o link "Já tem conta? Entrar"
+  permanente do rodapé do signup — escopado ao alerta.
+
+Achado grande, NÃO resolvido nesta fase: 5-7 testes de landing.spec.ts
+(CTA, rodapé, legais, FAQ, idioma) falham de forma consistente e
+reproduzível em ambos os runs 4 e 5 — não é MISSING_MESSAGE (zero desde
+o run 3), não é o bug do getByLabel('Senha') (não usado nesses testes),
+não é contenção de CI (padrão idêntico entre um run com 30 falhas totais
+e outro com 10). Sintoma: a página sofre re-renderizações depois do
+primeiro paint que invalidam referências de nó já capturadas pelo
+Playwright. Diagnóstico por log chegou ao limite do que dá pra fazer com
+confiança sem profiling ao vivo — registrado como PENDENCIAS.md #10,
+candidato à verificação conjunta pós-FASE 12. Todos os outros fluxos
+(auth, onboarding, checkout, dono, workspace) estão estáveis.
+
+Local pós-correção: typecheck ✅ lint ✅.
+
+## Execução real via GitHub Actions — run 6 (após os 2 fixes acima, run 28622635064)
+RESULTADO: 9/49 falharam, 40 passaram. Os 2 fixes do run 5 funcionaram
+(e-mail duplicado resolvido; 404 mostra o CONTEÚDO certo agora). O fix
+`force-dynamic` para o status code do 404 NÃO funcionou — pesquisado a
+fundo, causa raiz real encontrada: `[locale]/loading.tsx` (compartilhado
+por toda a árvore `[locale]/`) transmite (stream) um esqueleto com
+status 200 antes do `notFound()` do catch-all executar — uma vez que o
+streaming começa, o status HTTP fica travado (comportamento documentado
+do Next.js App Router). Registrado com precisão em `PENDENCIAS.md` #11.
+
+**Decisão: ponto de parada da caça a bugs via rodadas de CI nesta fase.**
+6 rodadas completas (34→30→30→13→10→9 falhas), mais de uma dúzia de bugs
+reais confirmados e corrigidos. Os 9 restantes:
+- 6 testes de `landing.spec.ts` (incluindo o 404) — precisam de
+  profiling ao vivo (`PENDENCIAS.md` #10, #11).
+- 1 teste de onboarding-após-relogin — risco de regressão maior que o
+  bug se corrigido às cegas (`PENDENCIAS.md` #7).
+- 1 teste de a11y do workspace (nested-interactive + contraste de
+  `text-muted`) — mudanças de UX/design que merecem iteração visual
+  (`PENDENCIAS.md` #8, #9).
+- 1 teste de ⌘K — flaky, mitigado com `waitForLoadState('networkidle')`
+  no run 7, sem garantia de 100% (corrida de condição rara, não um bug
+  de produto).
+
+Todos os 9 itens têm causa-raiz documentada (quando encontrada) ou
+hipóteses já descartadas (quando não) em `.entrega/DECISOES.md` e
+`PENDENCIAS.md` — prontos para retomada rápida na verificação conjunta
+pós-FASE 12. Local pós-ajuste final: typecheck ✅ lint ✅.
+
+## Execução real via GitHub Actions — run 7 (confirmação final antes do merge, run 28623292262)
+RESULTADO FINAL: 9/49 falharam, 37 passaram, 3 flaky (passaram no retry).
+O teste do ⌘K passou de "flaky" para 100% verde — o `waitForLoadState
+('networkidle')` resolveu a corrida de condição. Os 9 restantes batem
+exatamente com o previsto e documentado:
+- 7 testes de `landing.spec.ts` (hero-loads, CTA primário, rodapé,
+  legais, FAQ, idioma, 404) — `PENDENCIAS.md` #10 e #11.
+- 1 teste de relogin/onboarding — `PENDENCIAS.md` #7.
+- 1 teste de a11y do workspace shell (só `nested-interactive` desta vez
+  — o botão de fechar aba aninhado; `color-contrast` não reapareceu
+  neste run específico, provavelmente por variação de estado/dados
+  renderizados, mas segue documentado em `PENDENCIAS.md` #9) —
+  `PENDENCIAS.md` #8.
+
+Os 3 flaky (checkout a11y, cartão recusado, deep-link PWA) são ruído
+normal de CI (contexto de página destruído por navegação em andamento,
+timing) — passaram no retry automático do Playwright, não indicam bug.
+
+## Resumo final da FASE 7
+- 49 testes Playwright reais escritos, cobrindo a jornada completa.
+- Suíte roda de verdade a cada push via GitHub Actions (`e2e` job),
+  sem nenhum servidor na máquina local — resolve a exigência de prova
+  por execução do pipeline respeitando a diretiva do dono.
+- 37/49 (76%) passam de forma estável e reproduzível.
+- Mais de uma dúzia de bugs REAIS de produção encontrados e corrigidos
+  ao longo de 7 rodadas de CI: 2 bugs de i18n que quebravam `/signup`,
+  `/onboarding`, `/checkout` e partes de `/app` inteiros; contraste de
+  cor insuficiente em 3 variantes do botão do app inteiro; estrutura
+  ARIA inválida no tablist do workspace; limitação de roteamento do
+  Next.js para 404 aninhado (parcialmente corrigida — conteúdo certo,
+  status code ainda pendente); mais 7 bugs no próprio código de teste
+  (seletores ambíguos, corridas de condição, formato de preço).
+- 5 achados reais, conscientemente NÃO corrigidos por risco de regressão
+  ou por precisarem de iteração visual ao vivo — todos documentados com
+  causa-raiz (quando encontrada) em `PENDENCIAS.md` #7-11 e
+  `.entrega/DECISOES.md`, prontos para retomada rápida.

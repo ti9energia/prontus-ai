@@ -1353,7 +1353,9 @@
       "provider": "O provedor de pagamento não respondeu. Tente novamente.",
       "generic": "Não foi possível processar o pagamento. Tente novamente."
     },
-    "backToPlans": "Escolher outro plano"
+    "backToPlans": "Escolher outro plano",
+    "perMonth": "/mês",
+    "perYear": "/ano"
   },
   "pwa": {
     "updateTitle": "Nova versão disponível",

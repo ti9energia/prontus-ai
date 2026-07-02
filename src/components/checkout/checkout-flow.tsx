@@ -197,7 +197,10 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
                     )}
                   >
                     <p className={cn('text-sm font-semibold', planId === p.id && 'text-brand-700 dark:text-brand-300')}>{p.name}</p>
-                    <p className="text-2xs text-muted">{formatCurrency(p.monthly, locale, 'BRL')}/mo</p>
+                    <p className="text-2xs text-muted">
+                      {formatCurrency(p.monthly, locale, 'BRL')}
+                      {t('perMonth')}
+                    </p>
                   </button>
                 ))}
               </div>
@@ -216,7 +219,7 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
               </div>
               <p className="mt-3 text-right font-display text-lg font-bold tracking-tight">
                 {formatCurrency(displayAmount, locale, 'BRL')}
-                <span className="text-xs font-normal text-muted">/{cycle === 'yearly' ? 'yr' : 'mo'}</span>
+                <span className="text-xs font-normal text-muted">{cycle === 'yearly' ? t('perYear') : t('perMonth')}</span>
               </p>
             </div>
 

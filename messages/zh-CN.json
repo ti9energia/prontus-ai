@@ -1353,7 +1353,9 @@
       "provider": "支付服务商未响应，请重试。",
       "generic": "无法处理支付，请重试。"
     },
-    "backToPlans": "选择其他套餐"
+    "backToPlans": "选择其他套餐",
+    "perMonth": "/月",
+    "perYear": "/年"
   },
   "pwa": {
     "updateTitle": "有新版本",

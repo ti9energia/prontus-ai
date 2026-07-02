@@ -28,7 +28,6 @@ const Body = z.object({
 // Public account creation is an attractive abuse target — throttle harder than login.
 const attempts = new Map<string, { count: number; first: number }>();
 const WINDOW_MS = 15 * 60 * 1000;
-const MAX_ATTEMPTS = 5;
 
 function clientIp(req: NextRequest): string {
   const xff = req.headers.get('x-forwarded-for');
@@ -43,7 +42,7 @@ function rateLimited(ip: string): boolean {
     return false;
   }
   rec.count += 1;
-  return rec.count > MAX_ATTEMPTS;
+  return rec.count > config.auth.maxSignupAttempts;
 }
 
 export async function POST(req: NextRequest) {
