@@ -1354,5 +1354,11 @@
       "generic": "无法处理支付，请重试。"
     },
     "backToPlans": "选择其他套餐"
+  },
+  "pwa": {
+    "updateTitle": "有新版本",
+    "updateDescription": "更新以获取最新改进。",
+    "updateAction": "更新",
+    "updateDismiss": "稍后"
   }
 }

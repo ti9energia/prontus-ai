@@ -1354,5 +1354,11 @@
       "generic": "Impossible de traiter le paiement. Réessayez."
     },
     "backToPlans": "Choisir une autre offre"
+  },
+  "pwa": {
+    "updateTitle": "Nouvelle version disponible",
+    "updateDescription": "Mettez à jour pour profiter des dernières améliorations.",
+    "updateAction": "Mettre à jour",
+    "updateDismiss": "Plus tard"
   }
 }

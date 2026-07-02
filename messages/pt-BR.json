@@ -1354,5 +1354,11 @@
       "generic": "Não foi possível processar o pagamento. Tente novamente."
     },
     "backToPlans": "Escolher outro plano"
+  },
+  "pwa": {
+    "updateTitle": "Nova versão disponível",
+    "updateDescription": "Atualize para ter as últimas melhorias.",
+    "updateAction": "Atualizar",
+    "updateDismiss": "Depois"
   }
 }

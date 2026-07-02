@@ -14,7 +14,9 @@ import '../globals.css';
 import { config } from '@/lib/config';
 
 // Namespaces needed by landing-page client components only.
-const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta']);
+// 'pwa' is included even here because PWARegister's update prompt mounts
+// globally (every route) — the SW can surface an update on any page.
+const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta', 'pwa']);
 
 // Return a filtered subset of messages when on a landing route (no /app or /login).
 function pickMessages(messages: AbstractIntlMessages, isLanding: boolean): AbstractIntlMessages {
@@ -120,8 +122,8 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>{children}</ThemeProvider>
           <Toaster />
+          <PWARegister />
         </NextIntlClientProvider>
-        <PWARegister />
       </body>
     </html>
   );
