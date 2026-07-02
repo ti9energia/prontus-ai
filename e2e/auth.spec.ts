@@ -69,8 +69,12 @@ test.describe('Signup', () => {
 
     // Excludes Next.js's own #__next-route-announcer__, which also has
     // role="alert" and is always present — see errors-and-regressions.spec.ts.
-    await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible();
+    const alert = page.locator('[role="alert"]:not(#__next-route-announcer__)');
+    await expect(alert).toBeVisible();
+    // Scoped to the alert itself — the signup page's own permanent "Já tem
+    // conta? Entrar" footer link would otherwise also match and make this
+    // locator ambiguous.
+    await expect(alert.getByRole('link', { name: 'Entrar' })).toBeVisible();
     await expect(page).toHaveURL(/\/pt-BR\/signup/); // did NOT navigate away
   });
 

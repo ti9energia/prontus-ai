@@ -243,5 +243,29 @@ por suposição):
 Local pós-correção: typecheck ✅ lint ✅ (specs E2E + tab-strip.tsx +
 nova rota catch-all).
 
-## Execução real via GitHub Actions — run 5 (após os fixes acima)
+## Execução real via GitHub Actions — run 5 (após os fixes acima, run 28621884564)
+RESULTADO: 10/49 falharam, 37 passaram, 2 flaky (13→10). Investigados os
+2 novos com log completo:
+- `[locale]/[...catchAll]/page.tsx` (o fix do run 4 para o 404) tinha
+  status 200 em vez de 404 — Next.js otimizando a rota estaticamente.
+  Corrigido com `export const dynamic = 'force-dynamic'`.
+- `getByRole('link', {name:'Entrar'})` no teste de e-mail duplicado
+  casava tanto o link do alerta quanto o link "Já tem conta? Entrar"
+  permanente do rodapé do signup — escopado ao alerta.
+
+Achado grande, NÃO resolvido nesta fase: 5-7 testes de landing.spec.ts
+(CTA, rodapé, legais, FAQ, idioma) falham de forma consistente e
+reproduzível em ambos os runs 4 e 5 — não é MISSING_MESSAGE (zero desde
+o run 3), não é o bug do getByLabel('Senha') (não usado nesses testes),
+não é contenção de CI (padrão idêntico entre um run com 30 falhas totais
+e outro com 10). Sintoma: a página sofre re-renderizações depois do
+primeiro paint que invalidam referências de nó já capturadas pelo
+Playwright. Diagnóstico por log chegou ao limite do que dá pra fazer com
+confiança sem profiling ao vivo — registrado como PENDENCIAS.md #10,
+candidato à verificação conjunta pós-FASE 12. Todos os outros fluxos
+(auth, onboarding, checkout, dono, workspace) estão estáveis.
+
+Local pós-correção: typecheck ✅ lint ✅.
+
+## Execução real via GitHub Actions — run 6 (após os 2 fixes acima)
 <<PREENCHIDO APÓS O RUN>>
