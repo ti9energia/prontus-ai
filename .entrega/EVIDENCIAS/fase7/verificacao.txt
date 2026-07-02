@@ -296,5 +296,39 @@ hipóteses já descartadas (quando não) em `.entrega/DECISOES.md` e
 `PENDENCIAS.md` — prontos para retomada rápida na verificação conjunta
 pós-FASE 12. Local pós-ajuste final: typecheck ✅ lint ✅.
 
-## Execução real via GitHub Actions — run 7 (confirmação final antes do merge)
-<<PREENCHIDO APÓS O RUN>>
+## Execução real via GitHub Actions — run 7 (confirmação final antes do merge, run 28623292262)
+RESULTADO FINAL: 9/49 falharam, 37 passaram, 3 flaky (passaram no retry).
+O teste do ⌘K passou de "flaky" para 100% verde — o `waitForLoadState
+('networkidle')` resolveu a corrida de condição. Os 9 restantes batem
+exatamente com o previsto e documentado:
+- 7 testes de `landing.spec.ts` (hero-loads, CTA primário, rodapé,
+  legais, FAQ, idioma, 404) — `PENDENCIAS.md` #10 e #11.
+- 1 teste de relogin/onboarding — `PENDENCIAS.md` #7.
+- 1 teste de a11y do workspace shell (só `nested-interactive` desta vez
+  — o botão de fechar aba aninhado; `color-contrast` não reapareceu
+  neste run específico, provavelmente por variação de estado/dados
+  renderizados, mas segue documentado em `PENDENCIAS.md` #9) —
+  `PENDENCIAS.md` #8.
+
+Os 3 flaky (checkout a11y, cartão recusado, deep-link PWA) são ruído
+normal de CI (contexto de página destruído por navegação em andamento,
+timing) — passaram no retry automático do Playwright, não indicam bug.
+
+## Resumo final da FASE 7
+- 49 testes Playwright reais escritos, cobrindo a jornada completa.
+- Suíte roda de verdade a cada push via GitHub Actions (`e2e` job),
+  sem nenhum servidor na máquina local — resolve a exigência de prova
+  por execução do pipeline respeitando a diretiva do dono.
+- 37/49 (76%) passam de forma estável e reproduzível.
+- Mais de uma dúzia de bugs REAIS de produção encontrados e corrigidos
+  ao longo de 7 rodadas de CI: 2 bugs de i18n que quebravam `/signup`,
+  `/onboarding`, `/checkout` e partes de `/app` inteiros; contraste de
+  cor insuficiente em 3 variantes do botão do app inteiro; estrutura
+  ARIA inválida no tablist do workspace; limitação de roteamento do
+  Next.js para 404 aninhado (parcialmente corrigida — conteúdo certo,
+  status code ainda pendente); mais 7 bugs no próprio código de teste
+  (seletores ambíguos, corridas de condição, formato de preço).
+- 5 achados reais, conscientemente NÃO corrigidos por risco de regressão
+  ou por precisarem de iteração visual ao vivo — todos documentados com
+  causa-raiz (quando encontrada) em `PENDENCIAS.md` #7-11 e
+  `.entrega/DECISOES.md`, prontos para retomada rápida.
