@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AlertCircle, ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { Link, useRouter } from '@/i18n/routing';
 import { useSession } from '@/lib/auth/client';
 import { Aurora } from '@/components/landing/aurora';
@@ -21,6 +22,12 @@ export function LoginForm() {
     locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Allowlist only — an unvalidated ?next= would be an open redirect.
+  // /checkout and /onboarding are the only legitimate cross-flow bounce-backs
+  // (middleware sets this when it redirects an unauthenticated visit to them).
+  const rawNext = searchParams.get('next');
+  const next = rawNext && (rawNext.startsWith('/checkout') || rawNext.startsWith('/onboarding')) ? rawNext : null;
   const { loading: sessionLoading, authed, role } = useSession();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -29,8 +36,8 @@ export function LoginForm() {
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (!sessionLoading && authed) router.replace(role === 'owner' ? '/owner' : '/app');
-  }, [sessionLoading, authed, role, router]);
+    if (!sessionLoading && authed) router.replace(next ?? (role === 'owner' ? '/owner' : '/app'));
+  }, [sessionLoading, authed, role, router, next]);
 
   const post = async (body: Record<string, unknown>) => {
     setError(null);
@@ -61,7 +68,7 @@ export function LoginForm() {
         setLoading(false);
         return;
       }
-      router.push(data.role === 'owner' ? '/owner' : '/app');
+      router.push(next ?? (data.role === 'owner' ? '/owner' : '/app'));
     } catch {
       setError(
         L(
