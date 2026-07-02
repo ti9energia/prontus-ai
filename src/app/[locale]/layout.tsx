@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing, type Locale } from '@/i18n/routing';
-import { fontVariables } from '../fonts';
+import { fontVariables, fontCJK } from '../fonts';
 import { ThemeProvider, ThemeScript } from '@/components/theme-provider';
 import { PWARegister } from '@/components/pwa-register';
 import { Toaster } from '@/components/ui/toaster';
@@ -94,7 +94,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir="ltr" suppressHydrationWarning className={fontVariables}>
+    <html
+      lang={locale}
+      dir="ltr"
+      suppressHydrationWarning
+      // CJK font var only for zh-CN — every other locale skips its 3 weights.
+      className={cn(fontVariables, locale === 'zh-CN' && fontCJK.variable)}
+    >
       <head>
         <ThemeScript />
         {/* Scroll reveals (.rv) start at opacity:0 and are switched on by JS —
