@@ -36,7 +36,7 @@ test.describe('Error paths & resilience', () => {
     await page.getByLabel('Nome da clínica').fill('Clínica Offline');
     await page.getByLabel('Seu nome').fill('Dr. Offline');
     await page.getByLabel('E-mail').fill('offline@e2e.auronishealth.test');
-    await page.getByLabel('Senha').fill('senha-offline-teste-123');
+    await page.getByLabel('Senha', { exact: true }).fill('senha-offline-teste-123');
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
 
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 10_000 });

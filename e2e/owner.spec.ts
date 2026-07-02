@@ -7,7 +7,7 @@ test.describe('Owner panel', () => {
   test('owner credentials (AUTH_SECRET + OWNER_PASSWORD) log in for real and reach /owner', async ({ page }) => {
     await page.goto('/pt-BR/login');
     await page.getByLabel('E-mail').fill(OWNER_EMAIL);
-    await page.getByLabel('Senha').fill(OWNER_PASSWORD);
+    await page.getByLabel('Senha', { exact: true }).fill(OWNER_PASSWORD);
     await page.getByRole('button', { name: 'Entrar' }).click();
     await page.waitForURL('**/owner');
 
@@ -27,7 +27,7 @@ test.describe('Owner panel', () => {
   }) => {
     await page.goto('/pt-BR/login');
     await page.getByLabel('E-mail').fill(OWNER_EMAIL);
-    await page.getByLabel('Senha').fill(OWNER_PASSWORD);
+    await page.getByLabel('Senha', { exact: true }).fill(OWNER_PASSWORD);
     await page.getByRole('button', { name: 'Entrar' }).click();
     await page.waitForURL('**/owner');
 

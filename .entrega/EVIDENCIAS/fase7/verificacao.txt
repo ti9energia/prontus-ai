@@ -177,7 +177,31 @@ de headers + filtro por uma única chamada padrão a `getMessages()`).
 Prova de build fica pelo job `quality` do próprio CI, que já passou nos
 runs 1 e 2 contra versões anteriores deste arquivo.
 
-## Execução real via GitHub Actions — run 3 (após a correção final)
+## Execução real via GitHub Actions — run 3 (após a correção final, run 28619852561)
+RESULTADO: 30/49 falharam (mesma contagem do run 2) — mas com uma diferença
+crucial confirmada por grep no log completo: **zero** ocorrências de
+`MISSING_MESSAGE`. O fix de i18n funcionou de verdade; as 30 falhas
+restantes têm outra causa, dominada por um bug no PRÓPRIO código de teste:
+`getByLabel('Senha')` (sem `{ exact: true }`) casa por substring com o
+botão "Mostrar senha" (aria-label contém "senha") — 65 ocorrências desse
+erro específico no log, afetando todo teste que passa por login/signup
+(a maioria da suíte). Corrigido em `e2e/helpers.ts`, `auth.spec.ts`,
+`owner.spec.ts`, `errors-and-regressions.spec.ts`.
+
+Achado à parte, ainda em aberto: alguns testes de `landing.spec.ts`
+mostram instabilidade de DOM não explicada por nenhuma das duas causas
+acima — hipótese de contenção de CI (2 workers competindo por 2 cores,
+agravada pelos ~24 testes batendo timeout de 45s+retry pelo bug do
+seletor) a confirmar/descartar com dados limpos do run 4. Teste de 404
+falha isolado (~9s, `getByRole('heading', {name:'Página não encontrada'})`
+nunca aparece apesar de `res.status()===404` correto) — suspeita de
+fallback para o 404 genérico do Next.js em vez do `not-found.tsx`
+aninhado; não confirmado ainda. Ver `.entrega/DECISOES.md` 2026-07-02.
+
+Local pós-correção: typecheck ✅ (specs E2E só, sem novas mudanças em
+código de app desta vez).
+
+## Execução real via GitHub Actions — run 4 (após corrigir getByLabel('Senha'))
 <<PREENCHIDO APÓS O RUN>>
 
 ## Execução real via GitHub Actions — run 2 (após as correções)

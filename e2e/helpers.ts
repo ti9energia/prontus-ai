@@ -22,7 +22,7 @@ export async function signUpFreshUser(page: Page, prefix = 'signup') {
   await page.getByLabel('Nome da clínica').fill(identity.orgName);
   await page.getByLabel('Seu nome').fill(identity.name);
   await page.getByLabel('E-mail').fill(identity.email);
-  await page.getByLabel('Senha').fill(identity.password);
+  await page.getByLabel('Senha', { exact: true }).fill(identity.password);
   await page.getByRole('button', { name: 'Criar conta grátis' }).click();
   await page.waitForURL('**/onboarding');
   return identity;

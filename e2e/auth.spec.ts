@@ -5,7 +5,7 @@ test.describe('Login', () => {
   test('rejects invalid credentials with a visible, accessible error', async ({ page }) => {
     await page.goto('/pt-BR/login');
     await page.getByLabel('E-mail').fill('nao-existe@e2e.auronishealth.test');
-    await page.getByLabel('Senha').fill('senha-errada-qualquer');
+    await page.getByLabel('Senha', { exact: true }).fill('senha-errada-qualquer');
     await page.getByRole('button', { name: 'Entrar' }).click();
     await expect(page.getByRole('alert')).toBeVisible();
     await expect(page).toHaveURL(/\/pt-BR\/login/); // stays put, no false navigation
@@ -32,7 +32,7 @@ test.describe('Signup', () => {
     await page.getByLabel('Nome da clínica').fill(identity.orgName);
     await page.getByLabel('Seu nome').fill(identity.name);
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill(identity.password);
+    await page.getByLabel('Senha', { exact: true }).fill(identity.password);
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
 
     await page.waitForURL('**/onboarding');
@@ -52,7 +52,7 @@ test.describe('Signup', () => {
     await page.getByLabel('Nome da clínica').fill(identity.orgName);
     await page.getByLabel('Seu nome').fill(identity.name);
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill(identity.password);
+    await page.getByLabel('Senha', { exact: true }).fill(identity.password);
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
     await page.waitForURL('**/onboarding');
 
@@ -62,7 +62,7 @@ test.describe('Signup', () => {
     await page.getByLabel('Nome da clínica').fill('Outra Clínica');
     await page.getByLabel('Seu nome').fill('Outro Nome');
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill('outra-senha-bem-forte-123');
+    await page.getByLabel('Senha', { exact: true }).fill('outra-senha-bem-forte-123');
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
 
     await expect(page.getByRole('alert')).toBeVisible();
@@ -78,14 +78,14 @@ test.describe('Signup', () => {
     await page.getByLabel('Nome da clínica').fill(identity.orgName);
     await page.getByLabel('Seu nome').fill(identity.name);
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill(identity.password);
+    await page.getByLabel('Senha', { exact: true }).fill(identity.password);
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
     await page.waitForURL('**/onboarding');
 
     await page.request.post('/api/auth/logout');
     await page.goto('/pt-BR/login');
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill(identity.password);
+    await page.getByLabel('Senha', { exact: true }).fill(identity.password);
     await page.getByRole('button', { name: 'Entrar' }).click();
 
     // A brand-new account resumes onboarding (never marked complete yet).
@@ -98,7 +98,7 @@ test.describe('Signup', () => {
     await page.getByLabel('Nome da clínica').fill(identity.orgName);
     await page.getByLabel('Seu nome').fill(identity.name);
     await page.getByLabel('E-mail').fill(identity.email);
-    await page.getByLabel('Senha').fill('short');
+    await page.getByLabel('Senha', { exact: true }).fill('short');
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
     // HTML5 minLength=10 blocks submission client-side before any request —
     // still on the signup page, form not submitted.
