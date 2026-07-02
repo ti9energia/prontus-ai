@@ -1,0 +1,6 @@
+# Shell scripts MUST keep LF endings — a CRLF `.sh` breaks on Linux CI runners
+# with a `bash\r: bad interpreter` / `$'\r': command not found` error.
+*.sh text eol=lf
+
+# k6 scripts run inside k6's JS runtime on the CI runner too — keep them LF.
+k6/**/*.js text eol=lf

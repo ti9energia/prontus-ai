@@ -1,0 +1,50 @@
+# Evidências FASE 8 — Testes de carga k6 — 2026-07-02
+
+## Escopo
+Suíte k6 (4 cenários: smoke/load/stress/spike) sobre as rotas quentes, com
+thresholds de latência/erro. Workflow `k6.yml` separado do `ci.yml` sobe o
+`next start` num runner do GitHub, roda smoke+load+spike via
+`scripts/k6-ci.sh` e derruba o servidor — nenhum servidor local (mesma
+diretiva do dono da FASE 7).
+
+## Bug real encontrado ao preparar os alvos autenticados
+A chave de API "de desenvolvimento" semeada (`src/lib/data/store.ts`,
+`DEV_KEY_HASH`) tinha um hash placeholder de 62 caracteres — nem sequer um
+sha256 válido (que tem 64), e NÃO era o hash de `sk_test_auronis_dev` como o
+comentário afirmava (verificado: sha256 real = `e0a766a4...`, seed antigo =
+`a3e4f9a2...`, 62 chars). Consequência: a chave semeada nunca autenticava, e
+em modo produção (`next start`, onde o atalho `sk_test_*` fica desligado) a
+API pública v1 inteira ficava inacessível com os dados semeados. Corrigido:
+hash agora é o sha256 real de `sk_test_auronis_dev`. É a superfície de DEMO
+(mesma fronteira de confiança do login DEMO_MODE — o token só destranca o
+dataset de demonstração compartilhado, e um deploy real usa Postgres onde esse
+seed não se aplica). O teste `api-key-auth.test.ts` que "achava a chave pelo
+hash semeado" codificava o hash quebrado — agora deriva o hash do token real,
+virando uma prova de verdade (guarda de regressão do bug da chave morta).
+
+## Alvos exercitados (k6/lib/config.js)
+- GET /api/health — liveness barato (alvo principal de stress/spike)
+- GET /pt-BR — render da landing (SSR/estático sob carga)
+- GET /api/v1/stats — leitura autenticada (chave de API + rollup do store)
+- GET /api/v1/patients — leitura autenticada de lista (payload maior)
+
+## Cenários e thresholds (k6/lib/config.js)
+- smoke: 1 VU/30s — erro <1%, p95<600ms, checks>99%
+- load: ramp→20 VUs, sustenta 1min — erro <2%, p95<1200ms, p99<2500ms
+- stress: ramp→150 VUs — erro <15%, p95<5000ms (fora do CI por padrão; ver README)
+- spike: 5→120 VUs súbito→5 — erro <10%, p95<4000ms
+Thresholds calibrados para o runner compartilhado de 2 núcleos + adapter
+in-memory, não são SLO de produção (framing honesto, igual ao Lighthouse da
+FASE 6). Números de produção reais: apontar `-e BASE_URL=<deploy>` na
+verificação conjunta (FASE 12).
+
+## Verificação local
+- Sintaxe dos 5 arquivos k6 (ES modules) validada via parser do node ✅
+- Sintaxe de scripts/k6-ci.sh validada via `bash -n` ✅
+- typecheck ✅ lint ✅ 349 testes vitest ✅ i18n 927 chaves ✅
+- k6 NÃO instalado/rodado localmente (diretiva do dono: sem subir servidor
+  nem tooling pesado nesta rodada) — execução real fica pro CI.
+
+## Prova de execução real via GitHub Actions (workflow k6.yml)
+<<PREENCHIDO APÓS O RUN — smoke+load+spike rodando de verdade contra o
+next start no runner da nuvem>>
