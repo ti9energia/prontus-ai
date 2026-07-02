@@ -134,7 +134,8 @@
       "signIn": "Entrar",
       "signOut": "Sair",
       "learnMore": "Saiba mais",
-      "bookDemo": "Agendar demo"
+      "bookDemo": "Agendar demo",
+      "closeMenu": "Fechar menu"
     },
     "states": {
       "loading": "Carregando…",
@@ -158,7 +159,10 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "of": "de",
-    "by": "por"
+    "by": "por",
+    "confirmDialog": {
+      "typeToConfirm": "Digite {name} para confirmar"
+    }
   },
   "nav": {
     "today": "Agenda do dia",
@@ -186,7 +190,8 @@
       "howItWorks": "Como funciona",
       "security": "Segurança",
       "pricing": "Preços",
-      "customers": "Clientes"
+      "customers": "Clientes",
+      "menu": "Menu"
     },
     "announce": "",
     "hero": {
@@ -316,7 +321,8 @@
           "name": "Dra. Camila Prado",
           "role": "Cardiologia · Instituto Cardio+"
         }
-      ]
+      ],
+      "stars": "5 estrelas"
     },
     "forWhom": {
       "eyebrow": "Para a clínica inteira",
@@ -423,23 +429,16 @@
       "cols": {
         "product": "Produto",
         "company": "Empresa",
-        "legal": "Legal",
-        "resources": "Recursos"
+        "legal": "Legal"
       },
       "links": {
         "features": "Recursos",
         "pricing": "Preços",
         "security": "Segurança",
-        "changelog": "Novidades",
-        "about": "Sobre",
-        "careers": "Carreiras",
         "contact": "Contato",
         "privacy": "Privacidade",
         "terms": "Termos",
-        "lgpd": "LGPD",
-        "docs": "Documentação",
-        "status": "Status",
-        "api": "API"
+        "lgpd": "LGPD"
       }
     }
   },
@@ -1099,6 +1098,147 @@
       "collected": "Coletado em",
       "resulted": "Resultado em",
       "status": "Status"
+    }
+  },
+  "legal": {
+    "backHome": "Voltar ao início",
+    "updated": "Última atualização: 1º de julho de 2026",
+    "privacy": {
+      "title": "Política de Privacidade",
+      "intro": "A Auronis Health é um escriba clínico de IA: transforma o áudio da consulta em prontuário estruturado e guias TISS. Esta política explica como tratamos dados pessoais no site e na plataforma — com transparência e em conformidade com a LGPD.",
+      "sections": {
+        "scope": {
+          "h": "Quem somos e o que esta política cobre",
+          "p": "Esta política vale para o site auronishealth.com e para a plataforma Auronis Health. Nos serviços prestados a clínicas, a clínica contratante é a controladora dos dados de pacientes; a Auronis atua como operadora, tratando dados exclusivamente conforme o contrato e as instruções da clínica."
+        },
+        "data": {
+          "h": "Quais dados tratamos",
+          "p": "Dados de conta (nome, e-mail, registro profissional, papel na clínica), dados de uso da plataforma e, em nome da clínica, dados de saúde da consulta: áudio, transcrição, prontuário estruturado e informações de faturamento (guias TISS). Dados de saúde são dados sensíveis e recebem as salvaguardas mais rígidas descritas aqui."
+        },
+        "use": {
+          "h": "Como usamos os dados",
+          "p": "Usamos os dados para prestar o serviço: transcrever a consulta, estruturar o prontuário, verificar guias antes do envio e operar o copiloto clínico. Não vendemos dados pessoais, não exibimos publicidade e não usamos áudio ou prontuários identificáveis de pacientes para treinar modelos de IA."
+        },
+        "sharing": {
+          "h": "Compartilhamento e suboperadores",
+          "p": "Compartilhamos dados apenas com suboperadores necessários à operação (hospedagem em nuvem e provedores de inferência de IA), sob contrato com obrigações de confidencialidade e segurança equivalentes às nossas, e quando exigido por lei ou autoridade competente."
+        },
+        "security": {
+          "h": "Segurança",
+          "p": "Criptografia AES-256 em repouso e TLS em trânsito, controle de acesso por papel (RBAC), trilhas de auditoria de acessos e revisão humana obrigatória (human-in-the-loop) antes de qualquer documento clínico ser assinado ou enviado."
+        },
+        "retention": {
+          "h": "Retenção",
+          "p": "Dados clínicos são retidos pelo prazo definido no contrato com a clínica e pelas obrigações legais de guarda de prontuário aplicáveis à saúde. Encerrado o contrato, devolvemos ou eliminamos os dados conforme a instrução da controladora."
+        },
+        "rights": {
+          "h": "Seus direitos",
+          "p": "Titulares podem solicitar confirmação de tratamento, acesso, correção, anonimização, portabilidade e eliminação, nos termos do art. 18 da LGPD. Pacientes devem dirigir solicitações à clínica (controladora); apoiamos a clínica no atendimento. Fale com nosso encarregado (DPO) em privacidade@auronishealth.com."
+        },
+        "cookies": {
+          "h": "Cookies",
+          "p": "Usamos apenas cookies essenciais: sessão autenticada e preferências de tema e idioma. Não usamos cookies de publicidade nem rastreadores de terceiros."
+        }
+      }
+    },
+    "terms": {
+      "title": "Termos de Uso",
+      "intro": "Estes termos regem o uso da plataforma Auronis Health — escriba clínico de IA que gera prontuário estruturado e guias TISS a partir do áudio da consulta — contratada por clínicas e profissionais de saúde.",
+      "sections": {
+        "object": {
+          "h": "Objeto e aceite",
+          "p": "A Auronis Health fornece software como serviço (SaaS) de documentação clínica assistida por IA. Ao criar conta ou usar a plataforma, você concorda com estes termos e com a Política de Privacidade."
+        },
+        "account": {
+          "h": "Conta e acesso",
+          "p": "As credenciais são pessoais e intransferíveis. A clínica é responsável por gerenciar os papéis e permissões da sua equipe (médico, recepção, faturamento, gestão) e por manter os dados de cadastro corretos."
+        },
+        "clinical": {
+          "h": "Uso clínico responsável",
+          "p": "A Auronis produz rascunhos e verificações para apoiar o profissional — não pratica medicina nem substitui o julgamento clínico. Todo documento gerado por IA exige revisão e aprovação de um profissional habilitado (human-in-the-loop) antes de assinatura ou envio."
+        },
+        "plans": {
+          "h": "Planos e pagamento",
+          "p": "Os planos são cobrados por médico/mês, no ciclo mensal ou anual (o anual equivale a 2 meses grátis). Você pode cancelar quando quiser; alterações de preço são comunicadas com antecedência mínima de 30 dias."
+        },
+        "ip": {
+          "h": "Propriedade intelectual e dados",
+          "p": "A plataforma, a marca e os modelos são da Auronis Health. Os dados clínicos pertencem à clínica e aos pacientes; você pode exportá-los a qualquer momento."
+        },
+        "availability": {
+          "h": "Disponibilidade e suporte",
+          "p": "Empregamos esforços comercialmente razoáveis para manter o serviço disponível, com manutenções programadas comunicadas previamente e suporte pelos canais oficiais."
+        },
+        "liability": {
+          "h": "Limitação de responsabilidade",
+          "p": "Na extensão máxima permitida em lei, a responsabilidade da Auronis limita-se aos valores pagos nos 12 meses anteriores ao evento. Decisões clínicas e de faturamento permanecem sob responsabilidade dos profissionais e da clínica."
+        },
+        "termination": {
+          "h": "Vigência e rescisão",
+          "p": "O contrato vigora enquanto a assinatura estiver ativa. Após o término, disponibilizamos a exportação dos dados e, em seguida, eliminamos ou devolvemos conforme a Política de Privacidade."
+        },
+        "law": {
+          "h": "Lei aplicável",
+          "p": "Estes termos são regidos pelas leis da República Federativa do Brasil, com foro na comarca de São Paulo/SP, salvo disposição legal em contrário."
+        }
+      }
+    },
+    "lgpd": {
+      "title": "LGPD e proteção de dados",
+      "intro": "Nosso compromisso com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018) é estrutural: a Auronis Health trata dados de saúde e, por isso, privacidade não é um anexo — é requisito de produto.",
+      "sections": {
+        "commitment": {
+          "h": "Compromisso",
+          "p": "Privacidade desde a concepção (privacy by design): minimização de dados, segregação por clínica, revisão humana obrigatória e auditoria de todos os acessos a dados clínicos."
+        },
+        "roles": {
+          "h": "Papéis: controladora e operadora",
+          "p": "A clínica contratante é a controladora dos dados de pacientes e define as finalidades do tratamento. A Auronis Health atua como operadora, tratando dados somente sob instrução contratual da clínica."
+        },
+        "bases": {
+          "h": "Bases legais",
+          "p": "Tratamos dados com base na execução do contrato, na tutela da saúde em procedimento realizado por profissionais da área (art. 11, II, f), no cumprimento de obrigação legal e, quando aplicável, no legítimo interesse — sempre com avaliação de impacto."
+        },
+        "sensitive": {
+          "h": "Dados sensíveis de saúde",
+          "p": "Áudio, transcrição e prontuário são dados sensíveis: criptografados em repouso (AES-256) e em trânsito (TLS), com acesso restrito por papel e nunca utilizados para treinar modelos com identificação do paciente."
+        },
+        "rights": {
+          "h": "Direitos do titular",
+          "p": "Garantimos os direitos do art. 18: confirmação, acesso, correção, anonimização, bloqueio, eliminação, portabilidade e informação sobre compartilhamentos. Solicitações de pacientes são atendidas junto à clínica controladora."
+        },
+        "incidents": {
+          "h": "Incidentes de segurança",
+          "p": "Mantemos plano de resposta a incidentes. Em caso de incidente com risco relevante, comunicamos a clínica afetada e a ANPD nos prazos da regulamentação."
+        },
+        "transfer": {
+          "h": "Transferência internacional",
+          "p": "Quando dados são processados fora do Brasil (ex.: inferência de IA em nuvem), aplicamos as salvaguardas do art. 33 da LGPD, incluindo cláusulas contratuais e criptografia no transporte."
+        },
+        "dpo": {
+          "h": "Encarregado (DPO)",
+          "p": "Nosso encarregado pelo tratamento de dados pessoais atende titulares, clínicas e a ANPD em privacidade@auronishealth.com."
+        }
+      }
+    },
+    "contact": {
+      "title": "Contato",
+      "intro": "Fale com a equipe da Auronis Health — vendas, suporte ou privacidade. Respondemos em até 1 dia útil.",
+      "channels": {
+        "sales": {
+          "h": "Vendas",
+          "p": "Demonstrações, planos para clínicas com mais de 5 médicos (Scale) e parcerias."
+        },
+        "support": {
+          "h": "Suporte",
+          "p": "Ajuda com a plataforma, integrações e faturamento TISS para clientes ativos."
+        },
+        "privacy": {
+          "h": "Privacidade (DPO)",
+          "p": "Solicitações de titulares de dados, LGPD e segurança da informação."
+        }
+      },
+      "sla": "Horário de atendimento: dias úteis, 9h–18h (BRT). Solicitações de privacidade têm prioridade e seguem os prazos da LGPD."
     }
   }
 }

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Check, FileText, Sparkles, Stethoscope } from 'lucide-react';
 import { AudioWave } from '@/components/visual/audio-wave';
 import { Avatar } from '@/components/ui/misc';
@@ -71,17 +71,30 @@ export function HeroDemo() {
   const tl = useTranslations('landing.hero');
   const data = SCRIPT[locale] ?? SCRIPT['pt-BR'];
 
+  // Reduced motion → render the finished state statically: no loop, no timers, no ping.
+  const reduce = useReducedMotion();
+
   const [seconds, setSeconds] = React.useState(0);
   const [visible, setVisible] = React.useState(0);
   const [noteStep, setNoteStep] = React.useState(0);
   const [guide, setGuide] = React.useState(false);
 
   React.useEffect(() => {
+    if (reduce) {
+      setSeconds(92); // plausible static consult clock (1:32)
+      return;
+    }
     const timer = setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [reduce]);
 
   React.useEffect(() => {
+    if (reduce) {
+      setVisible(data.lines.length);
+      setNoteStep(3);
+      setGuide(true);
+      return;
+    }
     let mounted = true;
     const run = async () => {
       while (mounted) {
@@ -108,7 +121,7 @@ export function HeroDemo() {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale]);
+  }, [locale, reduce]);
 
   const noteKeys = ['queixa', 'hma', 'conduta'] as const;
 
@@ -136,7 +149,9 @@ export function HeroDemo() {
           </div>
           <div className="flex items-center gap-2 rounded-full bg-accent-400/10 px-2.5 py-1">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-70" />
+              {!reduce && (
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-70" />
+              )}
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
             </span>
             <span className="font-mono text-2xs font-semibold tracking-wide text-accent-600">
@@ -172,7 +187,7 @@ export function HeroDemo() {
                     </span>
                     <p
                       className={
-                        'mt-0.5 max-w-[92%] rounded-2xl px-3 py-1.5 text-[0.8rem] leading-snug ' +
+                        'mt-0.5 max-w-[92%] rounded-2xl px-3 py-1.5 text-xs+ leading-snug ' +
                         (line.who === 'doctor'
                           ? 'bg-brand-600 text-white'
                           : 'bg-ink/[0.06] text-ink')
@@ -207,7 +222,7 @@ export function HeroDemo() {
                       <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-[0.78rem] leading-snug text-ink/90"
+                        className="text-xs+ leading-snug text-ink/90"
                       >
                         {data.note[k]}
                       </motion.p>

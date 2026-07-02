@@ -21,7 +21,7 @@ import {
 import { Link } from '@/i18n/routing';
 import { useSession } from '@/lib/auth/client';
 import { useRouter } from '@/i18n/routing';
-import { OwnerProvider, useOwner } from './context';
+import { OwnerProvider, useOwner, type SectionKey } from './context';
 import {
   OverviewSection,
   TenantsSection,
@@ -40,18 +40,6 @@ import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeSwitcher } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
-
-type SectionKey =
-  | 'overview'
-  | 'mari'
-  | 'tenants'
-  | 'plans'
-  | 'landing'
-  | 'flags'
-  | 'ai'
-  | 'whatsapp'
-  | 'access'
-  | 'audit';
 
 const NAV: { key: SectionKey; icon: LucideIcon; Component: React.ComponentType }[] = [
   { key: 'overview', icon: LayoutDashboard, Component: OverviewSection },
@@ -72,13 +60,16 @@ function ImpersonationBanner() {
   if (!impersonating) return null;
   return (
     <div className="flex items-center justify-center gap-3 bg-accent-500 px-4 py-2 text-sm font-medium text-white">
-      <span>{t('impersonating', { tenant: impersonating })}</span>
-      <button
+      <span>{t('impersonating', { tenant: impersonating.name })}</span>
+      <Button
+        size="sm"
+        variant="ghost"
         onClick={() => setImpersonating(null)}
-        className="inline-flex items-center gap-1 rounded-md bg-white/20 px-2 py-0.5 text-xs hover:bg-white/30"
+        leftIcon={<X className="h-3 w-3" />}
+        className="h-6 bg-white/20 px-2 text-xs text-white hover:bg-white/30 hover:text-white"
       >
-        <X className="h-3 w-3" /> {t('exitImpersonation')}
-      </button>
+        {t('exitImpersonation')}
+      </Button>
     </div>
   );
 }
@@ -88,8 +79,8 @@ function Shell() {
   const tn = useTranslations('nav');
   const router = useRouter();
   const { loading, authed, role, name } = useSession();
-  // The owner lands on Mari — the operating brain greets them first.
-  const [section, setSection] = React.useState<SectionKey>('mari');
+  // Section lives in the owner context so KPIs and other surfaces can deep-link into it.
+  const { section, setSection } = useOwner();
 
   // Middleware enforces owner-only access; this mirrors it client-side.
   React.useEffect(() => {

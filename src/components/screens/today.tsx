@@ -27,6 +27,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SegmentedControl } from '@/components/ui/misc';
+import { EmptyState } from '@/components/ui/feedback';
 import { formatLongDate, formatTime, formatCurrency, cn } from '@/lib/utils';
 
 const STATUS_TONE: Record<EncounterStatus, React.ComponentProps<typeof Badge>['tone']> = {
@@ -57,6 +58,7 @@ export function TodayScreen({ paneId }: { paneId: string }) {
   const t = useTranslations('today');
   const ts = useTranslations('encounterStatus');
   const tt = useTranslations('encounterType');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [filter, setFilter] = React.useState<'all' | 'scheduled' | 'draft' | 'finalized'>('all');
   const [, force] = React.useReducer((x) => x + 1, 0);
@@ -190,6 +192,25 @@ export function TodayScreen({ paneId }: { paneId: string }) {
       </div>
 
       {/* list */}
+      {filtered.length === 0 ? (
+        <EmptyState
+          icon={<CalendarDays className="h-6 w-6" />}
+          title={tc('states.empty')}
+          description={t('subtitle', { count: encounters.length })}
+          action={
+            filter !== 'all' ? (
+              <Button variant="outline" size="sm" onClick={() => setFilter('all')}>
+                {t('filters.all')}
+              </Button>
+            ) : (
+              <Button size="sm" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => open('encounter', 'new')}>
+                {t('newEncounter')}
+              </Button>
+            )
+          }
+          className="mt-3"
+        />
+      ) : (
       <div className="mt-3 overflow-hidden rounded-xl border border-hairline bg-card shadow-xs">
         {filtered.map((e, i) => {
           const p = getPatient(e.patientId);
@@ -226,6 +247,7 @@ export function TodayScreen({ paneId }: { paneId: string }) {
           );
         })}
       </div>
+      )}
     </ScreenContainer>
   );
 }

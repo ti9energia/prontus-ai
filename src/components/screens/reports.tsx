@@ -26,6 +26,7 @@ import { listEncounters, billingStats, getCurrentUser } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
 import { Card } from '@/components/ui/card';
 import { Avatar, SegmentedControl } from '@/components/ui/misc';
+import { EmptyState } from '@/components/ui/feedback';
 import { formatCurrency, formatNumber, formatPercent, formatDate } from '@/lib/utils';
 
 /* ------------------------------------------------------------------ *
@@ -76,14 +77,15 @@ function seeded(seed: number) {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
+/* Chart tooltip follows the app theme via the token CSS vars (space-separated RGB). */
 const TOOLTIP_STYLE: React.CSSProperties = {
-  background: 'rgb(16 22 33)',
-  border: '1px solid rgba(148,163,184,.2)',
+  background: 'rgb(var(--card))',
+  border: '1px solid rgb(var(--line))',
   borderRadius: 12,
   fontSize: 12,
-  color: '#fff',
+  color: 'rgb(var(--ink))',
 };
-const TOOLTIP_LABEL_STYLE: React.CSSProperties = { color: 'rgba(255,255,255,.6)', marginBottom: 4 };
+const TOOLTIP_LABEL_STYLE: React.CSSProperties = { color: 'rgb(var(--muted))', marginBottom: 4 };
 
 export function ReportsScreen() {
   const locale = useLocale();
@@ -260,7 +262,31 @@ export function ReportsScreen() {
             +{formatPercent(GROWTH[period], locale, 0)}
           </span>
         </div>
-        <div className="h-[280px] w-full">
+        {/* sr-only data table mirrors the chart for screen readers */}
+        <table className="sr-only">
+          <caption>{L('Receita gerada por período', 'Revenue by period', '按周期营收', 'Revenus par période')}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{L('Período', 'Period', '周期', 'Période')}</th>
+              <th scope="col">{L('Receita', 'Revenue', '营收', 'Revenus')}</th>
+              <th scope="col">{L('Consultas', 'Consultations', '就诊量', 'Consultations')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {report.revenue.map((pt) => (
+              <tr key={pt.label}>
+                <th scope="row">{pt.label}</th>
+                <td>{formatCurrency(pt.receita, locale, 'BRL')}</td>
+                <td>{pt.consultas}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div
+          className="h-[280px] w-full"
+          role="img"
+          aria-label={`${L('Receita gerada', 'Revenue generated', '营收', 'Revenus générés')}: ${formatCurrency(report.totalReceita, locale, 'BRL')} · +${formatPercent(GROWTH[period], locale, 0)}`}
+        >
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={report.revenue} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
               <defs>
@@ -315,7 +341,42 @@ export function ReportsScreen() {
           <h3 className="font-display text-base font-semibold tracking-tight">
             {L('Consultas por especialidade', 'Consultations by specialty', '按专科就诊量', 'Consultations par spécialité')}
           </h3>
-          <div className="mt-4 h-[260px] w-full">
+          {report.bySpecialty.length === 0 ? (
+            <EmptyState
+              icon={<BarChart3 className="h-6 w-6" />}
+              title={L('Sem dados no período', 'No data for this period', '该周期无数据', 'Aucune donnée sur la période')}
+              description={L(
+                'Finalize consultas para alimentar este relatório.',
+                'Finish encounters to feed this report.',
+                '完成就诊后此报告将有数据。',
+                'Terminez des consultations pour alimenter ce rapport.',
+              )}
+              className="mt-4"
+            />
+          ) : (
+          <>
+          <table className="sr-only">
+            <caption>{L('Consultas por especialidade', 'Consultations by specialty', '按专科就诊量', 'Consultations par spécialité')}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{L('Especialidade', 'Specialty', '专科', 'Spécialité')}</th>
+                <th scope="col">{L('Consultas', 'Consultations', '就诊量', 'Consultations')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.bySpecialty.map((s) => (
+                <tr key={s.key}>
+                  <th scope="row">{s.label}</th>
+                  <td>{s.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div
+            className="mt-4 h-[260px] w-full"
+            role="img"
+            aria-label={report.bySpecialty.map((s) => `${s.label}: ${s.value}`).join(', ')}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={report.bySpecialty} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <defs>
@@ -354,6 +415,8 @@ export function ReportsScreen() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+          </>
+          )}
         </Card>
 
         <Card className="p-5">

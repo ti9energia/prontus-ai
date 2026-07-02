@@ -20,7 +20,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/input';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { SegmentedControl } from '@/components/ui/misc';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
@@ -268,6 +268,9 @@ function hashHex(input: string, len = 32): string {
 
 const maskKey = (v: string) => `${v.slice(0, 11)}${'•'.repeat(8)}${v.slice(-4)}`;
 
+/** High-risk keys (production) require typing the key name to confirm revocation. */
+const isProductionKey = (k: ApiKey) => /produ|production|生产/i.test(k.name);
+
 let keySeq = 1;
 const nextKeyId = () => `key_${(keySeq += 1)}`;
 
@@ -342,8 +345,12 @@ export function MarketplaceScreen() {
     toast.success(L('Chave gerada', 'Key generated', '密钥已生成', 'Clé générée'));
   };
 
-  const revokeKey = (id: string) => {
-    setKeys((k) => k.filter((x) => x.id !== id));
+  const [revokeTarget, setRevokeTarget] = React.useState<ApiKey | null>(null);
+
+  const confirmRevoke = () => {
+    if (!revokeTarget) return;
+    setKeys((k) => k.filter((x) => x.id !== revokeTarget.id));
+    setRevokeTarget(null);
     toast.success(L('Chave revogada', 'Key revoked', '密钥已吊销', 'Clé révoquée'));
   };
 
@@ -562,7 +569,7 @@ export function MarketplaceScreen() {
                         size="sm"
                         variant="ghost"
                         leftIcon={<Trash2 className="h-3.5 w-3.5" />}
-                        onClick={() => revokeKey(key.id)}
+                        onClick={() => setRevokeTarget(key)}
                       >
                         {L('Revogar', 'Revoke', '吊销', 'Révoquer')}
                       </Button>
@@ -698,6 +705,26 @@ export function MarketplaceScreen() {
           </div>
         )}
       </Modal>
+
+      {/* revoke key confirmation */}
+      <ConfirmDialog
+        open={!!revokeTarget}
+        onClose={() => setRevokeTarget(null)}
+        onConfirm={confirmRevoke}
+        title={L('Revogar chave de API', 'Revoke API key', '吊销 API 密钥', 'Révoquer la clé API')}
+        description={
+          revokeTarget
+            ? `${revokeTarget.name} · ${maskKey(revokeTarget.value)} — ${L(
+                'Integrações que usam esta chave param de funcionar imediatamente.',
+                'Integrations using this key stop working immediately.',
+                '使用此密钥的集成将立即停止工作。',
+                'Les intégrations utilisant cette clé cessent de fonctionner immédiatement.',
+              )}`
+            : undefined
+        }
+        confirmLabel={L('Revogar', 'Revoke', '吊销', 'Révoquer')}
+        requireText={revokeTarget && isProductionKey(revokeTarget) ? revokeTarget.name : undefined}
+      />
     </ScreenContainer>
   );
 }

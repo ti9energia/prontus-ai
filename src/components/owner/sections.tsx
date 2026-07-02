@@ -17,6 +17,7 @@ import {
   Check,
   Crown,
   Flag,
+  Inbox,
   KeyRound,
   LayoutDashboard,
   LogIn,
@@ -25,6 +26,7 @@ import {
   PencilRuler,
   Plus,
   ScrollText,
+  Search,
   Send,
   Sparkles,
   Tags,
@@ -54,7 +56,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { Avatar, SegmentedControl, Switch } from '@/components/ui/misc';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { Progress } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { cn, formatCurrency, formatDate, formatNumber, formatPercent, timeAgo } from '@/lib/utils';
@@ -67,48 +69,159 @@ const usageTone = (v: number) => (v > 85 ? 'danger' : v > 60 ? 'warning' : 'bran
 let __idSeq = 0;
 const uid = (prefix: string) => `${prefix}_${Date.now().toString(36)}${(__idSeq++).toString(36)}`;
 
+/** Theme-aware chart colors — same CSS vars globals.css feeds the Tailwind tokens with. */
+const CHART = {
+  series: 'rgb(var(--ring))',
+  grid: 'rgb(var(--subtle) / 0.18)',
+  axis: 'rgb(var(--subtle) / 0.7)',
+  tooltipBg: 'rgb(var(--card))',
+  tooltipBorder: '1px solid rgb(var(--line) / 0.8)',
+  tooltipText: 'rgb(var(--ink))',
+};
+
+/** Styled empty row for owner tables — keeps the table chrome instead of collapsing it. */
+function EmptyRow({ colSpan, label }: { colSpan: number; label: string }) {
+  return (
+    <tr>
+      <td colSpan={colSpan} className="px-4 py-12 text-center">
+        <span className="inline-flex flex-col items-center gap-2 text-sm text-muted">
+          <Inbox className="h-5 w-5 text-subtle" aria-hidden />
+          {label}
+        </span>
+      </td>
+    </tr>
+  );
+}
+
 /* ============================== Overview ============================== */
+const CHURN_WARNING_THRESHOLD = 0.03;
+
 export function OverviewSection() {
   const t = useTranslations('owner.overview');
   const locale = useLocale();
+  const { setSection } = useOwner();
   const stats = ownerStats();
   const series = mrrSeries();
   const tenants = listTenants();
   const byUsage = [...tenants].sort((a, b) => b.usagePct - a.usagePct).slice(0, 6);
   const recent = [...tenants].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).slice(0, 5);
 
+  // Month-over-month delta straight from the MRR series (last vs previous point).
+  const last = series[series.length - 1];
+  const prev = series[series.length - 2];
+  const lastMrr = Number(last?.mrr ?? 0);
+  const prevMrr = Number(prev?.mrr ?? 0);
+  const mrrDelta = last && prev && prevMrr > 0 ? (lastMrr - prevMrr) / prevMrr : null;
+  const vsPrevMonth = L(locale, 'vs mês anterior', 'vs last month', '环比上月', 'vs mois précédent');
+  const churnHigh = stats.churn > CHURN_WARNING_THRESHOLD;
+
+  const kpis: {
+    label: string;
+    value: React.ReactNode;
+    sub?: React.ReactNode;
+    icon?: React.ComponentProps<typeof StatCard>['icon'];
+    tone: React.ComponentProps<typeof StatCard>['tone'];
+    target: Parameters<typeof setSection>[0];
+  }[] = [
+    {
+      label: t('mrr'),
+      value: formatCurrency(stats.mrr, locale, stats.currency),
+      sub: mrrDelta !== null ? `${mrrDelta >= 0 ? '+' : ''}${formatPercent(mrrDelta, locale, 1)} ${vsPrevMonth}` : undefined,
+      icon: TrendingUp,
+      tone: 'brand',
+      target: 'tenants',
+    },
+    { label: t('activeTenants'), value: stats.activeTenants, icon: Building2, tone: 'accent', target: 'tenants' },
+    { label: t('activeDoctors'), value: stats.activeDoctors, icon: Crown, tone: 'success', target: 'tenants' },
+    {
+      label: t('minutesProcessed'),
+      value: formatNumber(stats.minutesProcessed, locale),
+      tone: 'neutral',
+      target: 'ai',
+    },
+    {
+      label: t('aiSpend'),
+      value: formatCurrency(stats.aiSpend, locale, stats.currency),
+      icon: Sparkles,
+      tone: 'brand',
+      target: 'ai',
+    },
+    {
+      label: t('churn'),
+      value: formatPercent(stats.churn, locale, 1),
+      sub: churnHigh
+        ? L(locale, 'acima da meta de 3%', 'above the 3% target', '高于 3% 目标', 'au-dessus de l’objectif de 3 %')
+        : L(locale, 'dentro da meta (≤ 3%)', 'within target (≤ 3%)', '目标之内（≤ 3%）', 'dans l’objectif (≤ 3 %)'),
+      tone: churnHigh ? 'warning' : 'success',
+      target: 'tenants',
+    },
+  ];
+
+  const lastMrrFmt = last ? formatCurrency(lastMrr, locale, stats.currency) : '';
+  const chartLabel = L(
+    locale,
+    `Gráfico de área da evolução do MRR em ${series.length} meses; último valor ${lastMrrFmt}`,
+    `Area chart of MRR over ${series.length} months; latest value ${lastMrrFmt}`,
+    `${series.length} 个月 MRR 走势面积图；最新值 ${lastMrrFmt}`,
+    `Graphique en aires du MRR sur ${series.length} mois ; dernière valeur ${lastMrrFmt}`,
+  );
+
   return (
     <ScreenContainer>
-      <ScreenHeader icon={LayoutDashboard} title={t('title')} />
+      <ScreenHeader
+        icon={LayoutDashboard}
+        title={t('title')}
+        subtitle={L(
+          locale,
+          'MRR, uso e adoção da plataforma em um só lugar. Clique em um indicador para abrir a área.',
+          'MRR, usage and platform adoption at a glance. Click a KPI to open its area.',
+          'MRR、使用情况与平台采用一览。点击指标可进入对应板块。',
+          'MRR, usage et adoption de la plateforme en un coup d’œil. Cliquez sur un indicateur pour ouvrir la zone.',
+        )}
+      />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <StatCard label={t('mrr')} value={formatCurrency(stats.mrr, locale, stats.currency)} sub={`+${formatPercent(stats.mrrGrowth, locale, 1)}`} icon={TrendingUp} tone="brand" />
-        <StatCard label={t('activeTenants')} value={stats.activeTenants} icon={Building2} tone="accent" />
-        <StatCard label={t('activeDoctors')} value={stats.activeDoctors} icon={Crown} tone="success" />
-        <StatCard label={t('minutesProcessed')} value={formatNumber(stats.minutesProcessed, locale)} tone="neutral" />
-        <StatCard label={t('aiSpend')} value={formatCurrency(stats.aiSpend, locale, stats.currency)} icon={Sparkles} tone="brand" />
-        <StatCard label={t('churn')} value={formatPercent(stats.churn, locale, 1)} tone="warning" />
+        {kpis.map((k) => (
+          <button
+            key={k.label}
+            type="button"
+            onClick={() => setSection(k.target)}
+            className="group rounded-xl text-left transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:hover:-translate-y-0.5"
+          >
+            <StatCard
+              label={k.label}
+              value={k.value}
+              sub={k.sub}
+              icon={k.icon}
+              tone={k.tone}
+              className="h-full transition-colors group-hover:border-brand-500/40"
+            />
+          </button>
+        ))}
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <Card className="p-4">
           <SectionTitle>{t('growth')}</SectionTitle>
-          <div className="h-[260px] w-full">
+          <p className="sr-only">
+            {series.map((p) => `${p.label}: ${formatCurrency(Number(p.mrr), locale, stats.currency)}`).join(' · ')}
+          </p>
+          <div className="h-[260px] w-full" role="img" aria-label={chartLabel}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={series} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <defs>
                   <linearGradient id="mrrG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0d9488" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#0d9488" stopOpacity={0} />
+                    <stop offset="0%" stopColor={CHART.series} stopOpacity={0.4} />
+                    <stop offset="100%" stopColor={CHART.series} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="rgb(148 163 184 / 0.15)" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="rgb(148 163 184 / 0.6)" axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11 }} stroke="rgb(148 163 184 / 0.6)" axisLine={false} tickLine={false} width={56} tickFormatter={(v) => formatCurrency(Number(v), locale, stats.currency)} />
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke={CHART.axis} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11 }} stroke={CHART.axis} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => formatCurrency(Number(v), locale, stats.currency)} />
                 <Tooltip
-                  contentStyle={{ background: 'rgb(16 22 33)', border: '1px solid rgba(148,163,184,.2)', borderRadius: 12, fontSize: 12, color: '#fff' }}
+                  contentStyle={{ background: CHART.tooltipBg, border: CHART.tooltipBorder, borderRadius: 12, fontSize: 12, color: CHART.tooltipText }}
                   formatter={(v: number) => [formatCurrency(v, locale, stats.currency), 'MRR']}
                 />
-                <Area type="monotone" dataKey="mrr" stroke="#0d9488" strokeWidth={2.5} fill="url(#mrrG)" />
+                <Area type="monotone" dataKey="mrr" stroke={CHART.series} strokeWidth={2.5} fill="url(#mrrG)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -170,6 +283,15 @@ export function TenantsSection() {
   const [name, setName] = React.useState('');
   const [planId, setPlanId] = React.useState(plans[0]?.id ?? '');
 
+  const [query, setQuery] = React.useState('');
+  const [statusFilter, setStatusFilter] = React.useState<'all' | TenantStatus>('all');
+  const [confirm, setConfirm] = React.useState<{ kind: 'suspend' | 'activate' | 'impersonate'; tenant: Tenant } | null>(null);
+
+  const q = query.trim().toLowerCase();
+  const filtered = tenants.filter(
+    (tn) => (statusFilter === 'all' || tn.status === statusFilter) && (!q || tn.name.toLowerCase().includes(q)),
+  );
+
   const addTenant = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -199,17 +321,60 @@ export function TenantsSection() {
       list.map((x) => (x.id === tid ? { ...x, status: x.status === 'suspended' ? 'active' : 'suspended' } : x)),
     );
 
+  const runConfirm = () => {
+    if (!confirm) return;
+    if (confirm.kind === 'impersonate') {
+      setImpersonating({ id: confirm.tenant.id, name: confirm.tenant.name });
+    } else {
+      toggleStatus(confirm.tenant.id);
+      toast.success(
+        confirm.kind === 'suspend'
+          ? L(locale, 'Organização suspensa', 'Organization suspended', '组织已暂停', 'Organisation suspendue')
+          : L(locale, 'Organização reativada', 'Organization reactivated', '组织已恢复', 'Organisation réactivée'),
+      );
+    }
+    setConfirm(null);
+  };
+
+  const statusOptions: { value: 'all' | TenantStatus; label: string }[] = [
+    { value: 'all', label: L(locale, 'Todos', 'All', '全部', 'Tous') },
+    { value: 'active', label: t('status.active') },
+    { value: 'trial', label: t('status.trial') },
+    { value: 'suspended', label: t('status.suspended') },
+    { value: 'past_due', label: t('status.past_due') },
+  ];
+
   return (
     <ScreenContainer>
       <ScreenHeader
         icon={Building2}
         title={t('title')}
+        subtitle={L(
+          locale,
+          'Todas as organizações da plataforma — plano, uso, MRR e status.',
+          'Every organization on the platform — plan, usage, MRR and status.',
+          '平台上的全部组织——套餐、使用、MRR 与状态。',
+          'Toutes les organisations de la plateforme — offre, usage, MRR et statut.',
+        )}
         actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setAdding(true)}>{t('add')}</Button>}
       />
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" aria-hidden />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={L(locale, 'Buscar organização…', 'Search organization…', '搜索组织…', 'Rechercher une organisation…')}
+            aria-label={L(locale, 'Buscar organização', 'Search organization', '搜索组织', 'Rechercher une organisation')}
+            className="h-9 w-64 pl-9"
+          />
+        </div>
+        <SegmentedControl value={statusFilter} onChange={setStatusFilter} options={statusOptions} />
+      </div>
       <Table>
         <thead>
           <tr>
-            <Th>{t('columns.name')}</Th>
+            <Th className="sticky left-0 z-10 bg-card">{t('columns.name')}</Th>
             <Th>{t('columns.plan')}</Th>
             <Th className="text-center">{t('columns.doctors')}</Th>
             <Th className="w-40">{t('columns.usage')}</Th>
@@ -219,9 +384,15 @@ export function TenantsSection() {
           </tr>
         </thead>
         <tbody>
-          {tenants.map((tn) => (
+          {filtered.length === 0 && (
+            <EmptyRow
+              colSpan={7}
+              label={L(locale, 'Nenhuma organização encontrada', 'No organizations found', '未找到组织', 'Aucune organisation trouvée')}
+            />
+          )}
+          {filtered.map((tn) => (
             <tr key={tn.id} className="hover:bg-ink/[0.02]">
-              <Td>
+              <Td className="sticky left-0 z-10 bg-card">
                 <div className="flex items-center gap-2.5">
                   <Avatar name={tn.name} hue={(tn.name.charCodeAt(0) * 9) % 360} size={32} />
                   <span className="font-medium">{tn.name}</span>
@@ -249,11 +420,15 @@ export function TenantsSection() {
                     size="sm"
                     variant="ghost"
                     leftIcon={<LogIn className="h-3.5 w-3.5" />}
-                    onClick={() => setImpersonating(tn.name)}
+                    onClick={() => setConfirm({ kind: 'impersonate', tenant: tn })}
                   >
                     {t('impersonate')}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => toggleStatus(tn.id)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setConfirm({ kind: tn.status === 'suspended' ? 'activate' : 'suspend', tenant: tn })}
+                  >
                     {tn.status === 'suspended' ? t('activate') : t('suspend')}
                   </Button>
                 </div>
@@ -304,6 +479,51 @@ export function TenantsSection() {
           </Button>
         </div>
       </Modal>
+
+      <ConfirmDialog
+        open={!!confirm}
+        onClose={() => setConfirm(null)}
+        onConfirm={runConfirm}
+        tone={confirm?.kind === 'suspend' ? 'danger' : 'default'}
+        requireText={confirm?.kind === 'suspend' ? confirm.tenant.name : undefined}
+        title={
+          confirm?.kind === 'impersonate'
+            ? `${t('impersonate')} ${confirm.tenant.name}?`
+            : confirm?.kind === 'suspend'
+              ? `${t('suspend')} ${confirm.tenant.name}?`
+              : confirm
+                ? `${t('activate')} ${confirm.tenant.name}?`
+                : ''
+        }
+        description={
+          confirm?.kind === 'impersonate'
+            ? L(
+                locale,
+                'Você passa a ver o produto exatamente como esta organização. Toda ação fica registrada na auditoria.',
+                'You will see the product exactly as this organization does. Every action is recorded in the audit trail.',
+                '你将以该组织的视角查看产品。所有操作都会记录在审计日志中。',
+                'Vous verrez le produit exactement comme cette organisation. Chaque action est consignée dans l’audit.',
+              )
+            : confirm?.kind === 'suspend'
+              ? L(
+                  locale,
+                  'A organização perde o acesso imediatamente. Você pode reativá-la depois.',
+                  'The organization loses access immediately. You can reactivate it later.',
+                  '该组织将立即失去访问权限。之后可以重新激活。',
+                  'L’organisation perd l’accès immédiatement. Vous pourrez la réactiver ensuite.',
+                )
+              : L(
+                  locale,
+                  'A organização volta a ter acesso imediatamente.',
+                  'The organization regains access immediately.',
+                  '该组织将立即恢复访问权限。',
+                  'L’organisation retrouve l’accès immédiatement.',
+                )
+        }
+        confirmLabel={
+          confirm?.kind === 'impersonate' ? t('impersonate') : confirm?.kind === 'suspend' ? t('suspend') : t('activate')
+        }
+      />
     </ScreenContainer>
   );
 }
@@ -382,10 +602,16 @@ export function PlansSection() {
             <ul className="mt-2 flex-1 space-y-1.5">
               {plan.modules.slice(0, 7).map((m) => (
                 <li key={m} className="flex items-center gap-2 text-sm">
-                  <Check className="h-3.5 w-3.5 text-brand-600" />
+                  <Check className="h-3.5 w-3.5 text-brand-600" aria-hidden />
                   <span className="text-ink/90">{tm(m as 'tiss')}</span>
                 </li>
               ))}
+              {plan.modules.length > 7 && (
+                <li className="pl-[1.375rem] text-2xs text-muted" title={plan.modules.slice(7).map((m) => tm(m as 'tiss')).join(', ')}>
+                  +{plan.modules.length - 7}{' '}
+                  {L(locale, 'outros módulos', 'more modules', '个其他模块', 'autres modules')}
+                </li>
+              )}
             </ul>
 
             <div className="mt-4 grid grid-cols-3 gap-2 rounded-lg bg-surface/60 p-2.5 text-center">
@@ -450,13 +676,14 @@ export function PlansSection() {
                   onChange={(e) => setDraft({ ...draft, quotas: { ...draft.quotas, minutes: quotaOut(e.target.value) } })}
                 />
               </Field>
-              <label className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
+              <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
                 <span className="text-sm">{t('quotaWhatsapp')}</span>
                 <Switch
                   checked={draft.quotas.whatsapp}
                   onChange={(v) => setDraft({ ...draft, quotas: { ...draft.quotas, whatsapp: v } })}
+                  aria-label={t('quotaWhatsapp')}
                 />
-              </label>
+              </div>
               <div>
                 <p className="mb-2 text-[0.8125rem] font-medium text-ink/90">{t('modules')}</p>
                 <div className="flex flex-wrap gap-2">
@@ -501,23 +728,64 @@ export function PlansSection() {
 const LANDING_SECTIONS = ['hero', 'features', 'pricing', 'faq', 'testimonials', 'cta'] as const;
 const LANDING_LOCALES = ['pt-BR', 'en', 'zh-CN', 'fr-FR'];
 
+interface LandingDraft {
+  title: string;
+  subtitle: string;
+  cta: string;
+}
+
+const landingDefaults = (sec: string, loc: string): LandingDraft => ({
+  title: `${sec} · ${loc}`,
+  subtitle: '',
+  cta: '',
+});
+
 export function LandingSection() {
   const t = useTranslations('owner.landing');
-  const tf = useTranslations('feedback');
   const locale = useLocale();
   const [sec, setSec] = React.useState<(typeof LANDING_SECTIONS)[number]>('hero');
   const [loc, setLoc] = React.useState('pt-BR');
-  const [title, setTitle] = React.useState(`${'hero'} · pt-BR`);
+  const [title, setTitle] = React.useState(landingDefaults('hero', 'pt-BR').title);
   const [subtitle, setSubtitle] = React.useState('');
   const [cta, setCta] = React.useState('');
   const [preview, setPreview] = React.useState(false);
 
-  // Reset the editable copy when switching section or language (mirrors the old per-field reset).
-  React.useEffect(() => {
-    setTitle(`${sec} · ${loc}`);
-    setSubtitle('');
-    setCta('');
-  }, [sec, loc]);
+  // Session-local "published" copy per section·locale — real persistence lands in phase 4.
+  const [saved, setSaved] = React.useState<Record<string, LandingDraft>>({});
+  const [published, setPublished] = React.useState<Record<string, boolean>>({ hero: true });
+  const [pendingSwitch, setPendingSwitch] = React.useState<{ sec: (typeof LANDING_SECTIONS)[number]; loc: string } | null>(null);
+
+  const savedFor = (s: string, l: string): LandingDraft => saved[`${s}:${l}`] ?? landingDefaults(s, l);
+  const base = savedFor(sec, loc);
+  const dirty = title !== base.title || subtitle !== base.subtitle || cta !== base.cta;
+
+  const applySwitch = (s: (typeof LANDING_SECTIONS)[number], l: string) => {
+    setSec(s);
+    setLoc(l);
+    const next = savedFor(s, l);
+    setTitle(next.title);
+    setSubtitle(next.subtitle);
+    setCta(next.cta);
+  };
+  const requestSwitch = (s: (typeof LANDING_SECTIONS)[number], l: string) => {
+    if (s === sec && l === loc) return;
+    if (dirty) setPendingSwitch({ sec: s, loc: l });
+    else applySwitch(s, l);
+  };
+
+  const publish = () => {
+    setSaved((prev) => ({ ...prev, [`${sec}:${loc}`]: { title, subtitle, cta } }));
+    setPublished((prev) => ({ ...prev, [sec]: true }));
+    toast.success(
+      L(
+        locale,
+        'Publicado em modo demonstração — sem alterar a landing pública.',
+        'Published in demo mode — the public landing is untouched.',
+        '已在演示模式下发布——不会更改公开落地页。',
+        'Publié en mode démo — la landing publique reste inchangée.',
+      ),
+    );
+  };
 
   return (
     <ScreenContainer>
@@ -528,7 +796,7 @@ export function LandingSection() {
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => setPreview(true)}>{t('preview')}</Button>
-            <Button leftIcon={<Send className="h-4 w-4" />} onClick={() => toast.success(tf('published'))}>{t('publish')}</Button>
+            <Button leftIcon={<Send className="h-4 w-4" />} onClick={publish}>{t('publish')}</Button>
           </div>
         }
       />
@@ -537,14 +805,18 @@ export function LandingSection() {
           {LANDING_SECTIONS.map((s) => (
             <button
               key={s}
-              onClick={() => setSec(s)}
+              onClick={() => requestSwitch(s, loc)}
               className={cn(
                 'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
                 sec === s ? 'bg-brand-600/12 font-medium text-brand-700 dark:text-brand-300' : 'text-muted hover:bg-ink/[0.05]',
               )}
             >
               {t(`sections.${s}` as 'sections.hero')}
-              <Badge tone={s === 'hero' ? 'success' : 'neutral'}>{s === 'hero' ? t('published') : t('draft')}</Badge>
+              {s === sec && dirty ? (
+                <Badge tone="warning">{L(locale, 'Editando', 'Editing', '编辑中', 'En cours')}</Badge>
+              ) : (
+                <Badge tone={published[s] ? 'success' : 'neutral'}>{published[s] ? t('published') : t('draft')}</Badge>
+              )}
             </button>
           ))}
         </Card>
@@ -556,7 +828,7 @@ export function LandingSection() {
               {LANDING_LOCALES.map((l) => (
                 <button
                   key={l}
-                  onClick={() => setLoc(l)}
+                  onClick={() => requestSwitch(sec, l)}
                   className={cn(
                     'rounded-md px-2 py-1 text-2xs font-medium transition-colors',
                     loc === l ? 'bg-ink text-bg' : 'text-muted hover:bg-ink/[0.06]',
@@ -577,10 +849,37 @@ export function LandingSection() {
             <Field label={t('fields.cta')}>
               <Input value={cta} onChange={(e) => setCta(e.target.value)} placeholder="…" />
             </Field>
-            <p className="text-2xs text-muted">{t('savedNote')}</p>
+            <p className="text-2xs text-muted">
+              {L(
+                locale,
+                'Modo demonstração: publicar atualiza apenas esta pré-visualização. A publicação real chega com a persistência (fase 4).',
+                'Demo mode: publishing only updates this preview. Real publishing arrives with persistence (phase 4).',
+                '演示模式：发布仅更新此预览。真正的发布将随持久化功能（第 4 阶段）推出。',
+                'Mode démo : publier ne met à jour que cet aperçu. La publication réelle arrivera avec la persistance (phase 4).',
+              )}
+            </p>
           </div>
         </Card>
       </div>
+
+      <ConfirmDialog
+        open={!!pendingSwitch}
+        onClose={() => setPendingSwitch(null)}
+        onConfirm={() => {
+          if (pendingSwitch) applySwitch(pendingSwitch.sec, pendingSwitch.loc);
+          setPendingSwitch(null);
+        }}
+        tone="danger"
+        title={L(locale, 'Descartar alterações?', 'Discard changes?', '丢弃更改？', 'Abandonner les modifications ?')}
+        description={L(
+          locale,
+          'Você tem edições não publicadas nesta seção. Trocar agora descarta o texto digitado.',
+          'You have unpublished edits in this section. Switching now discards the typed text.',
+          '此部分有未发布的编辑内容。现在切换将丢弃已输入的文本。',
+          'Vous avez des modifications non publiées dans cette section. Changer maintenant les supprime.',
+        )}
+        confirmLabel={L(locale, 'Descartar', 'Discard', '丢弃', 'Abandonner')}
+      />
 
       <Modal
         open={preview}
@@ -608,6 +907,7 @@ export function LandingSection() {
 export function FlagsSection() {
   const t = useTranslations('owner.flags');
   const tm = useTranslations('modules');
+  const locale = useLocale();
   const [, force] = React.useReducer((x) => x + 1, 0);
   const flags = listFlags();
 
@@ -624,6 +924,12 @@ export function FlagsSection() {
           </tr>
         </thead>
         <tbody>
+          {flags.length === 0 && (
+            <EmptyRow
+              colSpan={4}
+              label={L(locale, 'Nenhuma flag cadastrada', 'No flags configured', '暂无功能开关', 'Aucun drapeau configuré')}
+            />
+          )}
           {flags.map((f) => (
             <tr key={f.module} className="hover:bg-ink/[0.02]">
               <Td className="font-medium">{tm(f.module as 'tiss')}</Td>
@@ -641,10 +947,11 @@ export function FlagsSection() {
                   <Switch
                     checked={f.enabled}
                     onChange={() => {
-                      toggleFlag(f.module);
+                      const next = toggleFlag(f.module);
                       force();
+                      toast.success(`${tm(f.module as 'tiss')} · ${next?.enabled ? t('on') : t('off')}`);
                     }}
-                    aria-label={f.module}
+                    aria-label={tm(f.module as 'tiss')}
                   />
                 </div>
               </Td>
@@ -786,29 +1093,44 @@ export function AiSection() {
             </p>
             <div className="space-y-1.5">
               {listConnectors().map((c) => (
-                <label
+                <div
                   key={c.id}
                   className="flex items-center justify-between rounded-lg border border-hairline px-2.5 py-1.5 text-xs"
                 >
                   <span className="truncate">{c.name}</span>
-                  <Switch checked={connOn(c.id)} onChange={() => toggleConnector(c.id, c.category)} />
-                </label>
+                  <Switch checked={connOn(c.id)} onChange={() => toggleConnector(c.id, c.category)} aria-label={c.name} />
+                </div>
               ))}
             </div>
           </Card>
           <Card className="p-4">
             <p className="flex items-center gap-1.5 text-sm font-medium">
-              <Sparkles className="h-4 w-4 text-brand-500" /> Mari
+              <Sparkles className="h-4 w-4 text-brand-500" aria-hidden /> Mari
             </p>
-            <p className="mt-1 text-2xs text-muted">
-              {L(
-                locale,
-                'A IA respeita o papel do usuário e a LGPD em UI, API e WhatsApp.',
-                'The AI respects the user role and LGPD across UI, API and WhatsApp.',
-                'AI 在 UI、API 和 WhatsApp 中均遵循用户角色与 LGPD。',
-                'L’IA respecte le rôle de l’utilisateur et la LGPD sur l’UI, l’API et WhatsApp.',
-              )}
-            </p>
+            <dl className="mt-2.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-muted">{L(locale, 'Modelo em uso', 'Model in use', '使用中的模型', 'Modèle utilisé')}</dt>
+                <dd className="truncate font-mono text-2xs">{model}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-muted">{L(locale, 'Status', 'Status', '状态', 'Statut')}</dt>
+                <dd>
+                  <Badge tone="success" dot>
+                    {L(locale, 'Operacional', 'Operational', '运行正常', 'Opérationnel')}
+                  </Badge>
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-muted">{L(locale, 'Tools ativas', 'Active tools', '启用的工具', 'Outils actifs')}</dt>
+                <dd className="tnum font-medium">
+                  {enabled.length}/{allTools.length}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-muted">{t('autonomy')}</dt>
+                <dd>{t(`autonomyLevels.${autonomy}` as 'autonomyLevels.semi')}</dd>
+              </div>
+            </dl>
           </Card>
         </div>
       </div>
@@ -817,6 +1139,8 @@ export function AiSection() {
 }
 
 /* ============================== WhatsApp ============================== */
+const WA_COMMAND_KEYS = ['denied-claims', 'schedule-summary', 'resubmit-claim', 'minutes-saved'] as const;
+
 export function WhatsappSection() {
   const t = useTranslations('owner.whatsapp');
   const locale = useLocale();
@@ -827,26 +1151,36 @@ export function WhatsappSection() {
   const [number, setNumber] = React.useState(wa0?.number ?? '+55 11 4000-2000');
   const [waPersona, setWaPersona] = React.useState(wa0?.persona ?? 'Mari');
   const [perTenant, setPerTenant] = React.useState(wa0?.perTenant ?? true);
+  const [on, setOn] = React.useState<string[]>(wa0?.commands ?? [...WA_COMMAND_KEYS]);
 
   React.useEffect(() => {
     const x = getTenant(tenantId)?.whatsapp;
     setNumber(x?.number ?? '+55 11 4000-2000');
     setWaPersona(x?.persona ?? 'Mari');
     setPerTenant(x?.perTenant ?? true);
+    setOn(x?.commands ?? [...WA_COMMAND_KEYS]);
   }, [tenantId]);
 
   const save = () => {
-    updateTenantWhatsapp(tenantId, { number, persona: waPersona, perTenant, enabled: true });
-    toast.success(L(locale, 'WhatsApp salvo', 'WhatsApp saved', 'WhatsApp 已保存', 'WhatsApp enregistré'));
+    // The command toggles are part of the saved config — the toast only confirms what actually went in.
+    updateTenantWhatsapp(tenantId, { number, persona: waPersona, perTenant, enabled: true, commands: on });
+    toast.success(
+      `${L(locale, 'WhatsApp salvo', 'WhatsApp saved', 'WhatsApp 已保存', 'WhatsApp enregistré')} · ${on.length} ${L(
+        locale,
+        'comandos ativos',
+        'active commands',
+        '个已启用命令',
+        'commandes actives',
+      )}`,
+    );
   };
 
-  const commands = [
-    L(locale, 'Consultar guias glosadas', 'Query denied claims', '查询被拒单据', 'Consulter les rejets'),
-    L(locale, 'Resumo da agenda', 'Schedule summary', '日程摘要', 'Résumé de l’agenda'),
-    L(locale, 'Reenviar guia', 'Resubmit claim', '重新提交单据', 'Renvoyer une feuille'),
-    L(locale, 'Minutos economizados', 'Minutes saved', '已节省分钟', 'Minutes gagnées'),
+  const commands: { key: string; label: string }[] = [
+    { key: WA_COMMAND_KEYS[0], label: L(locale, 'Consultar guias glosadas', 'Query denied claims', '查询被拒单据', 'Consulter les rejets') },
+    { key: WA_COMMAND_KEYS[1], label: L(locale, 'Resumo da agenda', 'Schedule summary', '日程摘要', 'Résumé de l’agenda') },
+    { key: WA_COMMAND_KEYS[2], label: L(locale, 'Reenviar guia', 'Resubmit claim', '重新提交单据', 'Renvoyer une feuille') },
+    { key: WA_COMMAND_KEYS[3], label: L(locale, 'Minutos economizados', 'Minutes saved', '已节省分钟', 'Minutes gagnées') },
   ];
-  const [on, setOn] = React.useState<number[]>([0, 1, 2, 3]);
 
   const templates = [
     L(locale, 'Entrou um caso de risco alto — quer revisar?', 'A high-risk case came in — review it?', '有一例高风险病例——需要查看吗？', 'Un cas à haut risque est arrivé — le revoir ?'),
@@ -873,10 +1207,10 @@ export function WhatsappSection() {
           <Field label={t('persona')}>
             <Input value={waPersona} onChange={(e) => setWaPersona(e.target.value)} />
           </Field>
-          <label className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
+          <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 px-3 py-2.5">
             <span className="text-sm">{t('perTenant')}</span>
-            <Switch checked={perTenant} onChange={setPerTenant} />
-          </label>
+            <Switch checked={perTenant} onChange={setPerTenant} aria-label={t('perTenant')} />
+          </div>
           <div className="flex justify-end">
             <Button onClick={save}>{L(locale, 'Salvar', 'Save', '保存', 'Enregistrer')}</Button>
           </div>
@@ -886,11 +1220,17 @@ export function WhatsappSection() {
           <div>
             <SectionTitle>{t('commands')}</SectionTitle>
             <div className="space-y-2">
-              {commands.map((cmd, i) => (
-                <label key={i} className="flex items-center justify-between rounded-lg border border-hairline px-3 py-2 text-sm">
-                  <span>{cmd}</span>
-                  <Switch checked={on.includes(i)} onChange={() => setOn((s) => (s.includes(i) ? s.filter((x) => x !== i) : [...s, i]))} />
-                </label>
+              {commands.map((cmd) => (
+                <div key={cmd.key} className="flex items-center justify-between rounded-lg border border-hairline px-3 py-2 text-sm">
+                  <span>{cmd.label}</span>
+                  <Switch
+                    checked={on.includes(cmd.key)}
+                    onChange={() =>
+                      setOn((s) => (s.includes(cmd.key) ? s.filter((x) => x !== cmd.key) : [...s, cmd.key]))
+                    }
+                    aria-label={cmd.label}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -911,6 +1251,22 @@ export function WhatsappSection() {
 }
 
 /* ============================== Access matrix ============================== */
+/** Allow/deny cell — perceivable color plus a text alternative on every cell. */
+function PermIcon({ allowed, locale }: { allowed: boolean; locale: string }) {
+  const label = allowed
+    ? L(locale, 'Permitido', 'Allowed', '允许', 'Autorisé')
+    : L(locale, 'Negado', 'Denied', '拒绝', 'Refusé');
+  return (
+    <span role="img" aria-label={label} title={label} className="inline-flex w-full justify-center">
+      {allowed ? (
+        <Check className="h-4 w-4 text-success" aria-hidden />
+      ) : (
+        <Minus className="h-4 w-4 text-muted" aria-hidden />
+      )}
+    </span>
+  );
+}
+
 export function AccessSection() {
   const t = useTranslations('owner.access');
   const tc = useTranslations('common');
@@ -957,7 +1313,7 @@ export function AccessSection() {
       <Table>
         <thead>
           <tr>
-            <Th>{t('permission')}</Th>
+            <Th className="sticky left-0 z-10 bg-card">{t('permission')}</Th>
             {baseRoles.map((r) => (
               <Th key={r} className="text-center">
                 {tr(r as 'medico')}
@@ -971,25 +1327,23 @@ export function AccessSection() {
           </tr>
         </thead>
         <tbody>
+          {perms.length === 0 && (
+            <EmptyRow
+              colSpan={1 + baseRoles.length + customRoles.length}
+              label={L(locale, 'Nenhuma permissão cadastrada', 'No permissions configured', '暂无权限', 'Aucune permission configurée')}
+            />
+          )}
           {perms.map((p) => (
             <tr key={p.key} className="hover:bg-ink/[0.02]">
-              <Td className="font-medium">{p.label}</Td>
+              <Td className="sticky left-0 z-10 bg-card font-medium">{p.label}</Td>
               {p.allow.map((a, i) => (
                 <Td key={i} className="text-center">
-                  {a ? (
-                    <Check className="mx-auto h-4 w-4 text-success" />
-                  ) : (
-                    <Minus className="mx-auto h-4 w-4 text-subtle/50" />
-                  )}
+                  <PermIcon allowed={a} locale={locale} />
                 </Td>
               ))}
               {customRoles.map((r) => (
                 <Td key={r.key} className="text-center">
-                  {r.allowed.includes(p.key) ? (
-                    <Check className="mx-auto h-4 w-4 text-success" />
-                  ) : (
-                    <Minus className="mx-auto h-4 w-4 text-subtle/50" />
-                  )}
+                  <PermIcon allowed={r.allowed.includes(p.key)} locale={locale} />
                 </Td>
               ))}
             </tr>
@@ -1068,6 +1422,9 @@ export function AuditSection() {
   const locale = useLocale();
   const rows = listAudit();
 
+  const [query, setQuery] = React.useState('');
+  const [resultFilter, setResultFilter] = React.useState<'all' | AuditEntry['result']>('all');
+
   const resultLabel = (r: AuditEntry['result']) =>
     r === 'ok'
       ? L(locale, 'OK', 'OK', '成功', 'OK')
@@ -1075,13 +1432,45 @@ export function AuditSection() {
         ? L(locale, 'Bloqueado', 'Blocked', '已拦截', 'Bloqué')
         : L(locale, 'Pendente', 'Pending', '待处理', 'En attente');
 
+  const q = query.trim().toLowerCase();
+  const filtered = rows.filter(
+    (r) =>
+      (resultFilter === 'all' || r.result === resultFilter) &&
+      (!q ||
+        r.actor.toLowerCase().includes(q) ||
+        r.action.toLowerCase().includes(q) ||
+        r.target.toLowerCase().includes(q)),
+  );
+
   return (
     <ScreenContainer>
       <ScreenHeader icon={ScrollText} title={t('title')} subtitle={t('subtitle')} />
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" aria-hidden />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={L(locale, 'Buscar por ator, ação ou alvo…', 'Search actor, action or target…', '按操作者、动作或对象搜索…', 'Rechercher acteur, action ou cible…')}
+            aria-label={L(locale, 'Buscar na auditoria', 'Search audit trail', '搜索审计记录', 'Rechercher dans l’audit')}
+            className="h-9 w-72 pl-9"
+          />
+        </div>
+        <SegmentedControl
+          value={resultFilter}
+          onChange={setResultFilter}
+          options={[
+            { value: 'all', label: L(locale, 'Todos', 'All', '全部', 'Tous') },
+            { value: 'ok', label: resultLabel('ok') },
+            { value: 'blocked', label: resultLabel('blocked') },
+            { value: 'pending', label: resultLabel('pending') },
+          ]}
+        />
+      </div>
       <Table>
         <thead>
           <tr>
-            <Th>{t('columns.time')}</Th>
+            <Th className="sticky left-0 z-10 bg-card">{t('columns.time')}</Th>
             <Th>{t('columns.actor')}</Th>
             <Th>{t('columns.action')}</Th>
             <Th>{t('columns.target')}</Th>
@@ -1090,9 +1479,15 @@ export function AuditSection() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
+          {filtered.length === 0 && (
+            <EmptyRow
+              colSpan={6}
+              label={L(locale, 'Nenhum registro encontrado', 'No entries found', '未找到记录', 'Aucune entrée trouvée')}
+            />
+          )}
+          {filtered.map((r) => (
             <tr key={r.id} className="hover:bg-ink/[0.02]">
-              <Td className="whitespace-nowrap text-2xs text-muted">{timeAgo(r.at, locale)}</Td>
+              <Td className="sticky left-0 z-10 whitespace-nowrap bg-card text-2xs text-muted">{timeAgo(r.at, locale)}</Td>
               <Td className="text-sm">{r.actor}</Td>
               <Td className="font-mono text-2xs">{r.action}</Td>
               <Td className="font-mono text-2xs text-muted">{r.target}</Td>

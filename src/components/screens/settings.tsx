@@ -32,7 +32,7 @@ import { Avatar, Switch, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 
@@ -495,8 +495,12 @@ function UsersPanel() {
     toast.success(tc('states.success'));
   };
 
-  const removeMember = (id: string) => {
-    setMembers((list) => list.filter((m) => m.id !== id));
+  const [removeTarget, setRemoveTarget] = React.useState<Member | null>(null);
+
+  const confirmRemoveMember = () => {
+    if (!removeTarget) return;
+    setMembers((list) => list.filter((m) => m.id !== removeTarget.id));
+    setRemoveTarget(null);
     toast.success(tc('states.success'));
   };
 
@@ -544,7 +548,7 @@ function UsersPanel() {
               <Td>
                 <button
                   type="button"
-                  onClick={() => removeMember(m.id)}
+                  onClick={() => setRemoveTarget(m)}
                   aria-label={tc('actions.delete')}
                   className="inline-grid h-8 w-8 place-items-center rounded-md text-subtle transition-colors hover:bg-danger/10 hover:text-danger-fg dark:hover:text-danger"
                 >
@@ -585,6 +589,24 @@ function UsersPanel() {
           </Button>
         </div>
       </Modal>
+
+      <ConfirmDialog
+        open={!!removeTarget}
+        onClose={() => setRemoveTarget(null)}
+        onConfirm={confirmRemoveMember}
+        title={L('Remover membro', 'Remove member', '移除成员', 'Retirer le membre')}
+        description={
+          removeTarget
+            ? `${removeTarget.name} · ${removeTarget.email} — ${L(
+                'A pessoa perde o acesso à organização imediatamente.',
+                'This person loses access to the organization immediately.',
+                '该成员将立即失去组织访问权限。',
+                'Cette personne perd immédiatement l’accès à l’organisation.',
+              )}`
+            : undefined
+        }
+        confirmLabel={L('Remover', 'Remove', '移除', 'Retirer')}
+      />
     </Panel>
   );
 }
@@ -594,11 +616,34 @@ function SecurityPanel() {
   const tc = useTranslations('common');
   const locale = useLocale();
   const [twoFactor, setTwoFactor] = React.useState(true);
+  const [confirm2faOff, setConfirm2faOff] = React.useState(false);
   const [sso, setSso] = React.useState(false);
   const [pwOpen, setPwOpen] = React.useState(false);
   const [pw, setPw] = React.useState({ cur: '', next: '', confirm: '' });
   const L = (pt: string, en: string, zh: string, fr: string) =>
     locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+  // Turning 2FA OFF weakens account security — require explicit confirmation.
+  const onTwoFactorChange = (next: boolean) => {
+    if (!next) {
+      setConfirm2faOff(true);
+      return;
+    }
+    setTwoFactor(true);
+    toast.success(L('2FA ativada', '2FA enabled', '已启用双重验证', '2FA activée'));
+  };
+  const disableTwoFactor = () => {
+    setTwoFactor(false);
+    setConfirm2faOff(false);
+    toast.info(
+      L('2FA desativada', '2FA disabled', '已关闭双重验证', '2FA désactivée'),
+      L(
+        'Sua conta fica menos protegida sem o segundo fator.',
+        'Your account is less protected without a second factor.',
+        '没有第二重验证，您的账户安全性会降低。',
+        'Votre compte est moins protégé sans second facteur.',
+      ),
+    );
+  };
   const submitPassword = () => {
     if (pw.next.length < 8)
       return toast.error(L('Mínimo de 8 caracteres', 'Minimum 8 characters', '至少 8 个字符', 'Minimum 8 caractères'));
@@ -616,7 +661,7 @@ function SecurityPanel() {
         label={localized('twoFactor', locale)}
         description={localized('twoFactorDesc', locale)}
         checked={twoFactor}
-        onChange={setTwoFactor}
+        onChange={onTwoFactorChange}
       />
       <ToggleRow
         icon={KeyRound}
@@ -673,6 +718,20 @@ function SecurityPanel() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmDialog
+        open={confirm2faOff}
+        onClose={() => setConfirm2faOff(false)}
+        onConfirm={disableTwoFactor}
+        title={L('Desligar 2FA', 'Turn off 2FA', '关闭双重验证', 'Désactiver la 2FA')}
+        description={L(
+          'Sem o segundo fator, apenas a senha protege os dados de saúde da clínica.',
+          'Without a second factor, only the password protects the clinic’s health data.',
+          '没有第二重验证，只有密码保护诊所的健康数据。',
+          'Sans second facteur, seul le mot de passe protège les données de santé de la clinique.',
+        )}
+        confirmLabel={L('Desligar', 'Turn off', '关闭', 'Désactiver')}
+      />
     </Panel>
   );
 }

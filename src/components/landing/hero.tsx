@@ -44,20 +44,18 @@ export function Hero() {
               <span className="mt-1 block text-gradient">{t('titleHighlight')}</span>
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
-              className="mt-6 text-base leading-relaxed text-muted sm:text-lg"
+            {/* Subtitle, CTAs and trust line animate with CSS (like the h1) so they
+                are visible before hydration and without JS. */}
+            <p
+              className="mt-6 text-base leading-relaxed text-muted sm:text-lg animate-fade-up"
+              style={{ animationDelay: '0.14s' }}
             >
               {t('subtitle')}
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
+            <div
+              className="mt-8 flex flex-col gap-3 sm:flex-row animate-fade-up"
+              style={{ animationDelay: '0.22s' }}
             >
               <Link href="/login" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'group' })}>
                 {t('ctaPrimary')}
@@ -66,17 +64,15 @@ export function Hero() {
               <a href="#how" className={buttonVariants({ variant: 'outline', size: 'lg' })}>
                 {t('ctaSecondary')}
               </a>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.36 }}
-              className="mt-7 flex items-center gap-2 text-2xs text-subtle"
+            <div
+              className="mt-7 flex items-center gap-2 text-2xs text-muted animate-fade-in"
+              style={{ animationDelay: '0.36s' }}
             >
               <ShieldCheck className="h-4 w-4 text-brand-500" />
               <span>{t('trust')}</span>
-            </motion.div>
+            </div>
           </div>
 
           {/* demo — pointer-driven 3D tilt for depth */}

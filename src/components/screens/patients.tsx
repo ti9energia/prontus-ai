@@ -33,7 +33,7 @@ import { Avatar, IconButton } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/input';
-import { Modal, Sheet } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal, Sheet } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { formatDate, formatTime, timeAgo, cn } from '@/lib/utils';
@@ -435,6 +435,7 @@ function PatientDetail({
   const tc = useTranslations('common');
   const ts = useTranslations('encounterStatus');
   const tf = useTranslations('feedback');
+  const tx = useTranslations('exams');
   const L = (pt: string, en: string, zh: string, fr: string) =>
     locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
   const T = (loc: Loc) => L(loc[0], loc[1], loc[2], loc[3]);
@@ -476,8 +477,11 @@ function PatientDetail({
     }
     setNewAllergy('');
   };
-  const removeAllergy = (a: string) => {
-    setAllergies((list) => list.filter((x) => x !== a));
+  const [allergyTarget, setAllergyTarget] = React.useState<string | null>(null);
+  const confirmRemoveAllergy = () => {
+    if (!allergyTarget) return;
+    setAllergies((list) => list.filter((x) => x !== allergyTarget));
+    setAllergyTarget(null);
     toast.success(tf('removed'));
   };
 
@@ -561,7 +565,7 @@ function PatientDetail({
                     {a}
                     <button
                       type="button"
-                      onClick={() => removeAllergy(a)}
+                      onClick={() => setAllergyTarget(a)}
                       aria-label={`${tc('actions.delete')} · ${a}`}
                       className="grid h-4 w-4 place-items-center rounded-full opacity-70 hover:bg-danger/20 hover:opacity-100"
                     >
@@ -632,7 +636,7 @@ function PatientDetail({
                       <p className="text-xs text-muted">{formatDate(order.orderedAt, locale)}{order.lab ? ` · ${order.lab}` : ''}</p>
                     </div>
                     <Badge tone={LAB_STATUS_TONE[order.status]} dot>
-                      {order.status}
+                      {tx(`status.${order.status}`)}
                     </Badge>
                   </li>
                 );
@@ -751,6 +755,25 @@ function PatientDetail({
           </div>
         </div>
       </Modal>
+
+      {/* remove allergy confirmation — clinical data deserves an explicit gate */}
+      <ConfirmDialog
+        open={!!allergyTarget}
+        onClose={() => setAllergyTarget(null)}
+        onConfirm={confirmRemoveAllergy}
+        title={L('Remover alergia', 'Remove allergy', '移除过敏原', 'Retirer l’allergie')}
+        description={
+          allergyTarget
+            ? `${allergyTarget} — ${L(
+                'A alergia sai do prontuário do paciente.',
+                'The allergy is removed from the patient record.',
+                '该过敏原将从患者病历中移除。',
+                'L’allergie est retirée du dossier du patient.',
+              )}`
+            : undefined
+        }
+        confirmLabel={L('Remover', 'Remove', '移除', 'Retirer')}
+      />
     </>
   );
 }

@@ -8,11 +8,20 @@ import { Link } from '@/i18n/routing';
 import { SegmentedControl } from '@/components/ui/misc';
 import { buttonVariants } from '@/components/ui/button';
 import { formatCurrency, cn } from '@/lib/utils';
+import { PLAN_BY_ID, yearlyMonthlyPrice, type PlanId } from './plans-data';
 
-const PLANS = [
-  { id: 'starter', price: 99, features: ['live', 'note', 'copilot'], cta: 'ctaStart', variant: 'outline' as const },
-  { id: 'pro', price: 199, popular: true, features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaStart', variant: 'primary' as const },
-  { id: 'scale', price: 349, features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaContact', variant: 'secondary' as const },
+// Presentation config only — prices come from the shared plans-data source.
+const PLANS: {
+  id: PlanId;
+  popular?: boolean;
+  features: string[];
+  cta: 'ctaStart' | 'ctaContact';
+  href: '/login' | '/contact';
+  variant: 'outline' | 'primary' | 'secondary';
+}[] = [
+  { id: 'starter', features: ['live', 'note', 'copilot'], cta: 'ctaStart', href: '/login', variant: 'outline' },
+  { id: 'pro', popular: true, features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaStart', href: '/login', variant: 'primary' },
+  { id: 'scale', features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaContact', href: '/contact', variant: 'secondary' },
 ];
 
 export function Pricing() {
@@ -55,7 +64,8 @@ export function Pricing() {
 
         <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-5 lg:grid-cols-3">
           {PLANS.map((plan, i) => {
-            const monthly = cycle === 'yearly' ? Math.round((plan.price * 10) / 12) : plan.price;
+            const base = PLAN_BY_ID[plan.id].monthly;
+            const monthly = cycle === 'yearly' ? yearlyMonthlyPrice(base) : base;
             return (
               <Reveal key={plan.id} delay={i * 0.07}>
                 <div
@@ -72,8 +82,10 @@ export function Pricing() {
                     </span>
                   )}
                   <h3 className="font-display text-lg font-bold capitalize">{plan.id}</h3>
-                  <div className="mt-4 flex items-baseline gap-1">
-                    <span className="font-display text-4xl font-bold tracking-tight">
+                  {/* aria-live so the billing-cycle toggle announces the new price;
+                      keyed span re-runs a subtle fade when the number changes. */}
+                  <div aria-live="polite" aria-atomic="true" className="mt-4 flex items-baseline gap-1">
+                    <span key={cycle} className="font-display text-4xl font-bold tracking-tight animate-fade-in">
                       {formatCurrency(monthly, locale, 'BRL')}
                     </span>
                     <span className="text-sm text-muted">{t('perMonth')}</span>
@@ -89,7 +101,7 @@ export function Pricing() {
                   </ul>
 
                   <Link
-                    href="/login"
+                    href={plan.href}
                     className={buttonVariants({ variant: plan.variant, size: 'lg', className: 'mt-7 w-full' })}
                   >
                     {t(plan.cta as 'ctaStart')}

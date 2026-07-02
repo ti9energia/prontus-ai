@@ -82,15 +82,23 @@ export function BillingScreen({ paneId }: { paneId: string }) {
   const glossedCount = stats.glossed;
 
   // Mari's safety gate: never resubmit a guide that would just be denied again.
-  const onResubmit = (gid: string) => {
-    const guide = getGuide(gid);
-    if (guide && !diagnoseGuide(guide).recoverable) {
-      toast.error(t('resubmitBlocked'));
-      return;
+  const [pendingId, setPendingId] = React.useState<string | null>(null);
+  const onResubmit = async (gid: string) => {
+    setPendingId(gid);
+    try {
+      // Yield a frame so the button's loading state paints before the sync store work.
+      await new Promise((r) => setTimeout(r, 0));
+      const guide = getGuide(gid);
+      if (guide && !diagnoseGuide(guide).recoverable) {
+        toast.error(t('resubmitBlocked'));
+        return;
+      }
+      resubmitGuide(gid);
+      force();
+      toast.success(t('guideStatus.sent'));
+    } finally {
+      setPendingId(null);
     }
-    resubmitGuide(gid);
-    force();
-    toast.success(t('guideStatus.sent'));
   };
 
   return (
@@ -143,6 +151,30 @@ export function BillingScreen({ paneId }: { paneId: string }) {
             <CardTitle>{t('chart.title')}</CardTitle>
           </CardHeader>
           <CardContent className="pt-2">
+            {/* sr-only data table mirrors the chart for screen readers */}
+            <table className="sr-only">
+              <caption>{t('chart.title')}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">—</th>
+                  <th scope="col">{t('chart.before')}</th>
+                  <th scope="col">{t('chart.after')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {series.map((pt) => (
+                  <tr key={pt.label}>
+                    <th scope="row">{pt.label}</th>
+                    <td>{pt.before}</td>
+                    <td>{pt.after}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div
+              role="img"
+              aria-label={`${t('chart.title')}: ${t('chart.before')} ${series[0]?.before ?? 0} → ${series[series.length - 1]?.before ?? 0}; ${t('chart.after')} ${series.find((p) => Number(p.after) > 0)?.after ?? 0} → ${series[series.length - 1]?.after ?? 0}`}
+            >
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={series} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <defs>
@@ -173,13 +205,13 @@ export function BillingScreen({ paneId }: { paneId: string }) {
                 <Tooltip
                   cursor={{ stroke: 'rgb(148 163 184 / .3)', strokeWidth: 1 }}
                   contentStyle={{
-                    background: 'rgb(16 22 33)',
-                    border: '1px solid rgba(148,163,184,.2)',
+                    background: 'rgb(var(--card))',
+                    border: '1px solid rgb(var(--line))',
                     borderRadius: 12,
                     fontSize: 12,
-                    color: '#fff',
+                    color: 'rgb(var(--ink))',
                   }}
-                  labelStyle={{ color: 'rgba(255,255,255,.6)', marginBottom: 4 }}
+                  labelStyle={{ color: 'rgb(var(--muted))', marginBottom: 4 }}
                 />
                 <Area
                   type="monotone"
@@ -203,6 +235,7 @@ export function BillingScreen({ paneId }: { paneId: string }) {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 px-1">
               <LegendDot color="#94a3b8" label={t('chart.before')} />
               <LegendDot color="#0d9488" label={t('chart.after')} />
@@ -286,6 +319,7 @@ export function BillingScreen({ paneId }: { paneId: string }) {
                         <Button
                           size="sm"
                           leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
+                          loading={pendingId === g.id}
                           onClick={() => onResubmit(g.id)}
                         >
                           {t('resubmit')}

@@ -134,7 +134,8 @@
       "signIn": "Sign in",
       "signOut": "Sign out",
       "learnMore": "Learn more",
-      "bookDemo": "Book a demo"
+      "bookDemo": "Book a demo",
+      "closeMenu": "Close menu"
     },
     "states": {
       "loading": "Loading…",
@@ -158,7 +159,10 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "of": "of",
-    "by": "by"
+    "by": "by",
+    "confirmDialog": {
+      "typeToConfirm": "Type {name} to confirm"
+    }
   },
   "nav": {
     "today": "Today",
@@ -186,7 +190,8 @@
       "howItWorks": "How it works",
       "security": "Security",
       "pricing": "Pricing",
-      "customers": "Customers"
+      "customers": "Customers",
+      "menu": "Menu"
     },
     "announce": "",
     "hero": {
@@ -316,7 +321,8 @@
           "name": "Dr. Camila Prado",
           "role": "Cardiology · Instituto Cardio+"
         }
-      ]
+      ],
+      "stars": "5 stars"
     },
     "forWhom": {
       "eyebrow": "For the whole clinic",
@@ -423,23 +429,16 @@
       "cols": {
         "product": "Product",
         "company": "Company",
-        "legal": "Legal",
-        "resources": "Resources"
+        "legal": "Legal"
       },
       "links": {
         "features": "Features",
         "pricing": "Pricing",
         "security": "Security",
-        "changelog": "Changelog",
-        "about": "About",
-        "careers": "Careers",
         "contact": "Contact",
         "privacy": "Privacy",
         "terms": "Terms",
-        "lgpd": "LGPD",
-        "docs": "Documentation",
-        "status": "Status",
-        "api": "API"
+        "lgpd": "LGPD"
       }
     }
   },
@@ -1099,6 +1098,147 @@
       "collected": "Collected on",
       "resulted": "Result on",
       "status": "Status"
+    }
+  },
+  "legal": {
+    "backHome": "Back to home",
+    "updated": "Last updated: July 1, 2026",
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "Auronis Health is an AI clinical scribe: it turns visit audio into structured medical records and TISS claims. This policy explains how we handle personal data on the site and platform — transparently and in line with the LGPD and, where applicable, the GDPR.",
+      "sections": {
+        "scope": {
+          "h": "Who we are and what this policy covers",
+          "p": "This policy applies to auronishealth.com and to the Auronis Health platform. In services provided to clinics, the contracting clinic is the controller of patient data; Auronis acts as processor, handling data strictly under the contract and the clinic’s instructions."
+        },
+        "data": {
+          "h": "What data we process",
+          "p": "Account data (name, email, professional license, role in the clinic), platform usage data and, on the clinic’s behalf, visit health data: audio, transcript, structured record and billing information (TISS claims). Health data is sensitive data and receives the strictest safeguards described here."
+        },
+        "use": {
+          "h": "How we use data",
+          "p": "We use data to deliver the service: transcribe the visit, structure the record, verify claims before submission and run the clinical copilot. We do not sell personal data, show no advertising, and never use identifiable patient audio or records to train AI models."
+        },
+        "sharing": {
+          "h": "Sharing and subprocessors",
+          "p": "We share data only with subprocessors required to operate the service (cloud hosting and AI inference providers), under contracts with confidentiality and security obligations equivalent to ours, and when required by law or a competent authority."
+        },
+        "security": {
+          "h": "Security",
+          "p": "AES-256 encryption at rest and TLS in transit, role-based access control (RBAC), access audit trails and mandatory human review (human-in-the-loop) before any clinical document is signed or submitted."
+        },
+        "retention": {
+          "h": "Retention",
+          "p": "Clinical data is retained for the period defined in the clinic contract and by legal medical-record retention obligations. When the contract ends, we return or delete data as instructed by the controller."
+        },
+        "rights": {
+          "h": "Your rights",
+          "p": "Data subjects may request confirmation of processing, access, correction, anonymization, portability and deletion under LGPD art. 18 (and the GDPR where applicable). Patients should address requests to their clinic (the controller); we support the clinic in responding. Reach our DPO at privacidade@auronishealth.com."
+        },
+        "cookies": {
+          "h": "Cookies",
+          "p": "We use essential cookies only: authenticated session and theme/language preferences. No advertising cookies, no third-party trackers."
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These terms govern the use of the Auronis Health platform — an AI clinical scribe that generates structured records and TISS claims from visit audio — contracted by clinics and health professionals.",
+      "sections": {
+        "object": {
+          "h": "Purpose and acceptance",
+          "p": "Auronis Health provides AI-assisted clinical documentation as a service (SaaS). By creating an account or using the platform you agree to these terms and to the Privacy Policy."
+        },
+        "account": {
+          "h": "Account and access",
+          "p": "Credentials are personal and non-transferable. The clinic is responsible for managing its team’s roles and permissions (physician, front desk, billing, management) and for keeping registration data accurate."
+        },
+        "clinical": {
+          "h": "Responsible clinical use",
+          "p": "Auronis produces drafts and checks to support the professional — it does not practice medicine and does not replace clinical judgment. Every AI-generated document requires review and approval by a licensed professional (human-in-the-loop) before signing or submission."
+        },
+        "plans": {
+          "h": "Plans and payment",
+          "p": "Plans are billed per doctor/month, monthly or yearly (yearly equals 2 months free). You can cancel anytime; price changes are announced at least 30 days in advance."
+        },
+        "ip": {
+          "h": "Intellectual property and data",
+          "p": "The platform, brand and models belong to Auronis Health. Clinical data belongs to the clinic and its patients; you can export it at any time."
+        },
+        "availability": {
+          "h": "Availability and support",
+          "p": "We use commercially reasonable efforts to keep the service available, with scheduled maintenance announced in advance and support through official channels."
+        },
+        "liability": {
+          "h": "Limitation of liability",
+          "p": "To the maximum extent permitted by law, Auronis’ liability is limited to the amounts paid in the 12 months preceding the event. Clinical and billing decisions remain the responsibility of the professionals and the clinic."
+        },
+        "termination": {
+          "h": "Term and termination",
+          "p": "The agreement remains in force while the subscription is active. After termination we provide data export and then delete or return data as set out in the Privacy Policy."
+        },
+        "law": {
+          "h": "Governing law",
+          "p": "These terms are governed by the laws of the Federative Republic of Brazil, with venue in São Paulo/SP, unless mandatory law provides otherwise."
+        }
+      }
+    },
+    "lgpd": {
+      "title": "LGPD & data protection",
+      "intro": "Our commitment to Brazil’s General Data Protection Law (Law 13,709/2018) is structural: Auronis Health processes health data, so privacy is a product requirement — not an appendix.",
+      "sections": {
+        "commitment": {
+          "h": "Commitment",
+          "p": "Privacy by design: data minimization, per-clinic segregation, mandatory human review and auditing of every access to clinical data."
+        },
+        "roles": {
+          "h": "Roles: controller and processor",
+          "p": "The contracting clinic is the controller of patient data and defines the purposes of processing. Auronis Health acts as processor, handling data only under the clinic’s contractual instructions."
+        },
+        "bases": {
+          "h": "Legal bases",
+          "p": "We process data based on contract performance, protection of health in procedures carried out by health professionals (art. 11, II, f), compliance with legal obligations and, where applicable, legitimate interest — always with impact assessment."
+        },
+        "sensitive": {
+          "h": "Sensitive health data",
+          "p": "Audio, transcripts and records are sensitive data: encrypted at rest (AES-256) and in transit (TLS), with access restricted by role and never used to train models with patient identification."
+        },
+        "rights": {
+          "h": "Data subject rights",
+          "p": "We uphold the rights in art. 18: confirmation, access, correction, anonymization, blocking, deletion, portability and information about sharing. Patient requests are handled together with the controller clinic."
+        },
+        "incidents": {
+          "h": "Security incidents",
+          "p": "We maintain an incident response plan. In case of an incident with relevant risk, we notify the affected clinic and the ANPD within regulatory deadlines."
+        },
+        "transfer": {
+          "h": "International transfers",
+          "p": "When data is processed outside Brazil (e.g., cloud AI inference), we apply the safeguards of LGPD art. 33, including contractual clauses and encryption in transport."
+        },
+        "dpo": {
+          "h": "Data Protection Officer (DPO)",
+          "p": "Our DPO serves data subjects, clinics and the ANPD at privacidade@auronishealth.com."
+        }
+      }
+    },
+    "contact": {
+      "title": "Contact",
+      "intro": "Talk to the Auronis Health team — sales, support or privacy. We reply within 1 business day.",
+      "channels": {
+        "sales": {
+          "h": "Sales",
+          "p": "Demos, plans for clinics with more than 5 doctors (Scale) and partnerships."
+        },
+        "support": {
+          "h": "Support",
+          "p": "Help with the platform, integrations and TISS billing for active customers."
+        },
+        "privacy": {
+          "h": "Privacy (DPO)",
+          "p": "Data subject requests, LGPD/GDPR and information security."
+        }
+      },
+      "sla": "Business hours: weekdays, 9am–6pm (BRT). Privacy requests take priority and follow LGPD deadlines."
     }
   }
 }
