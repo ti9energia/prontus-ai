@@ -1,9 +1,21 @@
 /* Auronis Health — lightweight service worker (PWA offline shell). */
-const CACHE = 'auronis-v2';
-const PRECACHE = ['/brand/icon-512.png', '/manifest.webmanifest'];
+const CACHE = 'auronis-v3';
+const PRECACHE = [
+  '/brand/icon-192.png',
+  '/brand/icon-512.png',
+  '/brand/icon-maskable-192.png',
+  '/brand/icon-maskable-512.png',
+  '/manifest.webmanifest',
+];
+const LOCALES = ['pt-BR', 'en', 'zh-CN', 'fr-FR'];
+const DEFAULT_LOCALE = 'pt-BR';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  // Precache the app shell, but DON'T take over immediately — an update only
+  // activates when the user confirms via the "new version available" prompt
+  // (pwa-register.tsx posts SKIP_WAITING), so an install mid-session never
+  // yanks the UI out from under someone mid-task.
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
 });
 
 self.addEventListener('activate', (event) => {
@@ -15,6 +27,18 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING' || event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+/** Locale prefix of a same-origin path, or the default when the path has none we recognize. */
+function localeOf(pathname) {
+  const seg = pathname.split('/')[1];
+  return LOCALES.includes(seg) ? seg : DEFAULT_LOCALE;
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -23,8 +47,10 @@ self.addEventListener('fetch', (event) => {
   // Never cache API / dynamic data.
   if (url.pathname.startsWith('/api')) return;
 
-  // Network-first for navigations (always fresh UI), fall back to cache offline.
+  // Network-first for navigations (always fresh UI), fall back to cache offline —
+  // to the visitor's OWN locale shell first (not a hardcoded one), then pt-BR.
   if (request.mode === 'navigate') {
+    const locale = localeOf(url.pathname);
     event.respondWith(
       fetch(request)
         .then((res) => {
@@ -32,7 +58,14 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE).then((c) => c.put(request, copy));
           return res;
         })
-        .catch(() => caches.match(request).then((r) => r || caches.match('/pt-BR'))),
+        .catch(
+          () =>
+            caches.match(request).then(
+              (r) =>
+                r ||
+                caches.match(`/${locale}`).then((shell) => shell || caches.match(`/${DEFAULT_LOCALE}`)),
+            ),
+        ),
     );
     return;
   }

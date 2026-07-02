@@ -1,6 +1,6 @@
 # ESTADO DA ENTREGA
 
-- **Fase atual:** FASE 6 — PWA & camada de app (próxima)
+- **Fase atual:** FASE 7 — Testes E2E Playwright + CI (próxima)
 - **Última atualização:** 2026-07-02
 - **Portões concluídos:**
   - PORTÃO 0 ✅ (MAPA.md; baseline typecheck/lint/271 testes verdes)
@@ -9,6 +9,7 @@
   - PORTÃO 3 ✅ (elevação executada em 3 frentes: landing+legal 4 idiomas, workspace 23 telas, owner; ConfirmDialog único; zero ANEXO B remanescente — violeta removido, links mortos removidos, placeholders honestos; reduced-motion respeitado inclusive em JS; antes × depois em EVIDENCIAS/design-depois/fase3-relatorio.md; prova: typecheck ✅ lint ✅ i18n 837 chaves ✅ 271 testes ✅ build ✅)
   - PORTÃO 4 ✅ (INVENTARIO.md sem ❌, 1 ⚠️ justificado; persistência real de tenants/plans/access/landing-CMS do owner — 12 testes novos de store; error boundaries de rota (error.tsx + global-error.tsx) fecham o maior gap da fase 0; loading.tsx em /app e /owner; zero link morto/stub confirmado por grep; prova: typecheck ✅ lint ✅ i18n 837 ✅ 283 testes ✅ build ✅ — EVIDENCIAS/fase4/verificacao.txt)
   - PORTÃO 5 ✅ (checkout completo PIX/boleto/cartão sobre adapter Mercado Pago real + mock sandbox com QR EMV válido/CRC16, webhook idempotente testado, signup real com login funcional, onboarding 4 etapas persistente e resumível, Mari com persona/modelo parametrizados por tenant de verdade, e-mail transacional Resend/mock, INTEGRACOES.md com status honesto de cada integração; UI das 3 telas construída após incidente com agentes em background — ver DECISOES.md; prova: typecheck ✅ lint ✅ i18n 921 chaves ✅ 349 testes (76 novos) ✅ build prod exit 0 ✅ — EVIDENCIAS/fase5/verificacao.txt)
+  - PORTÃO 6 ✅ (manifest completo com 4 ícones any+maskable 192/512 com safe-zone real gerados via script portável (scripts/process-assets.mjs corrigido — antes tinha path local hardcoded); SW com fluxo de atualização real (prompt "nova versão" em vez de skipWaiting automático) + fallback offline por idioma do visitante (antes hardcoded /pt-BR); caminho TWA/Capacitor documentado em ARQUITETURA.md; Lighthouse ao vivo deferido para verificação conjunta final (diretiva do dono) — checklist de prontidão critério-a-critério em EVIDENCIAS/fase6/lighthouse-readiness.md; prova: typecheck ✅ lint ✅ 349 testes ✅ build prod exit 0 com manifest.webmanifest real inspecionado ✅ — EVIDENCIAS/fase6/verificacao.txt)
 
 ## Prova de execução (FASE 0)
 - App sobe com `npm run dev` → http://localhost:3000
@@ -18,7 +19,7 @@
   - `/api/health` → 200 · rota inexistente → 404 (tratado)
 
 ## Próximo passo
-- FASE 6: PWA — manifest completo (ícones 192/512 + maskable dedicado + splash iOS), fluxo de atualização do service worker (hoje só teem skipWaiting/claim, sem aviso ao usuário), fallback offline multi-idioma (hoje hardcoded /pt-BR), Lighthouse PWA.
+- FASE 7: Playwright cobrindo a jornada completa (landing → cadastro → onboarding → núcleo → checkout sandbox → erros), acessibilidade automatizada (@axe-core/playwright), 1 teste de regressão por bug corrigido nas fases anteriores, CI (GitHub Actions) rodando lint+typecheck+testes+E2E.
 
 ## Nota — incidente de agentes em background (ver DECISOES.md 2026-07-02)
 3 agentes paralelos para UI de signup/onboarding/checkout retornaram "session limit" sem produzir nenhum arquivo (confirmado via git status). Não repeti a delegação — construí as 3 telas diretamente. Lição: sempre verificar git status real após agentes longos antes de confiar no texto do resultado.

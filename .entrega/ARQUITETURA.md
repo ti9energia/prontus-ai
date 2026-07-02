@@ -65,4 +65,8 @@ Nenhuma skill nova criada ainda; padrões candidatos a skill (avaliar ao final):
 
 ## Caminho para loja de apps (documentado, não bloqueante)
 
-PWA é a distribuição atual. Loja depois: **TWA** (Android, Bubblewrap sobre o manifest atual) ou **Capacitor** (iOS/Android, embrulha o build standalone). Nenhum código do app muda; exige apenas projeto wrapper + assets de loja.
+PWA é a distribuição atual (FASE 6: manifest completo com ícones any+maskable em 192/512, service worker com fluxo de atualização real, offline por idioma). Loja depois, sem mudar código do produto:
+
+- **Android — TWA (Trusted Web Activity):** usar [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) apontando para `https://SEU_DOMINIO/manifest.webmanifest` (já completo). Gera o projeto Android/Gradle pronto para a Play Store. Precisa de: domínio com HTTPS válido (já exigido pelo CSP) + `assetlinks.json` em `/.well-known/` para vínculo de app verificado.
+- **iOS/Android — Capacitor:** embrulha o build `output:'standalone'` já existente (`next.config.mjs`) num shell nativo, reaproveitando 100% do PWA. Alternativa quando TWA não é suficiente (ex.: precisa de APIs nativas que o browser não expõe).
+- Em ambos os casos: os ícones/splash já gerados (`scripts/process-assets.mjs`) e o manifest cobrem o essencial; splash screens específicas por resolução de dispositivo iOS (Apple `apple-touch-startup-image`, dezenas de tamanhos) ficam para quando houver alvo real de App Store — não são exigidas pelo Lighthouse PWA nem pela instalação via navegador, que já funciona hoje.

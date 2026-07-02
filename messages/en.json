@@ -1354,5 +1354,11 @@
       "generic": "Could not process the payment. Try again."
     },
     "backToPlans": "Choose another plan"
+  },
+  "pwa": {
+    "updateTitle": "New version available",
+    "updateDescription": "Update to get the latest improvements.",
+    "updateAction": "Update",
+    "updateDismiss": "Later"
   }
 }
