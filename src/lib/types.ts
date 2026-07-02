@@ -244,6 +244,29 @@ export interface FeatureFlag {
   rollout: number; // 0..100
 }
 
+/**
+ * Custom RBAC role defined by the owner (beyond the fixed OrgRole union).
+ * Display/management only — `can()` enforcement (permissions.ts) stays on the
+ * fixed RoleKey union; a custom role's `allowed` list is informational until
+ * the permission engine grows a data-driven mode.
+ */
+export interface CustomRole {
+  key: string;
+  label: string;
+  allowed: string[];
+}
+
+/** One editable block of landing-page marketing copy, per section × locale. */
+export interface LandingBlock {
+  section: string;
+  locale: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+  published: boolean;
+  updatedAt: string;
+}
+
 export interface OwnerStats {
   mrr: number;
   mrrGrowth: number;

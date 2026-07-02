@@ -31,20 +31,31 @@ import {
   Sparkles,
   Tags,
   TrendingUp,
+  X,
 } from 'lucide-react';
 import {
   ALL_MODULE_KEYS,
+  addCustomRole,
+  addTenant as createTenant,
+  auditImpersonation,
+  getLandingBlock,
   getPlan,
   getTenant,
   listAudit,
+  listCustomRoles,
   listFlags,
+  listLandingBlocks,
   listPlans,
   listTenants,
   mrrSeries,
   ownerStats,
+  publishLandingBlock,
+  removeCustomRole,
+  setTenantStatus,
   toggleFlag,
   updateTenantAi,
   updateTenantWhatsapp,
+  upsertPlan,
   upsertTenantConnector,
 } from '@/lib/data';
 import type { AuditEntry, Plan, Tenant, TenantStatus } from '@/lib/types';
@@ -277,7 +288,8 @@ export function TenantsSection() {
   const locale = useLocale();
   const { setImpersonating } = useOwner();
   const plans = listPlans();
-  const [tenants, setTenants] = React.useState<Tenant[]>(() => listTenants().map((tn) => ({ ...tn })));
+  const [, force] = React.useReducer((x) => x + 1, 0);
+  const tenants = listTenants();
 
   const [adding, setAdding] = React.useState(false);
   const [name, setName] = React.useState('');
@@ -295,38 +307,22 @@ export function TenantsSection() {
   const addTenant = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    const plan = plans.find((p) => p.id === planId);
-    setTenants((list) => [
-      {
-        id: uid('ten'),
-        name: trimmed,
-        planId: planId || plans[0]?.id || '',
-        doctors: 1,
-        usagePct: 0,
-        mrr: plan?.price ?? 0,
-        status: 'trial',
-        locale: 'pt-BR',
-        createdAt: new Date().toISOString(),
-      },
-      ...list,
-    ]);
+    createTenant({ name: trimmed, planId: planId || plans[0]?.id || '' });
+    force();
     setAdding(false);
     setName('');
     setPlanId(plans[0]?.id ?? '');
     toast.success(tf('added'));
   };
 
-  const toggleStatus = (tid: string) =>
-    setTenants((list) =>
-      list.map((x) => (x.id === tid ? { ...x, status: x.status === 'suspended' ? 'active' : 'suspended' } : x)),
-    );
-
   const runConfirm = () => {
     if (!confirm) return;
     if (confirm.kind === 'impersonate') {
+      auditImpersonation(confirm.tenant.id, confirm.tenant.name);
       setImpersonating({ id: confirm.tenant.id, name: confirm.tenant.name });
     } else {
-      toggleStatus(confirm.tenant.id);
+      setTenantStatus(confirm.tenant.id, confirm.kind === 'suspend' ? 'suspended' : 'active');
+      force();
       toast.success(
         confirm.kind === 'suspend'
           ? L(locale, 'Organização suspensa', 'Organization suspended', '组织已暂停', 'Organisation suspendue')
@@ -535,9 +531,8 @@ export function PlansSection() {
   const tm = useTranslations('modules');
   const tf = useTranslations('feedback');
   const locale = useLocale();
-  const [plans, setPlans] = React.useState<Plan[]>(() =>
-    listPlans().map((p) => ({ ...p, quotas: { ...p.quotas }, modules: [...p.modules] })),
-  );
+  const [, force] = React.useReducer((x) => x + 1, 0);
+  const plans = listPlans();
   const [draft, setDraft] = React.useState<Plan | null>(null);
   const [isNew, setIsNew] = React.useState(false);
 
@@ -568,8 +563,8 @@ export function PlansSection() {
   };
   const save = () => {
     if (!draft || !draft.name.trim()) return;
-    const next: Plan = { ...draft, name: draft.name.trim() };
-    setPlans((list) => (isNew ? [...list, next] : list.map((p) => (p.id === next.id ? next : p))));
+    upsertPlan({ ...draft, name: draft.name.trim() });
+    force();
     setDraft(null);
     toast.success(isNew ? tf('added') : tf('saved'));
   };
@@ -743,19 +738,23 @@ const landingDefaults = (sec: string, loc: string): LandingDraft => ({
 export function LandingSection() {
   const t = useTranslations('owner.landing');
   const locale = useLocale();
+  const [, force] = React.useReducer((x) => x + 1, 0);
   const [sec, setSec] = React.useState<(typeof LANDING_SECTIONS)[number]>('hero');
   const [loc, setLoc] = React.useState('pt-BR');
   const [title, setTitle] = React.useState(landingDefaults('hero', 'pt-BR').title);
   const [subtitle, setSubtitle] = React.useState('');
   const [cta, setCta] = React.useState('');
   const [preview, setPreview] = React.useState(false);
-
-  // Session-local "published" copy per section·locale — real persistence lands in phase 4.
-  const [saved, setSaved] = React.useState<Record<string, LandingDraft>>({});
-  const [published, setPublished] = React.useState<Record<string, boolean>>({ hero: true });
   const [pendingSwitch, setPendingSwitch] = React.useState<{ sec: (typeof LANDING_SECTIONS)[number]; loc: string } | null>(null);
 
-  const savedFor = (s: string, l: string): LandingDraft => saved[`${s}:${l}`] ?? landingDefaults(s, l);
+  // Persisted in the shared store — survives reload within the server process
+  // (see .entrega/PENDENCIAS.md for the Postgres write-through gap on this entity).
+  const publishedBlocks = listLandingBlocks();
+  const savedFor = (s: string, l: string): LandingDraft => {
+    const block = getLandingBlock(s, l);
+    return block ? { title: block.title, subtitle: block.subtitle, cta: block.cta } : landingDefaults(s, l);
+  };
+  const isPublished = (s: string) => publishedBlocks.some((b) => b.section === s && b.published);
   const base = savedFor(sec, loc);
   const dirty = title !== base.title || subtitle !== base.subtitle || cta !== base.cta;
 
@@ -774,8 +773,8 @@ export function LandingSection() {
   };
 
   const publish = () => {
-    setSaved((prev) => ({ ...prev, [`${sec}:${loc}`]: { title, subtitle, cta } }));
-    setPublished((prev) => ({ ...prev, [sec]: true }));
+    publishLandingBlock(sec, loc, { title, subtitle, cta });
+    force();
     toast.success(
       L(
         locale,
@@ -815,7 +814,7 @@ export function LandingSection() {
               {s === sec && dirty ? (
                 <Badge tone="warning">{L(locale, 'Editando', 'Editing', '编辑中', 'En cours')}</Badge>
               ) : (
-                <Badge tone={published[s] ? 'success' : 'neutral'}>{published[s] ? t('published') : t('draft')}</Badge>
+                <Badge tone={isPublished(s) ? 'success' : 'neutral'}>{isPublished(s) ? t('published') : t('draft')}</Badge>
               )}
             </button>
           ))}
@@ -852,10 +851,10 @@ export function LandingSection() {
             <p className="text-2xs text-muted">
               {L(
                 locale,
-                'Modo demonstração: publicar atualiza apenas esta pré-visualização. A publicação real chega com a persistência (fase 4).',
-                'Demo mode: publishing only updates this preview. Real publishing arrives with persistence (phase 4).',
-                '演示模式：发布仅更新此预览。真正的发布将随持久化功能（第 4 阶段）推出。',
-                'Mode démo : publier ne met à jour que cet aperçu. La publication réelle arrivera avec la persistance (phase 4).',
+                'Publicar salva este texto no backend (persiste, entra na auditoria) e atualiza a pré-visualização abaixo. A landing pública continua servindo a cópia revisada em código — plugar este conteúdo à renderização ao vivo é um passo consciente e separado.',
+                'Publishing saves this copy to the backend (persists, enters the audit trail) and updates the preview below. The public landing still serves the reviewed, code-shipped copy — wiring this content into live rendering is a separate, deliberate step.',
+                '发布会将此文案保存到后端（持久化，记入审计日志）并更新下方预览。公开落地页仍然使用已审阅、随代码发布的文案——将此内容接入实时渲染是另一项需要单独决定的工作。',
+                'Publier enregistre ce texte côté serveur (persistant, tracé dans l’audit) et met à jour l’aperçu ci-dessous. La landing publique continue de servir le texte revu et livré avec le code — brancher ce contenu au rendu en direct est une étape distincte et délibérée.',
               )}
             </p>
           </div>
@@ -1284,21 +1283,32 @@ export function AccessSection() {
     { key: 'ai', label: L(locale, 'Configurar IA/WhatsApp', 'Configure AI/WhatsApp', '配置 AI/WhatsApp', 'Configurer IA/WhatsApp'), allow: [true, false, false, false, false] },
   ];
 
-  const [customRoles, setCustomRoles] = React.useState<{ key: string; label: string; allowed: string[] }[]>([]);
+  const [, force] = React.useReducer((x) => x + 1, 0);
+  const customRoles = listCustomRoles();
   const [adding, setAdding] = React.useState(false);
   const [roleName, setRoleName] = React.useState('');
   const [sel, setSel] = React.useState<string[]>([]);
+  const [removing, setRemoving] = React.useState<{ key: string; label: string } | null>(null);
 
   const togglePerm = (k: string) => setSel((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
 
   const addRole = () => {
     const trimmed = roleName.trim();
     if (!trimmed) return;
-    setCustomRoles((list) => [...list, { key: uid('role'), label: trimmed, allowed: sel }]);
+    addCustomRole({ label: trimmed, allowed: sel });
+    force();
     setAdding(false);
     setRoleName('');
     setSel([]);
     toast.success(tf('added'));
+  };
+
+  const confirmRemoveRole = () => {
+    if (!removing) return;
+    removeCustomRole(removing.key);
+    force();
+    toast.success(tf('removed'));
+    setRemoving(null);
   };
 
   return (
@@ -1321,7 +1331,17 @@ export function AccessSection() {
             ))}
             {customRoles.map((r) => (
               <Th key={r.key} className="text-center">
-                {r.label}
+                <span className="inline-flex items-center gap-1.5">
+                  {r.label}
+                  <button
+                    type="button"
+                    onClick={() => setRemoving({ key: r.key, label: r.label })}
+                    aria-label={`${tc('actions.delete')} ${r.label}`}
+                    className="rounded p-0.5 text-subtle hover:bg-danger/10 hover:text-danger"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
               </Th>
             ))}
           </tr>
@@ -1406,6 +1426,22 @@ export function AccessSection() {
           </Button>
         </div>
       </Modal>
+
+      <ConfirmDialog
+        open={!!removing}
+        onClose={() => setRemoving(null)}
+        onConfirm={confirmRemoveRole}
+        tone="danger"
+        title={`${tc('actions.delete')} ${removing?.label ?? ''}?`}
+        description={L(
+          locale,
+          'Usuários com este papel perdem as permissões associadas a ele.',
+          'Users with this role lose the permissions tied to it.',
+          '拥有此角色的用户将失去与之关联的权限。',
+          'Les utilisateurs ayant ce rôle perdent les permissions qui y sont liées.',
+        )}
+        confirmLabel={tc('actions.delete')}
+      />
     </ScreenContainer>
   );
 }

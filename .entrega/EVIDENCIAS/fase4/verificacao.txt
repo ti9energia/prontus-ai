@@ -1,0 +1,39 @@
+﻿# Evidencias FASE 4 -- 2026-07-02
+
+## typecheck
+> auronis-health@1.0.0 typecheck
+> tsc --noEmit
+
+
+## lint
+> next lint
+
+✔ No ESLint warnings or errors
+
+## i18n:check
+
+  ✓ en: 837 keys, in parity
+  ✓ zh-CN: 837 keys, in parity
+  ✓ fr-FR: 837 keys, in parity
+
+
+## vitest
+
+[2m Test Files [22m [1m[32m38 passed[39m[22m[90m (38)[39m
+[2m      Tests [22m [1m[32m283 passed[39m[22m[90m (283)[39m
+[2m   Start at [22m 00:29:53
+[2m   Duration [22m 13.64s[2m (transform 5.87s, setup 11.48s, collect 10.08s, tests 2.36s, environment 74.01s, prepare 9.44s)[22m
+
+
+## grep de stubs (0 esperado em cada)
+href="#": 0
+
+
+ƒ Middleware                             51.1 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses getStaticProps)
+ƒ  (Dynamic)  server-rendered on demand
+
+
+## build: OK (ver saida completa no log do CI/terminal)

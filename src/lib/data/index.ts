@@ -116,12 +116,23 @@ export const setTenantStatus = _adapter.setTenantStatus;
 export const updateTenantAi = _adapter.updateTenantAi;
 export const updateTenantWhatsapp = _adapter.updateTenantWhatsapp;
 export const upsertTenantConnector = _adapter.upsertTenantConnector;
+export const addTenant = _adapter.addTenant;
+export const auditImpersonation = _adapter.auditImpersonation;
 
 export const listPlans = _adapter.listPlans;
 export const getPlan = _adapter.getPlan;
+export const upsertPlan = _adapter.upsertPlan;
 
 export const listFlags = _adapter.listFlags;
 export const toggleFlag = _adapter.toggleFlag;
+
+export const listCustomRoles = _adapter.listCustomRoles;
+export const addCustomRole = _adapter.addCustomRole;
+export const removeCustomRole = _adapter.removeCustomRole;
+
+export const listLandingBlocks = _adapter.listLandingBlocks;
+export const getLandingBlock = _adapter.getLandingBlock;
+export const publishLandingBlock = _adapter.publishLandingBlock;
 
 export const listApiKeys = _adapter.listApiKeys;
 export const getApiKeyByHash = _adapter.getApiKeyByHash;

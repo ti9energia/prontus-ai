@@ -1,5 +1,11 @@
 # DECISÕES
 
+## 2026-07-02 — FASE 4: `screens/integrations.tsx` fica session-only (decisão consciente, não lacuna)
+- Considerei ligar o toggle conectar/desconectar e o modal de config ao `upsertTenantConnector` real (o mesmo usado pela `AiSection` do owner) para sobreviver a reload.
+- Decidi NÃO fazer isso: dos 20 provedores listados nessa tela (Tasy, MV Soul, iClinic, Feegow, Unimed, Bradesco, SulAmérica, Amil, Hapvida, Auronis ASR, Whisper, Azure Speech, Google Speech, WhatsApp Business, Telegram), nenhum tem conector real implementado em `lib/connectors` — os conectores reais do produto são Memed, ICP-Brasil e WhatsApp Cloud (documentados via env var, `INTEGRACOES.md` virá na fase 5). Persistir esse toggle no servidor seria "persistência-teatro": sobreviveria a reload sem passar a fazer nada a mais.
+- A tela já rotula honestamente "Superfície de demonstração — as credenciais ficam apenas neste navegador, nesta sessão" — mover para o store do servidor tornaria essa frase falsa.
+- Registrado como ⚠️ justificado em `INVENTARIO.md`, não como pendência.
+
 ## 2026-07-01 — FASE 2: alvo estético e priorização (auditorias em EVIDENCIAS/design-antes/)
 
 **Alvo estético:** premium clínico dark-first já estabelecido (turquesa #14C8C4 + prata, Sora/Inter, profundidade por sombra contida e aurora) — NÃO trocar a identidade; **remover o que a contradiz** (violeta off-brand no DNA), **dar vida às telas administrativas chapadas** reaproveitando os padrões que as telas clínicas já provam (sparkline, Progress, StatCard, stepper, Avatar), e **fechar os buracos de confiança** (preços divergentes, links mortos, toasts que mentem, formulário que descarta edição).
