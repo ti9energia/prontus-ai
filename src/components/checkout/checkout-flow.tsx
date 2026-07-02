@@ -42,6 +42,9 @@ function isPlanId(v: string | undefined): v is PlanId {
   return !!v && PLANS.some((p) => p.id === v);
 }
 
+const POLL_INTERVAL_MS = 2500;
+const MAX_POLLS = 48; // ~2min — past the sandbox's ~8s settle and a typical real PIX confirmation
+
 export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: string; initialCycle?: string }) {
   const t = useTranslations('checkout');
   const tc = useTranslations('common.actions');
@@ -64,6 +67,7 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [result, setResult] = React.useState<CheckoutResult | null>(null);
+  const [pollTimedOut, setPollTimedOut] = React.useState(false);
 
   React.useEffect(() => {
     if (sessionLoading) return;
@@ -127,11 +131,21 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
 
   // PIX/boleto settle asynchronously — poll while pending, exactly what the
   // sandbox mock needs to resolve itself and what a real Mercado Pago
-  // confirmation would need too.
+  // confirmation would need too. Capped at MAX_POLLS so an abandoned pending
+  // tab stops pinging the server forever (~2min at 2.5s covers the sandbox's
+  // ~8s settle and a typical real PIX confirmation); after that we show a
+  // manual "check again" instead of an infinite background poll.
   const orderId = result?.orderId;
   React.useEffect(() => {
-    if (stage !== 'result' || !orderId || result?.status !== 'pending') return;
+    if (stage !== 'result' || !orderId || result?.status !== 'pending' || pollTimedOut) return;
+    let count = 0;
     const id = setInterval(async () => {
+      count += 1;
+      if (count > MAX_POLLS) {
+        clearInterval(id);
+        setPollTimedOut(true);
+        return;
+      }
       try {
         const res = await fetch(`/api/checkout/session/${orderId}`);
         if (!res.ok) return;
@@ -140,15 +154,48 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
       } catch {
         // transient — next tick retries
       }
-    }, 2500);
+    }, POLL_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [stage, orderId, result?.status]);
+  }, [stage, orderId, result?.status, pollTimedOut]);
+
+  // Manual re-check after the auto-poll gives up: one immediate fetch, then
+  // resume the capped auto-poll if it's still pending.
+  const recheck = async () => {
+    if (!orderId) return;
+    try {
+      const res = await fetch(`/api/checkout/session/${orderId}`);
+      if (res.ok) {
+        const data = (await res.json()) as CheckoutResult;
+        setResult((prev) => (prev ? { ...prev, ...data } : data));
+      }
+    } catch {
+      // transient — resuming the poll below will retry
+    }
+    setPollTimedOut(false);
+  };
 
   const retry = () => {
     setStage('setup');
     setResult(null);
     setError(null);
+    setPollTimedOut(false);
   };
+
+  // Shared "waiting for confirmation" indicator for PIX/boleto: an animated
+  // spinner while auto-polling, or a manual re-check once the poll cap is hit.
+  const waitingIndicator = (waitingLabel: string) =>
+    pollTimedOut ? (
+      <div className="mt-5 flex flex-col items-center gap-2.5 text-sm text-muted">
+        <span>{t('stillProcessing')}</span>
+        <Button type="button" variant="outline" size="sm" leftIcon={<RotateCw className="h-3.5 w-3.5" />} onClick={recheck}>
+          {t('recheck')}
+        </Button>
+      </div>
+    ) : (
+      <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted">
+        <Spinner /> {waitingLabel}
+      </div>
+    );
 
   const copy = async (text: string, label: string) => {
     try {
@@ -327,9 +374,7 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
                     </div>
                   </div>
                 )}
-                <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted">
-                  <Spinner /> {t('pix.waiting')}
-                </div>
+                {waitingIndicator(t('pix.waiting'))}
                 <p className="mt-2 text-2xs text-muted">{t('pix.sandboxNote')}</p>
               </div>
             )}
@@ -366,9 +411,7 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
                     {t('boleto.view')} <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 )}
-                <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted">
-                  <Spinner /> {t('boleto.waiting')}
-                </div>
+                {waitingIndicator(t('boleto.waiting'))}
               </div>
             )}
 

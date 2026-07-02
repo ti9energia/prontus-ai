@@ -1355,7 +1355,9 @@
     },
     "backToPlans": "选择其他套餐",
     "perMonth": "/月",
-    "perYear": "/年"
+    "perYear": "/年",
+    "stillProcessing": "仍在处理中，可能需要片刻。",
+    "recheck": "重新检查"
   },
   "pwa": {
     "updateTitle": "有新版本",

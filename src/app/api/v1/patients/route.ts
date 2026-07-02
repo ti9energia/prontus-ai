@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { apiError, authError, json } from '@/lib/api';
+import { apiError, authError, json, jsonPage, paginate } from '@/lib/api';
 import { addPatient, listPatients } from '@/lib/data';
 
 export const runtime = 'nodejs';
@@ -10,11 +10,11 @@ const CreatePatient = z.object({
   payer: z.string().trim().min(1).max(120),
 });
 
-/** GET /api/v1/patients — list every patient. */
+/** GET /api/v1/patients — paginated patient list (`?limit=&offset=`). */
 export function GET(req: Request) {
   const unauthorized = authError(req);
   if (unauthorized) return unauthorized;
-  return json(listPatients());
+  return jsonPage(paginate(req, listPatients()));
 }
 
 /** POST /api/v1/patients — create a patient from `{ name, payer }`. */

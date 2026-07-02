@@ -1,12 +1,12 @@
-import { authError, json } from '@/lib/api';
+import { authError, jsonPage, paginate } from '@/lib/api';
 import { listGuides } from '@/lib/data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/** GET /api/v1/guides — list every TISS guide. */
+/** GET /api/v1/guides — paginated TISS guide list (`?limit=&offset=`). */
 export function GET(req: Request) {
   const unauthorized = authError(req);
   if (unauthorized) return unauthorized;
-  return json(listGuides());
+  return jsonPage(paginate(req, listGuides()));
 }
