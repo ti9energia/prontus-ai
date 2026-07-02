@@ -448,7 +448,11 @@
     "email": "Email",
     "password": "Password",
     "demoNote": "Demo: click sign in to access the sample clinic.",
-    "enterDemo": "Enter the demo"
+    "enterDemo": "Enter the demo",
+    "signUpTitle": "Create your account",
+    "signUpSubtitle": "Start free — no credit card.",
+    "orgName": "Clinic name",
+    "yourName": "Your name"
   },
   "appShell": {
     "search": "Search patients, visits, claim forms…",
@@ -749,7 +753,8 @@
       "consent": "Consent & retention",
       "language": "Language & region",
       "whatsapp": "WhatsApp",
-      "ai": "Copilot & agent"
+      "ai": "Copilot & agent",
+      "billing": "Plan & billing"
     },
     "profile": {
       "name": "Name",
@@ -776,6 +781,17 @@
       "status": "Status",
       "active": "Active",
       "invited": "Invited"
+    },
+    "billing": {
+      "title": "Plan & billing",
+      "subtitle": "Manage your organization's subscription.",
+      "currentPlan": "Current plan",
+      "trialBadge": "Trial",
+      "activeBadge": "Active",
+      "upgrade": "Subscribe",
+      "change": "Change plan",
+      "perMonth": "/mo",
+      "sandboxNote": "Sandbox payment environment — no real charge happens without a production credential configured."
     }
   },
   "roles": {
@@ -1240,5 +1256,103 @@
       },
       "sla": "Business hours: weekdays, 9am–6pm (BRT). Privacy requests take priority and follow LGPD deadlines."
     }
+  },
+  "onboarding": {
+    "stepOf": "Step {n} of 4",
+    "skip": "Skip",
+    "profile": {
+      "title": "Tell us about your clinic",
+      "subtitle": "This helps Mari adapt to the size of your practice.",
+      "sizeLabel": "How many doctors use Auronis?",
+      "size1": "Just me",
+      "size2to5": "2 to 5 doctors",
+      "size6to20": "6 to 20 doctors",
+      "size20plus": "More than 20 doctors"
+    },
+    "specialty": {
+      "title": "What's your main specialty?",
+      "subtitle": "Mari tailors note templates and clinical vocabulary per specialty."
+    },
+    "team": {
+      "title": "Invite your team",
+      "subtitle": "Optional — you can also invite people later from Settings.",
+      "emailPlaceholder": "colleague@clinic.com",
+      "add": "Add",
+      "invited": "{count} invite(s) prepared",
+      "note": "Invites go out once you activate your team in Settings → Team."
+    },
+    "tour": {
+      "title": "You're all set",
+      "subtitle": "A quick look at what Mari does for you.",
+      "f1Title": "Live consultation",
+      "f1Desc": "Record the visit and get a structured note in minutes.",
+      "f2Title": "TISS claims without rework",
+      "f2Desc": "Pre-denial checks before you send — fewer rejected claims.",
+      "f3Title": "Mari, your copilot",
+      "f3Desc": "Ask anything about your clinic, on any screen.",
+      "cta": "Go to the app"
+    },
+    "error": "Could not save. Try again."
+  },
+  "checkout": {
+    "title": "Subscribe to a plan",
+    "subtitle": "Sandbox payment environment — no real charge happens without a production credential configured.",
+    "planLabel": "Plan",
+    "cycleMonthly": "Monthly",
+    "cycleYearly": "Yearly",
+    "yearlyHint": "2 months free",
+    "payer": {
+      "title": "Your details",
+      "name": "Full name",
+      "email": "Email",
+      "taxId": "Tax ID (optional)"
+    },
+    "method": {
+      "title": "Payment method",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "card": "Card"
+    },
+    "card": {
+      "number": "Card number",
+      "expiry": "Expiry (MM/YY)",
+      "cvv": "CVV",
+      "name": "Name on card",
+      "testHint": "Test environment: numbers ending in an even digit are approved; odd is declined."
+    },
+    "confirm": "Confirm and pay",
+    "pix": {
+      "title": "Pay with PIX",
+      "subtitle": "Scan the QR code or copy the code below into your bank app.",
+      "copyPaste": "Copy-and-paste code",
+      "copyButton": "Copy code",
+      "copied": "Code copied",
+      "waiting": "Waiting for payment confirmation…",
+      "sandboxNote": "Test environment — confirmation may take a few seconds."
+    },
+    "boleto": {
+      "title": "Pay with boleto",
+      "subtitle": "Copy the digitable line or open the boleto to pay at your bank.",
+      "line": "Digitable line",
+      "view": "View boleto",
+      "waiting": "Waiting for payment confirmation…"
+    },
+    "success": {
+      "title": "Payment confirmed",
+      "subtitle": "Your subscription is active. Welcome to the {plan} plan.",
+      "cta": "Go to the app"
+    },
+    "failed": {
+      "title": "Payment not approved",
+      "subtitle": "We couldn't confirm the payment. You can try again.",
+      "retry": "Try again"
+    },
+    "errors": {
+      "planNotFound": "Plan not found.",
+      "cardTokenRequired": "Fill in the card details.",
+      "provider": "The payment provider didn't respond. Try again.",
+      "generic": "Could not process the payment. Try again."
+    },
+    "backToPlans": "Choose another plan"
   }
 }

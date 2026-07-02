@@ -219,6 +219,13 @@ export function LoginForm() {
                 {tc('signIn')}
               </Button>
             </form>
+
+            <p className="mt-6 text-center text-sm text-muted">
+              {L('Ainda não tem conta?', "Don't have an account yet?", '还没有账户？', 'Vous n’avez pas encore de compte ?')}{' '}
+              <Link href="/signup" className="font-medium text-ink underline-offset-2 hover:underline">
+                {L('Criar conta grátis', 'Create free account', '免费创建账户', 'Créer un compte gratuit')}
+              </Link>
+            </p>
           </div>
         </div>
       </div>

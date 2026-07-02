@@ -448,7 +448,11 @@
     "email": "E-mail",
     "password": "Mot de passe",
     "demoNote": "Démo : cliquez sur se connecter pour accéder au cabinet d'exemple.",
-    "enterDemo": "Accéder à la démonstration"
+    "enterDemo": "Accéder à la démonstration",
+    "signUpTitle": "Créez votre compte",
+    "signUpSubtitle": "Commencez gratuitement — sans carte bancaire.",
+    "orgName": "Nom de la clinique",
+    "yourName": "Votre nom"
   },
   "appShell": {
     "search": "Rechercher patients, consultations, feuilles de soins…",
@@ -749,7 +753,8 @@
       "consent": "Consentement et conservation",
       "language": "Langue et région",
       "whatsapp": "WhatsApp",
-      "ai": "Copilote et agent"
+      "ai": "Copilote et agent",
+      "billing": "Offre et facturation"
     },
     "profile": {
       "name": "Nom",
@@ -776,6 +781,17 @@
       "status": "Statut",
       "active": "Actif",
       "invited": "Invité"
+    },
+    "billing": {
+      "title": "Offre et facturation",
+      "subtitle": "Gérez l’abonnement de votre organisation.",
+      "currentPlan": "Offre actuelle",
+      "trialBadge": "Essai",
+      "activeBadge": "Actif",
+      "upgrade": "S’abonner",
+      "change": "Changer d’offre",
+      "perMonth": "/mois",
+      "sandboxNote": "Environnement de paiement sandbox — aucun débit réel sans identifiant de production configuré."
     }
   },
   "roles": {
@@ -1240,5 +1256,103 @@
       },
       "sla": "Horaires : jours ouvrés, 9h–18h (BRT). Les demandes de confidentialité sont prioritaires et suivent les délais de la LGPD."
     }
+  },
+  "onboarding": {
+    "stepOf": "Étape {n} sur 4",
+    "skip": "Passer",
+    "profile": {
+      "title": "Parlez-nous de votre clinique",
+      "subtitle": "Cela aide Mari à s’adapter à la taille de votre structure.",
+      "sizeLabel": "Combien de médecins utilisent Auronis ?",
+      "size1": "Moi seul(e)",
+      "size2to5": "2 à 5 médecins",
+      "size6to20": "6 à 20 médecins",
+      "size20plus": "Plus de 20 médecins"
+    },
+    "specialty": {
+      "title": "Quelle est votre spécialité principale ?",
+      "subtitle": "Mari adapte les modèles de compte rendu et le vocabulaire clinique par spécialité."
+    },
+    "team": {
+      "title": "Invitez votre équipe",
+      "subtitle": "Optionnel — vous pourrez aussi inviter plus tard depuis les Paramètres.",
+      "emailPlaceholder": "collegue@clinique.com",
+      "add": "Ajouter",
+      "invited": "{count} invitation(s) préparée(s)",
+      "note": "Les invitations partent une fois votre équipe activée dans Paramètres → Équipe."
+    },
+    "tour": {
+      "title": "Vous êtes prêt(e)",
+      "subtitle": "Un aperçu rapide de ce que Mari fait pour vous.",
+      "f1Title": "Consultation en direct",
+      "f1Desc": "Enregistrez la consultation et obtenez un compte rendu structuré en quelques minutes.",
+      "f2Title": "Feuilles TISS sans reprise",
+      "f2Desc": "Contrôle anti-rejet avant l’envoi — moins de feuilles rejetées.",
+      "f3Title": "Mari, votre copilote",
+      "f3Desc": "Posez n’importe quelle question sur votre clinique, sur n’importe quel écran.",
+      "cta": "Aller vers l’app"
+    },
+    "error": "Impossible d’enregistrer. Réessayez."
+  },
+  "checkout": {
+    "title": "S’abonner à une offre",
+    "subtitle": "Environnement de paiement sandbox — aucun débit réel sans identifiant de production configuré.",
+    "planLabel": "Offre",
+    "cycleMonthly": "Mensuel",
+    "cycleYearly": "Annuel",
+    "yearlyHint": "2 mois offerts",
+    "payer": {
+      "title": "Vos informations",
+      "name": "Nom complet",
+      "email": "E-mail",
+      "taxId": "Numéro fiscal (optionnel)"
+    },
+    "method": {
+      "title": "Mode de paiement",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "card": "Carte"
+    },
+    "card": {
+      "number": "Numéro de carte",
+      "expiry": "Expiration (MM/AA)",
+      "cvv": "CVV",
+      "name": "Nom sur la carte",
+      "testHint": "Environnement de test : les numéros se terminant par un chiffre pair sont approuvés ; impair est refusé."
+    },
+    "confirm": "Confirmer et payer",
+    "pix": {
+      "title": "Payer avec PIX",
+      "subtitle": "Scannez le QR code ou copiez le code ci-dessous dans votre application bancaire.",
+      "copyPaste": "Code copier-coller",
+      "copyButton": "Copier le code",
+      "copied": "Code copié",
+      "waiting": "En attente de confirmation du paiement…",
+      "sandboxNote": "Environnement de test — la confirmation peut prendre quelques secondes."
+    },
+    "boleto": {
+      "title": "Payer avec boleto",
+      "subtitle": "Copiez la ligne numérique ou ouvrez le boleto pour payer dans votre banque.",
+      "line": "Ligne numérique",
+      "view": "Voir le boleto",
+      "waiting": "En attente de confirmation du paiement…"
+    },
+    "success": {
+      "title": "Paiement confirmé",
+      "subtitle": "Votre abonnement est actif. Bienvenue dans l’offre {plan}.",
+      "cta": "Aller vers l’app"
+    },
+    "failed": {
+      "title": "Paiement non approuvé",
+      "subtitle": "Le paiement n’a pas pu être confirmé. Vous pouvez réessayer.",
+      "retry": "Réessayer"
+    },
+    "errors": {
+      "planNotFound": "Offre introuvable.",
+      "cardTokenRequired": "Renseignez les informations de la carte.",
+      "provider": "Le prestataire de paiement n’a pas répondu. Réessayez.",
+      "generic": "Impossible de traiter le paiement. Réessayez."
+    },
+    "backToPlans": "Choisir une autre offre"
   }
 }

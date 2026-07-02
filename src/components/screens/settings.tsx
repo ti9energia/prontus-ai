@@ -21,24 +21,28 @@ import {
   ArrowUpRight,
   Bot,
   Stethoscope,
+  CreditCard,
+  Check,
   type LucideIcon,
 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/data';
 import { useSession } from '@/lib/auth/client';
-import { locales, localeMeta, type Locale } from '@/i18n/routing';
+import { Link, locales, localeMeta, type Locale } from '@/i18n/routing';
 import { openTab } from '@/lib/workspace';
+import { PLANS } from '@/components/landing/plans-data';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar, Switch, Separator } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
 import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { toast } from '@/lib/toast';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 type TabKey =
   | 'profile'
   | 'clinic'
+  | 'billing'
   | 'users'
   | 'security'
   | 'consent'
@@ -49,6 +53,7 @@ type TabKey =
 const TABS: { key: TabKey; icon: LucideIcon }[] = [
   { key: 'profile', icon: User },
   { key: 'clinic', icon: Building2 },
+  { key: 'billing', icon: CreditCard },
   { key: 'users', icon: Users },
   { key: 'security', icon: ShieldCheck },
   { key: 'consent', icon: FileLock2 },
@@ -290,6 +295,7 @@ export function SettingsScreen({ paneId }: { paneId: string }) {
         <div className="min-w-0">
           {active === 'profile' && <ProfilePanel />}
           {active === 'clinic' && <ClinicPanel />}
+          {active === 'billing' && <BillingPanel />}
           {active === 'users' && <UsersPanel />}
           {active === 'security' && <SecurityPanel />}
           {active === 'consent' && <ConsentPanel />}
@@ -443,6 +449,62 @@ function ClinicPanel() {
           <Input value={form.address} onChange={set('address')} />
         </Field>
       </div>
+    </Panel>
+  );
+}
+
+function BillingPanel() {
+  const t = useTranslations('settings.billing');
+  const locale = useLocale();
+  const user = getCurrentUser();
+  const currentPlanId = PLANS.find((p) => p.name.toLowerCase() === user.planName.toLowerCase())?.id;
+
+  return (
+    <Panel icon={CreditCard} title={t('title')} description={t('subtitle')}>
+      <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface/50 p-4">
+        <div>
+          <p className="text-2xs font-medium text-muted">{t('currentPlan')}</p>
+          <p className="mt-0.5 font-display text-lg font-bold">{user.planName}</p>
+        </div>
+        <Badge tone="success" dot>
+          {t('activeBadge')}
+        </Badge>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {PLANS.map((p) => {
+          const isCurrent = p.id === currentPlanId;
+          return (
+            <div
+              key={p.id}
+              className={cn(
+                'flex flex-col rounded-lg border p-4',
+                isCurrent ? 'border-brand-500/50 bg-brand-600/5' : 'border-hairline',
+              )}
+            >
+              <p className="font-display text-base font-bold">{p.name}</p>
+              <p className="mt-1 text-sm text-muted">
+                {formatCurrency(p.monthly, locale, 'BRL')}
+                <span className="text-2xs">{t('perMonth')}</span>
+              </p>
+              {isCurrent ? (
+                <span className="mt-3 inline-flex items-center gap-1 text-2xs font-medium text-brand-600">
+                  <Check className="h-3.5 w-3.5" /> {t('activeBadge')}
+                </span>
+              ) : (
+                <Link
+                  href={`/checkout?plan=${p.id}&cycle=monthly`}
+                  className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'mt-3')}
+                >
+                  {t('upgrade')}
+                </Link>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="text-2xs text-muted">{t('sandboxNote')}</p>
     </Panel>
   );
 }

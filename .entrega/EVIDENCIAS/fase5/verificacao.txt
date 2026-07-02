@@ -1,0 +1,49 @@
+﻿# Evidencias FASE 5 -- 2026-07-02
+
+## typecheck
+> auronis-health@1.0.0 typecheck
+> tsc --noEmit
+
+
+## lint
+> next lint
+
+✔ No ESLint warnings or errors
+
+## i18n:check
+
+  ✓ en: 921 keys, in parity
+  ✓ zh-CN: 921 keys, in parity
+  ✓ fr-FR: 921 keys, in parity
+
+
+## vitest (349 testes, 76 novos nesta fase)
+
+[2m Test Files [22m [1m[32m47 passed[39m[22m[90m (47)[39m
+[2m      Tests [22m [1m[32m349 passed[39m[22m[90m (349)[39m
+[2m   Start at [22m 11:47:24
+[2m   Duration [22m 12.80s[2m (transform 5.60s, setup 9.53s, collect 10.48s, tests 6.76s, environment 64.51s, prepare 8.35s)[22m
+
+
+## build de producao (exit code confirmado via bash)
+exit: 0
+ ✓ Compiled successfully
+   Generating static pages (0/52) ...
+   Generating static pages (13/52) 
+   Generating static pages (26/52) 
+   Generating static pages (39/52) 
+ ✓ Generating static pages (52/52)
+├ ● /[locale]/checkout                   13.1 kB         133 kB
+├   ├ /pt-BR/checkout
+├   ├ /en/checkout
+├   ├ /zh-CN/checkout
+├   └ /fr-FR/checkout
+├ ● /[locale]/onboarding                 5.07 kB         134 kB
+├   ├ /pt-BR/onboarding
+├   ├ /en/onboarding
+├   ├ /zh-CN/onboarding
+├   └ /fr-FR/onboarding
+├ ● /[locale]/signup                     6.01 kB         138 kB
+├   ├ /pt-BR/signup
+├   ├ /en/signup
+├   ├ /zh-CN/signup

@@ -15,7 +15,12 @@ Itens só saem daqui resolvidos com prova.
 ## 3. `screens/integrations.tsx` — estado de sessão por decisão consciente
 - Ver `.entrega/DECISOES.md` (2026-07-02). Não é pendência — é ⚠️ justificado em `INVENTARIO.md`.
 
-## 4. `TenantAiConfig.enabledTools` não é aplicado no gate de ferramentas da Mari (consciente, não bloqueante)
+## 4. Resíduos i18n/doc do botão de demo removido (rastreado para FASE 11)
+- Chaves órfãs `auth.demoNote`/`auth.enterDemo` nos 4 catálogos (`messages/*.json`) — nenhum componente as referencia mais.
+- `GETTING-STARTED.md` ainda descreve o fluxo "clique em Entrar na demonstração", que não existe mais na UI.
+- Não é bug — é a decisão registrada do dono. Remover/atualizar na limpeza de documentação da FASE 11.
+
+## 5. `TenantAiConfig.enabledTools` não é aplicado no gate de ferramentas da Mari (consciente, não bloqueante)
 - **O quê:** o dono configura por tenant quais ferramentas a Mari pode usar (`enabledTools`, ex.: `notes:read`, `tiss:create`, `billing:gloss:read` — notação com `:`). O endpoint real que executa ferramentas (`POST /api/ai/action`) hoje só verifica `session.role` (owner vs clínico) — não consulta `enabledTools` (a persona/modelo por tenant **já foram** conectados nesta fase, ver `DECISOES.md`; isso aqui é o próximo passo natural, não feito ainda).
 - **Causa-raiz:** as duas listas usam vocabulários diferentes sem mapeamento — `enabledTools` usa notação `recurso:ação` (`tiss:create`), o registry real de ferramentas (`lib/mari/tools.ts`) usa notação `dominio.ação` (`tiss.generate`, `glosa.resubmit`). Não existe correspondência 1:1 pronta; inventar um mapeamento apressado arriscaria criar uma falsa sensação de controle de acesso (pior que documentar a lacuna).
 - **Como resolver:** desenhar deliberadamente a correspondência entre as duas listas (ou unificar a notação em uma só) antes de aplicar o gate — trabalho de design de permissões, não uma linha de código.

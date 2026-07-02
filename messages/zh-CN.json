@@ -448,7 +448,11 @@
     "email": "邮箱",
     "password": "密码",
     "demoNote": "演示：点击登录即可使用示例诊所账户进入。",
-    "enterDemo": "进入演示"
+    "enterDemo": "进入演示",
+    "signUpTitle": "创建账户",
+    "signUpSubtitle": "免费开始——无需信用卡。",
+    "orgName": "诊所名称",
+    "yourName": "您的姓名"
   },
   "appShell": {
     "search": "搜索患者、问诊、单据…",
@@ -749,7 +753,8 @@
       "consent": "授权与保留",
       "language": "语言与地区",
       "whatsapp": "WhatsApp",
-      "ai": "副驾驶与智能体"
+      "ai": "副驾驶与智能体",
+      "billing": "套餐与账单"
     },
     "profile": {
       "name": "姓名",
@@ -776,6 +781,17 @@
       "status": "状态",
       "active": "活跃",
       "invited": "已邀请"
+    },
+    "billing": {
+      "title": "套餐与账单",
+      "subtitle": "管理您组织的订阅。",
+      "currentPlan": "当前套餐",
+      "trialBadge": "试用中",
+      "activeBadge": "已激活",
+      "upgrade": "订阅",
+      "change": "更换套餐",
+      "perMonth": "/月",
+      "sandboxNote": "沙盒支付环境——未配置生产环境凭据时不会产生真实扣款。"
     }
   },
   "roles": {
@@ -1240,5 +1256,103 @@
       },
       "sla": "服务时间：工作日 9:00–18:00（巴西利亚时间）。隐私请求优先处理，并遵循 LGPD 时限。"
     }
+  },
+  "onboarding": {
+    "stepOf": "第 {n} 步，共 4 步",
+    "skip": "跳过",
+    "profile": {
+      "title": "介绍一下您的诊所",
+      "subtitle": "这有助于 Mari 适应您诊所的规模。",
+      "sizeLabel": "有多少位医生使用 Auronis？",
+      "size1": "只有我",
+      "size2to5": "2 到 5 位医生",
+      "size6to20": "6 到 20 位医生",
+      "size20plus": "20 位以上医生"
+    },
+    "specialty": {
+      "title": "您的主要专科是什么？",
+      "subtitle": "Mari 会根据专科调整病历模板和临床用语。"
+    },
+    "team": {
+      "title": "邀请您的团队",
+      "subtitle": "可选——您也可以稍后在设置中邀请。",
+      "emailPlaceholder": "colleague@clinic.com",
+      "add": "添加",
+      "invited": "已准备 {count} 个邀请",
+      "note": "邀请将在您于设置 → 团队中激活团队后发送。"
+    },
+    "tour": {
+      "title": "一切就绪",
+      "subtitle": "快速了解 Mari 能为您做什么。",
+      "f1Title": "实时问诊",
+      "f1Desc": "录制问诊过程，几分钟内获得结构化病历。",
+      "f2Title": "TISS 单据无需返工",
+      "f2Desc": "提交前进行拒付预检——减少被拒单据。",
+      "f3Title": "Mari，您的副驾",
+      "f3Desc": "在任意界面询问关于诊所的任何问题。",
+      "cta": "进入应用"
+    },
+    "error": "保存失败，请重试。"
+  },
+  "checkout": {
+    "title": "订阅套餐",
+    "subtitle": "沙盒支付环境——未配置生产环境凭据时不会产生真实扣款。",
+    "planLabel": "套餐",
+    "cycleMonthly": "按月",
+    "cycleYearly": "按年",
+    "yearlyHint": "2 个月免费",
+    "payer": {
+      "title": "您的信息",
+      "name": "姓名",
+      "email": "邮箱",
+      "taxId": "税号（可选）"
+    },
+    "method": {
+      "title": "支付方式",
+      "pix": "PIX",
+      "boleto": "银行单据",
+      "card": "银行卡"
+    },
+    "card": {
+      "number": "卡号",
+      "expiry": "有效期（MM/YY）",
+      "cvv": "CVV",
+      "name": "持卡人姓名",
+      "testHint": "测试环境：末位为偶数的卡号将被批准；奇数将被拒绝。"
+    },
+    "confirm": "确认并支付",
+    "pix": {
+      "title": "使用 PIX 支付",
+      "subtitle": "扫描二维码或将下方代码复制到您的银行应用中。",
+      "copyPaste": "复制粘贴代码",
+      "copyButton": "复制代码",
+      "copied": "代码已复制",
+      "waiting": "等待支付确认…",
+      "sandboxNote": "测试环境——确认可能需要几秒钟。"
+    },
+    "boleto": {
+      "title": "使用银行单据支付",
+      "subtitle": "复制条码数字或打开单据在银行支付。",
+      "line": "条码数字",
+      "view": "查看单据",
+      "waiting": "等待支付确认…"
+    },
+    "success": {
+      "title": "支付已确认",
+      "subtitle": "您的订阅已生效。欢迎使用 {plan} 套餐。",
+      "cta": "进入应用"
+    },
+    "failed": {
+      "title": "支付未通过",
+      "subtitle": "无法确认支付，您可以重试。",
+      "retry": "重试"
+    },
+    "errors": {
+      "planNotFound": "未找到该套餐。",
+      "cardTokenRequired": "请填写银行卡信息。",
+      "provider": "支付服务商未响应，请重试。",
+      "generic": "无法处理支付，请重试。"
+    },
+    "backToPlans": "选择其他套餐"
   }
 }
