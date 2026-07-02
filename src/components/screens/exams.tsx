@@ -10,7 +10,7 @@ import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
 import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Field, Input } from '@/components/ui/input';
+import { Field, Input, Select } from '@/components/ui/input';
 import { Modal, Sheet } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
@@ -180,14 +180,10 @@ export function ExamsScreen({ paneId, params }: { paneId: string; params?: Recor
       <Modal open={addOpen} onClose={() => setAddOpen(false)} title={t('order')} size="sm">
         <div className="flex flex-col gap-4 p-5">
           <Field label={t('columns.patient')}>
-            <select
-              value={newPatientId}
-              onChange={(e) => setNewPatientId(e.target.value)}
-              className="w-full rounded-lg border border-hairline bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-            >
+            <Select value={newPatientId} onChange={(e) => setNewPatientId(e.target.value)}>
               <option value="">{tc('actions.select')}</option>
               {patients.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
+            </Select>
           </Field>
           <div>
             <p className="mb-2 text-sm font-medium">{t('selectExams')}</p>

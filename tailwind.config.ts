@@ -77,6 +77,8 @@ const config: Config = {
       },
       fontSize: {
         '2xs': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.02em' }],
+        // Between xs (12px) and sm (14px) — chat bubbles, dense clinical copy.
+        'xs+': ['0.8125rem', { lineHeight: '1.25rem' }],
         'display-sm': ['2.5rem', { lineHeight: '1.05', letterSpacing: '-0.02em' }],
         'display-md': ['3.5rem', { lineHeight: '1.02', letterSpacing: '-0.03em' }],
         'display-lg': ['4.75rem', { lineHeight: '0.98', letterSpacing: '-0.035em' }],

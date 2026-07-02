@@ -23,11 +23,11 @@ import {
 } from 'lucide-react';
 import { listPatients, getCurrentUser } from '@/lib/data';
 import { ScreenContainer, ScreenHeader, Table, Th, Td } from './_kit';
-import { Avatar } from '@/components/ui/misc';
+import { Avatar, SegmentedControl } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { formatDate, cn } from '@/lib/utils';
@@ -163,23 +163,14 @@ function PrescriptionPanel({ prescription, onUpdate }: PrescriptionPanelProps) {
           {prescription.status === 'signed' && (
             <div className="flex flex-col gap-2">
               <p className="text-2xs font-medium">{tp('sendTitle')}</p>
-              <div className="flex gap-2">
-                {(['whatsapp', 'sms', 'email'] as const).map((ch) => (
-                  <button
-                    key={ch}
-                    type="button"
-                    onClick={() => setChannel(ch)}
-                    className={cn(
-                      'rounded-md border px-2 py-1 text-2xs transition-colors',
-                      channel === ch
-                        ? 'border-brand-500 bg-brand-500/10 font-semibold text-brand-600'
-                        : 'border-hairline text-muted hover:border-brand-500/40',
-                    )}
-                  >
-                    {tp(`channels.${ch}` as 'channels.sms')}
-                  </button>
-                ))}
-              </div>
+              <SegmentedControl
+                value={channel}
+                onChange={setChannel}
+                options={(['whatsapp', 'sms', 'email'] as const).map((ch) => ({
+                  value: ch,
+                  label: tp(`channels.${ch}` as 'channels.sms'),
+                }))}
+              />
               <Input
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
@@ -390,8 +381,12 @@ export function DocumentsScreen() {
     toast.success(tf('added'));
   };
 
-  const remove = (id: string) => {
-    setDocs((d) => d.filter((x) => x.id !== id));
+  const [deleteTarget, setDeleteTarget] = React.useState<DocRecord | null>(null);
+
+  const confirmRemove = () => {
+    if (!deleteTarget) return;
+    setDocs((d) => d.filter((x) => x.id !== deleteTarget.id));
+    setDeleteTarget(null);
     toast.success(tf('removed'));
   };
 
@@ -501,7 +496,7 @@ export function DocumentsScreen() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => remove(doc.id)}
+                        onClick={() => setDeleteTarget(doc)}
                         aria-label={tc('actions.delete')}
                         className="grid h-8 w-8 place-items-center rounded-md text-subtle transition-colors hover:bg-danger/10 hover:text-danger-fg dark:hover:text-danger"
                       >
@@ -561,8 +556,8 @@ export function DocumentsScreen() {
             <Button variant="ghost" onClick={() => setCreateOpen(false)}>
               {tc('actions.cancel')}
             </Button>
-            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={create} disabled={generating}>
-              {generating ? '…' : t('generate')}
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={create} loading={generating}>
+              {t('generate')}
             </Button>
           </div>
         </div>
@@ -596,6 +591,20 @@ export function DocumentsScreen() {
           </div>
         )}
       </Modal>
+
+      {/* delete confirmation */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmRemove}
+        title={tc('actions.delete')}
+        description={
+          deleteTarget
+            ? `${t(`types.${deleteTarget.type}` as 'types.receita')} · ${deleteTarget.patientName}`
+            : undefined
+        }
+        confirmLabel={tc('actions.delete')}
+      />
     </ScreenContainer>
   );
 }

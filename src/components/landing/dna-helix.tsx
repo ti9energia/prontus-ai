@@ -5,9 +5,10 @@ import * as React from 'react';
 /**
  * Living DNA double-helix — a realistic, multi-colour B-DNA that spins on its own and
  * travels as you scroll, like you're moving down the molecule. Two antiparallel sugar-
- * phosphate backbones wind as glowing tubes (cyan + violet); between them the base pairs
- * are colour-coded like a real molecular render — emerald / amber / rose / sky for the
- * four "bases" — and foreshorten correctly as the ladder turns edge-on. Atoms sit at each
+ * phosphate backbones wind as glowing tubes (brand turquoise + chromed silver); between
+ * them the base pairs are colour-coded within the brand ramp — turquoise / cyan / ice /
+ * silver for the four "bases" — and foreshorten correctly as the ladder turns edge-on.
+ * Atoms sit at each
  * rung end, a faint field of motes drifts behind for depth, and everything is depth-sorted
  * so the strands cross in front of and behind one another as the column rotates.
  *
@@ -73,11 +74,11 @@ export function DnaHelix() {
       return s;
     };
 
-    // Strand A = cyan, strand B = violet (the two antiparallel backbones).
-    const beadCyan = makeBead('rgba(200,245,255,0.95)', 'rgba(56,210,245,0.92)', 'rgba(10,110,135,0.85)');
-    const beadViolet = makeBead('rgba(226,216,255,0.95)', 'rgba(162,132,250,0.92)', 'rgba(70,50,140,0.85)');
-    const haloCyan = makeHalo('120 230 250');
-    const haloViolet = makeHalo('180 160 255');
+    // Strand A = brand turquoise, strand B = chromed silver (the two antiparallel backbones).
+    const beadCyan = makeBead('rgba(194,246,244,0.95)', 'rgba(20,200,196,0.92)', 'rgba(10,132,128,0.85)');
+    const beadSilver = makeBead('rgba(244,246,249,0.95)', 'rgba(197,204,214,0.92)', 'rgba(106,114,128,0.85)');
+    const haloCyan = makeHalo('82 224 220');
+    const haloSilver = makeHalo('214 221 231');
 
     const resize = () => {
       w = window.innerWidth;
@@ -138,11 +139,11 @@ export function DnaHelix() {
     const edgeFade = (y: number) => Math.max(0, Math.min(1, Math.min(y, h - y) / (h * 0.16)));
 
     // backbone colours: bright in dark (additive bloom), deep in light (sober ink)
-    const strandA = (dark: boolean) => (dark ? '90 218 248' : '14 165 183'); // cyan
-    const strandB = (dark: boolean) => (dark ? '167 140 252' : '109 76 200'); // violet
-    // base-pair palette — the four "bases", colour-coded like a molecular viewer
-    const RUNG_DARK = ['52 211 153', '251 191 36', '251 113 133', '56 189 248']; // emerald amber rose sky
-    const RUNG_LIGHT = ['5 150 105', '180 83 9', '190 24 60', '2 132 199'];
+    const strandA = (dark: boolean) => (dark ? '35 204 200' : '0 168 162'); // brand turquoise
+    const strandB = (dark: boolean) => (dark ? '197 204 214' : '108 116 130'); // chromed silver
+    // base-pair palette — the four "bases", kept inside the brand ramp
+    const RUNG_DARK = ['20 200 196', '34 211 238', '103 227 249', '226 230 236']; // brand-500 accent-400 accent-300 silver-light
+    const RUNG_LIGHT = ['10 132 128', '8 145 178', '14 116 144', '122 130 144']; // brand-700 accent-600 accent-700 silver-dark
     const rungCol = (gi: number, dark: boolean) =>
       (dark ? RUNG_DARK : RUNG_LIGHT)[(((gi % 4) + 4) % 4)];
     const moteCol = (hue: 0 | 1, dark: boolean) =>
@@ -291,13 +292,13 @@ export function DnaHelix() {
           // additive halo glow
           ctx.globalCompositeOperation = glow;
           ctx.globalAlpha = (dark ? 0.16 + near * 0.48 : 0.07 + near * 0.16) * fade * OPACITY;
-          const halo = el.strand === 1 ? haloViolet : haloCyan;
+          const halo = el.strand === 1 ? haloSilver : haloCyan;
           const hr = r * 3;
           ctx.drawImage(halo, el.p.x - hr, el.p.y - hr, hr * 2, hr * 2);
           // shaded atom bead
           ctx.globalCompositeOperation = 'source-over';
           ctx.globalAlpha = (0.46 + near * 0.42) * fade * OPACITY;
-          const bead = el.strand === 1 ? beadViolet : beadCyan;
+          const bead = el.strand === 1 ? beadSilver : beadCyan;
           ctx.drawImage(bead, el.p.x - r, el.p.y - r, r * 2, r * 2);
         }
       }

@@ -15,7 +15,8 @@ export function FAQ() {
     <section className="py-16 sm:py-24">
       <div className="container-page">
         <div className="mx-auto max-w-3xl">
-          <div className="text-center">
+          {/* left-anchored head — varies the rhythm vs the centered sections */}
+          <div>
             <Reveal>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-600/10 px-3 py-1 text-2xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">
                 {t('eyebrow')}
@@ -32,9 +33,11 @@ export function FAQ() {
               return (
                 <div key={k}>
                   <button
+                    id={`faq-q-${k}`}
                     onClick={() => setOpen(isOpen ? null : k)}
                     className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                     aria-expanded={isOpen}
+                    aria-controls={`faq-a-${k}`}
                   >
                     <span className="font-display text-base font-medium">
                       {t(`items.${k}.q` as 'items.q1.q')}
@@ -44,9 +47,13 @@ export function FAQ() {
                         'h-5 w-5 shrink-0 text-muted transition-transform duration-300',
                         isOpen && 'rotate-45 text-brand-600',
                       )}
+                      aria-hidden
                     />
                   </button>
                   <div
+                    id={`faq-a-${k}`}
+                    role="region"
+                    aria-labelledby={`faq-q-${k}`}
                     className={cn(
                       'grid overflow-hidden transition-all duration-300 ease-spring',
                       isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',

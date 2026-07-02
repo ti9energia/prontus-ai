@@ -22,7 +22,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
 import { toast } from '@/lib/toast';
 import { formatLongDate, cn } from '@/lib/utils';
@@ -169,12 +169,12 @@ export function AgendaScreen() {
     setStatus(a.id, 'concluido');
     toast.success(L('Consulta concluída', 'Appointment completed', '预约已完成', 'Rendez-vous terminé'));
   };
-  const cancelAppt = (a: Appointment) => {
-    const ok = window.confirm(
-      L('Cancelar esta consulta?', 'Cancel this appointment?', '取消这个预约？', 'Annuler ce rendez-vous ?'),
-    );
-    if (!ok) return;
-    setStatus(a.id, 'cancelado');
+  const [cancelTarget, setCancelTarget] = React.useState<Appointment | null>(null);
+  const cancelAppt = (a: Appointment) => setCancelTarget(a);
+  const confirmCancel = () => {
+    if (!cancelTarget) return;
+    setStatus(cancelTarget.id, 'cancelado');
+    setCancelTarget(null);
     toast.success(L('Consulta cancelada', 'Appointment cancelled', '预约已取消', 'Rendez-vous annulé'));
   };
 
@@ -445,6 +445,25 @@ export function AgendaScreen() {
           </div>
         )}
       </Modal>
+
+      {/* cancel confirmation */}
+      <ConfirmDialog
+        open={!!cancelTarget}
+        onClose={() => setCancelTarget(null)}
+        onConfirm={confirmCancel}
+        title={L('Cancelar consulta', 'Cancel appointment', '取消预约', 'Annuler le rendez-vous')}
+        description={
+          cancelTarget
+            ? `${cancelTarget.patientName} · ${cancelTarget.time} — ${L(
+                'Esta ação marca a consulta como cancelada.',
+                'This marks the appointment as cancelled.',
+                '此操作会将预约标记为已取消。',
+                'Cette action marque le rendez-vous comme annulé.',
+              )}`
+            : undefined
+        }
+        confirmLabel={L('Cancelar consulta', 'Cancel appointment', '取消预约', 'Annuler')}
+      />
     </ScreenContainer>
   );
 }

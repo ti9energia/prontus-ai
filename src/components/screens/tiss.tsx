@@ -27,7 +27,7 @@ import { ScreenContainer, ScreenHeader, SectionTitle, Table, Th, Td } from './_k
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
-import { Modal } from '@/components/ui/overlay';
+import { ConfirmDialog, Modal } from '@/components/ui/overlay';
 import { Avatar } from '@/components/ui/misc';
 import { toast } from '@/lib/toast';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -70,7 +70,20 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
 
   const [type, setType] = React.useState<GuideType>(guide?.type ?? 'consulta');
   const [status, setStatus] = React.useState<GuideStatus>(guide?.status ?? 'draft');
+  // Header fields are controlled and written back to the guide before any
+  // submit/check — previously they were defaultValue-only and silently lost.
+  const [header, setHeader] = React.useState({
+    payer: guide?.payer ?? '',
+    cardNumber: guide?.cardNumber ?? '',
+    professional: guide?.professional ?? '',
+    council: guide?.council ?? '',
+    cbo: guide?.cbo ?? '',
+  });
+  const setH =
+    (k: keyof typeof header) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setHeader((h) => ({ ...h, [k]: e.target.value }));
   const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [removeProcIdx, setRemoveProcIdx] = React.useState<number | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
   const [exported, setExported] = React.useState(false);
   const [checking, setChecking] = React.useState(false);
@@ -95,9 +108,20 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   const shownIssues = check?.issues ?? issues;
   const isReady = check ? check.ready : issues.length === 0;
 
+  /** Persist the controlled header fields into the store guide object. */
+  const syncHeader = () => {
+    guide.type = type;
+    guide.payer = header.payer.trim() || guide.payer;
+    guide.cardNumber = header.cardNumber.trim();
+    guide.professional = header.professional.trim();
+    guide.council = header.council.trim();
+    guide.cbo = header.cbo.trim();
+  };
+
   const doSubmit = async () => {
     setConfirmOpen(false);
     setSubmitting(true);
+    syncHeader();
     try {
       // Parity with the tiss.submit tool: run the pre-denial check and never submit
       // while high-severity issues remain (fail-closed if the check can't confirm).
@@ -137,9 +161,11 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
     toast.success(t('exported'));
   };
 
-  const removeProcedure = (idx: number) => {
-    guide.procedures.splice(idx, 1);
+  const removeProcedure = () => {
+    if (removeProcIdx === null) return;
+    guide.procedures.splice(removeProcIdx, 1);
     guide.value = guide.procedures.reduce((s, p) => s + p.value * p.qty, 0);
+    setRemoveProcIdx(null);
     force();
     toast.success(tf('removed'));
   };
@@ -174,6 +200,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
   // Ask Mari to run the pre-denial (pré-glosa) check on this guide.
   const runPreGlosa = async () => {
     setChecking(true);
+    syncHeader();
     try {
       const res = await fetch('/api/ai/action', {
         method: 'POST',
@@ -251,7 +278,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
               </Select>
             </Field>
             <Field label={t('payer')}>
-              <Input defaultValue={guide.payer} />
+              <Input value={header.payer} onChange={setH('payer')} />
             </Field>
           </div>
 
@@ -262,19 +289,19 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
               {patient && <Avatar name={patient.name} hue={patient.hue} size={40} />}
               <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field label={t('cardNumber')}>
-                  <Input defaultValue={guide.cardNumber} className="font-mono" />
+                  <Input value={header.cardNumber} onChange={setH('cardNumber')} className="font-mono" />
                 </Field>
                 <Field label={t('professional')}>
-                  <Input defaultValue={guide.professional} />
+                  <Input value={header.professional} onChange={setH('professional')} />
                 </Field>
               </div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <Field label={t('council')}>
-                <Input defaultValue={guide.council} />
+                <Input value={header.council} onChange={setH('council')} />
               </Field>
               <Field label={t('cbo')}>
-                <Input defaultValue={guide.cbo} className="font-mono" />
+                <Input value={header.cbo} onChange={setH('cbo')} className="font-mono" />
               </Field>
             </div>
           </div>
@@ -310,7 +337,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
                     <Td className="text-right">
                       <button
                         type="button"
-                        onClick={() => removeProcedure(i)}
+                        onClick={() => setRemoveProcIdx(i)}
                         aria-label={tc('delete')}
                         className="text-subtle transition-colors hover:text-danger"
                       >
@@ -405,7 +432,7 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
 
           <div className="rounded-xl border border-hairline bg-card p-4 shadow-xs">
             <p className="text-2xs font-semibold uppercase tracking-wide text-subtle">{t('payer')}</p>
-            <p className="mt-1 font-medium">{guide.payer}</p>
+            <p className="mt-1 font-medium">{header.payer.trim() || guide.payer}</p>
             <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
               <span className="text-sm text-muted">{t('procedures')}</span>
               <span className="font-display text-lg font-bold tnum">{formatCurrency(total, locale, guide.currency)}</span>
@@ -500,6 +527,20 @@ export function TissScreen({ params }: { paneId: string; params?: Record<string,
           </div>
         </div>
       </Modal>
+
+      {/* remove procedure confirmation */}
+      <ConfirmDialog
+        open={removeProcIdx !== null}
+        onClose={() => setRemoveProcIdx(null)}
+        onConfirm={removeProcedure}
+        title={tc('delete')}
+        description={
+          removeProcIdx !== null && guide.procedures[removeProcIdx]
+            ? `${guide.procedures[removeProcIdx].code} · ${guide.procedures[removeProcIdx].description}`
+            : undefined
+        }
+        confirmLabel={tc('delete')}
+      />
     </ScreenContainer>
   );
 }

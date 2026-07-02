@@ -11,11 +11,14 @@ export function Reveal({
   delay = 0,
   className,
   as = 'div',
+  fade = false,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
   as?: 'div' | 'section' | 'li' | 'span';
+  /** Fade-only (no slide) — for quieter sections so not every reveal moves. */
+  fade?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
 
@@ -39,7 +42,7 @@ export function Reveal({
   return (
     <Tag
       ref={ref as React.RefObject<HTMLDivElement>}
-      className={cn('rv', className)}
+      className={cn('rv', fade && 'rv-fade', className)}
       style={delay ? ({ '--rv-delay': `${delay}s` } as CSSProperties) : undefined}
     >
       {children}

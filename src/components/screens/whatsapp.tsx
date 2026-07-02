@@ -84,6 +84,18 @@ const COPY: Record<string, Record<Locale, string>> = {
     'zh-CN': '模拟',
     'fr-FR': 'Simulé',
   },
+  sendFailed: {
+    'pt-BR': 'Falha ao enviar pelo WhatsApp Cloud',
+    en: 'Failed to send via WhatsApp Cloud',
+    'zh-CN': '通过 WhatsApp Cloud 发送失败',
+    'fr-FR': 'Échec de l’envoi via WhatsApp Cloud',
+  },
+  sendFailedDesc: {
+    'pt-BR': 'A mensagem ficou apenas nesta conversa local.',
+    en: 'The message stayed only in this local conversation.',
+    'zh-CN': '消息仅保留在此本地会话中。',
+    'fr-FR': 'Le message est resté uniquement dans cette conversation locale.',
+  },
 };
 
 function localized(key: keyof typeof COPY, locale: string) {
@@ -151,13 +163,19 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
       setThread((prev) => [...prev, { id: outId, role: 'out', text: clean, at: new Date() }]);
       setDraft('');
 
-      // Fire-and-forget real send when Cloud API is available and number is linked
+      // Real send when Cloud API is available and number is linked — surface failures.
       if (waReal && linked) {
         fetch('/api/whatsapp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'send', to: number, body: clean }),
-        }).catch(() => {});
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error(String(res.status));
+          })
+          .catch(() => {
+            toast.error(localized('sendFailed', locale), localized('sendFailedDesc', locale));
+          });
       }
 
       if (replyTimer.current) clearTimeout(replyTimer.current);

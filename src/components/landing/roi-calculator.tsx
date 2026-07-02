@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl';
 import { CalendarCheck, Clock } from 'lucide-react';
 import { Reveal } from './reveal';
 import { Link } from '@/i18n/routing';
+import { buttonVariants } from '@/components/ui/button';
 import { useCountUp, useInView } from '@/lib/hooks';
+import { planForDoctors } from './plans-data';
 
 /* ── Pure calculation (exported for unit tests) ── */
 export interface RoiInputs {
@@ -30,9 +32,10 @@ export function calcRoi(i: RoiInputs): RoiResults {
   const glossMonthly = billingGross * (i.glossRate / 100);
   const recovery = Math.round(glossMonthly * 0.7);
   const timeSaved = Math.round(i.doctors * 1.8 * 22);
-  const plan: 'Starter' | 'Pro' | 'Scale' =
-    i.doctors <= 2 ? 'Starter' : i.doctors <= 5 ? 'Pro' : 'Scale';
-  const planPrice = i.doctors <= 2 ? 97 : i.doctors <= 5 ? 197 : 397;
+  // Plan + price come from the shared pricing source (plans-data.ts).
+  const sized = planForDoctors(i.doctors);
+  const plan = sized.name as 'Starter' | 'Pro' | 'Scale';
+  const planPrice = sized.monthly;
   const daysToBreakEven = recovery > 0 ? Math.ceil(planPrice / (recovery / 22)) : 0;
   return { billingGross, glossMonthly, recovery, timeSaved, plan, planPrice, daysToBreakEven };
 }
@@ -142,7 +145,7 @@ export function ROICalculator() {
               </details>
               <Link
                 href="/login"
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                className={buttonVariants({ variant: 'primary', size: 'lg', className: 'mt-8' })}
               >
                 {t('cta.label')}
               </Link>
@@ -210,7 +213,7 @@ export function ROICalculator() {
                 {/* Primary stat — recovery */}
                 <div className="col-span-2 rounded-xl bg-brand-600/[0.08] p-4 text-center">
                   <p className="text-xs text-muted">{t('results.recovery.label')}</p>
-                  <p className="mt-1 font-display text-3xl font-bold text-gradient tabular-nums">
+                  <p className="mt-1 font-display text-3xl font-bold text-brand-600 dark:text-brand-400 tabular-nums">
                     {brl(animRecovery)}
                   </p>
                   <p className="mt-0.5 text-2xs text-subtle">{t('results.recovery.note')}</p>

@@ -61,6 +61,46 @@ export function LandingNav() {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
+  // Focus trap while the mobile menu is open; restores focus to the trigger on
+  // close. (Same pattern as ui/overlay.tsx's useFocusTrap, implemented locally
+  // since that hook is not exported.)
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!open) return;
+    const root = menuRef.current;
+    if (!root) return;
+    const restore = document.activeElement as HTMLElement | null;
+    const FOCUSABLE =
+      'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    const list = () =>
+      Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+    (list()[0] ?? root).focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const f = list();
+      if (!f.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = f[0];
+      const last = f[f.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    root.addEventListener('keydown', onKey);
+    return () => {
+      root.removeEventListener('keydown', onKey);
+      restore?.focus?.();
+    };
+  }, [open]);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className={cn('container-page transition-all duration-300', scrolled ? 'pt-2.5' : 'pt-4')}>
@@ -117,17 +157,26 @@ export function LandingNav() {
             <button
               onClick={() => setOpen((o) => !o)}
               className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink md:hidden"
-              aria-label={tc('openMenu')}
+              aria-label={open ? tc('closeMenu') : tc('openMenu')}
               aria-expanded={open}
+              aria-controls="landing-mobile-menu"
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
             </button>
           </div>
         </div>
 
         {open && (
           <div className="mt-2 md:hidden">
-            <div className="flex flex-col gap-1 rounded-2xl border border-hairline bg-card p-2 shadow-lg animate-scale-in">
+            <div
+              ref={menuRef}
+              id="landing-mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-label={t('menu')}
+              tabIndex={-1}
+              className="flex flex-col gap-1 rounded-2xl border border-hairline bg-card p-2 shadow-lg animate-scale-in focus:outline-none"
+            >
               {links.map((l) => (
                 <a
                   key={l.href}

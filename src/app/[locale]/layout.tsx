@@ -105,6 +105,11 @@ export default async function LocaleLayout({
     <html lang={locale} dir="ltr" suppressHydrationWarning className={fontVariables}>
       <head>
         <ThemeScript />
+        {/* Scroll reveals (.rv) start at opacity:0 and are switched on by JS —
+            without JS the landing must still be fully readable. */}
+        <noscript>
+          <style>{`.rv,.rv-stagger>.rvi{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body
         className={cn(

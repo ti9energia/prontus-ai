@@ -28,6 +28,20 @@ export function TabStrip({
   const c = useChrome();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
+  const tablistRef = React.useRef<HTMLDivElement>(null);
+
+  // WAI-ARIA tabs pattern: ArrowLeft/ArrowRight move focus AND selection.
+  const moveTab = (delta: number) => {
+    const tabs = pane.tabs;
+    if (tabs.length < 2) return;
+    const idx = tabs.findIndex((tb) => tb.id === pane.activeTabId);
+    const next = tabs[(idx + delta + tabs.length) % tabs.length];
+    setActiveTab(pane.id, next.id);
+    const els = tablistRef.current?.querySelectorAll<HTMLElement>('[role="tab"]');
+    els?.forEach((el) => {
+      if (el.dataset.tabId === next.id) el.focus();
+    });
+  };
 
   React.useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -61,7 +75,11 @@ export function TabStrip({
       onMouseDown={() => !active && focusPane(pane.id)}
     >
       {/* tabs */}
-      <div role="tablist" className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+      <div
+        ref={tablistRef}
+        role="tablist"
+        className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+      >
         {pane.tabs.map((tab) => {
           const def = SCREENS[tab.screen];
           const Icon = def.icon;
@@ -70,6 +88,7 @@ export function TabStrip({
             <div
               key={tab.id}
               role="tab"
+              data-tab-id={tab.id}
               aria-selected={isActive}
               tabIndex={isActive ? 0 : -1}
               onMouseDown={(e) => {
@@ -83,6 +102,12 @@ export function TabStrip({
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setActiveTab(pane.id, tab.id);
+                } else if (e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  moveTab(1);
+                } else if (e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  moveTab(-1);
                 }
               }}
               className={cn(

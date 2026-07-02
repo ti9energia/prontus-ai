@@ -1,11 +1,12 @@
 # ESTADO DA ENTREGA
 
-- **Fase atual:** FASE 3 — Elevação de design & UX (próxima)
-- **Última atualização:** 2026-07-01
+- **Fase atual:** FASE 4 — Completude funcional (próxima)
+- **Última atualização:** 2026-07-02
 - **Portões concluídos:**
   - PORTÃO 0 ✅ (MAPA.md; baseline typecheck/lint/271 testes verdes)
   - PORTÃO 1 ✅ (barrels + split de runtime por módulo, config tipada `@/lib/config`, lint anti-import-profundo, `.env.example` completo, ARQUITETURA.md com 2 receitas de extração; prova: typecheck ✅ lint ✅ 271 testes ✅ build prod ✅ — EVIDENCIAS/fase1/)
   - PORTÃO 2 ✅ (jornada completa auditada por código — 3 relatórios em EVIDENCIAS/design-antes/: landing-login, workspace 23 telas c/ tabela 4-estados, owner 10 seções; pontos sem vida mapeados (top-5 + overview); achados priorizados P0/P1/P2 e alvo estético em DECISOES.md; screenshots substituídos por análise de código + diffs, por diretiva do dono)
+  - PORTÃO 3 ✅ (elevação executada em 3 frentes: landing+legal 4 idiomas, workspace 23 telas, owner; ConfirmDialog único; zero ANEXO B remanescente — violeta removido, links mortos removidos, placeholders honestos; reduced-motion respeitado inclusive em JS; antes × depois em EVIDENCIAS/design-depois/fase3-relatorio.md; prova: typecheck ✅ lint ✅ i18n 837 chaves ✅ 271 testes ✅ build ✅)
 
 ## Prova de execução (FASE 0)
 - App sobe com `npm run dev` → http://localhost:3000

@@ -196,8 +196,19 @@ export function EncounterScreen({ paneId, params }: { paneId: string; params?: R
         };
         mr.start(5000);
       } catch {
-        // Mic permission denied or unavailable — fall back to demo.
+        // Mic permission denied or unavailable — fall back to demo, and say so.
         setAsrReal(false);
+        const F = (pt: string, en: string, zh: string, fr: string) =>
+          locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
+        toast.info(
+          F('Microfone indisponível', 'Microphone unavailable', '麦克风不可用', 'Microphone indisponible'),
+          F(
+            'Sem acesso ao microfone — a consulta segue em modo demonstração.',
+            'No microphone access — the encounter continues in demo mode.',
+            '无法访问麦克风——就诊将以演示模式继续。',
+            'Pas d’accès au micro — la consultation continue en mode démo.',
+          ),
+        );
       }
     }
     setPhase('recording');

@@ -217,19 +217,28 @@ export function AgentsScreen() {
     if (timers.current[id]) clearTimeout(timers.current[id]);
     timers.current[id] = setTimeout(() => {
       delete timers.current[id];
-      const at = new Date().toISOString();
-      setAgents((list) =>
-        list.map((x) =>
-          x.id === id
-            ? { ...x, running: false, actions: x.actions + count, cursor: x.cursor + count, lastRunAt: at }
-            : x,
-        ),
-      );
-      setLog((prev) => [...picked.map((action) => ({ id: uid(), agentId: id, action, at })), ...prev]);
-      toast.success(
-        L('Ciclo concluído', 'Cycle complete', '周期完成', 'Cycle terminé'),
-        `${T(agent.name)} · ${count} ${L('ações', 'actions', '个动作', 'actions')}`,
-      );
+      try {
+        const at = new Date().toISOString();
+        setAgents((list) =>
+          list.map((x) =>
+            x.id === id
+              ? { ...x, running: false, actions: x.actions + count, cursor: x.cursor + count, lastRunAt: at }
+              : x,
+          ),
+        );
+        setLog((prev) => [...picked.map((action) => ({ id: uid(), agentId: id, action, at })), ...prev]);
+        toast.success(
+          L('Ciclo concluído', 'Cycle complete', '周期完成', 'Cycle terminé'),
+          `${T(agent.name)} · ${count} ${L('ações', 'actions', '个动作', 'actions')}`,
+        );
+      } catch {
+        // Never leave an agent stuck in "running" without telling the user why.
+        setAgents((list) => list.map((x) => (x.id === id ? { ...x, running: false } : x)));
+        toast.error(
+          L('Falha no ciclo do agente', 'Agent cycle failed', '智能体周期失败', 'Échec du cycle de l’agent'),
+          T(agent.name),
+        );
+      }
     }, 1200);
   };
 

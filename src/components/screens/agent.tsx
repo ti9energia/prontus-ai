@@ -25,6 +25,7 @@ import { toast } from '@/lib/toast';
 import { ScreenContainer, ScreenHeader } from './_kit';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input, Textarea } from '@/components/ui/input';
 import { EmptyState } from '@/components/ui/feedback';
 import { cn, formatCurrency, formatPercent } from '@/lib/utils';
 import { type Locale } from '@/i18n/routing';
@@ -104,6 +105,7 @@ export function AgentScreen({ paneId }: { paneId: string }) {
   const locale = useLocale();
 
   const [items, setItems] = React.useState<AgentRecommendation[]>(() => agentRecommendations());
+  const [applyingId, setApplyingId] = React.useState<string | null>(null);
 
   const dismiss = (id: string) => setItems((prev) => prev.filter((r) => r.id !== id));
 
@@ -120,6 +122,7 @@ export function AgentScreen({ paneId }: { paneId: string }) {
   // the user to where the fix happens. Either way the handled card is cleared.
   const apply = async (rec: AgentRecommendation) => {
     if (rec.category === 'resubmit' && rec.guideId) {
+      setApplyingId(rec.id);
       try {
         const res = await fetch('/api/ai/action', {
           method: 'POST',
@@ -135,6 +138,8 @@ export function AgentScreen({ paneId }: { paneId: string }) {
       } catch {
         toast.error(tc('states.error'));
         return;
+      } finally {
+        setApplyingId(null);
       }
     } else {
       review(rec);
@@ -172,6 +177,7 @@ export function AgentScreen({ paneId }: { paneId: string }) {
               rec={rec}
               locale={locale}
               t={t}
+              applying={applyingId === rec.id}
               onApply={() => apply(rec)}
               onDismiss={() => dismiss(rec.id)}
               onReview={() => review(rec)}
@@ -188,6 +194,7 @@ function RecommendationCard({
   rec,
   locale,
   t,
+  applying,
   onApply,
   onDismiss,
   onReview,
@@ -196,6 +203,7 @@ function RecommendationCard({
   rec: AgentRecommendation;
   locale: string;
   t: ReturnType<typeof useTranslations<'agent'>>;
+  applying?: boolean;
   onApply: () => void;
   onDismiss: () => void;
   onReview: () => void;
@@ -299,24 +307,24 @@ function RecommendationCard({
               <label className="text-2xs font-medium uppercase tracking-wide text-subtle">
                 {L('Impacto estimado (R$)', 'Estimated impact (R$)', '预计影响（R$）', 'Impact estimé (R$)')}
               </label>
-              <input
+              <Input
                 type="number"
                 min={0}
                 value={impactDraft}
                 onChange={(e) => setImpactDraft(e.target.value)}
-                className="h-9 w-44 rounded-lg border border-line bg-surface px-3 text-sm tnum outline-none focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10"
+                className="h-9 w-44 tnum"
               />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-2xs font-medium uppercase tracking-wide text-subtle">
                 {L('Observação (opcional)', 'Note (optional)', '备注（可选）', 'Note (facultatif)')}
               </label>
-              <textarea
+              <Textarea
                 rows={2}
                 value={noteDraft}
                 onChange={(e) => setNoteDraft(e.target.value)}
                 placeholder={L('Ex.: ajustar após conferência', 'e.g. adjust after review', '例如：核对后调整', 'ex. : ajuster après vérification')}
-                className="resize-none rounded-lg border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-brand-500/50 focus:ring-4 focus:ring-brand-500/10"
+                className="min-h-0 resize-none"
               />
             </div>
             <div className="flex justify-end gap-2">
@@ -332,7 +340,7 @@ function RecommendationCard({
 
         {/* actions */}
         <div className="flex flex-wrap items-center gap-2 border-t border-hairline/70 pt-4">
-          <Button size="sm" leftIcon={<Check className="h-3.5 w-3.5" />} onClick={onApply}>
+          <Button size="sm" leftIcon={<Check className="h-3.5 w-3.5" />} loading={applying} onClick={onApply}>
             {t('apply')}
           </Button>
           <Button

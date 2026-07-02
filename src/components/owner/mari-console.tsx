@@ -10,7 +10,9 @@ import {
   Lightbulb,
   Megaphone,
   Mic,
+  MicOff,
   Radio,
+  RotateCcw,
   TrendingUp,
   Volume2,
   VolumeX,
@@ -21,11 +23,14 @@ import { ownerInsights } from '@/lib/data';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import { MariPortrait, MariPresence, type MariState } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/toast';
 import { cn, formatCurrency, formatPercent } from '@/lib/utils';
 
 interface Msg {
   role: 'user' | 'assistant';
   content: string;
+  /** System-level failure bubble (network/API error) — offers a retry. */
+  error?: boolean;
 }
 
 function useMounted() {
@@ -35,7 +40,17 @@ function useMounted() {
 }
 
 /* ------------------------------ message list ------------------------------ */
-function MessageList({ items, loading }: { items: Msg[]; loading: boolean }) {
+function MessageList({
+  items,
+  loading,
+  onRetry,
+  retryLabel,
+}: {
+  items: Msg[];
+  loading: boolean;
+  onRetry?: () => void;
+  retryLabel: string;
+}) {
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: 'smooth' });
@@ -45,14 +60,34 @@ function MessageList({ items, loading }: { items: Msg[]; loading: boolean }) {
       {items.map((m, i) => (
         <div key={i} className={cn('flex items-end gap-2', m.role === 'user' ? 'justify-end' : 'justify-start')}>
           {m.role === 'assistant' && <MariPortrait size={24} rim={false} className="mb-0.5 shrink-0" />}
-          <div
-            className={cn(
-              'max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed',
-              m.role === 'user' ? 'rounded-br-md bg-brand-600 text-white' : 'rounded-bl-md bg-ink/[0.05] text-ink',
-            )}
-          >
-            {m.content}
-          </div>
+          {m.error ? (
+            <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm leading-relaxed" role="alert">
+              <p className="flex items-start gap-1.5 text-danger-fg dark:text-danger">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+                {m.content}
+              </p>
+              {onRetry && i === items.length - 1 && !loading && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2 h-7 px-2 text-xs"
+                  leftIcon={<RotateCcw className="h-3 w-3" />}
+                  onClick={onRetry}
+                >
+                  {retryLabel}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div
+              className={cn(
+                'max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed',
+                m.role === 'user' ? 'rounded-br-md bg-brand-600 text-white' : 'rounded-bl-md bg-ink/[0.05] text-ink',
+              )}
+            >
+              {m.content}
+            </div>
+          )}
         </div>
       ))}
       {loading && (
@@ -152,35 +187,66 @@ export function MariConsoleSection() {
   const [loading, setLoading] = React.useState(false);
   const [voiceOn, setVoiceOn] = React.useState(false);
   const [meeting, setMeeting] = React.useState(false);
+  const [micBlocked, setMicBlocked] = React.useState(false);
 
   const { speak, cancel, speaking } = useSpeech();
+
+  const errorBubble = L(
+    'Não consegui responder agora — a conexão com o servidor falhou. Tente de novo.',
+    "I couldn't answer right now — the server connection failed. Please try again.",
+    '暂时无法回答——服务器连接失败。请重试。',
+    'Je n’ai pas pu répondre — la connexion au serveur a échoué. Réessayez.',
+  );
+  const errorToast = L(
+    'Falha ao falar com a Mari. Verifique a conexão e tente de novo.',
+    'Failed to reach Mari. Check your connection and retry.',
+    '无法连接 Mari。请检查网络后重试。',
+    'Impossible de joindre Mari. Vérifiez la connexion et réessayez.',
+  );
+
+  /** Sends `history` to the API and appends the reply (or a retryable error bubble). */
+  const deliver = React.useCallback(
+    async (history: Msg[]) => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/owner/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })), locale }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const reply = typeof data.reply === 'string' && data.reply.trim() ? data.reply : null;
+        if (!reply) throw new Error('empty reply');
+        setChat((c) => [...c, { role: 'assistant', content: reply }]);
+        if (voiceOn || meeting) speak(reply, locale);
+      } catch {
+        toast.error(errorToast);
+        setChat((c) => [...c, { role: 'assistant', content: errorBubble, error: true }]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [locale, voiceOn, meeting, speak, errorToast, errorBubble],
+  );
 
   const send = React.useCallback(
     async (text: string) => {
       const content = text.trim();
       if (!content) return;
+      const history = [...chat.filter((m) => !m.error), { role: 'user' as const, content }].slice(-20);
       setChat((c) => [...c, { role: 'user', content }]);
       setInput('');
-      setLoading(true);
-      try {
-        const history = [...chat, { role: 'user' as const, content }].slice(-20);
-        const res = await fetch('/api/owner/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history, locale }),
-        });
-        const data = await res.json();
-        const reply = data.reply ?? '…';
-        setChat((c) => [...c, { role: 'assistant', content: reply }]);
-        if (voiceOn || meeting) speak(reply, locale);
-      } catch {
-        setChat((c) => [...c, { role: 'assistant', content: '…' }]);
-      } finally {
-        setLoading(false);
-      }
+      await deliver(history);
     },
-    [chat, locale, voiceOn, meeting, speak],
+    [chat, deliver],
   );
+
+  const retry = React.useCallback(() => {
+    const clean = chat.filter((m) => !m.error);
+    setChat(clean);
+    void deliver(clean.slice(-20));
+  }, [chat, deliver]);
 
   const { supported: micSupported, listening, start, stop } = useSpeechRecognition({
     locale,
@@ -195,24 +261,55 @@ export function MariConsoleSection() {
   });
 
   // Meeting loop: listen when idle, pause mic while thinking/speaking (no echo).
+  // Never auto-start while the mic permission is denied.
   React.useEffect(() => {
-    if (!meeting) return;
+    if (!meeting || micBlocked) return;
     if (speaking || loading) {
       if (listening) stop();
       return;
     }
     if (!listening) start();
-  }, [meeting, speaking, loading, listening, start, stop]);
+  }, [meeting, micBlocked, speaking, loading, listening, start, stop]);
+
+  const micDeniedToast = L(
+    'Microfone bloqueado — libere a permissão do navegador para conversar por voz.',
+    'Microphone blocked — allow browser access to talk by voice.',
+    '麦克风被禁用——请在浏览器中允许访问以进行语音对话。',
+    'Micro bloqué — autorisez l’accès dans le navigateur pour parler.',
+  );
+
+  /** Explicitly asks for the mic so a denial is surfaced instead of failing silently. */
+  const ensureMic = React.useCallback(async () => {
+    if (!micSupported) return false;
+    if (!navigator.mediaDevices?.getUserMedia) return true; // let SpeechRecognition handle it
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((tr) => tr.stop());
+      setMicBlocked(false);
+      return true;
+    } catch {
+      setMicBlocked(true);
+      toast.error(micDeniedToast);
+      return false;
+    }
+  }, [micSupported, micDeniedToast]);
 
   const toggleVoice = () =>
     setVoiceOn((v) => {
       if (v) cancel();
       return !v;
     });
-  const toggleMic = () => (listening ? stop() : start());
-  const startMeeting = () => {
-    setMeeting(true);
+  const toggleMic = async () => {
+    if (listening) {
+      stop();
+      return;
+    }
+    if (await ensureMic()) start();
+  };
+  const startMeeting = async () => {
     setVoiceOn(true);
+    setMeeting(true);
+    await ensureMic(); // meeting still works voice-out + chat when denied
   };
   const endMeeting = () => {
     setMeeting(false);
@@ -278,14 +375,19 @@ export function MariConsoleSection() {
           <p className="truncate text-2xs text-muted">{statusText}</p>
         </div>
       </div>
-      <MessageList items={chat} loading={loading} />
+      <MessageList
+        items={chat}
+        loading={loading}
+        onRetry={retry}
+        retryLabel={L('Tentar de novo', 'Try again', '重试', 'Réessayer')}
+      />
       <InputRow
         value={input}
         onChange={setInput}
         onSend={() => send(input)}
         micSupported={micSupported}
         listening={listening}
-        onMic={toggleMic}
+        onMic={() => void toggleMic()}
         placeholder={L('Pergunte à Mari…', 'Ask Mari…', '问 Mari…', 'Demandez à Mari…')}
         micLabel={L('Ditar por voz', 'Dictate by voice', '语音输入', 'Dicter à la voix')}
         sendLabel={L('Enviar', 'Send', '发送', 'Envoyer')}
@@ -306,7 +408,7 @@ export function MariConsoleSection() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Button onClick={startMeeting} leftIcon={<Radio className="h-4 w-4" />}>
+            <Button onClick={() => void startMeeting()} leftIcon={<Radio className="h-4 w-4" />}>
               {L('Modo reunião', 'Meeting mode', '会议模式', 'Mode réunion')}
             </Button>
             <Button variant="outline" onClick={toggleVoice} leftIcon={voiceOn ? <Volume2 className="h-4 w-4 text-brand-600" /> : <VolumeX className="h-4 w-4" />}>
@@ -354,11 +456,14 @@ export function MariConsoleSection() {
                 {micSupported && (
                   <Button
                     variant={listening ? 'primary' : 'outline'}
-                    onClick={() => {
-                      cancel();
-                      if (!listening) start();
-                    }}
-                    leftIcon={<Mic className="h-4 w-4" />}
+                    onClick={() =>
+                      void (async () => {
+                        cancel();
+                        if (listening) return;
+                        if (await ensureMic()) start();
+                      })()
+                    }
+                    leftIcon={micBlocked ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                   >
                     {listening ? L('Ouvindo', 'Listening', '聆听中', 'À l’écoute') : L('Falar', 'Talk', '说话', 'Parler')}
                   </Button>
@@ -377,6 +482,20 @@ export function MariConsoleSection() {
                     'Speech recognition is not supported in this browser — use the chat panel.',
                     '此浏览器不支持语音识别——请使用侧边聊天。',
                     'Reconnaissance vocale non prise en charge — utilisez le panneau de chat.',
+                  )}
+                </p>
+              )}
+              {micSupported && micBlocked && (
+                <p
+                  role="status"
+                  className="inline-flex max-w-sm items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-2xs text-danger-fg dark:text-danger"
+                >
+                  <MicOff className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  {L(
+                    'Sem acesso ao microfone — libere a permissão do navegador para conversar por voz. O chat continua funcionando.',
+                    'No microphone access — allow it in the browser to talk by voice. Chat still works.',
+                    '无法访问麦克风——请在浏览器中授权语音对话。聊天仍可使用。',
+                    'Pas d’accès au micro — autorisez-le dans le navigateur pour parler. Le chat reste disponible.',
                   )}
                 </p>
               )}
