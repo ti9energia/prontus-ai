@@ -18,8 +18,14 @@ npm run build && npm run start   # produção
 
 Abra **http://localhost:3000** — você cai na landing (`/pt-BR`). Troque o idioma no topo a qualquer momento.
 
-### Login (demo)
-Clique em **Entrar** ou **Testar grátis** → na tela de login clique em **Entrar na demonstração** (sessão de médico sobre a clínica de exemplo). O atalho de demo é controlado por `DEMO_MODE` (defina `false` em produção para desativá-lo). Há também contas reais via env: o **dono** (`OWNER_EMAIL` + `AUTH_SECRET` + senha) e uma **conta de teste** de médico (`TEST_DOCTOR_*`). Para sair, use o menu do avatar → Sair.
+### Login
+Clique em **Entrar** ou **Testar grátis** → tela de login. Contas disponíveis:
+- **Cadastro real:** "Criar conta grátis" cria um tenant + usuário de verdade (persistido, aparece no painel do dono) e leva ao onboarding.
+- **Dono da plataforma:** via env — `OWNER_EMAIL` + `AUTH_SECRET` + `OWNER_PASSWORD` (fail-closed: sem `AUTH_SECRET` a sessão de owner é recusada).
+- **Médico de teste:** via env — `TEST_DOCTOR_EMAIL`/`TEST_DOCTOR_PASSWORD` (default `marianabarreto@auronishealth.com` / `auronis-demo`).
+- **Atalho de demonstração:** `DEMO_MODE=true` mantém o atalho de demo funcional via API (`POST /api/auth/login {"demo":true}` → sessão de médico sobre a clínica de exemplo); **não há mais botão visível** na tela de login (removido por decisão de produto). Defina `DEMO_MODE=false` em produção para desativá-lo.
+
+Para sair, use o menu do avatar → Sair.
 
 ---
 

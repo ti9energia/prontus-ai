@@ -27,6 +27,15 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Emulate prefers-reduced-motion so the landing's animated components
+    // (HeroDemo's setInterval loop, framer-motion reveals) render their static
+    // final state instead of continuously re-rendering. Without this the hero
+    // subtree re-renders every ~1.3s and detaches nodes Playwright is holding —
+    // the "element is not attached to the DOM" failures across landing.spec.ts
+    // (a test-harness artifact of the animation loop; the page is fine for real
+    // users). HeroDemo already honors useReducedMotion (fase 3), so this makes
+    // the DOM deterministic for the suite. See .entrega/DECISOES.md 2026-07-02.
+    contextOptions: { reducedMotion: 'reduce' },
   },
 
   projects: [

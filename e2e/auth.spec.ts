@@ -96,8 +96,15 @@ test.describe('Signup', () => {
     await page.getByLabel('Senha', { exact: true }).fill(identity.password);
     await page.getByRole('button', { name: 'Entrar' }).click();
 
-    // A brand-new account resumes onboarding (never marked complete yet).
-    await page.waitForURL('**/onboarding');
+    // The point of this test is that the signed-up password logs back in for
+    // real (the auth extension) — the landing area is secondary. Login sends a
+    // doctor to /app; onboarding is optional and resumable from Settings, so
+    // either an authed destination proves success. (Resuming onboarding
+    // automatically on re-login is a deliberate non-goal — see PENDENCIAS.md #7
+    // for why the naive "redirect to onboarding" would break demo/seed logins.)
+    await page.waitForURL(/\/pt-BR\/(app|onboarding)/);
+    const session = await page.request.get('/api/auth/session');
+    expect((await session.json()).authed).toBe(true);
   });
 
   test('a short password is rejected client-visibly, not silently', async ({ page }) => {
