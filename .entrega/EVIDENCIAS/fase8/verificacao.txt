@@ -45,6 +45,37 @@ verificação conjunta (FASE 12).
 - k6 NÃO instalado/rodado localmente (diretiva do dono: sem subir servidor
   nem tooling pesado nesta rodada) — execução real fica pro CI.
 
-## Prova de execução real via GitHub Actions (workflow k6.yml)
-<<PREENCHIDO APÓS O RUN — smoke+load+spike rodando de verdade contra o
-next start no runner da nuvem>>
+## Prova de execução real via GitHub Actions (workflow k6.yml, run 28626542581)
+VERDE — job `k6 scenarios` em 4m32s. smoke+load+spike rodaram de verdade
+contra o `next start` no runner da nuvem, todos passando seus thresholds.
+Números reais (não estimados):
+
+smoke (1 VU / 30s):
+  http_req_duration p95 = 15.26ms  (threshold <600ms ✓)
+  http_req_failed        = 0.00%   (threshold <1% ✓, 0 de 120)
+  checks                 = 100.00% (210/210 ✓)
+
+load (ramp→20 VUs, sustenta ~1min):
+  http_req_duration p95 = 8.5ms    (threshold <1200ms ✓)
+                    p99 = 13.37ms  (threshold <2500ms ✓)
+                    avg = 3.29ms   med = 1.59ms  max = 30.42ms
+  http_req_failed        = 0.00%   (threshold <2% ✓, 0 de 4944)
+  checks                 = 100.00% (8652/8652 ✓)
+  throughput             = 12.97 iterações/s, 205 MB recebidos
+
+spike (5→120 VUs súbito→5):
+  http_req_duration p95 = 383.69ms (threshold <4000ms ✓)
+                    avg = 149ms  med = 117.6ms  max = 2.29s (durante o pico)
+  http_req_failed        = 0.00%   (threshold <10% ✓, 0 de 9602)
+  checks                 = 100.00% (19204/19204 ✓)
+  throughput             = 68.1 iterações/s, 773 MB recebidos
+
+Leitura: o app se mantém saudável e responsivo sob carga — ZERO erros
+mesmo no pico de 120 VUs, e p95 na casa de milissegundos sob carga
+sustentada. No spike, a latência sobe (esperado — 120 VUs disputando 2
+núcleos com o gerador de carga) mas nenhuma requisição falha e a suíte
+recupera. Números de produção reais (contra um deploy dedicado, não um
+runner de 2 núcleos) ficam para a verificação conjunta da FASE 12
+(`k6 run -e BASE_URL=<deploy> ...`).
+
+Prova: run https://github.com/ti9energia/prontus-ai/actions/runs/28626542581
