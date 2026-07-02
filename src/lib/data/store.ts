@@ -11,7 +11,12 @@ import type {
   LabOrder,
   LabOrderStatus,
   LandingBlock,
+  OnboardingProgress,
+  OnboardingStepKey,
+  Order,
+  OrderStatus,
   OwnerStats,
+  PaymentMethod,
   Patient,
   Plan,
   SeriesPoint,
@@ -49,6 +54,10 @@ interface DB {
   apiKeys: ApiKey[];
   customRoles: CustomRole[];
   landingBlocks: LandingBlock[];
+  onboarding: OnboardingProgress[];
+  orders: Order[];
+  /** Payment webhook event ids already applied — idempotency guard (fase 5). */
+  processedWebhookIds: string[];
 }
 
 export const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
@@ -474,6 +483,9 @@ function seed(): DB {
     apiKeys: seedApiKeys(),
     customRoles: [],
     landingBlocks: [],
+    onboarding: [],
+    orders: [],
+    processedWebhookIds: [],
   };
 }
 
@@ -1194,6 +1206,195 @@ export function publishLandingBlock(
   else d.landingBlocks.push(next);
   pushAudit('platform_owner', 'landing.publish', `${section}:${locale}`, 'ok', 'ui');
   return next;
+}
+
+/* ----------------------------- Self-service signup ----------------------------- */
+
+/**
+ * Public signup: creates a real Tenant (trial, $0 MRR until checkout) and its
+ * first user (org_admin, real scrypt hash). Distinct from the owner's
+ * `addTenant` (which provisions a tenant already on a paid plan) — a
+ * self-signup hasn't paid for anything yet.
+ */
+export function registerTenant(input: {
+  orgName: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  specialtyKey?: string;
+}): { tenant: Tenant; user: User } {
+  const d = db();
+  const cheapest = [...d.plans].sort((a, b) => a.price - b.price)[0];
+  const tenant: Tenant = {
+    id: id('ten', d.tenants.length + 1),
+    name: input.orgName.trim() || 'Nova organização',
+    planId: cheapest?.id ?? '',
+    doctors: 1,
+    usagePct: 0,
+    mrr: 0, // trial — nothing charged until checkout
+    status: 'trial',
+    locale: 'pt-BR',
+    createdAt: new Date().toISOString(),
+  };
+  d.tenants.unshift(tenant);
+
+  const user: User = {
+    id: id('usr', d.users.length + 1),
+    orgId: tenant.id,
+    name: input.name.trim() || 'Novo usuário',
+    email: input.email.trim().toLowerCase(),
+    roleKey: 'org_admin',
+    status: 'active',
+    specialtyKey: input.specialtyKey,
+    locale: 'pt-BR',
+    createdAt: new Date().toISOString(),
+    passwordHash: input.passwordHash,
+  };
+  d.users.push(user);
+  pushAudit(user.name, 'tenant.signup', `Tenant ${tenant.id}`, 'ok', 'ui');
+  return { tenant, user };
+}
+
+/* ----------------------------- Onboarding ----------------------------- */
+
+const ONBOARDING_STEPS: OnboardingStepKey[] = ['profile', 'specialty', 'team', 'tour'];
+
+export function getOnboardingProgress(orgId: string): OnboardingProgress {
+  const d = db();
+  const existing = d.onboarding.find((o) => o.orgId === orgId);
+  if (existing) return existing;
+  const fresh: OnboardingProgress = {
+    orgId,
+    completedSteps: [],
+    currentStep: ONBOARDING_STEPS[0],
+    data: {},
+    updatedAt: new Date().toISOString(),
+  };
+  d.onboarding.push(fresh);
+  return fresh;
+}
+
+/** Marks a step done, merges any step data, and advances `currentStep` (null when finished). */
+export function completeOnboardingStep(
+  orgId: string,
+  step: OnboardingStepKey,
+  actorName: string,
+  data?: Partial<OnboardingProgress['data']>,
+): OnboardingProgress {
+  const progress = getOnboardingProgress(orgId);
+  if (!progress.completedSteps.includes(step)) progress.completedSteps.push(step);
+  if (data) progress.data = { ...progress.data, ...data };
+  const remaining = ONBOARDING_STEPS.filter((s) => !progress.completedSteps.includes(s));
+  progress.currentStep = remaining[0] ?? null;
+  progress.updatedAt = new Date().toISOString();
+  markDirty();
+  if (!progress.currentStep) pushAudit(actorName, 'onboarding.complete', `Org ${orgId}`, 'ok', 'ui');
+  return progress;
+}
+
+/* ----------------------------- Orders / checkout ----------------------------- */
+
+export function createOrder(input: {
+  orgId: string;
+  planId: string;
+  amountCents: number;
+  cycle: 'monthly' | 'yearly';
+  method: PaymentMethod;
+  provider: 'mercadopago' | 'mock';
+  providerRef?: string;
+  paymentDetail?: Order['paymentDetail'];
+}): Order {
+  const d = db();
+  const order: Order = {
+    id: id('ord', d.orders.length + 1),
+    orgId: input.orgId,
+    planId: input.planId,
+    amountCents: input.amountCents,
+    cycle: input.cycle,
+    method: input.method,
+    status: 'pending',
+    provider: input.provider,
+    providerRef: input.providerRef,
+    paymentDetail: input.paymentDetail,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  d.orders.unshift(order);
+  pushAudit('platform_owner', 'order.create', `Order ${order.id}`, 'ok', 'ui');
+  return order;
+}
+
+export function getOrder(orderId: string): Order | undefined {
+  return db().orders.find((o) => o.id === orderId);
+}
+
+/** Looks an order up by the payment provider's own reference (what webhook
+ *  events carry) — distinct from our internal Order.id (what the checkout UI
+ *  polls by). A webhook must never confuse the two. */
+export function getOrderByProviderRef(providerRef: string): Order | undefined {
+  return db().orders.find((o) => o.providerRef === providerRef);
+}
+
+export function listOrdersForOrg(orgId: string): Order[] {
+  return db().orders.filter((o) => o.orgId === orgId);
+}
+
+/**
+ * Transitions an order's status. On `paid`, activates the tenant's
+ * subscription for real: leaves trial, adopts the paid plan, and sets MRR
+ * (yearly cycle uses the exact same "2 months free" formula as the landing
+ * pricing table — see lib/utils.ts `yearlyMonthlyPrice`).
+ */
+export function markOrderStatus(
+  orderId: string,
+  status: OrderStatus,
+  providerRef?: string,
+  paymentDetail?: Order['paymentDetail'],
+): Order | undefined {
+  const d = db();
+  const order = d.orders.find((o) => o.id === orderId);
+  if (!order) return undefined;
+  order.status = status;
+  order.updatedAt = new Date().toISOString();
+  if (providerRef) order.providerRef = providerRef;
+  if (paymentDetail) order.paymentDetail = { ...order.paymentDetail, ...paymentDetail };
+
+  if (status === 'paid') {
+    order.paidAt = new Date().toISOString();
+    const tenant = d.tenants.find((t) => t.id === order.orgId);
+    const plan = d.plans.find((p) => p.id === order.planId);
+    if (tenant && plan) {
+      tenant.status = 'active';
+      tenant.planId = plan.id;
+      tenant.mrr = order.cycle === 'yearly' ? Math.round((plan.price * 10) / 12) : plan.price;
+    }
+  }
+  pushAudit(
+    'platform_owner',
+    `order.${status}`,
+    `Order ${orderId}`,
+    status === 'paid' ? 'ok' : status === 'failed' ? 'blocked' : 'pending',
+    'system',
+  );
+  return order;
+}
+
+/* ----------------------------- Webhook idempotency ----------------------------- */
+
+export function isWebhookEventProcessed(eventId: string): boolean {
+  return db().processedWebhookIds.includes(eventId);
+}
+
+/** Records a webhook event id as applied. Caps the log at 500 to bound memory
+ *  in a long-lived dev process (production upgrade: a real dedup store/TTL). */
+export function markWebhookEventProcessed(eventId: string): void {
+  const d = db();
+  if (d.processedWebhookIds.includes(eventId)) return;
+  d.processedWebhookIds.push(eventId);
+  if (d.processedWebhookIds.length > 500) {
+    d.processedWebhookIds.splice(0, d.processedWebhookIds.length - 500);
+  }
+  markDirty();
 }
 
 /* ----------------------------- Templates (mutations) ----------------------------- */

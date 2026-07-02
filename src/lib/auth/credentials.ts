@@ -1,4 +1,5 @@
-import { scryptSync, timingSafeEqual } from 'node:crypto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
+import { getUserByEmail } from '@/lib/data';
 import { config } from '@/lib/config';
 import { hasStrongSecret, type Role } from './session';
 
@@ -39,6 +40,14 @@ function verifyScrypt(password: string, stored: string): boolean {
   }
 }
 
+/** Hashes a password for storage (`scrypt$<saltHex>$<hashHex>`) — same format
+ *  and parameters as `scripts/hash-password.mjs`, used by self-service signup. */
+export function hashPassword(password: string): string {
+  const salt = randomBytes(16);
+  const hash = scryptSync(password, salt, 32);
+  return `scrypt$${salt.toString('hex')}$${hash.toString('hex')}`;
+}
+
 /** Returns the identity for valid credentials, or null (fail-closed). */
 export function authenticate(emailRaw: string, password: string): Identity | null {
   const email = emailRaw.trim().toLowerCase();
@@ -59,6 +68,15 @@ export function authenticate(emailRaw: string, password: string): Identity | nul
   if (email === testEmail) {
     const expected = config.auth.testDoctorPassword;
     return timingEqual(password, expected) ? { role: 'doctor', email: testEmail, name: 'Dra. Mariana Barreto' } : null;
+  }
+
+  // Self-service accounts (signup) — real user row with a real scrypt hash.
+  // Every non-owner identity gets session role 'doctor': the binary session
+  // role only gates /owner vs /app; the richer RoleKey (org_admin etc.) drives
+  // in-app entitlements separately (lib/workspace/entitlements.ts).
+  const user = getUserByEmail(email);
+  if (user?.passwordHash && user.status === 'active') {
+    return verifyScrypt(password, user.passwordHash) ? { role: 'doctor', email: user.email, name: user.name } : null;
   }
 
   return null;

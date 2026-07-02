@@ -138,3 +138,17 @@ export const listApiKeys = _adapter.listApiKeys;
 export const getApiKeyByHash = _adapter.getApiKeyByHash;
 export const addApiKey = _adapter.addApiKey;
 export const revokeApiKey = _adapter.revokeApiKey;
+
+export const registerTenant = _adapter.registerTenant;
+
+export const getOnboardingProgress = _adapter.getOnboardingProgress;
+export const completeOnboardingStep = _adapter.completeOnboardingStep;
+
+export const createOrder = _adapter.createOrder;
+export const getOrder = _adapter.getOrder;
+export const getOrderByProviderRef = _adapter.getOrderByProviderRef;
+export const listOrdersForOrg = _adapter.listOrdersForOrg;
+export const markOrderStatus = _adapter.markOrderStatus;
+
+export const isWebhookEventProcessed = _adapter.isWebhookEventProcessed;
+export const markWebhookEventProcessed = _adapter.markWebhookEventProcessed;

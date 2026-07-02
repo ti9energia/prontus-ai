@@ -24,10 +24,11 @@ export const PLAN_BY_ID = Object.fromEntries(PLANS.map((p) => [p.id, p])) as Rec
   PlanPricing
 >;
 
-/** Yearly billing = 2 months free → effective monthly price. */
-export function yearlyMonthlyPrice(monthly: number): number {
-  return Math.round((monthly * 10) / 12);
-}
+// Re-exported for existing landing call sites — the formula itself lives in
+// lib/utils.ts so the checkout backend can share it without importing a
+// landing-only module (see lib/checkout — amount charged must match the
+// price displayed here, not drift into a second copy of the math).
+export { yearlyMonthlyPrice } from '@/lib/utils';
 
 /** Which plan fits a clinic with N doctors (mirrors the sales sizing rule). */
 export function planForDoctors(doctors: number): PlanPricing {

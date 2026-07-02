@@ -314,6 +314,55 @@ export interface User {
   council?: string;
   locale: Locale;
   createdAt: string;
+  /** scrypt hash (`scrypt$salt$hash`) — only self-service accounts (signup) have one;
+   *  the owner/test-doctor demo identities are env-configured (see auth/server.ts). */
+  passwordHash?: string;
+}
+
+/* ----------------------------- Onboarding ----------------------------- */
+
+export type OnboardingStepKey = 'profile' | 'specialty' | 'team' | 'tour';
+
+export interface OnboardingProgress {
+  orgId: string;
+  completedSteps: OnboardingStepKey[];
+  /** Step the wizard should resume on; null once every step is done. */
+  currentStep: OnboardingStepKey | null;
+  data: {
+    specialtyKey?: string;
+    clinicSize?: string;
+    invitedEmails?: string[];
+  };
+  updatedAt: string;
+}
+
+/* ----------------------------- Checkout / billing ----------------------------- */
+
+export type PaymentMethod = 'pix' | 'boleto' | 'card';
+export type OrderStatus = 'pending' | 'paid' | 'failed' | 'expired' | 'canceled';
+
+export interface Order {
+  id: string;
+  orgId: string;
+  planId: string;
+  /** Amount in cents (BRL) — avoids float rounding on money. */
+  amountCents: number;
+  cycle: 'monthly' | 'yearly';
+  method: PaymentMethod;
+  status: OrderStatus;
+  /** Opaque id from the payment provider (real or mock) — used to correlate webhooks. */
+  providerRef?: string;
+  provider: 'mercadopago' | 'mock';
+  createdAt: string;
+  updatedAt: string;
+  paidAt?: string;
+  /** Method-specific display data (PIX QR/copia-e-cola, boleto linha digitável/PDF url). */
+  paymentDetail?: {
+    pixQrCode?: string;
+    pixCopyPaste?: string;
+    boletoLine?: string;
+    boletoUrl?: string;
+  };
 }
 
 /* ----------------------------- API keys ----------------------------- */

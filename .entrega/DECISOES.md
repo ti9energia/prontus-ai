@@ -1,5 +1,14 @@
 # DECISÕES
 
+## 2026-07-02 — FASE 5: escopo do signup/onboarding frente ao modelo de dados atual
+- **Achado:** todo o núcleo clínico (`listPatients/listEncounters/notes/guides/labOrders`) é um dataset global único, não segmentado por `orgId` — é assim para TODAS as identidades hoje (owner, médico-teste, demo), não é uma lacuna introduzida pelo signup. Só as entidades voltadas ao dono (`tenants`, `users` via `orgId`, `apiKeys`) já são multi-tenant de verdade.
+- **Decisão:** o signup cria Tenant + User REAIS (persistidos, aparecem no painel do dono, login funciona de verdade); o onboarding persiste progresso REAL por org; o checkout cria Order/Subscription REAIS por tenant. Ao entrar em `/app`, o novo usuário vê o mesmo workspace clínico de demonstração compartilhado que médico-teste/demo já veem hoje — isso é consistente com o produto atual, não uma mentira nova.
+- **Por que não isolar dados clínicos por tenant agora:** exigiria re-arquitetar dezenas de funções do store (patients/encounters/notes/guides/labs) que hoje assumem um único contexto — uma migração de arquitetura própria, desproporcional ao pedido desta fase (integrações pré-prontas). Registrado como fronteira consciente em `PENDENCIAS.md`, candidato a uma fase própria se o dono priorizar multi-tenancy clínica completa.
+- A sessão (`useSession()`) já reflete a identidade real de quem logou (nome/e-mail) na top-bar — só o *conteúdo clínico* de demonstração é compartilhado, a identidade de quem está logado é sempre verdadeira.
+
+## 2026-07-02 — FASE 5: Mercado Pago como provedor de referência do checkout
+- Adapter real implementado contra a API do Mercado Pago (PIX + boleto + cartão nativos em uma API só, documentação estável, mais usado no Brasil) — mesmo padrão dos demais seams (Memed/ICP/WhatsApp): só ativa com `MERCADOPAGO_ACCESS_TOKEN`; sem a chave, cai no mock em sandbox determinístico. Nenhuma chamada real ocorre sem credencial (princípio 5 — pré-pronto é honesto).
+
 ## 2026-07-02 — FASE 4: `screens/integrations.tsx` fica session-only (decisão consciente, não lacuna)
 - Considerei ligar o toggle conectar/desconectar e o modal de config ao `upsertTenantConnector` real (o mesmo usado pela `AiSection` do owner) para sobreviver a reload.
 - Decidi NÃO fazer isso: dos 20 provedores listados nessa tela (Tasy, MV Soul, iClinic, Feegow, Unimed, Bradesco, SulAmérica, Amil, Hapvida, Auronis ASR, Whisper, Azure Speech, Google Speech, WhatsApp Business, Telegram), nenhum tem conector real implementado em `lib/connectors` — os conectores reais do produto são Memed, ICP-Brasil e WhatsApp Cloud (documentados via env var, `INTEGRACOES.md` virá na fase 5). Persistir esse toggle no servidor seria "persistência-teatro": sobreviveria a reload sem passar a fazer nada a mais.

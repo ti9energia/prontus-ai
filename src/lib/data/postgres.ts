@@ -122,6 +122,14 @@ export {
   listPlans,
   getPlan,
   listFlags,
+  // Pre-existing gap fixed in passing (fase 5): these four were never
+  // re-exported here, so an active Postgres adapter would throw on any
+  // API-key call. They read/write the same shared in-memory cache as
+  // everything else in this block, so passthrough is correct as-is.
+  listApiKeys,
+  getApiKeyByHash,
+  addApiKey,
+  revokeApiKey,
   // Owner-config entities below are store-only for now (no Prisma models yet):
   // they read/write the shared in-memory cache like everything else, but writes
   // don't fire through to Postgres. Tracked in .entrega/PENDENCIAS.md.
@@ -134,6 +142,17 @@ export {
   listLandingBlocks,
   getLandingBlock,
   publishLandingBlock,
+  // Fase 5 — signup / onboarding / checkout entities: same store-only posture.
+  registerTenant,
+  getOnboardingProgress,
+  completeOnboardingStep,
+  createOrder,
+  getOrder,
+  getOrderByProviderRef,
+  listOrdersForOrg,
+  markOrderStatus,
+  isWebhookEventProcessed,
+  markWebhookEventProcessed,
 } from './store';
 
 // ─── db() — triggers hydration on first server-side call ─────────────────────
