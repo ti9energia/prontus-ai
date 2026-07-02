@@ -5,10 +5,12 @@ import type {
   AuditSource,
   ClinicalNote,
   CurrentUser,
+  CustomRole,
   Encounter,
   FeatureFlag,
   LabOrder,
   LabOrderStatus,
+  LandingBlock,
   OwnerStats,
   Patient,
   Plan,
@@ -45,6 +47,8 @@ interface DB {
   flags: FeatureFlag[];
   users: User[];
   apiKeys: ApiKey[];
+  customRoles: CustomRole[];
+  landingBlocks: LandingBlock[];
 }
 
 export const PAYERS = ['Unimed', 'Bradesco Saúde', 'SulAmérica', 'Amil', 'Hapvida'];
@@ -468,6 +472,8 @@ function seed(): DB {
     flags: seedFlags(),
     users: seedUsers(),
     apiKeys: seedApiKeys(),
+    customRoles: [],
+    landingBlocks: [],
   };
 }
 
@@ -1101,6 +1107,93 @@ export function upsertTenantConnector(id: string, conn: TenantConnectorConfig) {
   else t.connectors.push(conn);
   pushAudit('platform_owner', 'tenant.connector.upsert', `Tenant ${id}`, 'ok', 'ui');
   return t.connectors;
+}
+
+/** Owner creates a new organization on the platform. */
+export function addTenant(input: { name: string; planId: string }): Tenant {
+  const d = db();
+  const plan = d.plans.find((p) => p.id === input.planId);
+  const tenant: Tenant = {
+    id: id('ten', d.tenants.length + 1),
+    name: input.name.trim() || 'Nova organização',
+    planId: plan?.id ?? d.plans[0]?.id ?? '',
+    doctors: 1,
+    usagePct: 0,
+    mrr: plan?.price ?? 0,
+    status: 'trial',
+    locale: 'pt-BR',
+    createdAt: new Date().toISOString(),
+  };
+  d.tenants.unshift(tenant);
+  pushAudit('platform_owner', 'tenant.create', `Tenant ${tenant.id}`, 'ok', 'ui');
+  return tenant;
+}
+
+/** Records that the owner assumed a tenant's view (impersonation is itself an auditable event). */
+export function auditImpersonation(tenantId: string, tenantName: string): void {
+  pushAudit('platform_owner', 'tenant.impersonate', `Tenant ${tenantId} (${tenantName})`, 'ok', 'ui');
+}
+
+/** Owner creates or updates a plan (matched by id — new ids come from the caller via `uid()`-style prefix). */
+export function upsertPlan(plan: Plan): Plan {
+  const d = db();
+  const idx = d.plans.findIndex((p) => p.id === plan.id);
+  const next: Plan = { ...plan, name: plan.name.trim() || plan.id };
+  if (idx >= 0) d.plans[idx] = next;
+  else d.plans.push(next);
+  pushAudit('platform_owner', idx >= 0 ? 'plan.update' : 'plan.create', `Plan ${next.id}`, 'ok', 'ui');
+  return next;
+}
+
+/* ----------------------------- Custom roles (owner-defined RBAC) ----------------------------- */
+export function listCustomRoles(): CustomRole[] {
+  return db().customRoles;
+}
+export function addCustomRole(input: { label: string; allowed: string[] }): CustomRole {
+  const d = db();
+  const role: CustomRole = {
+    key: id('role', d.customRoles.length + 1),
+    label: input.label.trim() || 'Papel',
+    allowed: input.allowed,
+  };
+  d.customRoles.push(role);
+  pushAudit('platform_owner', 'role.create', `Role ${role.key}`, 'ok', 'ui');
+  return role;
+}
+export function removeCustomRole(key: string): void {
+  const d = db();
+  d.customRoles = d.customRoles.filter((r) => r.key !== key);
+  pushAudit('platform_owner', 'role.remove', `Role ${key}`, 'ok', 'ui');
+}
+
+/* ----------------------------- Landing CMS ----------------------------- */
+export function listLandingBlocks(): LandingBlock[] {
+  return db().landingBlocks;
+}
+export function getLandingBlock(section: string, locale: string): LandingBlock | undefined {
+  return db().landingBlocks.find((b) => b.section === section && b.locale === locale);
+}
+/** Upserts a section·locale block and marks it published (the CMS has one action: Publish). */
+export function publishLandingBlock(
+  section: string,
+  locale: string,
+  input: { title: string; subtitle: string; cta: string },
+): LandingBlock {
+  const d = db();
+  const idx = d.landingBlocks.findIndex((b) => b.section === section && b.locale === locale);
+  const next: LandingBlock = {
+    section,
+    locale,
+    title: input.title,
+    subtitle: input.subtitle,
+    cta: input.cta,
+    published: true,
+    updatedAt: new Date().toISOString(),
+  };
+  if (idx >= 0) d.landingBlocks[idx] = next;
+  else d.landingBlocks.push(next);
+  pushAudit('platform_owner', 'landing.publish', `${section}:${locale}`, 'ok', 'ui');
+  return next;
 }
 
 /* ----------------------------- Templates (mutations) ----------------------------- */

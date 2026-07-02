@@ -122,6 +122,18 @@ export {
   listPlans,
   getPlan,
   listFlags,
+  // Owner-config entities below are store-only for now (no Prisma models yet):
+  // they read/write the shared in-memory cache like everything else, but writes
+  // don't fire through to Postgres. Tracked in .entrega/PENDENCIAS.md.
+  addTenant,
+  auditImpersonation,
+  upsertPlan,
+  listCustomRoles,
+  addCustomRole,
+  removeCustomRole,
+  listLandingBlocks,
+  getLandingBlock,
+  publishLandingBlock,
 } from './store';
 
 // ─── db() — triggers hydration on first server-side call ─────────────────────
