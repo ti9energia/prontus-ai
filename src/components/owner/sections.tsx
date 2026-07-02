@@ -1,16 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from 'recharts';
 import {
   Bot,
   Building2,
@@ -81,14 +73,12 @@ let __idSeq = 0;
 const uid = (prefix: string) => `${prefix}_${Date.now().toString(36)}${(__idSeq++).toString(36)}`;
 
 /** Theme-aware chart colors — same CSS vars globals.css feeds the Tailwind tokens with. */
-const CHART = {
-  series: 'rgb(var(--ring))',
-  grid: 'rgb(var(--subtle) / 0.18)',
-  axis: 'rgb(var(--subtle) / 0.7)',
-  tooltipBg: 'rgb(var(--card))',
-  tooltipBorder: '1px solid rgb(var(--line) / 0.8)',
-  tooltipText: 'rgb(var(--ink))',
-};
+// Lazy-loaded so recharts (~90KB) stays out of the initial /owner bundle and
+// streams in behind a skeleton after hydration — see mrr-chart.tsx.
+const MrrChart = dynamic(() => import('./mrr-chart').then((m) => m.MrrChart), {
+  ssr: false,
+  loading: () => <div className="skeleton h-[260px] w-full rounded-lg" />,
+});
 
 /** Styled empty row for owner tables — keeps the table chrome instead of collapsing it. */
 function EmptyRow({ colSpan, label }: { colSpan: number; label: string }) {
@@ -216,26 +206,7 @@ export function OverviewSection() {
           <p className="sr-only">
             {series.map((p) => `${p.label}: ${formatCurrency(Number(p.mrr), locale, stats.currency)}`).join(' · ')}
           </p>
-          <div className="h-[260px] w-full" role="img" aria-label={chartLabel}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={series} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="mrrG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={CHART.series} stopOpacity={0.4} />
-                    <stop offset="100%" stopColor={CHART.series} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke={CHART.grid} vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke={CHART.axis} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11 }} stroke={CHART.axis} axisLine={false} tickLine={false} width={56} tickFormatter={(v) => formatCurrency(Number(v), locale, stats.currency)} />
-                <Tooltip
-                  contentStyle={{ background: CHART.tooltipBg, border: CHART.tooltipBorder, borderRadius: 12, fontSize: 12, color: CHART.tooltipText }}
-                  formatter={(v: number) => [formatCurrency(v, locale, stats.currency), 'MRR']}
-                />
-                <Area type="monotone" dataKey="mrr" stroke={CHART.series} strokeWidth={2.5} fill="url(#mrrG)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <MrrChart series={series} locale={locale} currency={stats.currency} label={chartLabel} />
         </Card>
 
         <Card className="p-4">
