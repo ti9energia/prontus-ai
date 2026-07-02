@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { billingStats, listEncounters, agentRecommendations, pushAudit } from '@/lib/data';
+import { billingStats, listEncounters, agentRecommendations, getTenant, getUserByEmail, pushAudit } from '@/lib/data';
 import { SESSION_COOKIE, readCookie, verifySession } from '@/lib/auth';
 import { mariChat, mariChatStream } from '@/lib/mari/server';
 import { config } from '@/lib/config';
@@ -14,9 +14,17 @@ interface ChatMessage {
   content: string;
 }
 
-const SYSTEM = `You are Mari, the clinical copilot inside Auronis Health, an AI medical-scribe SaaS.
+/**
+ * Builds the system prompt from the tenant's own AI config (owner/sections.tsx
+ * AiSection → updateTenantAi) so persona/tone are actually parametrized per
+ * tenant, not just editable in the admin UI without effect on the live chat.
+ */
+function buildSystemPrompt(persona: string, locale: string, screen: string): string {
+  return `You are ${persona}, the clinical copilot inside Auronis Health, an AI medical-scribe SaaS.
 You understand the whole system and help doctors and billing staff. You are concise, warm and precise.
-Rules: respect the user's role and LGPD; never invent patient data; for irreversible actions require human approval (say it needs confirmation). Always answer in the user's language.`;
+Rules: respect the user's role and LGPD; never invent patient data; for irreversible actions require human approval (say it needs confirmation). Always answer in the user's language.
+User locale: ${locale}. Current screen: ${screen}.`;
+}
 
 function fmtPercent(v: number, locale: string) {
   return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(v);
@@ -25,7 +33,7 @@ function fmtCurrency(v: number, locale: string) {
   return new Intl.NumberFormat(locale, { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
 }
 
-function mockReply(text: string, locale: string): string {
+function mockReply(text: string, locale: string, persona = 'Mari'): string {
   const q = text.toLowerCase();
   const bs = billingStats();
   const enc = listEncounters();
@@ -74,10 +82,10 @@ function mockReply(text: string, locale: string): string {
     );
   }
   return L(
-    `Sou a Mari e entendo o Auronis inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
-    `I'm Mari and I understand all of Auronis. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
-    `我是 Mari，熟悉整个 Auronis。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
-    `Je suis Mari et je connais tout Auronis. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
+    `Sou a ${persona} e entendo o Auronis inteiro. Posso resumir prontuários, gerar guias TISS, explicar suas glosas e trazer sua agenda. O que você precisa agora?`,
+    `I'm ${persona} and I understand all of Auronis. I can summarize notes, generate TISS claims, explain denials and pull up your schedule. What do you need?`,
+    `我是 ${persona}，熟悉整个 Auronis。我可以总结病历、生成 TISS 单据、解释拒付并查看你的日程。你需要什么？`,
+    `Je suis ${persona} et je connais tout Auronis. Je peux résumer des comptes rendus, générer des feuilles TISS, expliquer les rejets et afficher votre agenda. Que puis-je faire ?`,
   );
 }
 
@@ -120,20 +128,24 @@ export async function POST(req: NextRequest) {
   pushAudit('Mari (IA)', 'copilot.chat', `screen:${screen}`, 'ok', 'ai');
 
   // Cost & auth gate: only authenticated callers may reach a paid model or the
-  // remote brain on a public deploy. Checked lazily so the mock path stays cheap.
-  const allowModel =
-    !!(config.ai.anthropicApiKey || config.ai.mariApiUrl) &&
-    !!(await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE)));
+  // remote brain on a public deploy. Same session lookup also resolves the
+  // tenant's own AI config (persona/model), so a chat actually reflects what
+  // the owner configured for this org instead of a hardcoded global default.
+  const session = await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE));
+  const tenantAi = session ? getTenant(getUserByEmail(session.sub)?.orgId ?? '')?.ai : undefined;
+  const allowModel = !!(config.ai.anthropicApiKey || config.ai.mariApiUrl) && !!session;
+  const persona = tenantAi?.persona || 'Mari';
 
   const mariReq = {
     surface: 'clinical' as const,
-    system: `${SYSTEM}\nUser locale: ${locale}. Current screen: ${screen}.`,
+    system: buildSystemPrompt(persona, locale, screen),
     messages,
     locale,
     context: { screen },
     allowModel,
     maxTokens: 600,
-    fallback: () => mockReply(last, locale),
+    fallback: () => mockReply(last, locale, persona),
+    model: tenantAi?.model,
   };
 
   // Streaming path: client sends { stream: true } to get SSE deltas.
