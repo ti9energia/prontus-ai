@@ -1,6 +1,6 @@
 # ESTADO DA ENTREGA
 
-- **Fase atual:** FASE 7 — Testes E2E Playwright + CI (próxima)
+- **Fase atual:** FASE 8 — Testes de carga k6 (próxima)
 - **Última atualização:** 2026-07-02
 - **Portões concluídos:**
   - PORTÃO 0 ✅ (MAPA.md; baseline typecheck/lint/271 testes verdes)
@@ -10,6 +10,7 @@
   - PORTÃO 4 ✅ (INVENTARIO.md sem ❌, 1 ⚠️ justificado; persistência real de tenants/plans/access/landing-CMS do owner — 12 testes novos de store; error boundaries de rota (error.tsx + global-error.tsx) fecham o maior gap da fase 0; loading.tsx em /app e /owner; zero link morto/stub confirmado por grep; prova: typecheck ✅ lint ✅ i18n 837 ✅ 283 testes ✅ build ✅ — EVIDENCIAS/fase4/verificacao.txt)
   - PORTÃO 5 ✅ (checkout completo PIX/boleto/cartão sobre adapter Mercado Pago real + mock sandbox com QR EMV válido/CRC16, webhook idempotente testado, signup real com login funcional, onboarding 4 etapas persistente e resumível, Mari com persona/modelo parametrizados por tenant de verdade, e-mail transacional Resend/mock, INTEGRACOES.md com status honesto de cada integração; UI das 3 telas construída após incidente com agentes em background — ver DECISOES.md; prova: typecheck ✅ lint ✅ i18n 921 chaves ✅ 349 testes (76 novos) ✅ build prod exit 0 ✅ — EVIDENCIAS/fase5/verificacao.txt)
   - PORTÃO 6 ✅ (manifest completo com 4 ícones any+maskable 192/512 com safe-zone real gerados via script portável (scripts/process-assets.mjs corrigido — antes tinha path local hardcoded); SW com fluxo de atualização real (prompt "nova versão" em vez de skipWaiting automático) + fallback offline por idioma do visitante (antes hardcoded /pt-BR); caminho TWA/Capacitor documentado em ARQUITETURA.md; Lighthouse ao vivo deferido para verificação conjunta final (diretiva do dono) — checklist de prontidão critério-a-critério em EVIDENCIAS/fase6/lighthouse-readiness.md; prova: typecheck ✅ lint ✅ 349 testes ✅ build prod exit 0 com manifest.webmanifest real inspecionado ✅ — EVIDENCIAS/fase6/verificacao.txt)
+  - PORTÃO 7 ✅ (suíte Playwright completa — 49 testes/8 specs cobrindo landing→cadastro→onboarding→workspace→checkout sandbox→owner→erros→acessibilidade (@axe-core, WCAG2 A/AA); job `e2e` novo no CI, `webServer` do Playwright sobe/derruba o processo sozinho dentro do runner — nenhum servidor local; 3 bugs reais achados e corrigidos (deep-link `?open=` do manifest PWA nunca lido, sufixo "/mo"/"yr" hardcoded em inglês no checkout, colisão de rate-limit da própria suíte); seletores conferidos byte a byte contra messages/pt-BR.json e componentes-fonte, sem servidor local para iterar ao vivo; prova de execução real via GitHub Actions (não local, por diretiva do dono) — ver EVIDENCIAS/fase7/verificacao.txt)
 
 ## Prova de execução (FASE 0)
 - App sobe com `npm run dev` → http://localhost:3000
@@ -19,7 +20,7 @@
   - `/api/health` → 200 · rota inexistente → 404 (tratado)
 
 ## Próximo passo
-- FASE 7: Playwright cobrindo a jornada completa (landing → cadastro → onboarding → núcleo → checkout sandbox → erros), acessibilidade automatizada (@axe-core/playwright), 1 teste de regressão por bug corrigido nas fases anteriores, CI (GitHub Actions) rodando lint+typecheck+testes+E2E.
+- FASE 8: testes de carga k6 (smoke/load/stress/spike com thresholds) — mesma tensão da FASE 7 (exige servidor rodando); plano: preparar os scripts k6 e, se possível, rodá-los dentro do próprio runner do CI (como a FASE 7 fez com o Playwright) para trazer prova de execução real sem subir servidor local.
 
 ## Nota — incidente de agentes em background (ver DECISOES.md 2026-07-02)
 3 agentes paralelos para UI de signup/onboarding/checkout retornaram "session limit" sem produzir nenhum arquivo (confirmado via git status). Não repeti a delegação — construí as 3 telas diretamente. Lição: sempre verificar git status real após agentes longos antes de confiar no texto do resultado.
@@ -27,6 +28,7 @@
 ## Observação de fluxo (pedido do dono, 2026-07-01)
 - Não precisa manter servidor local de pé — foco no código; prova via build/typecheck/lint/vitest.
 - Dono confirmou: executar todas as fases com autonomia de decisão; suítes que exigem servidor (E2E ao vivo, k6, Lighthouse) ficam PRONTAS PARA RODAR e são executadas juntos na verificação final ("a gente sobe para verificar e testar").
+- **Atualização FASE 7:** para trazer prova de execução real sem violar "não subir servidor local", o E2E passou a rodar no GitHub Actions (job `e2e`, servidor sobe/derruba dentro do runner da nuvem, nunca na máquina local) — resolve a exigência de "prova por execução" do pipeline sem contradizer a diretiva do dono. A verificação conjunta final continua valendo para o que só faz sentido ao vivo na máquina do dono (Lighthouse com Chrome real, sensação de uso).
 
 ## Convenção de trabalho
 - Preferência durável do dono: cada fase/bloco em feature branch → PR → merge em main.

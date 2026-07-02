@@ -17,7 +17,6 @@ const Body = z.object({
 // brute force in steady state). A managed store (KV) is the production upgrade.
 const attempts = new Map<string, { count: number; first: number }>();
 const WINDOW_MS = 15 * 60 * 1000;
-const MAX_ATTEMPTS = 8;
 
 function clientIp(req: NextRequest): string {
   const xff = req.headers.get('x-forwarded-for');
@@ -32,7 +31,7 @@ function rateLimited(ip: string): boolean {
     return false;
   }
   rec.count += 1;
-  return rec.count > MAX_ATTEMPTS;
+  return rec.count > config.auth.maxLoginAttempts;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

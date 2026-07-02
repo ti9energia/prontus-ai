@@ -71,6 +71,18 @@ export const config = {
     get demoEnabled(): boolean {
       return flag('DEMO_MODE', true);
     },
+    /** Tentativas de login por IP/15min antes de bloquear (defesa contra força bruta).
+     *  Só existe como override para suítes E2E (playwright.config.ts) — nunca defina
+     *  isso em produção; o default já é o valor seguro usado até aqui. */
+    get maxLoginAttempts(): number {
+      const n = Number(env('E2E_MAX_LOGIN_ATTEMPTS'));
+      return Number.isFinite(n) && n > 0 ? n : 8;
+    },
+    /** Mesma ideia para o cadastro (limite mais apertado por padrão — criar conta é alvo mais atrativo de abuso). */
+    get maxSignupAttempts(): number {
+      const n = Number(env('E2E_MAX_SIGNUP_ATTEMPTS'));
+      return Number.isFinite(n) && n > 0 ? n : 5;
+    },
   },
 
   ai: {

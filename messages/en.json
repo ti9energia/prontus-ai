@@ -1353,7 +1353,9 @@
       "provider": "The payment provider didn't respond. Try again.",
       "generic": "Could not process the payment. Try again."
     },
-    "backToPlans": "Choose another plan"
+    "backToPlans": "Choose another plan",
+    "perMonth": "/mo",
+    "perYear": "/yr"
   },
   "pwa": {
     "updateTitle": "New version available",

@@ -58,6 +58,15 @@ export function Workspace() {
     hydrate();
   }, []);
 
+  // Honors the PWA manifest shortcuts (?open=encounter, ?open=billing — see
+  // src/app/manifest.ts) and any other deep link into a specific tab. Reads
+  // window.location directly (not useSearchParams) so this component doesn't
+  // need a Suspense boundary just for a one-time read on mount.
+  React.useEffect(() => {
+    const open = new URLSearchParams(window.location.search).get('open');
+    if (open && open in SCREENS) openTab(open as keyof typeof SCREENS);
+  }, []);
+
   // Middleware already gates /app; this is a defensive client redirect.
   React.useEffect(() => {
     if (!loading && !authed) router.replace('/login');

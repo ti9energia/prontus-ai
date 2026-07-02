@@ -1353,7 +1353,9 @@
       "provider": "Le prestataire de paiement n’a pas répondu. Réessayez.",
       "generic": "Impossible de traiter le paiement. Réessayez."
     },
-    "backToPlans": "Choisir une autre offre"
+    "backToPlans": "Choisir une autre offre",
+    "perMonth": "/mois",
+    "perYear": "/an"
   },
   "pwa": {
     "updateTitle": "Nouvelle version disponible",

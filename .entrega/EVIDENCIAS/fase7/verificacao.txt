@@ -1,0 +1,119 @@
+# Evidências FASE 7 — 2026-07-02
+
+## Escopo
+Suíte E2E Playwright (49 testes / 8 specs) cobrindo a jornada completa
+(landing → cadastro → onboarding → workspace → checkout sandbox → owner →
+erros/regressão → acessibilidade), + job `e2e` novo no CI (GitHub Actions).
+
+## typecheck
+> auronis-health@1.0.0 typecheck
+> tsc --noEmit
+(sem erros — inclui os 8 specs + helpers.ts novos em e2e/)
+
+## lint
+> next lint
+✔ No ESLint warnings or errors
+
+## i18n (927 chaves, sem regressão de paridade)
+✓ en: 927 keys, in parity
+✓ zh-CN: 927 keys, in parity
+✓ fr-FR: 927 keys, in parity
+(+2 chaves novas nesta fase: checkout.perMonth/perYear — ver bug #2 abaixo)
+
+## npm audit --omit=dev
+1 high + 2 moderate, todos em `next`/`next-intl`/`postcss` — PRÉ-EXISTENTES
+(confirmado via `git diff main -- package.json`: esta fase só adicionou
+@playwright/test e @axe-core/playwright como devDependencies; nenhuma versão
+de dependência de produção foi tocada). Já tratado como informativo pelo
+próprio ci.yml (`continue-on-error: true`, decisão anterior a esta fase).
+Registrado como pendência rastreada em PENDENCIAS.md #6 (upgrade major
+fora do escopo de uma fase de testes).
+
+## vitest (349 testes, sem regressão)
+Test Files  47 passed (47)
+     Tests  349 passed (349)
+(inclui os testes de rate-limit de login/signup rodando contra os
+defaults de produção inalterados — 8/5 — já que E2E_MAX_LOGIN_ATTEMPTS/
+E2E_MAX_SIGNUP_ATTEMPTS não estão setados no ambiente do vitest)
+
+## build de produção
+exit code 0 (confirmado via bash, não PowerShell) — 52/52 páginas geradas.
+
+## Suíte E2E — inventário (49 testes / 8 specs)
+- landing.spec.ts (8): hero/CTA sem erros de console, funil CTA→login,
+  zero link morto no footer (guarda de regressão fase 2 P0), páginas legais
+  com conteúdo real, contato com mailto: real, FAQ acordeão (ids
+  faq-q-q1..q5), idioma via seletor, 404 com volta ao início.
+- auth.spec.ts (7): login inválido com role="alert", ausência do atalho de
+  demo (decisão de produto, guarda de regressão), link cadastro→login,
+  cadastro real com sessão verificada via /api/auth/session, e-mail
+  duplicado rejeitado 409, login com conta recém-criada, senha curta
+  bloqueada via minLength client-side.
+- onboarding.spec.ts (5): 4 etapas completas até /app, progresso
+  sobrevive a reload (prova server-side, não localStorage), adicionar/
+  remover e-mail de convite, org já onboarded pula direto para /app,
+  /onboarding sem sessão redireciona a login.
+- checkout.spec.ts (8): redirect com ?next= preservado, PIX com QR real +
+  copia-e-cola + polling ao vivo até confirmação (mock sandbox), boleto
+  com linha digitável + link, cartão par=aprovado / ímpar=recusado+retry,
+  preço Starter R$99 (guarda de regressão fase 2 P0), entrada via
+  Configurações→Plano&cobrança→Assinar (?open=settings), ciclo anual com
+  "2 meses grátis".
+- workspace.spec.ts (5): shell da demo sem erros de console, ⌘K abre
+  command palette, regressão do deep-link ?open= (bug real encontrado e
+  corrigido nesta fase — ver abaixo), /app e /owner sem sessão redirecionam.
+- owner.spec.ts (3): login real de owner alcança /owner (role verificado
+  via /api/auth/session), sessão de médico não alcança /owner (gate de
+  role), suspender tenant exige digitar o nome exato (ConfirmDialog
+  requireText, fase 3).
+- accessibility.spec.ts (7): @axe-core/playwright, filtro serious/critical
+  (WCAG 2 A/AA) em landing/login/signup/privacy/onboarding/checkout/
+  workspace.
+- errors-and-regressions.spec.ts (6): resiliência a erro do provedor de
+  pagamento (502 interceptado), resiliência a queda de rede no cadastro,
+  headers de segurança presentes (CSP frame-ancestors 'none', nosniff,
+  HSTS), formato de /api/health, /api/v1/patients rejeita sem chave e com
+  chave inválida (401).
+
+## Bugs reais encontrados e corrigidos durante a escrita dos testes
+1. **Deep links `?open=` do manifest PWA nunca eram lidos** —
+   `src/app/manifest.ts` declara shortcuts (`?open=encounter`,
+   `?open=billing`) desde a fase 6, mas nenhum componente os consumia.
+   Corrigido em `src/components/workspace/workspace.tsx` (useEffect lendo
+   `window.location.search` no mount — evita exigir Suspense boundary só
+   para isso). Coberto por `workspace.spec.ts` (teste de regressão) e
+   usado por `checkout.spec.ts` (entrada via Configurações).
+2. **Sufixos "/mo"/"yr" hardcoded em inglês no checkout** —
+   `src/components/checkout/checkout-flow.tsx` mostrava "/mo" e "yr" fixos
+   independente do idioma. Corrigido com novas chaves
+   `checkout.perMonth`/`checkout.perYear` nos 4 catálogos.
+3. **Colisão de rate-limit da própria suíte E2E** — a suíte completa faz
+   ~19 chamadas a /api/auth/signup e ~8 a /api/auth/login na mesma
+   "sessão" (mesmo IP aparente), contra limites de produção de 5/15min e
+   8/15min — o suficiente para a própria suíte disparar 429 em cascata
+   sem nenhum bug real envolvido. Corrigido tornando os limites
+   configuráveis (`config.auth.maxLoginAttempts`/`maxSignupAttempts`,
+   lendo `E2E_MAX_LOGIN_ATTEMPTS`/`E2E_MAX_SIGNUP_ATTEMPTS`, default
+   inalterado 8/5) e setando overrides generosos só em
+   `playwright.config.ts`'s `webServer.env` — produção não muda.
+
+## De-risco de seletores (sem servidor local para iterar ao vivo)
+Toda string/role usada nos 8 specs foi conferida byte a byte contra:
+`messages/pt-BR.json` (onboarding.*, auth.*, checkout.*, owner.tenants.*,
+owner.nav.*, settings.billing.*), os componentes-fonte
+(`onboarding-wizard.tsx`, `signup-form.tsx`, `login-form.tsx`,
+`sections.tsx`, `owner-panel.tsx`, `overlay.tsx`/ConfirmDialog,
+`registry.tsx`/SCREENS, `faq.tsx`) e o registry de telas do workspace
+(confirma `billing`/`settings` como chaves válidas de `?open=`). Nenhuma
+string foi assumida sem checar a fonte.
+
+## Prova de execução em navegador real (Playwright) — CI, não local
+Por diretiva do dono ("não precisa subir porta nem nada, foca no código" /
+"quando todas as fases tiverem feitas aí a gente sobe para verificar e
+testar"), a suíte NÃO foi executada localmente. Resolução: usar o
+GitHub Actions (`e2e` job novo em `.github/workflows/ci.yml`, `webServer`
+do Playwright sobe/derruba o processo sozinho dentro do runner da nuvem —
+nenhum servidor fica de pé na máquina local) como o ambiente de execução
+real. Prova de execução via CI anexada abaixo após o push desta branch:
+
+<<PREENCHIDO APÓS O RUN DO CI — ver seção "Execução real via GitHub Actions">>
