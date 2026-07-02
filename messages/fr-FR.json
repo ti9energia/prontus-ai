@@ -1355,7 +1355,9 @@
     },
     "backToPlans": "Choisir une autre offre",
     "perMonth": "/mois",
-    "perYear": "/an"
+    "perYear": "/an",
+    "stillProcessing": "Toujours en cours de traitement. Cela peut prendre quelques instants.",
+    "recheck": "Vérifier à nouveau"
   },
   "pwa": {
     "updateTitle": "Nouvelle version disponible",
