@@ -45,7 +45,9 @@ test.describe('Checkout', () => {
     await page.getByRole('button', { name: 'Confirmar e pagar' }).click();
 
     await expect(page.getByRole('heading', { name: 'Pague com boleto' })).toBeVisible();
-    await expect(page.getByText('Linha digitável')).toBeVisible();
+    // exact: true — the boleto subtitle text ("Copie a linha digitável ou…")
+    // also contains this substring and would otherwise match too.
+    await expect(page.getByText('Linha digitável', { exact: true })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Ver boleto' })).toBeVisible();
   });
 
@@ -96,7 +98,8 @@ test.describe('Checkout', () => {
     await page.goto('/pt-BR/checkout?plan=starter&cycle=monthly');
     const starterButton = page.getByRole('button', { name: /Starter/ });
     await expect(starterButton).toBeVisible();
-    await expect(starterButton).toContainText(/R\$\s?99,00/);
+    // Displayed as "R$ 99/mês" (no decimals) — (?!\d) avoids a false match on 999.
+    await expect(starterButton).toContainText(/R\$\s?99(?!\d)/);
   });
 
   test('billing entry point is reachable from within the app (Settings → Plan & billing → Assinar)', async ({

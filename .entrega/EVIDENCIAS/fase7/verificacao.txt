@@ -201,8 +201,47 @@ aninhado; não confirmado ainda. Ver `.entrega/DECISOES.md` 2026-07-02.
 Local pós-correção: typecheck ✅ (specs E2E só, sem novas mudanças em
 código de app desta vez).
 
-## Execução real via GitHub Actions — run 4 (após corrigir getByLabel('Senha'))
-<<PREENCHIDO APÓS O RUN>>
+## Execução real via GitHub Actions — run 4 (após corrigir getByLabel('Senha'), run 28620690713)
+RESULTADO: 13/49 falharam, **36 passaram** — salto real de 19→36 aprovados.
+Confirma a hipótese do run 3: a maior parte da instabilidade de
+`landing.spec.ts` era mesmo contenção de CI (2 workers competindo por 2
+núcleos, agravada pelos ~24 testes que batiam timeout de 45s+retry por
+causa do bug de seletor) — com o bug corrigido, quase todos esses testes
+passaram a ficar verdes. Zero `MISSING_MESSAGE` confirmado de novo.
 
-## Execução real via GitHub Actions — run 2 (após as correções)
-<<PREENCHIDO APÓS O RE-RUN DO CI>>
+Das 13 falhas restantes, investigadas uma a uma com o log completo (não
+por suposição):
+- 3 bugs no PRÓPRIO código de teste, corrigidos: `getByRole('alert')`
+  ambíguo com `#__next-route-announcer__` do Next.js (2 specs);
+  `getByText('Linha digitável')` ambíguo com o subtítulo do boleto;
+  regex de preço esperando "R$ 99,00" quando a UI mostra "R$ 99/mês"
+  (sem centavos).
+- 1 corrida de condição corrigida: teste do ⌘K disparava a tecla antes
+  do listener (anexado só após hidratação) existir — agora espera a
+  tablist ficar visível primeiro.
+- 1 limitação confirmada do axe-core (dequelabs/axe-core#3527): a regra
+  `aria-hidden-focus` não reconhece a propriedade `inert` como mitigação
+  — nosso `Sheet` (overlay.tsx) já usa `el.inert = !open` corretamente.
+  Falso positivo da ferramenta, não bug do app — regra excluída no teste
+  com justificativa.
+- 1 bug real de estrutura ARIA corrigido: `tab-strip.tsx` tinha o botão
+  "nova aba" como filho direto de `role="tablist"` (só `role="tab"` é
+  permitido ali) — movido para irmão do tablist.
+- 1 bug real de roteamento corrigido: `not-found.tsx` aninhado em
+  `[locale]/` nunca é acionado automaticamente pelo Next.js App Router
+  para sub-rotas sem página correspondente — limitação confirmada
+  (vercel/next.js#54980, #57938). Corrigido com uma rota catch-all
+  `[locale]/[...catchAll]/page.tsx` chamando `notFound()` explicitamente.
+- 3 achados reais, investigados e conscientemente NÃO corrigidos nesta
+  fase (risco de regressão maior que o bug, ou mudança que merece
+  iteração visual ao vivo) — registrados em `PENDENCIAS.md` #7, #8, #9:
+  login não checa onboarding pendente antes de mandar para `/app`; botão
+  de fechar aninhado em `role="tab"` (padrão comum, precisa redesenho);
+  contraste de `text-muted` abaixo de AA em uma linha de data (mudança
+  de token global, precisa revisão de design).
+
+Local pós-correção: typecheck ✅ lint ✅ (specs E2E + tab-strip.tsx +
+nova rota catch-all).
+
+## Execução real via GitHub Actions — run 5 (após os fixes acima)
+<<PREENCHIDO APÓS O RUN>>

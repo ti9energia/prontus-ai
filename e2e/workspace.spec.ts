@@ -15,6 +15,11 @@ test.describe('Workspace', () => {
 
   test('⌘K opens the command palette and can navigate to a screen', async ({ page }) => {
     await loginAsDemo(page);
+    // The keydown listener attaches after client-side hydration; waiting for
+    // the shell to actually paint avoids a race where the keypress fires
+    // before the listener exists (page.keyboard.press doesn't auto-retry
+    // like locator actions do).
+    await expect(page.getByRole('tablist').first()).toBeVisible();
     await page.keyboard.press('Control+k');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

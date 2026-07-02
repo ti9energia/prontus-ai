@@ -7,7 +7,9 @@ test.describe('Login', () => {
     await page.getByLabel('E-mail').fill('nao-existe@e2e.auronishealth.test');
     await page.getByLabel('Senha', { exact: true }).fill('senha-errada-qualquer');
     await page.getByRole('button', { name: 'Entrar' }).click();
-    await expect(page.getByRole('alert')).toBeVisible();
+    // Excludes Next.js's own #__next-route-announcer__, which also has
+    // role="alert" and is always present — see errors-and-regressions.spec.ts.
+    await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
     await expect(page).toHaveURL(/\/pt-BR\/login/); // stays put, no false navigation
   });
 
@@ -65,7 +67,9 @@ test.describe('Signup', () => {
     await page.getByLabel('Senha', { exact: true }).fill('outra-senha-bem-forte-123');
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
 
-    await expect(page.getByRole('alert')).toBeVisible();
+    // Excludes Next.js's own #__next-route-announcer__, which also has
+    // role="alert" and is always present — see errors-and-regressions.spec.ts.
+    await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible();
     await expect(page).toHaveURL(/\/pt-BR\/signup/); // did NOT navigate away
   });

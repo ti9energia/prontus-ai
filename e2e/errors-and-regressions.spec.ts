@@ -24,7 +24,10 @@ test.describe('Error paths & resilience', () => {
     await page.getByLabel(/^E-mail$/).fill('erro@e2e.auronishealth.test');
     await page.getByRole('button', { name: 'Confirmar e pagar' }).click();
 
-    await expect(page.getByRole('alert')).toBeVisible();
+    // Next.js's own route announcer (#__next-route-announcer__) also has
+    // role="alert" and is always present in the DOM — exclude it so this
+    // targets the app's actual error banner, not framework plumbing.
+    await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible();
     // Still on the setup form — no false "success", no blank/crashed screen.
     await expect(page.getByRole('button', { name: 'Confirmar e pagar' })).toBeVisible();
   });
@@ -39,7 +42,7 @@ test.describe('Error paths & resilience', () => {
     await page.getByLabel('Senha', { exact: true }).fill('senha-offline-teste-123');
     await page.getByRole('button', { name: 'Criar conta grátis' }).click();
 
-    await expect(page.getByRole('alert')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('[role="alert"]:not(#__next-route-announcer__)')).toBeVisible({ timeout: 10_000 });
   });
 
   test('security headers are present on every response (CSP, HSTS, frame-ancestors)', async ({ page }) => {
