@@ -114,6 +114,36 @@ testar"), a suíte NÃO foi executada localmente. Resolução: usar o
 GitHub Actions (`e2e` job novo em `.github/workflows/ci.yml`, `webServer`
 do Playwright sobe/derruba o processo sozinho dentro do runner da nuvem —
 nenhum servidor fica de pé na máquina local) como o ambiente de execução
-real. Prova de execução via CI anexada abaixo após o push desta branch:
+real.
 
-<<PREENCHIDO APÓS O RUN DO CI — ver seção "Execução real via GitHub Actions">>
+## Execução real via GitHub Actions — run 1 (PR #57, run 28602783913)
+RESULTADO: 34/49 falharam. Não foi maquiado nem re-executado às cegas —
+investigado a fundo (ver `.entrega/DECISOES.md` 2026-07-02, entrada "1º run
+real do E2E achou 3 bugs de produção genuínos"). Causa raiz: 3 bugs REAIS
+de produção, pré-existentes a esta pipeline, invisíveis a typecheck/lint/
+build/vitest porque nenhuma fase anterior renderizou estas páginas num
+navegador de verdade:
+1. `src/app/[locale]/layout.tsx`: `isLanding` usava denylist
+   (`!url.includes('/app') && !url.includes('/login')`) em vez de
+   allowlist — `/signup`, `/onboarding`, `/checkout` e `/owner` caíam por
+   omissão no catálogo de mensagens FILTRADO da landing, e qualquer
+   `useTranslations()` dessas 4 páginas lançava `MISSING_MESSAGE` no
+   servidor. Essas 4 páginas inteiras estavam quebradas em produção.
+2. `LANDING_NS` (mesmo arquivo) não incluía `encounter` (usado pela demo
+   animada do hero, `HeroDemo`) nem `notFound` (usado por `error.tsx`, o
+   error boundary de toda rota `[locale]`) — então o próprio fallback de
+   erro também quebrava ao tentar renderizar, e a página nunca
+   estabilizava (Playwright via elementos "detached from the DOM,
+   retrying" em loop até o timeout de 45s). Isso explica falhas em testes
+   sem relação aparente com o bug de origem (footer, FAQ, idioma).
+3. `src/components/ui/button.tsx`: `buttonVariants` primary/accent/danger
+   combinavam texto branco com fundos que medem 2.95:1 / 1.81:1 / 3.91:1
+   de contraste — abaixo do mínimo AA de 4.5:1 (cálculo com a fórmula real
+   de luminância relativa do WCAG, script em Node, não estimativa).
+
+Corrigidos os 3 (ver diff desta branch em `layout.tsx` e `button.tsx`).
+Local pós-correção: typecheck ✅ lint ✅ 349 testes ✅ build prod exit 0 ✅
+(sem nenhum `MISSING_MESSAGE` no log do build).
+
+## Execução real via GitHub Actions — run 2 (após as correções)
+<<PREENCHIDO APÓS O RE-RUN DO CI>>

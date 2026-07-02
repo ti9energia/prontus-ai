@@ -16,9 +16,27 @@ import { config } from '@/lib/config';
 // Namespaces needed by landing-page client components only.
 // 'pwa' is included even here because PWARegister's update prompt mounts
 // globally (every route) — the SW can surface an update on any page.
-const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta', 'pwa']);
+// 'encounter' is included because the hero's animated demo (HeroDemo) reuses
+// the real clinical encounter screen's strings (Transcrição/Médico/Paciente/
+// section titles) instead of duplicating them.
+// 'notFound' is included because not-found.tsx AND error.tsx (the segment
+// error boundary for every [locale] route, including landing) both read
+// notFound.back for their "back home" link — without it, error.tsx itself
+// throws MISSING_MESSAGE while rendering its own fallback UI, which is what
+// turned HeroDemo's original 'encounter' bug into unrecoverable render
+// churn instead of a clean fallback (see .entrega/DECISOES.md 2026-07-02).
+const LANDING_NS = new Set(['landing', 'common', 'nav', 'pricing', 'faq', 'meta', 'pwa', 'encounter', 'notFound']);
 
-// Return a filtered subset of messages when on a landing route (no /app or /login).
+// Product/app surfaces need the FULL message set, not the filtered landing
+// subset. IMPORTANT: every route added outside the pure marketing pages
+// (/, /contact, /privacy, /terms, /lgpd) must be listed here — otherwise it
+// silently gets LANDING_NS-only messages and throws MISSING_MESSAGE for any
+// namespace it needs. Real bug found via Playwright E2E in FASE 7: /signup,
+// /onboarding, /checkout and /owner were missing here, so those 4 entire
+// page flows were broken in production (see .entrega/DECISOES.md 2026-07-02).
+const PRODUCT_PATHS = ['/app', '/login', '/signup', '/onboarding', '/checkout', '/owner'];
+
+// Return a filtered subset of messages when on a landing route (no product surface).
 function pickMessages(messages: AbstractIntlMessages, isLanding: boolean): AbstractIntlMessages {
   if (!isLanding) return messages;
   return Object.fromEntries(
@@ -100,7 +118,7 @@ export default async function LocaleLayout({
   unstable_setRequestLocale(locale);
   const allMessages = await getMessages();
   const url = headers().get('x-invoke-path') ?? headers().get('next-url') ?? '';
-  const isLanding = !url.includes('/app') && !url.includes('/login');
+  const isLanding = !PRODUCT_PATHS.some((p) => url.includes(p));
   const messages = pickMessages(allMessages as AbstractIntlMessages, isLanding);
 
   return (
