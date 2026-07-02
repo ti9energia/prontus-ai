@@ -53,10 +53,18 @@ novas chaves i18n `checkout.stillProcessing`/`checkout.recheck` nos 4 catálogos
   `Cache-Control: immutable` automático do Next. Rotas de API dinâmicas
   (`dynamic = 'force-dynamic'`) não são cacheadas pelo Next.
 
-## Revalidação sob carga (k6)
-Os endpoints paginados continuam sendo alvos do k6 (`hitPatients`/`hitStats`).
-O re-run do k6 no CI desta branch confirma que a paginação não regride latência
-nem taxa de erro — ver a prova de execução real anexada ao PR (workflow k6.yml).
+## Revalidação sob carga (k6) — números reais (run 28627265952)
+Disparei o workflow k6 na branch da FASE 9 (`workflow_dispatch`). Verde — a
+paginação não regride, na verdade melhorou levemente (menos dados por resposta):
+
+| cenário | p95 (FASE 8) | p95 (FASE 9, paginado) | erros |
+|---|---|---|---|
+| smoke | 15.26ms | **14.19ms** | 0% (0/120) |
+| load  | 8.5ms   | **8.11ms**  | 0% (0/5008) |
+| spike | 383.69ms| **332.87ms**| 0% (0/10072) |
+
+checks 100% em todos (210 / 8764 / 20144). Confirma que trocar "coleção inteira"
+por "página de até 200" não custa latência e reduz `data_received` por chamada.
 
 ## Prova local
 typecheck ✅ · lint ✅ · 361 testes vitest ✅ (+12 novos) · i18n 929 chaves,
