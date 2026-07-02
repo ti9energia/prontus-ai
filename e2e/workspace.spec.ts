@@ -18,8 +18,11 @@ test.describe('Workspace', () => {
     // The keydown listener attaches after client-side hydration; waiting for
     // the shell to actually paint avoids a race where the keypress fires
     // before the listener exists (page.keyboard.press doesn't auto-retry
-    // like locator actions do).
+    // like locator actions do). Still flaky with just the tablist check —
+    // networkidle covers the trailing navigation Playwright sometimes logs
+    // as still "in flight" right as the keypress lands.
     await expect(page.getByRole('tablist').first()).toBeVisible();
+    await page.waitForLoadState('networkidle');
     await page.keyboard.press('Control+k');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

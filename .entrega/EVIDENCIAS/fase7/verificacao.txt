@@ -267,5 +267,34 @@ candidato à verificação conjunta pós-FASE 12. Todos os outros fluxos
 
 Local pós-correção: typecheck ✅ lint ✅.
 
-## Execução real via GitHub Actions — run 6 (após os 2 fixes acima)
+## Execução real via GitHub Actions — run 6 (após os 2 fixes acima, run 28622635064)
+RESULTADO: 9/49 falharam, 40 passaram. Os 2 fixes do run 5 funcionaram
+(e-mail duplicado resolvido; 404 mostra o CONTEÚDO certo agora). O fix
+`force-dynamic` para o status code do 404 NÃO funcionou — pesquisado a
+fundo, causa raiz real encontrada: `[locale]/loading.tsx` (compartilhado
+por toda a árvore `[locale]/`) transmite (stream) um esqueleto com
+status 200 antes do `notFound()` do catch-all executar — uma vez que o
+streaming começa, o status HTTP fica travado (comportamento documentado
+do Next.js App Router). Registrado com precisão em `PENDENCIAS.md` #11.
+
+**Decisão: ponto de parada da caça a bugs via rodadas de CI nesta fase.**
+6 rodadas completas (34→30→30→13→10→9 falhas), mais de uma dúzia de bugs
+reais confirmados e corrigidos. Os 9 restantes:
+- 6 testes de `landing.spec.ts` (incluindo o 404) — precisam de
+  profiling ao vivo (`PENDENCIAS.md` #10, #11).
+- 1 teste de onboarding-após-relogin — risco de regressão maior que o
+  bug se corrigido às cegas (`PENDENCIAS.md` #7).
+- 1 teste de a11y do workspace (nested-interactive + contraste de
+  `text-muted`) — mudanças de UX/design que merecem iteração visual
+  (`PENDENCIAS.md` #8, #9).
+- 1 teste de ⌘K — flaky, mitigado com `waitForLoadState('networkidle')`
+  no run 7, sem garantia de 100% (corrida de condição rara, não um bug
+  de produto).
+
+Todos os 9 itens têm causa-raiz documentada (quando encontrada) ou
+hipóteses já descartadas (quando não) em `.entrega/DECISOES.md` e
+`PENDENCIAS.md` — prontos para retomada rápida na verificação conjunta
+pós-FASE 12. Local pós-ajuste final: typecheck ✅ lint ✅.
+
+## Execução real via GitHub Actions — run 7 (confirmação final antes do merge)
 <<PREENCHIDO APÓS O RUN>>
