@@ -121,9 +121,13 @@ describe('store — listApiKeys / getApiKeyByHash / revokeApiKey', () => {
     expect(keys[0].prefix).toBe('sk_test_');
   });
 
-  it('finds a key by the seeded hash', () => {
-    const DEV_KEY_HASH = 'a3e4f9a2b7c8d1e5f6a4b3c2d9e8f7a1b0c5d4e3f2a1b9c8d7e6f5a4b3c2d1';
-    const found = dataModule.getApiKeyByHash(DEV_KEY_HASH);
+  it('finds the seeded dev key by the sha256 of its real plaintext token', () => {
+    // Derive the hash from the documented token instead of hardcoding it —
+    // this proves the seeded key is actually reachable by presenting
+    // `sk_test_auronis_dev`, which the previous hardcoded (and invalid) hash
+    // literal did NOT verify. Regression guard for the dead-seed-key bug.
+    const hash = createHash('sha256').update('sk_test_auronis_dev').digest('hex');
+    const found = dataModule.getApiKeyByHash(hash);
     expect(found).toBeDefined();
     expect(found!.orgId).toBe('ten_0001');
   });

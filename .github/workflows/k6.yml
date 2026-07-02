@@ -1,0 +1,45 @@
+name: Load tests (k6)
+
+# Kept separate from ci.yml: load tests are heavier and their numbers are
+# runner-dependent, so they don't belong in the per-push correctness gate.
+# Runs on pushes/PRs that touch the load-test surface, and on manual dispatch.
+on:
+  push:
+    branches: [main]
+    paths: ['k6/**', 'scripts/k6-ci.sh', '.github/workflows/k6.yml']
+  pull_request:
+    branches: [main]
+    paths: ['k6/**', 'scripts/k6-ci.sh', '.github/workflows/k6.yml']
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: 'Space-separated k6 scenarios (smoke load stress spike)'
+        required: false
+        default: 'smoke load spike'
+
+concurrency:
+  group: k6-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  k6:
+    name: k6 scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+      - name: Run k6 scenarios
+        run: bash scripts/k6-ci.sh
+        env:
+          K6_SCENARIOS: ${{ github.event.inputs.scenarios || 'smoke load spike' }}

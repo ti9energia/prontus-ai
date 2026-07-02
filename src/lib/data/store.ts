@@ -439,8 +439,16 @@ function seedAudit(): AuditEntry[] {
 
 // Deterministic SHA-256 equivalent for seeding (Node.js crypto; fine server-side)
 // Hashes are pre-computed to keep this module sync and free of node:crypto import.
-// sk_test_auronis_dev → sha256 in hex (computed offline, deterministic)
-const DEV_KEY_HASH = 'a3e4f9a2b7c8d1e5f6a4b3c2d9e8f7a1b0c5d4e3f2a1b9c8d7e6f5a4b3c2d1';
+// Real sha256(`sk_test_auronis_dev`) in hex — the seeded developer key of the
+// in-memory demo adapter. The previous literal here was a hand-written
+// placeholder (62 chars, not a valid 64-char sha256, and not the hash of any
+// token) — so the seeded "dev key" could never authenticate. In production
+// mode (`next start`) the `sk_test_*` dev bypass is off, which meant the whole
+// public v1 API was unreachable with the seed data. This is the DEMO surface
+// (same trust boundary as the DEMO_MODE login): the token only unlocks the
+// shared demo dataset, and a real deploy uses Postgres where this seed doesn't
+// apply. Verify: node -e "require('crypto').createHash('sha256').update('sk_test_auronis_dev').digest('hex')"
+const DEV_KEY_HASH = 'e0a766a4470f0f3008c304a57b3552e2a343fe3027ec7d3c427930202e834fe0';
 
 function seedApiKeys(): ApiKey[] {
   const now = new Date().toISOString();
