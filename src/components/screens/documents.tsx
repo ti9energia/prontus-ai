@@ -28,7 +28,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { ConfirmDialog, Modal } from '@/components/ui/overlay';
-import { EmptyState } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
+import { mariEmptyLines } from '@/lib/mari';
 import { toast } from '@/lib/toast';
 import { formatDate, cn } from '@/lib/utils';
 import type { MemedMedication, MemedPrescription } from '@/lib/connectors';
@@ -439,7 +440,7 @@ export function DocumentsScreen() {
       </div>
 
       {docs.length === 0 ? (
-        <EmptyState icon={<FileText className="h-6 w-6" />} title={tc('states.empty')} description={t('subtitle')} />
+        <MariEmptyState narration={mariEmptyLines(locale).documents} title={tc('states.empty')} description={t('subtitle')} />
       ) : (
         <Table>
           <thead>

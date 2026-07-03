@@ -19,7 +19,7 @@ import {
   getCurrentUser,
   agentRecommendations,
 } from '@/lib/data';
-import { impactFromStore } from '@/lib/mari';
+import { impactFromStore, mariEmptyLines } from '@/lib/mari';
 import type { Encounter, EncounterStatus } from '@/lib/types';
 import { openTab, type ScreenKey } from '@/lib/workspace';
 import { ScreenContainer, ScreenHeader, StatCard } from './_kit';
@@ -27,7 +27,7 @@ import { Avatar } from '@/components/ui/misc';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SegmentedControl } from '@/components/ui/misc';
-import { EmptyState } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
 import { formatLongDate, formatTime, formatCurrency, cn } from '@/lib/utils';
 
 const STATUS_TONE: Record<EncounterStatus, React.ComponentProps<typeof Badge>['tone']> = {
@@ -193,8 +193,8 @@ export function TodayScreen({ paneId }: { paneId: string }) {
 
       {/* list */}
       {filtered.length === 0 ? (
-        <EmptyState
-          icon={<CalendarDays className="h-6 w-6" />}
+        <MariEmptyState
+          narration={mariEmptyLines(locale).today}
           title={tc('states.empty')}
           description={t('subtitle', { count: encounters.length })}
           action={

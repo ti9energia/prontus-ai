@@ -35,6 +35,8 @@ import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/input';
 import { ConfirmDialog, Modal, Sheet } from '@/components/ui/overlay';
 import { EmptyState } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
+import { mariEmptyLines } from '@/lib/mari';
 import { toast } from '@/lib/toast';
 import { formatDate, formatTime, timeAgo, cn } from '@/lib/utils';
 
@@ -128,8 +130,8 @@ export function PatientsScreen({ paneId }: { paneId: string }) {
       />
 
       {filtered.length === 0 ? (
-        <EmptyState
-          icon={<Search className="h-6 w-6" />}
+        <MariEmptyState
+          narration={mariEmptyLines(locale).patients}
           title={tc('states.empty')}
           description={t('subtitle')}
         />
