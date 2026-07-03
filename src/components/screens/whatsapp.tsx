@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { type Locale } from '@/i18n/routing';
 import { ScreenContainer, ScreenHeader } from './_kit';
-import { Avatar, Switch, IconButton } from '@/components/ui/misc';
+import { Switch, IconButton } from '@/components/ui/misc';
+import { MariPortrait } from '@/components/brand/mari';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/input';
@@ -224,7 +225,7 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
                   {t('persona')}
                 </p>
                 <div className="flex items-center gap-3.5 rounded-xl border border-hairline bg-surface/60 p-3.5">
-                  <Avatar name={personaName} hue={172} size={48} />
+                  <MariPortrait size={48} />
                   <div className="min-w-0">
                     <p className="font-medium text-ink/90">{personaName}</p>
                     <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted">
@@ -325,7 +326,7 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
           {/* chat header */}
           <header className="flex items-center gap-3 border-b border-hairline bg-[#075E54]/[0.04] px-4 py-3">
             <span className="relative">
-              <Avatar name={personaName} hue={172} size={40} />
+              <MariPortrait size={40} />
               <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-[#25D366]" />
             </span>
             <div className="min-w-0 flex-1">

@@ -8,7 +8,7 @@ import { Link, useRouter } from '@/i18n/routing';
 import { useSession } from '@/lib/auth/client';
 import { Aurora } from '@/components/landing/aurora';
 import { Logo, LogoMark } from '@/components/brand/logo';
-import { MariFace } from '@/components/brand/mari';
+import { MariPortrait } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
 import { Input, Field } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -168,7 +168,7 @@ export function SignupForm() {
               )}”
             </blockquote>
             <div className="mt-6 flex items-center gap-3">
-              <MariFace size={48} />
+              <MariPortrait size={48} />
               <div>
                 <p className="text-sm font-semibold text-white">Mari</p>
                 <p className="text-xs text-white/60">

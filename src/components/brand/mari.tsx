@@ -1,7 +1,9 @@
 'use client';
 
 import * as React from 'react';
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
+import { MARI_ASSETS, mariAlt } from '@/lib/mari';
 
 export type MariState = 'idle' | 'listening' | 'thinking' | 'speaking';
 
@@ -125,27 +127,28 @@ export function MariFace({
   );
 }
 
-/** Mari's portrait core: the user's 3D render (`/brand/mari.png`) when present,
- *  else the vector MariFace. Drop a square PNG at `public/brand/mari.png` and Mari's
- *  real face appears everywhere automatically — no code change needed. */
+/** Mari's portrait core: the owner's photoreal render (`/assets/mari/mari-avatar.png`),
+ *  with the vector MariFace as a graceful fallback if the image ever fails to load. */
 export function MariPortrait({
   size = 96,
   rim = true,
   className,
-  title = 'Mari',
+  title,
 }: {
   size?: number;
   rim?: boolean;
   className?: string;
   title?: string;
 }) {
+  const locale = useLocale();
+  const alt = title ?? mariAlt(locale);
   const [photo, setPhoto] = React.useState(true);
-  if (!photo) return <MariFace size={size} rim={rim} className={className} title={title} />;
+  if (!photo) return <MariFace size={size} rim={rim} className={className} title={alt} />;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/brand/mari.png"
-      alt={title}
+      src={MARI_ASSETS.avatar}
+      alt={alt}
       width={size}
       height={size}
       draggable={false}
