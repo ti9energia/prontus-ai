@@ -42,6 +42,9 @@ export async function generateMetadata({
     creator: 'Auronis Health',
     publisher: 'Auronis Health',
     appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Auronis Health' },
+    // `appleWebApp` only emits <meta name="apple-mobile-web-app-capable">; modern
+    // browsers deprecated that in favour of the standard name, so emit both.
+    other: { 'mobile-web-app-capable': 'yes' },
     formatDetection: { telephone: false },
     alternates: {
       canonical: `/${locale}`,

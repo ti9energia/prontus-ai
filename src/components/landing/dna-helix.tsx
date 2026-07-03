@@ -57,15 +57,22 @@ export function DnaHelix() {
       return s;
     };
     const makeHalo = (rgb: string) => {
+      // Accept Tailwind-style space-separated channels ("82 224 220") or commas
+      // and emit comma-form rgba(). Canvas addColorStop REJECTS the mixed form
+      // `rgba(82 224 220, 0.85)` (space channels + comma alpha) with a
+      // SyntaxError — that threw on mount and crashed the hero into the route
+      // error boundary ("Algo deu errado"). Normalizing to `82,224,220` is valid
+      // in every browser (unlike the modern `82 224 220 / a` slash syntax).
+      const ch = rgb.trim().split(/[\s,]+/).join(',');
       const SS = 72;
       const s = document.createElement('canvas');
       s.width = s.height = SS;
       const c = s.getContext('2d');
       if (c) {
         const g = c.createRadialGradient(SS / 2, SS / 2, 0, SS / 2, SS / 2, SS / 2);
-        g.addColorStop(0, `rgba(${rgb},0.85)`);
-        g.addColorStop(0.35, `rgba(${rgb},0.34)`);
-        g.addColorStop(1, `rgba(${rgb},0)`);
+        g.addColorStop(0, `rgba(${ch},0.85)`);
+        g.addColorStop(0.35, `rgba(${ch},0.34)`);
+        g.addColorStop(1, `rgba(${ch},0)`);
         c.fillStyle = g;
         c.beginPath();
         c.arc(SS / 2, SS / 2, SS / 2, 0, Math.PI * 2);
@@ -75,10 +82,24 @@ export function DnaHelix() {
     };
 
     // Strand A = brand turquoise, strand B = chromed silver (the two antiparallel backbones).
-    const beadCyan = makeBead('rgba(194,246,244,0.95)', 'rgba(20,200,196,0.92)', 'rgba(10,132,128,0.85)');
-    const beadSilver = makeBead('rgba(244,246,249,0.95)', 'rgba(197,204,214,0.92)', 'rgba(106,114,128,0.85)');
-    const haloCyan = makeHalo('82 224 220');
-    const haloSilver = makeHalo('214 221 231');
+    // Sprite init is guarded: this canvas is a purely decorative, aria-hidden
+    // background — if any gradient/color ever fails to build it must degrade to
+    // "no background", never bubble to the route error boundary and take the
+    // whole hero down (as the malformed halo color did).
+    let beadCyan: HTMLCanvasElement;
+    let beadSilver: HTMLCanvasElement;
+    let haloCyan: HTMLCanvasElement;
+    let haloSilver: HTMLCanvasElement;
+    try {
+      beadCyan = makeBead('rgba(194,246,244,0.95)', 'rgba(20,200,196,0.92)', 'rgba(10,132,128,0.85)');
+      beadSilver = makeBead('rgba(244,246,249,0.95)', 'rgba(197,204,214,0.92)', 'rgba(106,114,128,0.85)');
+      haloCyan = makeHalo('82 224 220');
+      haloSilver = makeHalo('214 221 231');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('[dna-helix] decorative sprite init failed; skipping background', err);
+      return;
+    }
 
     const resize = () => {
       w = window.innerWidth;

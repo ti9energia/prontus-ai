@@ -14,14 +14,34 @@ const LANDING_INTERACT_FIXME =
 
 test.describe('Landing', () => {
   test('loads with hero, primary CTA, and no console errors', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('pageerror', (e) => errors.push(e.message));
+    const pageErrors: string[] = [];
+    const consoleErrors: string[] = [];
+    page.on('pageerror', (e) => pageErrors.push(e.message));
+    // Also capture console.error: React CATCHES errors thrown in effects (like
+    // the DnaHelix hero canvas) and reports them via console.error + the route
+    // error boundary — they never surface as a `pageerror`. Listening only for
+    // pageerror is exactly why the malformed-color addColorStop crash (which
+    // rendered "Algo deu errado" for users) slipped through this test.
+    page.on('console', (m) => {
+      if (m.type() === 'error') consoleErrors.push(m.text());
+    });
 
     await page.goto('/pt-BR');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Teste gratuitamente' }).first()).toBeVisible();
+    // Let the hero canvas effect run (it builds gradients on mount) so a throw
+    // there would have been reported by now.
+    await page.waitForTimeout(500);
 
-    expect(errors, `unexpected page errors: ${errors.join('; ')}`).toEqual([]);
+    expect(pageErrors, `unexpected page errors: ${pageErrors.join('; ')}`).toEqual([]);
+    // Targeted at render/crash signatures so incidental console noise can't flake
+    // the test, but a real hero/boundary crash fails it.
+    const crashes = consoleErrors.filter((e) =>
+      /addColorStop|could not be parsed as a color|route-error|Minified React error|The above error occurred/i.test(
+        e,
+      ),
+    );
+    expect(crashes, `render/boundary crash in console: ${crashes.join(' | ')}`).toEqual([]);
   });
 
   test('primary CTA goes to login (trial-first funnel, not straight to signup)', async ({ page }) => {
