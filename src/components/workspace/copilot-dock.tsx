@@ -87,7 +87,18 @@ export function CopilotDock({
       setChat((c) => [...c, { role: 'assistant', content: reply }]);
       if (voiceOn) speak(reply, locale);
     } catch {
-      setChat((c) => [...c, { role: 'assistant', content: '…' }]);
+      setChat((c) => [
+        ...c,
+        {
+          role: 'assistant',
+          content: L(
+            'Não consegui responder agora — a conexão falhou. Tente de novo.',
+            "I couldn't respond just now — the connection failed. Please try again.",
+            '我暂时无法回复——连接失败，请重试。',
+            "Je n'ai pas pu répondre — la connexion a échoué. Réessayez.",
+          ),
+        },
+      ]);
     } finally {
       setLoading(false);
     }
