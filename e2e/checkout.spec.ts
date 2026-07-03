@@ -124,4 +124,35 @@ test.describe('Checkout', () => {
     await expect(page.getByRole('heading', { name: 'Assinar plano' })).toBeVisible();
     await expect(page.getByText('2 meses grátis')).toBeVisible();
   });
+
+  test('landing pricing: self-serve plan CTAs link straight to /checkout (never dead-end at /login)', async ({
+    page,
+  }) => {
+    await page.goto('/pt-BR');
+    const pricing = page.locator('#pricing');
+    await pricing.scrollIntoViewIfNeeded();
+    // starter + pro are self-serve → checkout with the plan preselected; the
+    // whole point of the fix is that a plan click carries the plan instead of
+    // dumping the visitor on a context-less /login.
+    await expect(pricing.locator('a[href*="/checkout?plan=starter"]')).toHaveCount(1);
+    await expect(pricing.locator('a[href*="/checkout?plan=pro"]')).toHaveCount(1);
+    await expect(pricing.locator('a[href*="/login"]')).toHaveCount(0);
+  });
+
+  test('a plan chosen before signup survives account creation → lands on checkout, not onboarding', async ({
+    page,
+  }) => {
+    test.setTimeout(45_000);
+    const stamp = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    const next = encodeURIComponent('/checkout?plan=pro&cycle=monthly');
+    await page.goto(`/pt-BR/signup?next=${next}`);
+    await page.getByLabel('Nome da clínica').fill(`Clínica E2E ${stamp}`);
+    await page.getByLabel('Seu nome').fill(`Dr. Teste ${stamp}`);
+    await page.getByLabel('E-mail').fill(`plan-first.${stamp}@e2e.auronishealth.test`);
+    await page.getByLabel('Senha', { exact: true }).fill(`senha-e2e-${stamp}-forte`);
+    await page.getByRole('button', { name: 'Criar conta grátis' }).click();
+    // Lands on checkout with the pre-chosen plan — NOT bounced to /onboarding.
+    await expect(page).toHaveURL(/\/pt-BR\/checkout\?plan=pro/);
+    await expect(page.getByRole('heading', { name: 'Assinar plano' })).toBeVisible();
+  });
 });
