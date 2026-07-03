@@ -10,7 +10,6 @@ import {
   ChevronDown,
   TrendingUp,
   Gauge,
-  CheckCircle2,
   AlertTriangle,
   RefreshCw,
   FileWarning,
@@ -26,7 +25,8 @@ import { ScreenContainer, ScreenHeader } from './_kit';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea } from '@/components/ui/input';
-import { EmptyState } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
+import { mariEmptyLines } from '@/lib/mari';
 import { cn, formatCurrency, formatPercent } from '@/lib/utils';
 import { type Locale } from '@/i18n/routing';
 
@@ -164,8 +164,9 @@ export function AgentScreen({ paneId }: { paneId: string }) {
       />
 
       {items.length === 0 ? (
-        <EmptyState
-          icon={<CheckCircle2 className="h-7 w-7" />}
+        <MariEmptyState
+          status="success"
+          narration={mariEmptyLines(locale).allClear}
           title={t('noRecommendations')}
           description={t('subtitle')}
         />

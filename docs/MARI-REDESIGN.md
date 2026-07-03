@@ -46,10 +46,10 @@ fora de `lib/config` · não quebrar i18n (927×4) / testes / a11y / tema · man
   - [x] Etapa 1: `src/lib/mari/design.ts`, `src/components/brand/mari-assistant.tsx`, keyframes `mari-*`
   - [x] Etapa 2: `MariPortrait` → novo avatar (atualiza FAB, dock, owner console); login/signup; WhatsApp
   - Diferido p/ etapas seguintes: top-bar (ícone Sparkles), onboarding (ícone Bot), rename legado `iris→mari`
-- [~] **Bloco 2 — UX** (Etapa 3)
+- [x] **Bloco 2 — UX** (Etapa 3) — 2a+2b+2c concluídos
   - [x] 2a — `MariAssistant` adotado no **FAB** (floating) e no **dock** com status ao vivo (ouvindo/pensando/falando); removido o overlay manual de barras _(PR #71)_
-  - [x] 2b — Mari na **landing** (seção "Conheça a Mari" com `mari-full`, `meet-mari.tsx`) + **onboarding** (ícone Bot → rosto da Mari no card "sua copilota") _(branch `feat/mari-presentation`)_
-  - [ ] 2c — empty states narrados pela Mari (#17): novo componente cliente `MariEmptyState` (`EmptyState` é server-friendly, não pode usar `useLocale`) + adoção em telas-chave
+  - [x] 2b — Mari na **landing** (seção "Conheça a Mari" com `mari-full`, `meet-mari.tsx`) + **onboarding** (ícone Bot → rosto da Mari no card "sua copilota") _(PR #72)_
+  - [x] 2c — **empty states narrados pela Mari** (#17): novo componente cliente `MariEmptyState` (`src/components/brand/mari-empty-state.tsx`) + falas centralizadas em `mariEmptyLines()` (`lib/mari/design.ts`, 6 chaves × 4 idiomas). Adotado em **today**, **agent** (status `success` = "tudo em dia"), **patients** (busca), **documents**, **faturamento** (glosa) e **exams**. Tabelas admin neutras (billing, agenda, equipe, marketplace, signature, requisicao, templates, reports) seguem com o `EmptyState` genérico — presença da Mari é intencional, não ruído _(branch `feat/mari-empty-states`)_
 - [ ] **Bloco 3 — Segurança/revisão** (Etapa 4): banner de revisão (#1/#12) · destaque de medicações
 - [ ] **Bloco 4+ — Features** (Etapa 5), na ordem da triagem abaixo
 

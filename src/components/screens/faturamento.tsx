@@ -11,7 +11,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SegmentedControl } from '@/components/ui/misc';
-import { Progress, EmptyState } from '@/components/ui/feedback';
+import { Progress } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
+import { mariEmptyLines } from '@/lib/mari';
 import { toast } from '@/lib/toast';
 import { formatCurrency, formatPercent } from '@/lib/utils';
 
@@ -188,8 +190,8 @@ export function FaturamentoScreen({ paneId }: { paneId: string }) {
       </div>
 
       {guides.length === 0 ? (
-        <EmptyState
-          icon={<Banknote className="h-6 w-6" />}
+        <MariEmptyState
+          narration={mariEmptyLines(locale).billing}
           title={L('Nenhuma guia neste filtro', 'No claims match this filter', '此筛选下没有单据', 'Aucune feuille pour ce filtre')}
           description={L(
             'Ajuste o filtro para ver a fila completa da equipe.',

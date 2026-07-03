@@ -12,7 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/input';
 import { Modal, Sheet } from '@/components/ui/overlay';
-import { EmptyState } from '@/components/ui/feedback';
+import { MariEmptyState } from '@/components/brand/mari-empty-state';
+import { mariEmptyLines } from '@/lib/mari';
 import { toast } from '@/lib/toast';
 import { formatDate, cn } from '@/lib/utils';
 
@@ -120,7 +121,7 @@ export function ExamsScreen({ paneId, params }: { paneId: string; params?: Recor
       />
 
       {filtered.length === 0 ? (
-        <EmptyState icon={<FlaskConical className="h-6 w-6" />} title={tc('states.empty')} description={t('subtitle')} />
+        <MariEmptyState narration={mariEmptyLines(locale).exams} title={tc('states.empty')} description={t('subtitle')} />
       ) : (
         <Table>
           <thead>

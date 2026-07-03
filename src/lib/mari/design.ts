@@ -115,3 +115,56 @@ export function mariCopy(locale: string) {
     ),
   };
 }
+
+/**
+ * Mari's narrated empty states, localized. Each line is her first-person voice
+ * for a blank surface — serene, clinical and useful, reinforcing what she does
+ * there. Consumed by `<MariEmptyState/>` so the persona reads the same on every
+ * screen; the generic `<EmptyState/>` stays for neutral admin tables.
+ */
+export function mariEmptyLines(locale: string) {
+  return {
+    today: L(
+      locale,
+      'Sua agenda está livre por aqui. Assim que as consultas chegarem, começo a preparar tudo com você.',
+      'Your schedule is clear here. As soon as visits come in, I’ll start preparing everything with you.',
+      '这里的日程还空着。一旦有问诊，我就会和您一起做好准备。',
+      'Votre agenda est libre ici. Dès que des consultations arrivent, je prépare tout avec vous.',
+    ),
+    patients: L(
+      locale,
+      'Não encontrei nenhum paciente com esses critérios. Podemos ajustar a busca ou cadastrar um novo.',
+      'I couldn’t find any patient matching this. We can adjust the search or add a new one.',
+      '我没有找到符合条件的患者。我们可以调整搜索，或新增一位。',
+      'Je n’ai trouvé aucun patient correspondant. On peut ajuster la recherche ou en ajouter un.',
+    ),
+    documents: L(
+      locale,
+      'Ainda não há documentos por aqui. Ao finalizar uma consulta, organizo receitas, atestados e laudos neste lugar.',
+      'No documents here yet. When you finish a visit, I’ll organize prescriptions, certificates and reports right here.',
+      '这里还没有文档。完成问诊后，我会在此整理处方、证明和报告。',
+      'Aucun document ici pour l’instant. À la fin d’une consultation, j’organise ordonnances, certificats et comptes-rendus ici.',
+    ),
+    exams: L(
+      locale,
+      'Nenhum exame por aqui ainda. Quando você solicitar, acompanho os resultados e sinalizo o que precisa de atenção.',
+      'No exams here yet. Once you order them, I’ll track the results and flag what needs attention.',
+      '这里还没有检查。您开单后，我会跟踪结果并标记需要注意的地方。',
+      'Aucun examen ici pour l’instant. Dès que vous en demandez, je suis les résultats et signale ce qui mérite attention.',
+    ),
+    billing: L(
+      locale,
+      'Nenhuma guia nesta visão. Reviso cada guia antes do envio para reduzir o risco de glosa.',
+      'No claims in this view. I review each claim before it’s sent to reduce denial risk.',
+      '此视图下没有单据。我会在提交前审核每一张单据，以降低被退费的风险。',
+      'Aucune feuille dans cette vue. Je révise chaque feuille avant l’envoi pour réduire le risque de rejet.',
+    ),
+    allClear: L(
+      locale,
+      'Está tudo em dia. Não encontrei pendências agora — sigo de olho e aviso se algo precisar de você.',
+      'Everything’s up to date. I found nothing pending right now — I’ll keep watch and let you know if anything needs you.',
+      '一切都是最新的。目前没有待办事项——我会持续留意，有需要会通知您。',
+      'Tout est à jour. Rien en attente pour l’instant — je reste attentive et vous préviens si besoin.',
+    ),
+  };
+}
