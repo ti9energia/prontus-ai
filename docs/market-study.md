@@ -39,7 +39,7 @@
 | Chaves de API públicas | ✅ | ✅ **real** — SHA-256 hasheadas, geração/revogação via painel do dono |
 | Copiloto + agente autônomo | emergente | ✅ **(à frente)** · streaming real com `ANTHROPIC_API_KEY` |
 | RBAC + multi-tenant + painel do dono | ✅ | ✅ |
-| i18n (4 idiomas) | raro | ✅ **(diferencial)** · 750+ chaves, paridade em CI |
+| i18n (4 idiomas) | raro | ✅ **(diferencial)** · 927 chaves, paridade em CI |
 | Arquitetura modular/desacoplável | varia | ✅ |
 
 ## 3. Lacunas para virar referência (estado atual pós-Blocos 10-21)

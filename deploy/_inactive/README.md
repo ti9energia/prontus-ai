@@ -1,13 +1,17 @@
-# Alvos de deploy inativos (parqueados)
+# Alvos de deploy parqueados
 
-O deploy de produção do Auronis Health é a **Vercel** (manual: `vercel --prod`, região `gru1`).
-O `Dockerfile` na raiz é mantido para portabilidade / auto-hospedagem em qualquer host Node.
+A produção do Auronis Health roda em **duas frentes ativas**: **Vercel** (manual: `vercel --prod`,
+região `gru1`) e **Fly.io** (`flyctl deploy` → `auronis-health.fly.dev`) — o `fly.toml` **ativo**
+fica na **raiz** do repo (ver [`DEPLOY-FLY.md`](../../DEPLOY-FLY.md)). O `Dockerfile` na raiz é
+mantido para portabilidade / auto-hospedagem em qualquer host Node.
 
-Estes manifestos foram **parqueados** aqui para não serem detectados/ativados acidentalmente
-(ex.: o `render.yaml` tinha `autoDeploy: true` na raiz, o que criaria uma segunda produção a
-cada push, em região errada). Para reativar um deles, mova o arquivo de volta à raiz do repo e
-**antes** revise: região (`gru`/São Paulo, não `oregon`), `autoDeploy`, e as variáveis de
-ambiente (`AUTH_SECRET`, `ANTHROPIC_API_KEY`, `NEXT_PUBLIC_SITE_URL`).
+Esta pasta guarda manifestos **alternativos/inativos**, para não serem detectados nem ativados
+por acidente:
 
-- `fly.toml` — Fly.io (região `gru`)
-- `render.yaml` — Render (atenção: estava com `autoDeploy: true` e região `oregon`)
+- `render.yaml` — **Render (parqueado).** Estava na raiz com `autoDeploy: true` e região `oregon`,
+  o que criaria uma segunda produção em região errada a cada push. Para reativar, mova o arquivo de
+  volta à raiz e **antes** revise: região (`gru`/São Paulo, não `oregon`), `autoDeploy` e as
+  variáveis de ambiente (`AUTH_SECRET`, `ANTHROPIC_API_KEY`, `NEXT_PUBLIC_SITE_URL`).
+- `fly.toml` — **cópia histórica.** O Fly.io agora é uma frente ativa cujo `fly.toml` canônico está
+  na **raiz** do repo. Esta cópia é mantida só como referência e **não deve ser usada** (o manifesto
+  válido é o da raiz).
