@@ -5,6 +5,7 @@ import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { ArrowUp, Mic, ShieldCheck, ThumbsDown, ThumbsUp, Volume2, VolumeX, X } from 'lucide-react';
 import { Sheet } from '@/components/ui/overlay';
 import { MariPortrait } from '@/components/brand/mari';
+import { MariAssistant, type MariStatus } from '@/components/brand/mari-assistant';
 import { useSpeech, useSpeechRecognition } from '@/lib/voice';
 import type { ScreenKey } from '@/lib/workspace';
 import { detectNavIntent } from '@/lib/mari';
@@ -141,26 +142,16 @@ export function CopilotDock({
       ? L('Falando…', 'Speaking…', '正在朗读…', 'Réponse vocale…')
       : t('subtitle');
 
+  // Mari's live presence: speaking (TTS) → listening (mic) → thinking (awaiting reply) → idle.
+  const mariStatus: MariStatus = speaking ? 'speaking' : listening ? 'listening' : loading ? 'thinking' : 'idle';
+
   return (
     <Sheet open={open} onClose={onClose} side="right" className="max-w-[420px]">
       <div className="flex h-full flex-col">
         {/* header */}
         <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <div className={cn('relative shrink-0 rounded-full transition-shadow', speaking && 'shadow-glow')}>
-              <MariPortrait size={40} />
-              {(speaking || listening) && (
-                <span className="absolute -bottom-0.5 -right-0.5 flex items-end gap-px rounded-full bg-card px-1 py-0.5 shadow-sm">
-                  {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className="h-2 w-[2px] origin-bottom rounded-full bg-brand-500 animate-eq"
-                      style={{ animationDelay: `${i * 0.12}s` }}
-                    />
-                  ))}
-                </span>
-              )}
-            </div>
+            <MariAssistant variant="dock" size={44} status={mariStatus} className="shrink-0" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold leading-tight">{t('title')}</p>
               <p className="truncate text-2xs text-muted">{statusText}</p>

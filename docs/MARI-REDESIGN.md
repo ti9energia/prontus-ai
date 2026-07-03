@@ -46,7 +46,9 @@ fora de `lib/config` · não quebrar i18n (927×4) / testes / a11y / tema · man
   - [x] Etapa 1: `src/lib/mari/design.ts`, `src/components/brand/mari-assistant.tsx`, keyframes `mari-*`
   - [x] Etapa 2: `MariPortrait` → novo avatar (atualiza FAB, dock, owner console); login/signup; WhatsApp
   - Diferido p/ etapas seguintes: top-bar (ícone Sparkles), onboarding (ícone Bot), rename legado `iris→mari`
-- [ ] **Bloco 2 — UX** (Etapa 3): `MariAssistant` com status nas superfícies-chave · empty states narrados (#17) · Mari na landing/onboarding (mari-full)
+- [~] **Bloco 2 — UX** (Etapa 3)
+  - [x] 2a — `MariAssistant` adotado no **FAB** (floating) e no **dock** com status ao vivo (ouvindo/pensando/falando); removido o overlay manual de barras _(branch `feat/mari-live-presence`)_
+  - [ ] 2b — empty states narrados pela Mari (#17) · Mari na landing/onboarding (`mari-full`) · onboarding troca ícone Bot
 - [ ] **Bloco 3 — Segurança/revisão** (Etapa 4): banner de revisão (#1/#12) · destaque de medicações
 - [ ] **Bloco 4+ — Features** (Etapa 5), na ordem da triagem abaixo
 
