@@ -5,6 +5,11 @@ import { loginAsDemo, signUpFreshUser } from './helpers';
 /** Fails the test with the violation list inlined in the assertion message —
  *  a bare boolean pass/fail would force digging through a separate report. */
 async function expectNoSeriousViolations(page: import('@playwright/test').Page) {
+  // Ensure any in-flight navigation (e.g. the post-signUpFreshUser redirect on
+  // the onboarding/checkout scans) has settled before axe evaluates — otherwise
+  // analyze() races the navigation and throws "Execution context was destroyed",
+  // a flake unrelated to real accessibility.
+  await page.waitForLoadState('load');
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa'])
     // aria-hidden-focus: axe-core doesn't recognize the `inert` DOM property
