@@ -127,7 +127,7 @@ docker run -p 3000:3000 \
 
 O `Dockerfile` usa build multi-stage com `output: standalone` (~120 MB final). Health check em `GET /api/health`.
 
-> **Fly.io / Render:** os manifestos estao parqueados em `deploy/_inactive/` para evitar deploy acidental. Para usar, mova o arquivo de volta e revise regiao (Sao Paulo, nao Oregon) e `autoDeploy`.
+> **Fly.io:** ativo — o `fly.toml` fica na **raiz** do repo (`flyctl deploy` → `auronis-health.fly.dev`; ver `DEPLOY-FLY.md`). **Render:** manifesto parqueado em `deploy/_inactive/` (tinha `autoDeploy: true` em regiao errada); para usar, mova o `render.yaml` de volta e revise regiao (Sao Paulo, nao Oregon) e `autoDeploy`.
 
 ---
 

@@ -338,7 +338,7 @@ export function WhatsappScreen({ paneId }: { paneId: string }) {
             <IconButton
               aria-label={t('number')}
               onClick={() => {
-                navigator.clipboard?.writeText('+55 11 99000-0000');
+                navigator.clipboard?.writeText(number);
                 toast.success(localized('numberCopied', locale));
               }}
             >

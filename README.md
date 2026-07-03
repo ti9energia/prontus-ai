@@ -39,7 +39,7 @@ Para logar e testar (owner / médico / cadastro / demo) → **[`ACESSOS.md`](ACE
 ## O que tem dentro
 
 - **Landing** (4 idiomas) com calculadora de ROI/glosa, preços, FAQ, legal — fundo vivo de **DNA**.
-- **Workspace clínico** (`/app`) — 22 telas: consulta/gravação, prontuário, guias TISS,
+- **Workspace clínico** (`/app`) — 23 telas: consulta/gravação, prontuário, guias TISS,
   pacientes, exames, receituário, assinatura, agente, automações, configurações…
 - **Painel do dono** (`/owner`) — MRR, tenants, planos, feature flags, console da Mari.
 - **Checkout** PIX/boleto/cartão (Mercado Pago + sandbox), **API pública v1** paginada, **PWA**.

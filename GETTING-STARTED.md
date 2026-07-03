@@ -64,7 +64,7 @@ src/
 ├─ components/
 │  ├─ landing/           hero, seções, pricing, faq, aurora…
 │  ├─ workspace/         abas + split + rail + ⌘K + copilot (registry modular de telas)
-│  ├─ screens/           as 22 telas do produto (cada "aba" = um módulo — ver 0D)
+│  ├─ screens/           as 23 telas do produto (cada "aba" = um módulo — ver 0D)
 │  ├─ owner/             painel do dono (0C) + 9 seções
 │  └─ ui/                design system (button, card, badge, input, overlay…)
 ├─ i18n/                 routing + request (next-intl)

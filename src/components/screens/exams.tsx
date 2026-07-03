@@ -41,7 +41,9 @@ const PRESET_PANELS = [
   { name: 'Triglicérides', code: '40301260' },
   { name: 'TSH ultrassensível', code: '40301050' },
   { name: 'T4 livre', code: '40301060' },
-  { name: 'Urina I (EAS)', code: '40301050' },
+  // Urina I (EAS) tinha o MESMO código do TSH (40301050) — marcar um selecionava
+  // os dois e o pedido saía errado. Código TUSS distinto de urinálise.
+  { name: 'Urina I (EAS)', code: '40304361' },
 ];
 
 export function ExamsScreen({ paneId, params }: { paneId: string; params?: Record<string, string> }) {
