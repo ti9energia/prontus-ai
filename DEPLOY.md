@@ -38,33 +38,48 @@ App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente 
 
 | Variavel | Para que | Sem ela |
 |---|---|---|
-| `ASR_PROVIDER` | `whisper` ou `azure-speech` | Demo fallback (script fixo) |
-| `ASR_API_KEY` | Chave do provedor | — |
-| `ASR_ENDPOINT` | Endpoint personalizado (Azure ou Whisper self-hosted) | Endpoint padrao do provedor |
+| `ASR_PROVIDER` | `whisper` (OpenAI) ou `azure` | Demo fallback (script fixo) |
+| `OPENAI_API_KEY` | Chave da OpenAI (Whisper) — usada quando `ASR_PROVIDER=whisper` | — |
+| `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION` | Credenciais do Azure Speech — usadas quando `ASR_PROVIDER=azure` | — |
 
 ### Prescricao eletronica (Memed)
 
 | Variavel | Para que | Sem ela |
 |---|---|---|
-| `MEMED_CLIENT_ID` | ID do cliente Memed | Stub funcional |
-| `MEMED_CLIENT_SECRET` | Segredo Memed | — |
-| `MEMED_BASE_URL` | Ambiente Memed (`https://api.memed.com.br` ou sandbox) | `https://api.memed.com.br` |
+| `MEMED_TOKEN` | Token da API Memed | Stub funcional |
+| `MEMED_PUBLIC_TOKEN` | Token publico Memed (widget/integracao) | — |
+| `MEMED_API_URL` | Ambiente Memed | `https://api.memed.com.br/v1` |
 
 ### Assinatura ICP-Brasil (A1/A3)
 
 | Variavel | Para que | Sem ela |
 |---|---|---|
-| `ICP_PKCS12_BASE64` | Certificado A1 em base64 (`base64 cert.p12`) | Fingerprint mock |
-| `ICP_PKCS12_PASSWORD` | Senha do .p12 | — |
-| `ICP_TSA_URL` | URL do servidor de carimbo do tempo | Carimbo local simulado |
+| `ICP_PKCS12_PATH` | Caminho do certificado A1 (`.pfx`/`.p12`) | Fingerprint mock |
+| `ICP_P11_LIB` | Biblioteca PKCS#11 para token A3 | Fingerprint mock |
 
 ### WhatsApp Cloud API (Meta)
 
 | Variavel | Para que | Sem ela |
 |---|---|---|
-| `WHATSAPP_ACCESS_TOKEN` | Token permanente da Meta Cloud API | Simulador local |
+| `WHATSAPP_TOKEN` | Token permanente da Meta Cloud API | Simulador local |
 | `WHATSAPP_PHONE_ID` | ID do numero verificado | — |
+| `WHATSAPP_API_URL` | Endpoint da Graph API | `https://graph.facebook.com/v19.0` |
 | `WHATSAPP_WEBHOOK_SECRET` | Segredo para verificacao do webhook da Meta | — |
+
+### Pagamento / Checkout (Mercado Pago)
+
+| Variavel | Para que | Sem ela |
+|---|---|---|
+| `MERCADOPAGO_ACCESS_TOKEN` | Token do Mercado Pago (um `TEST-...` ja ativa o sandbox real) | Checkout 100% em sandbox mock |
+| `MERCADOPAGO_WEBHOOK_SECRET` | Valida a assinatura `x-signature` dos webhooks | — |
+| `MERCADOPAGO_API_URL` | Endpoint da API do Mercado Pago | `https://api.mercadopago.com` |
+
+### E-mail transacional (Resend)
+
+| Variavel | Para que | Sem ela |
+|---|---|---|
+| `RESEND_API_KEY` | Envia e-mails reais (boas-vindas, confirmacao/falha de pagamento) | E-mails apenas registrados em log estruturado |
+| `EMAIL_FROM` | Remetente usado nos envios reais | `Auronis Health <no-reply@auronishealth.com>` |
 
 ### Autenticacao e demo
 
@@ -72,7 +87,7 @@ App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente 
 |---|---|---|
 | `OWNER_EMAIL` | E-mail de login do dono (super-admin) | `owner@auronishealth.com` |
 | `OWNER_NAME` | Nome exibido no painel do dono | `Owner` |
-| `OWNER_PASSWORD_HASH` | Hash bcrypt da senha do dono (use `npx bcrypt-cli hash 'SuaSenha'`) | — (bloqueado sem hash) |
+| `OWNER_PASSWORD_HASH` | Hash scrypt da senha do dono (gere com `node scripts/hash-password.mjs 'SuaSenha'`) | — (bloqueado sem hash) |
 | `TEST_DOCTOR_EMAIL` | Conta de teste do lado medico | `marianabarreto@…` |
 | `TEST_DOCTOR_PASSWORD` | Senha da conta de teste | `auronis-demo` |
 | `DEMO_MODE` | Atalho de demo via API (`POST /api/auth/login {"demo":true}`); sem botao visivel na UI; defina `false` em producao | habilitado |

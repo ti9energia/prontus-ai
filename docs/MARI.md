@@ -35,7 +35,7 @@ falar de **negócio**. Ela é a sua sócia operacional.
 ### Modelo de acesso, custo e segurança
 - **Login separado e fail-closed.** O dono entra por um login próprio; **não há
   atalho de dono dentro do workspace do médico**. O acesso de owner só é honrado
-  com `AUTH_SECRET` real configurado (veja [`auth-model`](../README.md)).
+  com `AUTH_SECRET` real configurado (veja [`auth-model`](./ARCHITECTURE.md)).
 - **Dados sensíveis.** O console expõe dados de toda a plataforma — por isso a
   rota `/api/owner/chat` exige sessão **owner** (403 para qualquer outro).
 - **Nunca inventa número.** A Mari responde a partir dos dados reais da

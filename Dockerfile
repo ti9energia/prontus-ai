@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Aureon Health — production image (Next.js standalone). ~120MB final.
+# Auronis Health — production image (Next.js standalone). ~120MB final.
 
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat

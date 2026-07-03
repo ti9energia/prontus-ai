@@ -11,9 +11,9 @@ Authorization: Bearer sk_live_xxx
 x-api-key: sk_live_xxx
 ```
 
-Demo-grade: any token starting with `sk_` is accepted. In production this must be
-validated against stored, **hashed** keys scoped to a tenant
-(see `src/lib/api/auth.ts`).
+Keys are validated by **SHA-256 hash** lookup against stored, tenant-scoped keys
+(see `src/lib/api/auth.ts`). In non-production only, a `sk_test_*` token is
+accepted without a database lookup so local dev/testing needs no seeded key.
 
 Missing/invalid keys return `401`:
 

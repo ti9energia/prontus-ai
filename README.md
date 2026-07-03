@@ -1,48 +1,75 @@
-# Documentação das Plataformas — Portfólio de IA
+# Auronis Health
 
-Specs de produto e engenharia para o Claude Code construir cada plataforma. **Tudo nasce em 4 idiomas (i18n desde o dia 1): 🇧🇷 pt-BR (padrão) · 🇺🇸 en · 🇨🇳 zh-CN · 🇫🇷 fr-FR.**
+**Escriba clínico de IA.** O médico atende; a **Mari** (copiloto de IA) ouve a consulta e
+devolve o **prontuário estruturado** e a **guia TISS** prontos para revisão e assinatura —
+recuperando horas de documentação e reduzindo glosa.
 
-## Toda plataforma já nasce com (capacidades transversais)
-- 🤖 **Copiloto de IA** que entende o sistema inteiro e ajuda em tudo — em toda tela. (`0A`)
-- 🧠 **Agente Autônomo** de apoio à decisão (monitora, recomenda, executa dentro de alçadas). (`0A`)
-- 🧩 **AI Core ("Cérebro") desacoplado e treinável** num servidor próprio, **plugável a outros sistemas** (connectors) e ligado de volta à plataforma. (`0A`)
-- 💬 **Controle por WhatsApp**: IA com nome + número; "faça isso / me traga isso" puxa e age no sistema. (`0B`)
-- 👑 **Painel do Dono do SaaS**: usuários, planos, editor da landing, feature flags e a **matriz de acessos**. (`0C`)
-- 🔌 **Arquitetura modular e API fácil**: cada aba/função é um módulo desacoplável (ligar/desligar/extrair). (`0D`)
+> App Next.js 14 (App Router), TypeScript estrito, 4 idiomas, PWA. Front e back são **o
+> mesmo app**. Roda **100% em memória** sem nenhuma variável de ambiente.
 
-## Como ler (ordem para o Claude Code)
-1. **`00-PADRAO-Documentacao-e-i18n.md`** — stack, monorepo, design system, convenções de API e a **estratégia de i18n nos 4 idiomas** (obrigatória).
-2. **Arquitetura transversal** (vale para todas, não se repete nas specs):
-   - **`0A`** — IA: Cérebro, Copiloto e Agente Autônomo (desacoplado, treinável, connectors).
-   - **`0B`** — Controle por WhatsApp.
-   - **`0C`** — Painel do Dono do SaaS + Modelo de Acessos (papéis, planos, entitlements, editor da landing).
-   - **`0D`** — Arquitetura Modular & API fácil (desacoplar qualquer aba/função).
-3. Depois, a **spec da plataforma** que vai construir (template: visão geral → personas → arquitetura de informação → UX por tela → front end → back end → fluxos ponta a ponta → i18n → landing page → modelo/métricas → roadmap; + seções 12/13 com IA, agente, WhatsApp e papéis específicos).
+**Produção:** [prontus-ai.vercel.app](https://prontus-ai.vercel.app) · Espelho Fly:
+[auronis-health.fly.dev](https://auronis-health.fly.dev)
 
-## Plataformas documentadas
-| # | Plataforma | Tipo | Em uma linha |
-|---|------------|------|--------------|
-| 01 | **BoletoVerify** | SaaS antifraude | Audita boletos em tempo real e bloqueia o golpe do boleto alterado. |
-| 02 | **Auronis Health** | AI Agent (saúde) | Escriba clínico: prontuário + guia TISS a partir do áudio da consulta. |
-| 03 | **CartórioFast** | TaaS | Agente que emite certidões/averbações em portais de cartório. |
-| 04 | **MiCA-Compliance** | RegTech DeFi | Compliance AML em tempo real (MiCA/SEC) com detecção por GNN. |
-| 05 | **ConstellaPath** | SaaS space-tech | Otimiza manobras de satélites LEO (Deep RL) para evitar colisão. |
-| 06 | **SeloHumano** | Infra/Protocolo | Prova-de-humano para a economia de agentes. |
-| 07 | **Legado.ai** | AI SaaS | Gêmeo de conhecimento para sucessão/M&A de PMEs. |
-| 08 | **Brecha.ai** | AI SaaS | GPS de oportunidade regulatória: detecta janelas e executa a jogada. |
-| 09 | **AtaViva** | AI Agent | Reunião vira ação executada nos sistemas, com rollback. |
-
-## Como as peças se conectam (mapa mental)
 ```
-Cada ABA/FUNÇÃO = um MÓDULO (0D) que registra: rota(API) + tela(UI) + tools(IA) + permissões(0C) + eventos
-       │
-       ├─ aparece na UI conforme plano+papel (0C)
-       ├─ vira comando no WhatsApp (0B)
-       ├─ é operável pelo Copiloto/Agente via tools (0A)
-       └─ é extraível para serviço próprio pelo contrato (0D)
-
-AI CORE (0A) é um serviço SEPARADO: você pode destacá-lo, treinar num servidor e plugar a outros sistemas.
-PAINEL DO DONO (0C) controla planos, acessos, landing, IA e WhatsApp de todos os tenants.
+fala da consulta → transcrição (ASR) → Mari estrutura → prontuário + guia TISS
+                                                       → revisão → assinatura (ICP) → convênio
 ```
 
-> Domínios específicos do Brasil (TISS, cartórios, Febraban, normas) são **módulos de mercado** (`market: BR`); a interface e a documentação saem nos 4 idiomas, e a arquitetura permite plugar outros mercados.
+---
+
+## Início rápido
+
+```bash
+npm install
+npm run dev          # http://localhost:3000  (sem env vars: store 100% em memória)
+```
+
+| Comando | O quê |
+|---|---|
+| `npm run build` | build de produção (standalone) |
+| `npm run typecheck` · `npm run lint` | tipos · lint |
+| `npm test` | Vitest (unit/rota) |
+| `npm run test:e2e` | Playwright (sobe o servidor sozinho) |
+| `node scripts/i18n-check.mjs` | paridade dos 4 idiomas |
+
+Para logar e testar (owner / médico / cadastro / demo) → **[`ACESSOS.md`](ACESSOS.md)**.
+
+---
+
+## O que tem dentro
+
+- **Landing** (4 idiomas) com calculadora de ROI/glosa, preços, FAQ, legal — fundo vivo de **DNA**.
+- **Workspace clínico** (`/app`) — 22 telas: consulta/gravação, prontuário, guias TISS,
+  pacientes, exames, receituário, assinatura, agente, automações, configurações…
+- **Painel do dono** (`/owner`) — MRR, tenants, planos, feature flags, console da Mari.
+- **Checkout** PIX/boleto/cartão (Mercado Pago + sandbox), **API pública v1** paginada, **PWA**.
+
+## Pronto vs pré-pronto (honesto)
+
+| Camada | Estado |
+|---|---|
+| Front, auth (HMAC/scrypt), API v1, PWA, CI | **Pronto** |
+| Pagamentos, ASR, Memed, ICP, WhatsApp, Mari/Claude, Postgres | **Pré-pronto** — seam real + mock/sandbox; ativa com credencial |
+| Persistência entre restarts | precisa `DATABASE_URL` (sem ele, store in-memory) |
+
+Nenhuma integração finge estar viva sem credencial. Detalhe em [`.entrega/INTEGRACOES.md`](.entrega/INTEGRACOES.md).
+
+---
+
+## Deploy
+
+- **Vercel** (produção): `vercel --prod` → `prontus-ai.vercel.app`
+- **Fly.io** (container): `flyctl deploy` → `auronis-health.fly.dev` (ver [`DEPLOY-FLY.md`](DEPLOY-FLY.md))
+- Deploy é **manual** (não é auto-deploy por git). Variáveis: [`DEPLOY.md`](DEPLOY.md) · [`.env.example`](.env.example)
+
+---
+
+## Documentação
+
+| Doc | Para quê |
+|---|---|
+| **[`docs/SISTEMA.md`](docs/SISTEMA.md)** | **visão canônica** — o que é, arquitetura, **cores/design**, o motivo do DNA |
+| [`GETTING-STARTED.md`](GETTING-STARTED.md) | setup detalhado + tour |
+| [`ACESSOS.md`](ACESSOS.md) | tipos de acesso e como logar |
+| [`docs/MARI.md`](docs/MARI.md) · [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/MODULARITY.md`](docs/MODULARITY.md) | Mari · arquitetura · modularidade |
+| [`.entrega/`](.entrega/) | trilha de entrega do pipeline (MAPA, DECISÕES, PENDÊNCIAS, RELATÓRIO-FINAL…) |

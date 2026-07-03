@@ -27,9 +27,14 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
       <LandingNav />
       <main>
         <Hero />
-        {/* Solid base below the hero so the ambient DNA stays a hero-only motif and never
-            bleeds behind body copy — every section below stays fully legible. */}
-        <div className="relative bg-bg">
+        {/* The ambient DNA now runs behind the WHOLE page (owner request). This
+            scrim is a translucent gradient instead of a solid base: the fixed
+            DnaHelix shows through strongest just under the hero and calms toward
+            the text-dense bottom, so it reads as one continuous molecule while
+            body copy stays legible (sections already use bg-surface/40·bg-card/60
+            + blur, which protects text locally). Tune legibility here: raise the
+            opacities (…/88) to mute the DNA, lower them (…/55) to intensify it. */}
+        <div className="relative bg-gradient-to-b from-bg/50 via-bg/72 to-bg/88">
           <LogoCloud />
           <Stats />
           <ROICalculator />
