@@ -70,8 +70,11 @@ fly open /api/health
 
 ## Notas
 - `NEXT_PUBLIC_SITE_URL` é inlinado no build — se mudar o domínio, redeploie.
-- O `fly.toml` usa `auto_stop_machines` (economiza custo — a máquina hiberna sem
-  tráfego e acorda no 1º request; o 1º hit fica ~1-2s mais lento).
+- O `fly.toml` usa `auto_stop_machines = "off"` — a máquina fica **sempre ligada**
+  (sem cold-start). Antes, com auto_stop ligado, ela hibernava quando ociosa e o
+  1º request depois falhava por alguns segundos → o usuário via "Não foi possível
+  carregar. Tente de novo." e recarregava. Com "off" + `min_machines_running = 1`
+  há sempre 1 máquina quente. Custo de 1 shared-cpu-1x/512MB 24/7 é desprezível.
 - Health check em `/api/health` (sempre 200; ver `src/app/api/health/route.ts`).
 - Integrações reais (Mercado Pago, Memed, ICP, WhatsApp, Mari/Anthropic) ativam
   ao setar as chaves via `fly secrets set` — sem elas, mock/sandbox honesto.
