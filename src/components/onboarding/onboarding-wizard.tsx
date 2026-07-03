@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from '@/i18n/routing';
 import { LogoMark } from '@/components/brand/logo';
+import { MariPortrait } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Field, Input, Select } from '@/components/ui/input';
@@ -333,13 +334,13 @@ export function OnboardingWizard() {
 
               <div className="mt-6 space-y-3">
                 {[
-                  { icon: Mic, title: t('tour.f1Title'), desc: t('tour.f1Desc') },
-                  { icon: FileCheck2, title: t('tour.f2Title'), desc: t('tour.f2Desc') },
-                  { icon: Bot, title: t('tour.f3Title'), desc: t('tour.f3Desc') },
+                  { icon: Mic, mari: false, title: t('tour.f1Title'), desc: t('tour.f1Desc') },
+                  { icon: FileCheck2, mari: false, title: t('tour.f2Title'), desc: t('tour.f2Desc') },
+                  { icon: Bot, mari: true, title: t('tour.f3Title'), desc: t('tour.f3Desc') },
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 rounded-lg border border-hairline bg-surface/50 p-3">
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-600/10 text-brand-600">
-                      <f.icon className="h-4.5 w-4.5" />
+                    <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-brand-600/10 text-brand-600">
+                      {f.mari ? <MariPortrait size={30} rim={false} /> : <f.icon className="h-4.5 w-4.5" />}
                     </div>
                     <div>
                       <p className="text-sm font-medium">{f.title}</p>

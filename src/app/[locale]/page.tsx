@@ -14,6 +14,7 @@ import {
   Testimonials,
 } from '@/components/landing/sections';
 import { ROICalculator } from '@/components/landing/roi-calculator';
+import { MeetMari } from '@/components/landing/meet-mari';
 import { Pricing } from '@/components/landing/pricing';
 import { FAQ } from '@/components/landing/faq';
 import { JsonLd } from '@/components/seo/json-ld';
@@ -41,6 +42,7 @@ export default function LandingPage({ params: { locale } }: { params: { locale: 
           <Features />
           <How />
           <ForWhom />
+          <MeetMari />
           <Security />
           <Pricing />
           <Testimonials />
