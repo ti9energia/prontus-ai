@@ -189,7 +189,7 @@ export function HeroDemo() {
                       className={
                         'mt-0.5 max-w-[92%] rounded-2xl px-3 py-1.5 text-xs+ leading-snug ' +
                         (line.who === 'doctor'
-                          ? 'bg-brand-600 text-white'
+                          ? 'bg-brand-700 text-white'
                           : 'bg-ink/[0.06] text-ink')
                       }
                     >

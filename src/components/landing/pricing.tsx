@@ -77,7 +77,7 @@ export function Pricing() {
                   )}
                 >
                   {plan.popular && (
-                    <span className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-brand-600 px-3 py-1 text-2xs font-semibold text-white shadow-md">
+                    <span className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-brand-700 px-3 py-1 text-2xs font-semibold text-white shadow-md">
                       <Sparkles className="h-3 w-3" /> {t('popular')}
                     </span>
                   )}

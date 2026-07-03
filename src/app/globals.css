@@ -32,7 +32,12 @@
     --elevated: 31 35 45;
     --ink: 246 248 250;
     --muted: 156 166 180;
-    --subtle: 116 128 142;
+    /* 128 140 154 (#808C9A) clears WCAG AA 4.5:1 on every dark surface —
+       5.08:1 on --card #171A21, 4.59:1 on the lightest --elevated. The old
+       116 128 142 sat at 4.32:1 on --card (below AA), which axe flagged
+       intermittently on the landing (pendência #9). Still clearly dimmer than
+       --muted (#9CA6B4, 7.07:1) so the ink→muted→subtle hierarchy holds. */
+    --subtle: 128 140 154;
     --line: 38 43 54;
     --hairline: 28 32 41;
     --ring: 20 200 196;

@@ -280,7 +280,7 @@ export function How() {
                 <div className="relative text-center">
                   <div className="relative z-10 mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-hairline bg-card shadow-md">
                     <Icon className="h-6 w-6 text-brand-600" />
-                    <span className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-brand-600 font-mono text-2xs font-bold text-white">
+                    <span className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-brand-700 font-mono text-2xs font-bold text-white">
                       {i + 1}
                     </span>
                   </div>
