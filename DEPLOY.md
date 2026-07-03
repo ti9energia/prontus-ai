@@ -75,7 +75,7 @@ App Next.js 14 (App Router) pronto para deploy. **Nenhuma variável de ambiente 
 | `OWNER_PASSWORD_HASH` | Hash bcrypt da senha do dono (use `npx bcrypt-cli hash 'SuaSenha'`) | — (bloqueado sem hash) |
 | `TEST_DOCTOR_EMAIL` | Conta de teste do lado medico | `marianabarreto@…` |
 | `TEST_DOCTOR_PASSWORD` | Senha da conta de teste | `auronis-demo` |
-| `DEMO_MODE` | Botao "Entrar na demonstracao"; defina `false` em producao | habilitado |
+| `DEMO_MODE` | Atalho de demo via API (`POST /api/auth/login {"demo":true}`); sem botao visivel na UI; defina `false` em producao | habilitado |
 
 ---
 
