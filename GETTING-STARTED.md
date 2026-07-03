@@ -1,7 +1,7 @@
 # Auronis Health — Aplicação (guia de execução)
 
 Escriba clínico de IA: da fala da consulta ao **prontuário estruturado** e à **guia TISS** — sem digitar.
-Esta é a implementação **full-stack, premium e executável** das specs deste repositório (`00`, `0A`–`0D`, `02-Auronis-Health`).
+Esta é a implementação **full-stack, premium e executável** do Auronis Health. Visão completa do sistema (arquitetura, cores, o que faz) em [`docs/SISTEMA.md`](docs/SISTEMA.md).
 
 > **Stack:** Next.js 14 (App Router) · React 18 · TypeScript · Tailwind · next-intl (4 idiomas) · Recharts · Prisma (Postgres/in-memory seam) · Claude API (opcional).
 
@@ -64,7 +64,7 @@ src/
 ├─ components/
 │  ├─ landing/           hero, seções, pricing, faq, aurora…
 │  ├─ workspace/         abas + split + rail + ⌘K + copilot (registry modular de telas)
-│  ├─ screens/           as 11 telas do produto (cada "aba" = um módulo — ver 0D)
+│  ├─ screens/           as 22 telas do produto (cada "aba" = um módulo — ver 0D)
 │  ├─ owner/             painel do dono (0C) + 9 seções
 │  └─ ui/                design system (button, card, badge, input, overlay…)
 ├─ i18n/                 routing + request (next-intl)

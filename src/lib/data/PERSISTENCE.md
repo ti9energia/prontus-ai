@@ -51,7 +51,7 @@ src/lib/data/
   __tests__/     ← testes de contrato (importam de ./store diretamente — ok)
 
 prisma/
-  schema.prisma  ← 12 modelos relacionais (Tenant, User, Patient, Encounter, ...)
+  schema.prisma  ← 14 modelos relacionais (Tenant, User, Patient, Encounter, ...)
   seed.ts        ← seed idempotente espelhando os dados de demonstração do store
 ```
 
@@ -71,9 +71,9 @@ prisma/
 - `pgFire()` engole erros de escrita (loga, não joga exceção) — o usuário nunca vê erro
   de banco em operações de UI; as escritas falhas são registradas no log do servidor.
 
-## 4. Schema Prisma (12 modelos)
+## 4. Schema Prisma (14 modelos)
 
 `Tenant · User · Plan · Subscription · FeatureFlag · Patient · Encounter · ClinicalNote
-TissGuide · Template · AuditLog · ConnectorSecret`
+TissGuide · Template · LabOrder · AuditLog · ApiKey · ConnectorSecret`
 
 Provider: `postgresql` — URL via `env("DATABASE_URL")`.

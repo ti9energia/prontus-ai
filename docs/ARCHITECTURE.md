@@ -10,8 +10,8 @@ em outros nichos, veja [`AI-COPILOT-BLUEPRINT.md`](./AI-COPILOT-BLUEPRINT.md).
 ## 1. Visão geral
 
 Aplicação **Next.js (App Router)** full-stack, multilíngue (pt-BR · en · zh-CN ·
-fr-FR), com sessões assinadas, um data store em memória (mock/seed hoje) e a Mari
-como camada de IA.
+fr-FR), com sessões assinadas, uma camada de dados com seam Postgres/in-memory
+(`src/lib/data/index.ts`) e a Mari como camada de IA.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -24,7 +24,7 @@ como camada de IA.
 │                         /api/owner/chat · /api/health        │
 ├──────────────┬───────────────────────┬──────────────────────┤
 │  Mari        │  Data store           │  Connectors          │
-│  (serviço)   │  (mock → DB futuro)   │  (sistemas externos) │
+│  (serviço)   │  (Postgres/in-mem)    │  (sistemas externos) │
 └──────────────┴───────────────────────┴──────────────────────┘
 ```
 
@@ -34,7 +34,7 @@ como camada de IA.
   (mesmo código no middleware edge e nos route handlers). `src/lib/auth/**`.
 - **API** — route handlers finos em `src/app/api/**`.
 - **Mari** — `src/lib/mari/service.ts` (a *seam* de IA).
-- **Data** — `src/lib/data/store.ts` (hoje seed em memória; amanhã um banco).
+- **Data** — `src/lib/data/index.ts` (seam): Postgres via Prisma (`postgres.ts`) quando `DATABASE_URL` está definido, senão o store em memória (`store.ts`).
 - **Connectors** — `src/lib/connectors/types.ts` (contrato para sistemas externos).
 - **i18n** — `next-intl`, mensagens em `messages/*.json`.
 
