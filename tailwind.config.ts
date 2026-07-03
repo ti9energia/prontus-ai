@@ -166,6 +166,23 @@ const config: Config = {
           '0%, 100%': { opacity: '0.55' },
           '50%': { opacity: '1' },
         },
+        // Mari copilot presence — subtle, premium, clinical.
+        'mari-aura': {
+          '0%, 100%': { opacity: '0.45', transform: 'scale(0.98)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.04)' },
+        },
+        'mari-pulse': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.6' },
+          '50%': { transform: 'scale(1.3)', opacity: '1' },
+        },
+        'mari-listening': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.55' },
+          '50%': { transform: 'scale(1.5)', opacity: '1' },
+        },
+        'mari-thinking': {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '50%': { transform: 'translateY(-3px) rotate(-1deg)' },
+        },
       },
       animation: {
         aurora: 'aurora 16s ease-in-out infinite',
@@ -180,6 +197,10 @@ const config: Config = {
         'spin-slow': 'spin-slow 9s linear infinite',
         eq: 'eq 0.9s ease-in-out infinite',
         'glow-pulse': 'glow-pulse 2.6s ease-in-out infinite',
+        'mari-aura': 'mari-aura 3.6s ease-in-out infinite',
+        'mari-pulse': 'mari-pulse 2.4s ease-in-out infinite',
+        'mari-listening': 'mari-listening 1.2s ease-in-out infinite',
+        'mari-thinking': 'mari-thinking 1.9s ease-in-out infinite',
       },
       transitionTimingFunction: {
         spring: 'cubic-bezier(0.16, 1, 0.3, 1)',

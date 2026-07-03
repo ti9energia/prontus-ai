@@ -8,3 +8,4 @@ export * from './intents';
 export * from './impact';
 export * from './briefing';
 export * from './payer-rules';
+export * from './design';
