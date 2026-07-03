@@ -104,7 +104,7 @@ export function CheckoutFlow({ initialPlan, initialCycle }: { initialPlan?: stri
       if (!res.ok) {
         setSubmitting(false);
         if (res.status === 401) {
-          router.push(`/login?next=/checkout?plan=${planId}&cycle=${cycle}`);
+          router.push(`/login?next=${encodeURIComponent(`/checkout?plan=${planId}&cycle=${cycle}`)}`);
           return;
         }
         const code = data?.error?.code;

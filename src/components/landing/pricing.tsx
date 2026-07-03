@@ -16,12 +16,11 @@ const PLANS: {
   popular?: boolean;
   features: string[];
   cta: 'ctaStart' | 'ctaContact';
-  href: '/login' | '/contact';
   variant: 'outline' | 'primary' | 'secondary';
 }[] = [
-  { id: 'starter', features: ['live', 'note', 'copilot'], cta: 'ctaStart', href: '/login', variant: 'outline' },
-  { id: 'pro', popular: true, features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaStart', href: '/login', variant: 'primary' },
-  { id: 'scale', features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaContact', href: '/contact', variant: 'secondary' },
+  { id: 'starter', features: ['live', 'note', 'copilot'], cta: 'ctaStart', variant: 'outline' },
+  { id: 'pro', popular: true, features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaStart', variant: 'primary' },
+  { id: 'scale', features: ['live', 'note', 'tiss', 'gloss', 'copilot', 'whatsapp'], cta: 'ctaContact', variant: 'secondary' },
 ];
 
 export function Pricing() {
@@ -66,6 +65,12 @@ export function Pricing() {
           {PLANS.map((plan, i) => {
             const base = PLAN_BY_ID[plan.id].monthly;
             const monthly = cycle === 'yearly' ? yearlyMonthlyPrice(base) : base;
+            // Self-serve plans go straight to checkout with the plan + billing
+            // cycle preselected; if the visitor isn't signed in, middleware
+            // bounces them to login and keeps ?next= so they return here after
+            // auth. "scale" is sales-assisted → contact.
+            const href =
+              plan.cta === 'ctaContact' ? '/contact' : `/checkout?plan=${plan.id}&cycle=${cycle}`;
             return (
               <Reveal key={plan.id} delay={i * 0.07}>
                 <div
@@ -101,7 +106,7 @@ export function Pricing() {
                   </ul>
 
                   <Link
-                    href={plan.href}
+                    href={href}
                     className={buttonVariants({ variant: plan.variant, size: 'lg', className: 'mt-7 w-full' })}
                   >
                     {t(plan.cta as 'ctaStart')}

@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AlertCircle, ArrowLeft, ArrowRight, Building2, Eye, EyeOff, Lock, Mail, ShieldCheck, User } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { Link, useRouter } from '@/i18n/routing';
 import { useSession } from '@/lib/auth/client';
 import { Aurora } from '@/components/landing/aurora';
@@ -28,6 +29,14 @@ export function SignupForm() {
     locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Allowlist only — an unvalidated ?next= would be an open redirect. Mirrors
+  // login-form: /checkout and /onboarding are the sole legitimate cross-flow
+  // bounce-backs (a plan chosen before signup rides here as ?next=/checkout…).
+  const rawNext = searchParams.get('next');
+  const next =
+    rawNext && (rawNext.startsWith('/checkout') || rawNext.startsWith('/onboarding')) ? rawNext : null;
+  const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : '/login';
   const { loading: sessionLoading, authed, role } = useSession();
   const [orgName, setOrgName] = React.useState('');
   const [name, setName] = React.useState('');
@@ -42,8 +51,8 @@ export function SignupForm() {
   // Already signed in? No point showing the signup form — bounce to the app
   // (mirrors login-form.tsx's own redirect-when-authed behavior).
   React.useEffect(() => {
-    if (!sessionLoading && authed) router.replace(role === 'owner' ? '/owner' : '/app');
-  }, [sessionLoading, authed, role, router]);
+    if (!sessionLoading && authed) router.replace(next ?? (role === 'owner' ? '/owner' : '/app'));
+  }, [sessionLoading, authed, role, router, next]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,7 +115,9 @@ export function SignupForm() {
       }
 
       void data;
-      router.push('/onboarding');
+      // A plan chosen before signup (?next=/checkout…) sends the new account
+      // straight to checkout; an organic signup still goes to onboarding.
+      router.push(next ?? '/onboarding');
     } catch {
       setError(
         L(
@@ -216,7 +227,7 @@ export function SignupForm() {
                     '该邮箱已注册。',
                     'Cet e-mail possède déjà un compte. ',
                   )}
-                  <Link href="/login" className="font-medium underline underline-offset-2">
+                  <Link href={loginHref} className="font-medium underline underline-offset-2">
                     {L('Entrar', 'Sign in', '去登录', 'Se connecter')}
                   </Link>
                 </span>
@@ -330,7 +341,7 @@ export function SignupForm() {
 
             <p className="mt-6 text-center text-sm text-muted">
               {L('Já tem conta?', 'Already have an account?', '已有账户？', 'Vous avez déjà un compte ?')}{' '}
-              <Link href="/login" className="font-medium text-ink underline-offset-2 hover:underline">
+              <Link href={loginHref} className="font-medium text-ink underline-offset-2 hover:underline">
                 {tc('signIn')}
               </Link>
             </p>
