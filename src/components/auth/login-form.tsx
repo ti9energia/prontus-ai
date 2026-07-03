@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { Link, useRouter } from '@/i18n/routing';
 import { useSession } from '@/lib/auth/client';
 import { Aurora } from '@/components/landing/aurora';
+import { DnaHelix } from '@/components/landing/dna-helix';
 import { Logo, LogoMark } from '@/components/brand/logo';
 import { MariFace } from '@/components/brand/mari';
 import { Button } from '@/components/ui/button';
@@ -88,11 +89,20 @@ export function LoginForm() {
   };
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-2">
-      {/* brand panel — Mari */}
-      <div className="relative hidden overflow-hidden bg-brand-900 lg:block">
+    <div className="relative grid min-h-dvh lg:grid-cols-2">
+      {/* The living DNA runs behind the whole auth screen — the same molecule as
+          the landing, so signing in reads as stepping further into the product. */}
+      <DnaHelix />
+
+      {/* brand panel — a translucent dark window so the DNA breathes through */}
+      <div className="relative hidden overflow-hidden lg:block">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-br from-brand-950/92 via-brand-900/78 to-brand-800/55"
+        />
         <Aurora />
-        <div className="noise absolute inset-0" />
+        <div className="noise absolute inset-0 opacity-70" />
+        <div aria-hidden className="absolute inset-y-0 right-0 w-px bg-white/10" />
         <div className="relative flex h-full flex-col justify-between p-12">
           <div>
             <Link href="/" className="inline-flex items-center gap-2.5 text-white">
@@ -140,9 +150,10 @@ export function LoginForm() {
         </div>
       </div>
 
-      {/* form panel */}
+      {/* form panel — a glass card floating over a faint DNA scrim */}
       <div className="relative flex flex-col">
-        <div className="flex items-center justify-between p-5">
+        <div aria-hidden className="absolute inset-0 bg-bg/72" />
+        <div className="relative flex items-center justify-between p-5">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink">
             <ArrowLeft className="h-4 w-4" /> Auronis Health
           </Link>
@@ -152,8 +163,8 @@ export function LoginForm() {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-6 pb-16">
-          <div className="w-full max-w-sm">
+        <div className="relative flex flex-1 items-center justify-center px-6 pb-16">
+          <div className="w-full max-w-sm rounded-2xl border border-hairline bg-card/80 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
             <div className="lg:hidden">
               <Logo size={34} />
             </div>
