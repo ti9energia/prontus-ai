@@ -50,7 +50,14 @@ fora de `lib/config` · não quebrar i18n (927×4) / testes / a11y / tema · man
   - [x] 2a — `MariAssistant` adotado no **FAB** (floating) e no **dock** com status ao vivo (ouvindo/pensando/falando); removido o overlay manual de barras _(PR #71)_
   - [x] 2b — Mari na **landing** (seção "Conheça a Mari" com `mari-full`, `meet-mari.tsx`) + **onboarding** (ícone Bot → rosto da Mari no card "sua copilota") _(PR #72)_
   - [x] 2c — **empty states narrados pela Mari** (#17): novo componente cliente `MariEmptyState` (`src/components/brand/mari-empty-state.tsx`) + falas centralizadas em `mariEmptyLines()` (`lib/mari/design.ts`, 6 chaves × 4 idiomas). Adotado em **today**, **agent** (status `success` = "tudo em dia"), **patients** (busca), **documents**, **faturamento** (glosa) e **exams**. Tabelas admin neutras (billing, agenda, equipe, marketplace, signature, requisicao, templates, reports) seguem com o `EmptyState` genérico — presença da Mari é intencional, não ruído _(branch `feat/mari-empty-states`)_
-- [ ] **Bloco 3 — Segurança/revisão** (Etapa 4): banner de revisão (#1/#12) · destaque de medicações
+- [ ] **Bloco 3 — Segurança/revisão** (Etapa 4) — _PRÓXIMO: basta dizer "continue bloco 3"_
+  - **Objetivo:** tornar visível e auditável que a nota gerada pela Mari **precisa de revisão médica** antes de assinar, e destacar medicações/pontos sensíveis. Cobre features #1 (ambient) e #12 (safety layer).
+  - **Plano acionável:**
+    1. **`MariReviewBanner`** (novo, client, `src/components/brand/mari-review-banner.tsx`) — usa `mariCopy(locale).review` (fala já existente: "Revise os pontos destacados antes de assinar. A decisão final continua sendo médica.") + `MariAssistant status="attention"`. Aviso **não-bloqueante**, `role="status"`, motion auto-stilled.
+    2. **Adotar o banner** antes do CTA de assinar/finalizar em `review.tsx` e na nota gerada em `encounter.tsx` (ambient mode).
+    3. **Destaque de medicações** — realçar termos de medicação no texto clínico (helper determinístico em `lib/mari/` + render com tom `warning`); não inventar dose, só sinalizar para conferência.
+    4. **Diff auditável (#12)** — separar visualmente "sugerido pela Mari" vs "confirmado pelo médico"; alertas clínicos em bloco próprio.
+  - **Regras:** Tailwind-only · cópia nova (se houver) em `lib/mari/design.ts` · i18n 927×4 intacto · a11y (status/alert) · manter revisão humana · PR+merge próprio (sugestão de branch `feat/mari-safety-review`).
 - [ ] **Bloco 4+ — Features** (Etapa 5), na ordem da triagem abaixo
 
 ## Triagem das 20 features (build vs polish)
