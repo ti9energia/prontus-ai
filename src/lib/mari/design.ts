@@ -3,19 +3,19 @@
  * official copy. Every surface (dock, console, landing, onboarding, empty
  * states) reads from here so the persona stays consistent.
  *
- * The face is the owner's photoreal render in `public/assets/mari` (produced by
- * `scripts/process-mari.mjs`). The old hand-drawn `MariFace` SVG survives only
- * as a graceful fallback inside `<MariAssistant/>` when an image fails to load.
+ * Mari is a non-human medical-record mascot: memorable enough for campaigns,
+ * neutral enough for clinical software, and derived from the Auronis silver
+ * arch + ECG visual language. The code-native face is the resilient fallback.
  */
 
 const L = (locale: string, pt: string, en: string, zh: string, fr: string) =>
   locale === 'en' ? en : locale === 'zh-CN' ? zh : locale === 'fr-FR' ? fr : pt;
 
 export const MARI_ASSETS = {
-  avatar: '/assets/mari/mari-avatar.png',
-  full: '/assets/mari/mari-full.png',
-  favicon: '/assets/mari/mari-favicon.png',
-  reference: '/assets/mari/mari-referencia.png',
+  avatar: '/assets/mari/mari-mascot-avatar.png',
+  full: '/assets/mari/mari-mascot.png',
+  favicon: '/assets/mari/mari-mascot-avatar.png',
+  reference: '/brand/symbol.png',
 } as const;
 
 /** Mari's identity — mirrors the design brief. Colors match the globals.css tokens. */
@@ -30,17 +30,17 @@ export const mariDesign = {
     traits: ['inteligente', 'precisa', 'segura', 'organizada', 'humana', 'discreta', 'premium', 'clínica', 'objetiva'],
   },
   visualIdentity: {
-    style: 'copilota clínica de IA premium, médica, tecnológica e humana',
+    style: 'mascote-prontuário de IA clínica, premium, tecnológica e acolhedora',
     theme: 'premium dark',
     avoid: [
       'visual infantil',
       'boneca genérica',
-      'mascote fofo demais',
+      'mascote infantil demais',
       'desenho mal acabado',
       'robô infantil',
       'excesso de emojis',
       'aparência improvisada',
-      'parecer médica real específica',
+      'parecer uma pessoa real',
       'parecer personagem de jogo',
     ],
     colors: {

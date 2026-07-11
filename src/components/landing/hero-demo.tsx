@@ -8,58 +8,58 @@ import { AudioWave } from '@/components/visual/audio-wave';
 import { Avatar } from '@/components/ui/misc';
 import { clock } from '@/lib/utils';
 
-type Line = { who: 'doctor' | 'patient'; text: string };
+type Line = { who: 'doctor' | 'patient'; text: string; unlock: 0 | 1 | 2 | 3 };
 
 const SCRIPT: Record<string, { lines: Line[]; note: Record<string, string> }> = {
   'pt-BR': {
     lines: [
-      { who: 'patient', text: 'Doutora, estou com dor de cabeça quase toda manhã.' },
-      { who: 'doctor', text: 'Há quanto tempo? Sente tontura junto?' },
-      { who: 'patient', text: 'Umas duas semanas. E um pouco de tontura, sim.' },
-      { who: 'doctor', text: 'Sua pressão tem subido. Vou ajustar sua medicação.' },
+      { who: 'patient', text: 'Doutora, estou com dor de cabeça quase toda manhã.', unlock: 0 },
+      { who: 'doctor', text: 'Há quanto tempo? Sente tontura? Mediu a pressão em casa?', unlock: 0 },
+      { who: 'patient', text: 'Há duas semanas, com tontura. A pressão deu perto de 150 por 95.', unlock: 2 },
+      { who: 'doctor', text: 'Vou ajustar a losartana, pedir um ECG e rever você em 30 dias.', unlock: 3 },
     ],
     note: {
-      queixa: 'Cefaleia matinal recorrente há 2 semanas com tontura.',
-      hma: 'Cefaleia pulsátil, PA domiciliar elevada (150/95).',
+      queixa: 'Cefaleia matinal há 2 semanas, associada a tontura.',
+      hma: 'Refere PA domiciliar em torno de 150/95 mmHg.',
       conduta: 'Ajuste de losartana, ECG e retorno em 30 dias.',
     },
   },
   en: {
     lines: [
-      { who: 'patient', text: 'Doctor, I get headaches almost every morning.' },
-      { who: 'doctor', text: 'For how long? Any dizziness with it?' },
-      { who: 'patient', text: 'About two weeks. And a bit of dizziness, yes.' },
-      { who: 'doctor', text: 'Your blood pressure is up. Let’s adjust your meds.' },
+      { who: 'patient', text: 'Doctor, I get headaches almost every morning.', unlock: 0 },
+      { who: 'doctor', text: 'For how long? Any dizziness? Did you check your pressure at home?', unlock: 0 },
+      { who: 'patient', text: 'For two weeks, with dizziness. It was around 150 over 95.', unlock: 2 },
+      { who: 'doctor', text: 'I’ll adjust losartan, order an ECG and review you in 30 days.', unlock: 3 },
     ],
     note: {
-      queixa: 'Recurrent morning headache for 2 weeks with dizziness.',
-      hma: 'Pulsatile headache, elevated home BP (150/95).',
+      queixa: 'Morning headache for 2 weeks, associated with dizziness.',
+      hma: 'Reports home BP around 150/95 mmHg.',
       conduta: 'Adjust losartan, order ECG, follow-up in 30 days.',
     },
   },
   'zh-CN': {
     lines: [
-      { who: 'patient', text: '医生，我几乎每天早上都头痛。' },
-      { who: 'doctor', text: '持续多久了？会伴有头晕吗？' },
-      { who: 'patient', text: '大约两周了，是的，有点头晕。' },
-      { who: 'doctor', text: '你的血压升高了，我来调整一下用药。' },
+      { who: 'patient', text: '医生，我几乎每天早上都头痛。', unlock: 0 },
+      { who: 'doctor', text: '持续多久了？会头晕吗？在家量过血压吗？', unlock: 0 },
+      { who: 'patient', text: '两周了，会头晕。血压大约是 150/95。', unlock: 2 },
+      { who: 'doctor', text: '我会调整氯沙坦，安排心电图，30 天后复诊。', unlock: 3 },
     ],
     note: {
-      queixa: '晨起反复头痛两周，伴头晕。',
-      hma: '搏动性头痛，家庭血压偏高（150/95）。',
+      queixa: '晨起头痛两周，伴头晕。',
+      hma: '自述家庭血压约为 150/95 mmHg。',
       conduta: '调整氯沙坦，开心电图，30天后复诊。',
     },
   },
   'fr-FR': {
     lines: [
-      { who: 'patient', text: 'Docteur, j’ai mal à la tête presque chaque matin.' },
-      { who: 'doctor', text: 'Depuis combien de temps ? Des vertiges aussi ?' },
-      { who: 'patient', text: 'Environ deux semaines. Et un peu de vertiges, oui.' },
-      { who: 'doctor', text: 'Votre tension monte. Ajustons votre traitement.' },
+      { who: 'patient', text: 'Docteur, j’ai mal à la tête presque chaque matin.', unlock: 0 },
+      { who: 'doctor', text: 'Depuis quand ? Des vertiges ? Avez-vous mesuré votre tension ?', unlock: 0 },
+      { who: 'patient', text: 'Depuis deux semaines, avec vertiges. Environ 150 sur 95.', unlock: 2 },
+      { who: 'doctor', text: 'J’ajuste le losartan, prescris un ECG et vous revois dans 30 jours.', unlock: 3 },
     ],
     note: {
-      queixa: 'Céphalées matinales récurrentes depuis 2 semaines.',
-      hma: 'Céphalée pulsatile, tension élevée à domicile (150/95).',
+      queixa: 'Céphalées matinales depuis 2 semaines, avec vertiges.',
+      hma: 'Rapporte une tension à domicile autour de 150/95 mmHg.',
       conduta: 'Ajuster le losartan, ECG, contrôle dans 30 jours.',
     },
   },
@@ -105,11 +105,10 @@ export function HeroDemo() {
           await wait(1300);
           if (!mounted) return;
           setVisible(i);
-          if (i >= 2) setNoteStep((n) => Math.min(3, n + 1));
+          // A field unlocks only after its supporting sentence is visible.
+          // This prevents the demo from inventing or anticipating clinical data.
+          setNoteStep(data.lines[i - 1].unlock);
         }
-        await wait(900);
-        if (!mounted) return;
-        setNoteStep(3);
         await wait(900);
         if (!mounted) return;
         setGuide(true);

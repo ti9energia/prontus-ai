@@ -10,10 +10,8 @@ export type MariState = 'idle' | 'listening' | 'thinking' | 'speaking';
 /**
  * Mari — the Auronis Health medical AI persona.
  *
- * A blonde physician (golden hair, honey highlights) in a white coat with a teal stethoscope, drawn as clean
- * vector art: themeable, crisp at any size, no raster, no "generic AI image"
- * look. Gradient ids are namespaced per-instance (useId) so multiple avatars
- * can coexist on one page.
+ * A compact medical-record character derived from the Auronis arch and ECG.
+ * This SVG is the resilient, code-native version of the campaign mascot.
  *
  * - <MariFace/>     a circular portrait chip (chat, headers, menus)
  * - <MariPresence/> the face wrapped in a "Jarvis" aura for voice/meeting modes
@@ -42,93 +40,60 @@ export function MariFace({
       className={cn('shrink-0', className)}
     >
       <defs>
-        <radialGradient id={u('bg')} cx="50%" cy="34%" r="78%">
-          <stop offset="0%" stopColor="#ccfbf1" />
-          <stop offset="100%" stopColor="#8fe0d3" />
+        <radialGradient id={u('bg')} cx="50%" cy="38%" r="72%">
+          <stop offset="0%" stopColor="#173A3D" />
+          <stop offset="72%" stopColor="#111820" />
+          <stop offset="100%" stopColor="#080C11" />
         </radialGradient>
-        <linearGradient id={u('hair')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f5e0a3" />
-          <stop offset="50%" stopColor="#e3c275" />
-          <stop offset="100%" stopColor="#c29a4a" />
+        <linearGradient id={u('silver')} x1="18" y1="12" x2="78" y2="86">
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="32%" stopColor="#DCE2E8" />
+          <stop offset="64%" stopColor="#89939F" />
+          <stop offset="100%" stopColor="#F1F4F7" />
         </linearGradient>
-        <linearGradient id={u('skin')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fcddc8" />
-          <stop offset="100%" stopColor="#f2c4a8" />
+        <linearGradient id={u('shell')} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#313943" />
+          <stop offset="100%" stopColor="#11161D" />
         </linearGradient>
-        <linearGradient id={u('coat')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#e9eef2" />
-        </linearGradient>
-        <clipPath id={u('clip')}>
-          <circle cx="48" cy="48" r="48" />
-        </clipPath>
+        <radialGradient id={u('iris')} cx="38%" cy="30%" r="72%">
+          <stop offset="0%" stopColor="#8EF8F1" />
+          <stop offset="52%" stopColor="#14C8C4" />
+          <stop offset="100%" stopColor="#007B79" />
+        </radialGradient>
+        <filter id={u('glow')} x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.8" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <clipPath id={u('clip')}><circle cx="48" cy="48" r="48" /></clipPath>
       </defs>
 
       <g clipPath={`url(#${u('clip')})`}>
         <rect width="96" height="96" fill={`url(#${u('bg')})`} />
+        <rect x="20" y="10" width="56" height="82" rx="17" fill={`url(#${u('silver')})`} />
+        <rect x="25" y="15" width="46" height="72" rx="13" fill={`url(#${u('shell')})`} stroke="#0B1016" strokeWidth="1.5" />
+        <rect x="36" y="8" width="24" height="12" rx="4" fill={`url(#${u('silver')})`} stroke="#7E8994" />
+        <rect x="42" y="13" width="12" height="2.5" rx="1.25" fill="#5BF0EA" filter={`url(#${u('glow')})`} />
 
-        {/* hair — back layer */}
-        <path d="M21 47c0-18 12-31 27-31s27 13 27 31c0 11-2 20-6 28H27c-4-8-6-17-6-28Z" fill={`url(#${u('hair')})`} />
+        {/* exactly two expressive eyes */}
+        <ellipse cx="38" cy="42" rx="8" ry="9" fill="#F8FAFC" stroke="#6E7883" strokeWidth="1.2" />
+        <ellipse cx="58" cy="42" rx="8" ry="9" fill="#F8FAFC" stroke="#6E7883" strokeWidth="1.2" />
+        <circle cx="39" cy="43" r="5.1" fill={`url(#${u('iris')})`} />
+        <circle cx="57" cy="43" r="5.1" fill={`url(#${u('iris')})`} />
+        <circle cx="39.5" cy="43.5" r="2.6" fill="#071014" />
+        <circle cx="56.5" cy="43.5" r="2.6" fill="#071014" />
+        <circle cx="37.5" cy="40.5" r="1.5" fill="#FFFFFF" />
+        <circle cx="54.5" cy="40.5" r="1.5" fill="#FFFFFF" />
 
-        {/* neck + chin shadow */}
-        <path d="M41 58h14v12c0 4-3 7-7 7s-7-3-7-7V58Z" fill={`url(#${u('skin')})`} />
-        <path d="M41 63c2.4 3 4.6 4.3 7 4.3s4.6-1.3 7-4.3v-5H41v5Z" fill="#e7b394" opacity="0.5" />
-
-        {/* white coat + lapels */}
-        <path d="M15 96c0-13 9-21 25-24l8 10 8-10c16 3 25 11 25 24H15Z" fill={`url(#${u('coat')})`} />
-        <path d="M40 72 34 96h6.5l6-18-6.5-6Z" fill="#dde4ea" />
-        <path d="M56 72 62 96h-6.5l-6-18 6.5-6Z" fill="#dde4ea" />
-        {/* teal scrubs V */}
-        <path d="M41 72 48 88 55 72 48 68Z" fill="#14c8c4" />
-
-        {/* stethoscope draped around the neck */}
-        <path d="M43 66c-9 2-15 9-15 19" stroke="#00a8a2" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-        <path d="M53 66c9 2 15 9 15 19" stroke="#00a8a2" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-        <circle cx="68" cy="86" r="4.8" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="1.4" />
-        <circle cx="68" cy="86" r="2" fill="#b6c0cc" />
-
-        {/* ears + face */}
-        <circle cx="32" cy="46" r="3.3" fill={`url(#${u('skin')})`} />
-        <circle cx="64" cy="46" r="3.3" fill={`url(#${u('skin')})`} />
-        <path d="M31.5 43c0-11 7-18 16.5-18s16.5 7 16.5 18c0 8-3 14.5-7.5 18-2.5 2-5.6 3-9 3s-6.5-1-9-3C34.5 57.5 31.5 51 31.5 43Z" fill={`url(#${u('skin')})`} />
-
-        {/* hair — front side-swept fringe + framing strands + sheen */}
-        <path d="M30 46C29 28 37 16 48 16C60 16 67 27 66 46C64 39 60 34 55 34C51 34 50 30 46 31C42.5 32 41 36 38 36C34 36 31 40 30 46Z" fill={`url(#${u('hair')})`} />
-        <path d="M30 44c-1.5 8-1 17 1.6 25l4.2-1.2c-2.6-8-3.4-16-2.4-24Z" fill={`url(#${u('hair')})`} />
-        <path d="M66 44c1.5 8 1 17-1.6 25l-4.2-1.2c2.6-8 3.4-16 2.4-24Z" fill={`url(#${u('hair')})`} />
-        <path d="M36 27q12-8 24 0" stroke="#fcefc0" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity="0.55" />
-        <path d="M33 41c1-7 4-12 9-15" stroke="#fcefc0" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.4" />
-
-        {/* brows */}
-        <path d="M38.5 40.8q4-2.6 7.5-.4" stroke="#a17b42" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-        <path d="M50 40.4q3.5-2.2 7.5.4" stroke="#a17b42" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-
-        {/* eyes — lash line + iris + highlight */}
-        <path d="M38.5 45.6q3.5-3 7 0" stroke="#4a3b33" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-        <path d="M50.5 45.6q3.5-3 7 0" stroke="#4a3b33" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-        <circle cx="42" cy="47.2" r="2.2" fill="#5b3b2a" />
-        <circle cx="54" cy="47.2" r="2.2" fill="#5b3b2a" />
-        <circle cx="42.8" cy="46.4" r="0.8" fill="#fff" />
-        <circle cx="54.8" cy="46.4" r="0.8" fill="#fff" />
-
-        {/* nose */}
-        <path d="M47.6 48.8q1 2 .3 3.3" stroke="#e3a684" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-        {/* full soft-pink lips + gentle smile */}
-        <path d="M43.4 54.8q4.6 1.5 9.2 0q-1.7 3.8-4.6 3.8q-2.9 0-4.6-3.8Z" fill="#e88f98" opacity="0.6" />
-        <path d="M43.4 54.8q4.6 1.5 9.2 0" stroke="#cf6f7b" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-
-        {/* blush */}
-        <ellipse cx="37.5" cy="52.6" rx="2.5" ry="1.7" fill="#f59a93" opacity="0.38" />
-        <ellipse cx="58.5" cy="52.6" rx="2.5" ry="1.7" fill="#f59a93" opacity="0.38" />
+        <path d="M41 55q7 6 14 0" fill="none" stroke="#61F4EC" strokeWidth="2" strokeLinecap="round" />
+        <path d="M30 71h10l3-8 6 17 5-12 4 3h8" fill="none" stroke="#32E3DD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" filter={`url(#${u('glow')})`} />
       </g>
 
-      {rim && <circle cx="48" cy="48" r="47" fill="none" stroke="#ffffff" strokeOpacity="0.65" strokeWidth="2" />}
+      {rim && <circle cx="48" cy="48" r="47" fill="none" stroke="#74F5EF" strokeOpacity="0.38" strokeWidth="1.5" />}
     </svg>
   );
 }
 
-/** Mari's portrait core: the owner's photoreal render (`/assets/mari/mari-avatar.png`),
- *  with the vector MariFace as a graceful fallback if the image ever fails to load. */
+/** Campaign mascot portrait with the code-native MariFace as a graceful fallback. */
 export function MariPortrait({
   size = 96,
   rim = true,
@@ -142,8 +107,8 @@ export function MariPortrait({
 }) {
   const locale = useLocale();
   const alt = title ?? mariAlt(locale);
-  const [photo, setPhoto] = React.useState(true);
-  if (!photo) return <MariFace size={size} rim={rim} className={className} title={alt} />;
+  const [imageAvailable, setImageAvailable] = React.useState(true);
+  if (!imageAvailable) return <MariFace size={size} rim={rim} className={className} title={alt} />;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -152,14 +117,14 @@ export function MariPortrait({
       width={size}
       height={size}
       draggable={false}
-      onError={() => setPhoto(false)}
-      className={cn('rounded-full object-cover', rim && 'ring-2 ring-brand-300/40', className)}
+      onError={() => setImageAvailable(false)}
+      className={cn('rounded-full bg-elevated object-cover', rim && 'ring-2 ring-brand-300/40', className)}
       style={{ width: size, height: size }}
     />
   );
 }
 
-/** Convenience alias — Mari's portrait (uses the photo when available). */
+/** Convenience alias — Mari's mascot portrait. */
 export const MariAvatar = MariPortrait;
 
 /**
