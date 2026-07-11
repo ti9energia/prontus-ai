@@ -1,12 +1,18 @@
 import type { Metadata } from 'next';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { SessionProvider } from '@/lib/auth/client';
 import { Workspace } from '@/components/workspace/workspace';
 
 export const metadata: Metadata = { title: 'Workspace' };
 
-export default function AppPage({ params: { locale } }: { params: { locale: string } }) {
-  unstable_setRequestLocale(locale);
+export default async function AppPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  setRequestLocale(locale);
   return (
     <SessionProvider>
       <Workspace />

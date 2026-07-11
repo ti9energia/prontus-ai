@@ -10,7 +10,7 @@ export const options = {
   thresholds: THRESHOLDS.smoke,
 };
 
-export default function () {
+export default function smokeScenario() {
   hitHealth();
   hitLanding();
   hitStats();

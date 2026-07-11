@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { LandingNav } from '@/components/landing/landing-nav';
 import { DnaHelix } from '@/components/landing/dna-helix';
 import { Hero } from '@/components/landing/hero';
@@ -19,8 +19,14 @@ import { Pricing } from '@/components/landing/pricing';
 import { FAQ } from '@/components/landing/faq';
 import { JsonLd } from '@/components/seo/json-ld';
 
-export default function LandingPage({ params: { locale } }: { params: { locale: string } }) {
-  unstable_setRequestLocale(locale);
+export default async function LandingPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  setRequestLocale(locale);
   return (
     <div className="relative">
       <JsonLd locale={locale} />
