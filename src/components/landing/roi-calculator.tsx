@@ -7,38 +7,7 @@ import { Reveal } from './reveal';
 import { Link } from '@/i18n/routing';
 import { buttonVariants } from '@/components/ui/button';
 import { useCountUp, useInView } from '@/lib/hooks';
-import { planForDoctors } from './plans-data';
-
-/* ── Pure calculation (exported for unit tests) ── */
-export interface RoiInputs {
-  doctors: number;
-  consultsPerDay: number;
-  ticketAvg: number;
-  glossRate: number;
-}
-
-export interface RoiResults {
-  billingGross: number;
-  glossMonthly: number;
-  recovery: number;
-  timeSaved: number;
-  plan: 'Starter' | 'Pro' | 'Scale';
-  planPrice: number;
-  daysToBreakEven: number;
-}
-
-export function calcRoi(i: RoiInputs): RoiResults {
-  const billingGross = i.doctors * i.consultsPerDay * 22 * i.ticketAvg;
-  const glossMonthly = billingGross * (i.glossRate / 100);
-  const recovery = Math.round(glossMonthly * 0.7);
-  const timeSaved = Math.round(i.doctors * 1.8 * 22);
-  // Plan + price come from the shared pricing source (plans-data.ts).
-  const sized = planForDoctors(i.doctors);
-  const plan = sized.name as 'Starter' | 'Pro' | 'Scale';
-  const planPrice = sized.monthly;
-  const daysToBreakEven = recovery > 0 ? Math.ceil(planPrice / (recovery / 22)) : 0;
-  return { billingGross, glossMonthly, recovery, timeSaved, plan, planPrice, daysToBreakEven };
-}
+import { calcRoi, type RoiInputs } from '@/lib/roi-calculator';
 
 /* ── Slider sub-component ── */
 interface SliderProps {
