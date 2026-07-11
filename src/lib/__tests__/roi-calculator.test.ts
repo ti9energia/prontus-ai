@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcRoi } from '@/components/landing/roi-calculator';
+import { calcRoi } from '@/lib/roi-calculator';
 import { PLAN_BY_ID } from '@/components/landing/plans-data';
 
 describe('calcRoi', () => {

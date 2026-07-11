@@ -5,7 +5,8 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /** GET /api/v1/patients/:id — a single patient, or 404. */
-export function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const unauthorized = authError(req);
   if (unauthorized) return unauthorized;
 

@@ -129,8 +129,11 @@ test.describe('Checkout', () => {
     page,
   }) => {
     await page.goto('/pt-BR');
+    // Query the section directly instead of scrolling to it: the landing is
+    // SSG-prerendered so the plan CTAs are in the initial HTML, and a manual
+    // scrollIntoViewIfNeeded races hydration (the node re-mounts and detaches).
+    // The href assertions below auto-wait and re-resolve, so no scroll needed.
     const pricing = page.locator('#pricing');
-    await pricing.scrollIntoViewIfNeeded();
     // starter + pro are self-serve → checkout with the plan preselected; the
     // whole point of the fix is that a plan click carries the plan instead of
     // dumping the visitor on a context-less /login.

@@ -49,11 +49,11 @@ test.describe('Landing', () => {
     expect(unexpected, `unexpected page errors: ${unexpected.join('; ')}`).toEqual([]);
   });
 
-  test('primary CTA goes to login (trial-first funnel, not straight to signup)', async ({ page }) => {
+  test('primary CTA starts account creation directly', async ({ page }) => {
     test.fixme(true, LANDING_INTERACT_FIXME);
     await page.goto('/pt-BR');
     await page.getByRole('link', { name: 'Teste gratuitamente' }).first().click();
-    await expect(page).toHaveURL(/\/pt-BR\/login/);
+    await expect(page).toHaveURL(/\/pt-BR\/signup/);
   });
 
   test('every footer link resolves to a real destination — zero href="#" (fase 2 P0, fixed fase 3)', async ({

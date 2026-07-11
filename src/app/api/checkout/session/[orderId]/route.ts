@@ -21,7 +21,8 @@ function toOrderStatus(s: PaymentStatus): OrderStatus {
   return 'pending';
 }
 
-export async function GET(req: NextRequest, { params }: { params: { orderId: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ orderId: string }> }) {
+  const params = await props.params;
   const session = await verifySession(readCookie(req.headers.get('cookie'), SESSION_COOKIE));
   if (!session) {
     return NextResponse.json({ error: { code: 'UNAUTHORIZED' } }, { status: 401 });

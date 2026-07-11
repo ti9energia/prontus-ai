@@ -57,11 +57,11 @@ export function Hero() {
               className="mt-8 flex flex-col gap-3 sm:flex-row animate-fade-up"
               style={{ animationDelay: '0.22s' }}
             >
-              <Link href="/login" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'group' })}>
+              <Link href="/signup" className={buttonVariants({ variant: 'primary', size: 'lg', className: 'group' })}>
                 {t('ctaPrimary')}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <a href="#how" className={buttonVariants({ variant: 'outline', size: 'lg' })}>
+              <a href="#mari" className={buttonVariants({ variant: 'outline', size: 'lg' })}>
                 {t('ctaSecondary')}
               </a>
             </div>

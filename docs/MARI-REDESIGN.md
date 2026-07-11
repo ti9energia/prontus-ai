@@ -5,24 +5,26 @@
 > Contexto de produto/persona: [`MARI.md`](./MARI.md). Sistema: [`SISTEMA.md`](./SISTEMA.md).
 
 ## Objetivo
-Substituir a identidade visual antiga da Mari (SVG desenhado à mão, `MariFace`) por uma
-identidade **premium, clínica e tecnológica** usando os renders reais fornecidos pelo dono, e
-evoluir a UX/produto em torno dela — **sem** redesenhar a Mari no código, sem arte por CSS, e
-respeitando a arquitetura modular.
+Dar à Mari uma identidade **premium, clínica e tecnológica** e evoluir a UX/produto em torno
+dela — sem arte por CSS e respeitando a arquitetura modular. A identidade partiu dos renders
+photoreal do dono e **evoluiu para um mascote-prontuário não-humano** (arte de campanha), mais
+memorável e neutro para software clínico. O `MariFace` code-native foi **redesenhado** para
+espelhar o mascote e segue como fallback resiliente (nunca "imagem de IA genérica").
 
 ## Assets
-Renders do dono (locais) em `C:\Users\engen\OneDrive\Desktop\mari\` → otimizados por
-`scripts/process-mari.mjs` (sharp) → **`public/assets/mari/`** (commitado):
+Arte de campanha do mascote (não-humano) commitada em **`public/assets/mari/`**. Os renders
+photoreal antigos (`mari-avatar/full/favicon.png`, gerados por `scripts/process-mari.mjs`) foram
+**removidos** — o script sharp segue no repo caso se queira reprocessar renders no futuro.
 
 | Arquivo | Caminho no código | Uso |
 |---|---|---|
-| `mari-avatar.png` (512²) | `/assets/mari/mari-avatar.png` | chat, dock, FAB, cards, console, avatares |
-| `mari-full.png` (768×1024) | `/assets/mari/mari-full.png` | landing, onboarding, empty states, institucional |
-| `mari-favicon.png` (64²) | `/assets/mari/mari-favicon.png` | área/PWA da Mari (opcional) |
-| `mari-referencia.png` | `/assets/mari/mari-referencia.png` | **ausente** — só guia de design (opcional) |
+| `mari-mascot-avatar.png` | `/assets/mari/mari-mascot-avatar.png` | chat, dock, FAB, cards, console, avatares, favicon |
+| `mari-mascot.png` (1122×1402) | `/assets/mari/mari-mascot.png` | landing, onboarding, empty states, institucional |
+| `/brand/symbol.png` | `MARI_ASSETS.reference` | guia de design (arco Auronis) |
 
-Fonte única de identidade/cópia: **`src/lib/mari/design.ts`** (`mariDesign`, `mariAlt`, `mariCopy`).
-Componente único de render: **`src/components/brand/mari-assistant.tsx`** (`MariAssistant`).
+Fonte única de identidade/cópia: **`src/lib/mari/design.ts`** (`mariDesign`, `mariAlt`, `mariCopy`, `MARI_ASSETS`).
+Componente único de render: **`src/components/brand/mari-assistant.tsx`** (`MariAssistant`); fallback
+code-native em **`src/components/brand/mari.tsx`** (`MariFace`, redesenhado como o mascote).
 Alt padrão: “Mari, copilota clínica de IA do Auronis Health”.
 
 ## Regras de arquitetura (sempre)
@@ -50,6 +52,10 @@ fora de `lib/config` · não quebrar i18n (927×4) / testes / a11y / tema · man
   - [x] 2a — `MariAssistant` adotado no **FAB** (floating) e no **dock** com status ao vivo (ouvindo/pensando/falando); removido o overlay manual de barras _(PR #71)_
   - [x] 2b — Mari na **landing** (seção "Conheça a Mari" com `mari-full`, `meet-mari.tsx`) + **onboarding** (ícone Bot → rosto da Mari no card "sua copilota") _(PR #72)_
   - [x] 2c — **empty states narrados pela Mari** (#17): novo componente cliente `MariEmptyState` (`src/components/brand/mari-empty-state.tsx`) + falas centralizadas em `mariEmptyLines()` (`lib/mari/design.ts`, 6 chaves × 4 idiomas). Adotado em **today**, **agent** (status `success` = "tudo em dia"), **patients** (busca), **documents**, **faturamento** (glosa) e **exams**. Tabelas admin neutras (billing, agenda, equipe, marketplace, signature, requisicao, templates, reports) seguem com o `EmptyState` genérico — presença da Mari é intencional, não ruído _(branch `feat/mari-empty-states`)_
+- [x] **Revisão de identidade — mascote** — a identidade migrou dos renders photoreal para um
+  **mascote-prontuário não-humano** (novos `mari-mascot*.png`; `design.ts`/`MariAssistant`
+  repontados; `MariFace` redesenhado; hero/`meet-mari`/`dna-helix` afinados). Feito junto do
+  **upgrade de plataforma Next 15 · next-intl 4 · vitest 4 · Node 22** _(branch `feat/next15-mari-mascot`)_
 - [ ] **Bloco 3 — Segurança/revisão** (Etapa 4) — _PRÓXIMO: basta dizer "continue bloco 3"_
   - **Objetivo:** tornar visível e auditável que a nota gerada pela Mari **precisa de revisão médica** antes de assinar, e destacar medicações/pontos sensíveis. Cobre features #1 (ambient) e #12 (safety layer).
   - **Plano acionável:**

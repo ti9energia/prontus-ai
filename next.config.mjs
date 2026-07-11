@@ -45,8 +45,6 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],
-    // Enable src/instrumentation.ts (boot hook + last-resort crash logging).
-    instrumentationHook: true,
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];

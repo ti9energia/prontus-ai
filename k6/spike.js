@@ -22,7 +22,7 @@ export const options = {
   thresholds: THRESHOLDS.spike,
 };
 
-export default function () {
+export default function spikeScenario() {
   hitHealth();
   hitLanding();
   sleep(0.5);

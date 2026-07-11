@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { fontVariables, fontCJK } from '../fonts';
@@ -15,11 +15,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({
-  params: { locale },
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: 'meta.landing' });
   return {
     metadataBase: new URL(config.site.url),
@@ -77,15 +83,24 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default async function LocaleLayout({
-  children,
-  params: { locale },
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
+export default async function LocaleLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  const {
+    children
+  } = props;
+
   if (!routing.locales.includes(locale as Locale)) notFound();
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
   // Every route gets the full message catalog. A previous per-route filter
   // here (guessing the current path from undocumented request headers) was
   // unreliable and, worse, failed *silently*: /signup, /onboarding,

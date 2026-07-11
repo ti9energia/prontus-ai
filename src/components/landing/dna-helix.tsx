@@ -29,7 +29,9 @@ export function DnaHelix() {
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    // Extra supersampling keeps the metallic tubes crisp on retina displays;
+    // mobile stays capped to protect battery and scroll performance.
+    const dpr = Math.min(finePointer ? 2.5 : 2, window.devicePixelRatio || 1);
     let w = 0;
     let h = 0;
     let raf = 0;
@@ -139,7 +141,7 @@ export function DnaHelix() {
 
     /* ---- ambient depth motes ---- */
     type Mote = { x: number; y: number; z: number; r: number; spd: number; hue: 0 | 1 };
-    const MOTES = reduce ? 0 : 28;
+    const MOTES = reduce ? 0 : finePointer ? 36 : 18;
     const motes: Mote[] = Array.from({ length: MOTES }, (_, i) => ({
       x: Math.random(),
       y: Math.random(),
@@ -150,9 +152,9 @@ export function DnaHelix() {
     }));
 
     const TURN = 340; // px per full turn (~9-10 base pairs/turn, like real B-DNA)
-    const STEP = 12; // sampling step (smaller = smoother tube)
-    const RUNG_EVERY = 3; // a base pair (rung + atoms) every N samples
-    const OPACITY = 0.5; // vivid — it's occluded below the hero, so it never fights copy
+    const STEP = 8; // supersampled curve: smooth even on high-DPI, large monitors
+    const RUNG_EVERY = 4; // ~32px between base pairs while keeping the tube dense
+    const OPACITY = 0.54; // vivid — section scrims keep body copy legible
     const SPEED = 18; // idle px/s downward flow
     const SCROLL_FLOW = 0.55; // how far the helix travels per px scrolled
     const SCROLL_SPIN = 0.0016; // how much the helix rotates per px scrolled
@@ -222,10 +224,13 @@ export function DnaHelix() {
         const worldY = gi * STEP;
         const y = worldY + flow + yTilt * Math.sin((worldY / h) * Math.PI);
         const ang = (worldY / TURN) * Math.PI * 2 + spin;
+        // A subtle depth lift makes each base pair pitch in 3D instead of
+        // reading as a flat ladder rotating around a vertical axis.
+        const depthLift = Math.cos(ang) * 7;
         rows.push({
           gi,
-          a: { x: cx + Math.sin(ang) * R, y, d: (Math.cos(ang) + 1) / 2 },
-          b: { x: cx + Math.sin(ang + Math.PI) * R, y, d: (Math.cos(ang + Math.PI) + 1) / 2 },
+          a: { x: cx + Math.sin(ang) * R, y: y + depthLift, d: (Math.cos(ang) + 1) / 2 },
+          b: { x: cx + Math.sin(ang + Math.PI) * R, y: y - depthLift, d: (Math.cos(ang + Math.PI) + 1) / 2 },
         });
       }
 
@@ -271,6 +276,17 @@ export function DnaHelix() {
           ctx.moveTo(el.a.x, el.a.y);
           ctx.lineTo(el.b.x, el.b.y);
           ctx.stroke();
+          if (near > 0.68) {
+            ctx.globalCompositeOperation = glow;
+            ctx.globalAlpha = (near - 0.68) * 0.5 * fade * OPACITY;
+            ctx.strokeStyle = 'rgb(244 254 255)';
+            ctx.lineWidth = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(el.a.x, el.a.y);
+            ctx.lineTo(el.b.x, el.b.y);
+            ctx.stroke();
+            ctx.globalCompositeOperation = 'source-over';
+          }
         } else if (el.t === 'seg') {
           const fade = edgeFade((el.a.y + el.b.y) / 2);
           if (fade <= 0) continue;

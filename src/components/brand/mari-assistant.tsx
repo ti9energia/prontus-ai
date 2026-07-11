@@ -8,8 +8,8 @@ import { MARI_ASSETS, mariAlt } from '@/lib/mari';
 import { MariFace } from './mari';
 
 /**
- * MariAssistant — the one component that renders Mari's photoreal identity
- * everywhere. Picks the square avatar or the full body by `variant`, shows a
+ * MariAssistant — the one component that renders Mari's mascot identity
+ * everywhere. Picks the square avatar or the full character by `variant`, shows a
  * status signal (listening / thinking / attention…) and, optionally, a message
  * bubble. Motion is Tailwind-only and auto-stilled by the global
  * prefers-reduced-motion rule in globals.css. Falls back to the vector
@@ -106,11 +106,11 @@ export function MariAssistant({
       src={MARI_ASSETS.full}
       alt={alt}
       width={px}
-      height={Math.round(px * (1024 / 768))}
+      height={Math.round(px * (1402 / 1122))}
       draggable={false}
       loading={priority ? 'eager' : 'lazy'}
       onError={() => setBroken(true)}
-      className={cn('h-auto w-full object-contain drop-shadow-[0_18px_36px_rgba(20,200,196,0.16)]', imageClassName)}
+      className={cn('h-auto w-full object-contain drop-shadow-[0_18px_36px_rgba(20,200,196,0.22)]', imageClassName)}
     />
   ) : (
     <div

@@ -148,7 +148,7 @@ export function LandingNav() {
               {tc('signIn')}
             </Link>
             <Link
-              href="/login"
+              href="/signup"
               className={buttonVariants({ variant: 'primary', size: 'sm', className: 'hidden shadow-sm sm:inline-flex' })}
             >
               {tc('tryFree')}
@@ -195,7 +195,7 @@ export function LandingNav() {
               <Link href="/login" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'mt-1' })}>
                 {tc('signIn')}
               </Link>
-              <Link href="/login" className={buttonVariants({ variant: 'primary', size: 'sm' })}>
+              <Link href="/signup" className={buttonVariants({ variant: 'primary', size: 'sm' })}>
                 {tc('tryFree')}
               </Link>
             </div>

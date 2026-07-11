@@ -21,7 +21,7 @@ export const options = {
   thresholds: THRESHOLDS.load,
 };
 
-export default function () {
+export default function loadScenario() {
   // Traffic mix per iteration: liveness is cheapest/most frequent, then a page
   // render, then the two authenticated reads.
   hitHealth();

@@ -23,7 +23,7 @@ export const options = {
   thresholds: THRESHOLDS.stress,
 };
 
-export default function () {
+export default function stressScenario() {
   hitHealth();
   hitStats();
   sleep(0.3);

@@ -1,20 +1,32 @@
 import type { Metadata } from 'next';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { LegalShell, LegalSection } from '@/components/landing/legal-shell';
 
 const SECTIONS = ['scope', 'data', 'use', 'sharing', 'security', 'retention', 'rights', 'cookies'] as const;
 
-export async function generateMetadata({
-  params: { locale },
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: 'legal.privacy' });
   return { title: t('title'), description: t('intro') };
 }
 
-export default async function PrivacyPage({ params: { locale } }: { params: { locale: string } }) {
-  unstable_setRequestLocale(locale);
+export default async function PrivacyPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  setRequestLocale(locale);
   const t = await getTranslations('legal.privacy');
   const tl = await getTranslations('legal');
   return (

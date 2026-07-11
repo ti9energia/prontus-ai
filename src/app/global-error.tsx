@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 /**
  * Root error boundary — only fires if the [locale] layout itself throws
@@ -74,7 +75,7 @@ export default function GlobalError({
           >
             Tentar novamente
           </button>
-          <a
+          <Link
             href="/"
             style={{
               padding: '0.65rem 1.25rem',
@@ -87,7 +88,7 @@ export default function GlobalError({
             }}
           >
             Voltar ao início
-          </a>
+          </Link>
         </div>
       </body>
     </html>

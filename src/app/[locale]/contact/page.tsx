@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Mail, MessageCircle, ShieldCheck, type LucideIcon } from 'lucide-react';
 import { LegalShell } from '@/components/landing/legal-shell';
 
@@ -9,17 +9,29 @@ const CHANNELS: { key: 'sales' | 'support' | 'privacy'; icon: LucideIcon; email:
   { key: 'privacy', icon: ShieldCheck, email: 'privacidade@auronishealth.com' },
 ];
 
-export async function generateMetadata({
-  params: { locale },
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const t = await getTranslations({ locale, namespace: 'legal.contact' });
   return { title: t('title'), description: t('intro') };
 }
 
-export default async function ContactPage({ params: { locale } }: { params: { locale: string } }) {
-  unstable_setRequestLocale(locale);
+export default async function ContactPage(props: { params: Promise<{ locale: string }> }) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  setRequestLocale(locale);
   const t = await getTranslations('legal.contact');
   const tl = await getTranslations('legal');
   return (
