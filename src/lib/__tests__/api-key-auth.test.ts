@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { authError } from '../api/auth';
+import { authenticateApiKey, authError } from '../api/auth';
 import * as dataModule from '../data';
 
 function makeReq(token: string | null, header: 'auth' | 'xkey' = 'auth'): Request {
@@ -58,6 +58,12 @@ describe('authError — production hash lookup', () => {
     expect(res!.status).toBe(401);
   });
 
+  it('rejects the known seeded development key in production', () => {
+    const res = authError(makeReq('sk_test_auronis_dev'));
+    expect(res).not.toBeNull();
+    expect(res!.status).toBe(401);
+  });
+
   it('accepts a token whose SHA-256 hash matches a non-revoked stored key', () => {
     const rawKey = 'sk_live_test_key_for_prod_check';
     const hash = createHash('sha256').update(rawKey).digest('hex');
@@ -97,6 +103,18 @@ describe('authError — production hash lookup', () => {
     const res = authError(makeReq('sk_live_not_in_store'));
     expect(res).not.toBeNull();
     expect(res!.status).toBe(401);
+  });
+});
+
+describe('authenticateApiKey — tenant context', () => {
+  it('returns the demo tenant and full scopes for a development key', () => {
+    const result = authenticateApiKey(makeReq('sk_test_auronis_dev'));
+    expect(result.error).toBeNull();
+    expect(result.context).toMatchObject({
+      orgId: 'ten_0001',
+      keyId: 'key_dev',
+      scopes: ['*'],
+    });
   });
 });
 

@@ -5,6 +5,12 @@ node_modules
 npm-debug.log*
 .env
 .env*.local
+.acessos*
+.claude
+.entrega
+.vercel
+markentig
+test-results
 Dockerfile
 .dockerignore
 README.md

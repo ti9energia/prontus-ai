@@ -210,6 +210,8 @@ model ApiKey {
   name      String
   prefix    String
   hash      String    @unique
+  scopes    Json?
+  allowedOrigins Json?
   createdAt DateTime  @default(now())
   revokedAt DateTime?
 
@@ -226,4 +228,52 @@ model ConnectorSecret {
   updatedAt DateTime @default(now())
 
   @@unique([orgId, connector])
+}
+
+// Configurable extraction form owned by a B2B partner tenant.
+model B2bExtractionSchema {
+  id           String   @id
+  orgId        String
+  name         String
+  description  String?
+  instructions String?
+  version      Int      @default(1)
+  fields       Json
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([orgId, active])
+}
+
+// Recording/transcription/extraction lifecycle for an external consultation.
+model B2bJob {
+  id                String    @id
+  orgId             String
+  apiKeyId          String
+  schemaId          String
+  schemaSnapshot    Json
+  externalId        String?
+  idempotencyKey    String?
+  locale            String    @default("pt-BR")
+  status            String    @default("collecting")
+  metadata          Json
+  consent           Json
+  retention         String    @default("result_only")
+  webhookUrl        String?
+  webhookDelivery   Json?
+  segments          Json
+  transcript        String?
+  result            Json?
+  error             Json?
+  usage             Json
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  completedAt       DateTime?
+
+  @@unique([orgId, idempotencyKey])
+  @@index([orgId, createdAt])
+  @@index([orgId, status])
+  @@index([schemaId])
 }

@@ -367,12 +367,24 @@ export interface Order {
 
 /* ----------------------------- API keys ----------------------------- */
 
+export type ApiScope =
+  | '*'
+  | 'keys:manage'
+  | 'b2b:schemas:read'
+  | 'b2b:schemas:write'
+  | 'b2b:jobs:read'
+  | 'b2b:jobs:write';
+
 export interface ApiKey {
   id: string;
   orgId: string;
   name: string;
   prefix: string;   // first 8 chars of the raw key, for safe display ("sk_live_")
   hash: string;     // SHA-256 hex of the full key — what is stored and compared
+  /** Least-privilege permissions. Legacy records without scopes have full access. */
+  scopes?: ApiScope[];
+  /** Browser origins allowed when a short-lived recording token is issued. */
+  allowedOrigins?: string[];
   createdAt: string;
   revokedAt?: string;
 }

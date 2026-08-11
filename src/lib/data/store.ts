@@ -1,6 +1,7 @@
 import type {
   AgentRecommendation,
   ApiKey,
+  ApiScope,
   AuditEntry,
   AuditSource,
   ClinicalNote,
@@ -459,6 +460,8 @@ function seedApiKeys(): ApiKey[] {
       name: 'Chave de desenvolvimento',
       prefix: 'sk_test_',
       hash: DEV_KEY_HASH,
+      scopes: ['*'],
+      allowedOrigins: ['http://localhost:3000'],
       createdAt: now,
     },
   ];
@@ -1451,7 +1454,13 @@ export function getApiKeyByHash(hash: string): ApiKey | undefined {
   return db().apiKeys.find((k) => k.hash === hash);
 }
 
-export function addApiKey(orgId: string, name: string, hash: string, prefix: string): ApiKey {
+export function addApiKey(
+  orgId: string,
+  name: string,
+  hash: string,
+  prefix: string,
+  options: { scopes?: ApiScope[]; allowedOrigins?: string[] } = {},
+): ApiKey {
   const d = db();
   const key: ApiKey = {
     id: id('key', d.apiKeys.length + 1),
@@ -1459,6 +1468,8 @@ export function addApiKey(orgId: string, name: string, hash: string, prefix: str
     name: name.trim() || 'API Key',
     prefix,
     hash,
+    scopes: options.scopes?.length ? [...options.scopes] : ['*'],
+    allowedOrigins: options.allowedOrigins ? [...options.allowedOrigins] : [],
     createdAt: new Date().toISOString(),
   };
   d.apiKeys.push(key);

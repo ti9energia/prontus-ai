@@ -4,15 +4,19 @@
 # (ou rode `fly launch --no-deploy` para gerar um nome). Segredos (AUTH_SECRET,
 # OWNER_PASSWORD, etc.) NÃO ficam aqui — vão via `fly secrets set` (ver DEPLOY-FLY.md).
 
-app = "auronis-health"
+app = "auronis-health-api"
 primary_region = "gru"  # São Paulo, alinhado com a região gru1 do Vercel
 
 [build]
   dockerfile = "Dockerfile"
 
+  [build.args]
+    NEXT_PUBLIC_SITE_URL = "https://auronis-health-api.fly.dev"
+
 [env]
   NODE_ENV = "production"
   NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_PUBLIC_SITE_URL = "https://auronis-health-api.fly.dev"
   PORT = "3000"
   HOSTNAME = "0.0.0.0"
 
